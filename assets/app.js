@@ -133,13 +133,13 @@
     if (el.statsEbooks) el.statsEbooks.textContent = state.data.categories.find(c => c.id === 'ebooks')?.count || 7;
   }
 
-  // Category Tabs Navigation (Pure clean labels without numbers)
+  // Category Tabs Navigation (Pure clean labels without numbers, multi-row flex-wrap)
   function renderCategoryTabs() {
     if (!el.categoryTabs) return;
     const categories = state.data.categories;
 
     let html = `
-      <button data-category="all" class="category-tab px-4 py-2 rounded-xl text-sm font-medium border flex items-center gap-2 ${state.activeCategory === 'all' ? 'active' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}">
+      <button data-category="all" class="category-tab px-3.5 py-1.5 rounded-xl text-xs font-medium border flex items-center gap-1.5 transition ${state.activeCategory === 'all' ? 'active' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}">
         <span>🌐</span>
         <span>全部分类</span>
       </button>
@@ -148,7 +148,7 @@
     categories.forEach(cat => {
       const isActive = state.activeCategory === cat.id;
       html += `
-        <button data-category="${cat.id}" class="category-tab px-4 py-2 rounded-xl text-sm font-medium border flex items-center gap-2 ${isActive ? 'active' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}">
+        <button data-category="${cat.id}" class="category-tab px-3.5 py-1.5 rounded-xl text-xs font-medium border flex items-center gap-1.5 transition ${isActive ? 'active' : 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'}">
           <span>${cat.icon}</span>
           <span>${cat.name}</span>
         </button>
