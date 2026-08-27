@@ -10,7 +10,6 @@
     data: window.SITE_DATA || { categories: [], articles: [], stats: {} },
     activeCategory: 'all',
     searchQuery: '',
-    formatFilter: 'all',
     difficultyFilter: 'all',
     viewMode: 'roadmap', // 'roadmap' (default) | 'grid' | 'shelf' | 'tree' | 'list'
     theme: localStorage.getItem('ai_hub_theme') || 'dark',
@@ -29,7 +28,6 @@
     themeIcon: document.getElementById('theme-icon'),
     searchInput: document.getElementById('search-input'),
     searchClear: document.getElementById('search-clear'),
-    formatFilters: document.getElementById('format-filters'),
     categoryTabs: document.getElementById('category-tabs'),
     categorySelect: document.getElementById('category-select'),
     viewButtons: document.querySelectorAll('[data-view]'),
@@ -199,9 +197,6 @@
   function getFilteredArticles() {
     return state.data.articles.filter(art => {
       if (state.activeCategory !== 'all' && art.categoryId !== state.activeCategory) {
-        return false;
-      }
-      if (state.formatFilter !== 'all' && art.format !== state.formatFilter) {
         return false;
       }
       if (state.searchQuery) {
@@ -1122,24 +1117,6 @@
       });
     }
 
-    if (el.formatFilters) {
-      el.formatFilters.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-format]');
-        if (!btn) return;
-        state.formatFilter = btn.dataset.format;
-        document.querySelectorAll('[data-format]').forEach(b => {
-          if (b.dataset.format === state.formatFilter) {
-            b.classList.add('bg-indigo-600', 'text-white');
-            b.classList.remove('bg-white/5', 'text-slate-400');
-          } else {
-            b.classList.remove('bg-indigo-600', 'text-white');
-            b.classList.add('bg-white/5', 'text-slate-400');
-          }
-        });
-        renderMainView();
-      });
-    }
-
     if (el.categoryTabs) {
       el.categoryTabs.addEventListener('click', (e) => {
         const tab = e.target.closest('[data-category]');
@@ -1234,7 +1211,6 @@
     resetFilters: function () {
       state.activeCategory = 'all';
       state.searchQuery = '';
-      state.formatFilter = 'all';
       if (el.searchInput) el.searchInput.value = '';
       updateCategoryTabs();
       renderMainView();
