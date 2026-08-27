@@ -31,6 +31,24 @@
 }
 
 /* ==========================================================================
+   Base Glassmorphism & Solid Sticky Navigation (Prevents Scroll Ghosting)
+   ========================================================================== */
+.glass {
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-nav {
+  background-color: rgba(11, 15, 25, 0.94) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
    Light Theme Definition & High-Contrast Overrides
    ========================================================================== */
 .light-theme, html:not(.dark) {
