@@ -1,0 +1,16 @@
+graph TB
+    User[用户输入] --> Intent[意图识别<br/>intent_recognition]
+    Intent --> |FAQ查询| KB[知识库检索<br/>knowledge_base]
+    Intent --> |订单查询| Order[订单系统]
+    Intent --> |转人工| Ticket[工单系统<br/>ticket_system]
+    
+    KB --> LLM[大模型生成<br/>GLM-5.1/Qwen3]
+    Order --> LLM
+    Ticket --> Human[人工客服]
+    
+    LLM --> Emotion[情感分析<br/>emotion_analysis]
+    Emotion --> Response[响应输出]
+    
+    style User fill:#e3f2fd
+    style Response fill:#e8f5e9
+    style LLM fill:#fff3e0

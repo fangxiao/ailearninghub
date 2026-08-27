@@ -1,0 +1,47 @@
+# 客服专用配置 - 继承base.yaml并扩展
+
+extends: base.yaml
+
+llm:
+  enabled: false
+  provider: zhipu
+  model: glm-5.1-flash
+
+harness:
+  rate_limit:
+    max_requests: 100
+    window_seconds: 60
+  circuit_breaker:
+    failure_threshold: 5
+    recovery_timeout: 30
+
+skill:
+  sentiment:
+    enabled: true
+    alert_threshold: 5
+  intent:
+    confidence_threshold: 0.7
+    fallback_intent: "unknown"
+  faq:
+    top_k: 3
+    score_threshold: 0.3
+  complaint:
+    escalation_threshold: 5
+  handoff:
+    work_hours: "9:00-21:00"
+    hotline: "400-xxx-xxxx"
+  slot_filling:
+    required_slots: ["product", "quantity", "address"]
+
+human_handoff:
+  enabled: true
+  triggers:
+    - intent: complaint
+    - intent: human_handoff
+    - sentiment_level: 5
+    - user_request: true
+
+bot:
+  name: "智能客服小助手"
+  version: "2.0.0-harness"
+  description: "基于Harness+Skill架构的智能客服系统"

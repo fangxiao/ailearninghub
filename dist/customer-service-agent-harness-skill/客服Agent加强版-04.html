@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent进化论 ④ | OrderSkill：订单查询的正确姿势</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+<body>
+<div class="container">
+
+
+
+<h2><span class="title-text">客服Agent进化论 ④</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">OrderSkill：订单查询的正确姿势</p>
+
+<blockquote class="opinion">
+<p>上周看一个同事的 bot.py，500行代码里有200行是订单查询的 if/else：解析订单号一个if，解析手机号一个if，查物流一个if，错误处理一个if……改一个需求，要动主循环；加一个查询类型，要改半壁江山。更要命的是，订单查询的逻辑和意图识别、情感分析混在一起，代码里全是交叉引用——牵一发而动全身。</p>
+</blockquote>
+
+<blockquote class="highlight">
+<p><strong>真正的高手不是把代码写得多，而是把代码拆得干净。</strong>订单查询是客服场景中最高频的需求之一。本篇以 OrderSkill 为例，完整展示从V1插件到V2 Skill的升级过程——就像把一堆散乱的杂物塞进抽屉盒，每个抽屉各司其职，拉出来就能用。</p>
+</blockquote>
+
+<p style="color: #888; font-size: 14px; font-style: italic; margin: 16px 0 24px;">
+💡 如果你看过之前的《客服Agent实战系列》，应该熟悉V1的订单插件实现。本篇是加强版第四篇，我们来看看在 Harness+Skill 架构下，订单查询能变得多么优雅。
+</p>
+
+<h3><span class="icon">1</span><span class="title-text">先看V1订单插件的"烂摊子"</span></h3>
+
+<p>在V1插件架构里，订单查询是这样写的——所有逻辑塞在一个 <code>OrderPlugin</code> 类里，由 Bot 主循环直接调用：</p>
+
+<pre><div class="code-header"><span class="code-lang">python</span></div><code># V1 订单插件 - 典型的"大杂烩"写法
+class OrderPlugin:
+    def handle(self, user_input, context):
+        if "订单" in user_input or "物流" in user_input:
+            if "订单号" in user_input:
+                order_id = self._extract_order_id(user_input)
+                if order_id:
+                    return self._query_by_order_id(order_id)
+                else:
+                    return "请提供正确的订单号"
+            elif "手机" in user_input or re.search(r'1[3-9]\d{9}', user_input):
+                phone = self._extract_phone(user_input)
+                if phone:
+                    return self._query_by_phone(phone)
+                else:
+                    return "请提供正确的手机号"
+            else:
+                # 模糊查询 - 又一坨if/else
+                if context.get("user_id"):
+                    return self._query_user_orders(context["user_id"])
+                else:
+                    return "请提供订单号或手机号"
+        else:
+            return None  # 不是订单相关，返回None</code></pre>
+
+<p>这段代码有什么问题？表面上看功能齐全，实际上：</p>
+
+<ul>
+<li><strong>耦合严重</strong>：解析、查询、格式化混在一起，改一处动全身</li>
+<li><strong>无标准接口</strong>：返回值是字符串或None，Bot主循环需要硬编码判断</li>
+<li><strong>无法独立测试</strong>：要测订单查询，必须先初始化整个Bot</li>
+<li><strong>无法动态扩展</strong>：想加个"退款查询"？又要加if/else</li>
+</ul>
+
+<blockquote class="opinion">
+<p>这就是V1的通病：<strong>插件看起来是解耦的，实际上是"换了个地方耦合"</strong>。主循环依赖插件的返回格式，插件依赖主循环的上下文结构，彼此纠缠不清。</p>
+</blockquote>
+
+<h3><span class="icon">2</span><span class="title-text">OrderSkill 的 can_handle 打分机制</span></h3>
+
+<p>进入V2 Skill架构后，一切都变了。首先看 can_handle——这是Router选择Skill的唯一依据，也是OrderSkill的"自我推荐信"：</p>
+
+<pre><div class="code-header"><span class="code-lang">python</span></div><code>class OrderSkill(BaseSkill):
+    @property
+    def name(self) -> str:
+        return "order"
+
+    @property
+    def triggers(self) -> List[str]:
+        return ["订单", "物流", "发货", "配送", "快递", "到哪", "状态", "查单"]
+
+    @property
+    def priority(self) -> int:
+        return 9  # 高优先级
+
+    def can_handle(self, user_input: str, context: dict) -> float:
+        score = super().can_handle(user_input, context)
+        # 加权：如果意图明确是订单查询，直接给高分
+        if context.get("intent") == "order_query":
+            score = max(score, 0.9)
+        return score</code></pre>
+
+<p>来看看 can_handle 的打分逻辑：</p>
+
+<table>
+<tr><th>用户输入</th><th>命中trigger</th><th>基础分</th><th>加权条件</th><th>最终分</th></tr>
+<tr><td>"订单号2024001查一下"</td><td>"订单" 命中</td><td>0.6</td><td>intent="order_query" → +0.3</td><td><strong>0.9</strong></td></tr>
+<tr><td>"我的快递到哪了"</td><td>"快递" 命中</td><td>0.6</td><td>无明确intent</td><td><strong>0.6</strong></td></tr>
+<tr><td>"今天天气不错"</td><td>无命中</td><td>0.0</td><td>无</td><td><strong>0.0</strong></td></tr>
+<tr><td>"查下物流状态"</td><td>"物流" + "状态" 命中</td><td>0.6</td><td>intent="order_query" → +0.3</td><td><strong>0.9</strong></td></tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>设计哲学：</strong>can_handle 不是"是或否"的判断题，而是"有多大把握"的置信度评分。这让Router可以在多个Skill之间做<strong>排序选择</strong>，而不是"有就上"的粗粒度匹配。数值化的打分，是路由决策从"拍脑袋"到"讲道理"的关键一步。</p>
+</blockquote>
+
+<h3><span class="icon">3</span><span class="title-text">OrderSkill 的 execute 执行流程</span></h3>
+
+<p>被Router选中后，OrderSkill.execute() 开始干活。整个流程分为五步：参数提取 → 订单搜索 → 结果格式化 → 返回SkillResult → 异常处理。</p>
+
+<div class="diagram-title">图1：OrderSkill execute 执行流程</div>
+<div class="mermaid">
+flowchart TD
+    A[execute 被调用] --> B{提取参数}
+    B --> C{有order_id<br/>或phone?}
+    C -- "无" --> D{context的slots<br/>有order_id?}
+    D -- "无" --> E[返回SkillResult<br/>success=False<br/>response=请提供订单号或手机号]
+    D -- "有" --> F
+    C -- "有" --> F[调用_search_orders]
+    F --> G{找到订单?}
+    G -- "否" --> H[返回SkillResult<br/>success=False<br/>response=未找到相关订单]
+    G -- "是" --> I[调用_format_orders<br/>格式化结果]
+    I --> J[返回SkillResult<br/>success=True<br/>response=订单详情<br/>data=订单数据]
+    E --> K[结束]
+    H --> K
+    J --> K
+
+    style A fill:#e3f2fd
+    style J fill:#c8e6c9
+    style E fill:#fff3e0
+    style H fill:#ffcdd2
+</div>
+
+<p>对应到代码实现：</p>
+
+<pre><div class="code-header"><span class="code-lang">python</span></div><code>def execute(self, user_input: str, context: dict) -> SkillResult:
+    # 步骤1：提取参数
+    order_id = self._extract_order_id(user_input)
+    phone = self._extract_phone(user_input)
+
+    # 步骤2：参数缺失时，从context.slots补充
+    if not order_id and not phone:
+        slots = context.get("slots", {})
+        if slots.get("order_id"):
+            order_id = slots["order_id"]
+        else:
+            return SkillResult(
+                success=False,
+                response="请提供订单号或手机号，我帮您查询。",
+                confidence=0.5
+            )
+
+    # 步骤3：搜索订单
+    orders = self._search_orders(order_id, phone)
+
+    # 步骤4：未找到时返回失败
+    if not orders:
+        return SkillResult(
+            success=False,
+            response="未找到相关订单，请确认信息是否正确。",
+            confidence=0.6
+        )
+
+    # 步骤5：格式化并返回
+    response = self._format_orders(orders)
+    return SkillResult(
+        success=True,
+        response=response,
+        data={"orders": orders},
+        confidence=0.9
+    )</code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">真实订单查询示例</span></h3>
+
+<p>光说不练，来看一次真实的对话过程。用户输入："<em>订单号 SF20240601001 到哪了？</em>"</p>
+
+<div class="detail-box">
+<div class="detail-title">执行过程追踪</div>
+<div class="detail-content">
+<strong>① Router 路由阶段</strong><br>
+- 意图识别输出：intent = "order_query"<br>
+- Router 精确匹配：order_query → OrderSkill<br>
+- can_handle 打分：基础分 0.6 + intent加权 0.3 = <strong>0.9</strong><br>
+- 命中 OrderSkill<br><br>
+<strong>② OrderSkill 执行阶段</strong><br>
+- <code>_extract_order_id()</code> 用正则匹配：<code>订单[号]?[:\s]*([a-zA-Z0-9]{6,})</code><br>
+- 提取出 order_id = "SF20240601001"<br>
+- <code>_search_orders("SF20240601001", None)</code> 查询订单<br>
+- 找到订单，<code>_format_orders()</code> 格式化为自然语言<br><br>
+<strong>③ 返回结果</strong><br>
+<code>SkillResult(success=True, response="您的订单 SF20240601001：配送中（玫瑰花束），预计明天 18:00 前送达，物流单号：SF123456", data={"orders": [...]}, confidence=0.9)</code>
+</div>
+</div>
+
+<p>再看一个边界场景——用户只说了"<em>查一下我的订单</em>"，没给订单号：</p>
+
+<div class="detail-box">
+<div class="detail-title">参数缺失时的优雅降级</div>
+<div class="detail-content">
+- <code>_extract_order_id()</code> 返回 None<br>
+- <code>_extract_phone()</code> 返回 None<br>
+- 检查 <code>context.slots</code>，如果有历史订单号则使用<br>
+- 如果 slots 也为空，返回：<br>
+  <code>SkillResult(success=False, response="请提供订单号或手机号，我帮您查询。", confidence=0.5)</code><br>
+- Harness 拿到结果后，会把 response 直接返回给用户，同时把 confidence=0.5 标记为"需要追问"<br>
+- 对话管理器会在下一轮引导用户提供订单号
+</div>
+</div>
+
+<h3><span class="icon">5</span><span class="title-text">V1 vs V2：订单实现的"三代升级"</span></h3>
+
+<p>把 V1 插件和 V2 Skill 放在一起对比，差异一目了然：</p>
+
+<table>
+<tr><th>维度</th><th>V1 订单插件</th><th>V2 OrderSkill</th></tr>
+<tr><td><strong>接口标准</strong></td><td><code>handle()</code> 返回 str/None</td><td><code>can_handle()</code> + <code>execute()</code> 返回 SkillResult</td></tr>
+<tr><td><strong>路由方式</strong></td><td>Bot主循环硬编码 if/else</td><td>Router三策略自动打分路由</td></tr>
+<tr><td><strong>参数提取</strong></td><td>散落在 handle 内部</td><td>独立私有方法 <code>_extract_order_id</code> / <code>_extract_phone</code></td></tr>
+<tr><td><strong>错误处理</strong></td><td>返回错误字符串，主循环判断</td><td>返回 SkillResult(success=False)，统一处理</td></tr>
+<tr><td><strong>可测试性</strong></td><td>必须初始化整个Bot</td><td>可独立实例化测试</td></tr>
+<tr><td><strong>可扩展性</strong></td><td>加查询类型要改handle</td><td>新增私有方法即可，execute不动</td></tr>
+<tr><td><strong>数据传递</strong></td><td>纯文本，数据丢失</td><td>response + data 双通道，保留结构化数据</td></tr>
+</table>
+
+<blockquote class="opinion">
+<p>最大的变化不是代码风格，而是<strong>设计哲学</strong>的转变。V1是"面向流程编程"——主流程牵着插件走；V2是"面向能力编程"——每个Skill独立声明能力，Router按需调度。从"你要我做什么"到"我能做什么"，这才是架构升级的本质。</p>
+</blockquote>
+
+<h3><span class="icon">6</span><span class="title-text">SkillResult：不只是返回值</span></h3>
+
+<p>OrderSkill.execute() 返回的 SkillResult 是整个Skill体系的"通用语言"。来看它的字段设计：</p>
+
+<pre><div class="code-header"><span class="code-lang">python</span></div><code>@dataclass
+class SkillResult:
+    success: bool = True          # 是否成功
+    response: str = ""           # 给用户的回复文本
+    data: dict = field(default_factory=dict)  # 结构化数据（订单详情等）
+    next_action: str = None       # 建议的下一步动作
+    confidence: float = 0.0       # 处理置信度
+    need_handoff: bool = False    # 是否需要转人工
+    error: str = None             # 错误信息</code></pre>
+
+<table>
+<tr><th>场景</th><th>success</th><th>confidence</th><th>其他关键字段</th><th>Harness 行为</th></tr>
+<tr><td>正常查询命中</td><td>True</td><td>0.9</td><td>data 含订单</td><td>直接回复用户</td></tr>
+<tr><td>参数缺失</td><td>False</td><td>0.5</td><td>response 提示补充</td><td>追问用户</td></tr>
+<tr><td>订单不存在</td><td>False</td><td>0.6</td><td>response 提示确认</td><td>重试或引导</td></tr>
+<tr><td>系统异常</td><td>False</td><td>0.1</td><td>error 含异常</td><td>降级/转人工</td></tr>
+<tr><td>需要人工</td><td>True</td><td>0.4</td><td>need_handoff=True</td><td>触发转人工流程</td></tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>confidence 是最被低估的字段</strong>。它不是"处理的把握"，而是"让上游决策的信号"。低 confidence 告诉 Harness："我不确定处理对了，你看着办——要么追问用户，要么找别的Skill，要么转人工。" 这让整个系统可以实现<strong>自信度驱动的多轮对话</strong>，而不是单次命中式的"一问一答"。</p>
+</blockquote>
+
+<h3><span class="icon">7</span><span class="title-text">本篇总结</span></h3>
+
+<blockquote class="highlight">
+<p><strong>核心要点：</strong></p>
+<p>1. <strong>can_handle 是"自我推荐信"</strong>：不是布尔判断，而是0-1的置信度评分，支持加权</p>
+<p>2. <strong>execute 是"五步流水线"</strong>：提取参数 → 补充参数 → 搜索 → 格式化 → 返回</p>
+<p>3. <strong>SkillResult 是"通用语言"</strong>：7个字段覆盖成功/失败/追问/转人工等所有场景</p>
+<p>4. <strong>V1→V2 是哲学升级</strong>：从"面向流程"到"面向能力"，从"你要我做"到"我能做"</p>
+<p>5. <strong>confidence 是"协调信号"</strong>：低置信度触发追问/转人工，实现多轮对话</p>
+</blockquote>
+
+<p>下一篇，我们来做另一个高频Skill——<strong>FAQSkill</strong>，看看知识问答场景下，Skill 架构能带来什么不一样的体验。</p>
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent加强版（Harness+Skill架构）</strong><br>
+01 · Harness+Skill架构革命<br>
+02 · BaseSkill标准接口<br>
+03 · 路由与编排：Registry+Router+Harness<br>
+04 · OrderSkill实战 ← 你在这里<br>
+05 · FAQ双引擎检索<br>
+06 · 情感Skill+Function Calling<br>
+07 · 槽位填充+用户记忆<br>
+08 · 生产级Harness：防护+监控+热插拔+部署<br>
+<br>
+<strong>前置系列：</strong><a href="../客服Agent实战系列-01.html" style="color: #00897B;">客服Agent实战系列</a>
+</p>
+
+</div>
+</body>
+</html>

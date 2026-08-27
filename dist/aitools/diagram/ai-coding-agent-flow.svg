@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400">
+  <style>
+    text { font-family: 'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif; }
+  </style>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrow-emerald" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fb923c"/>
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#0f172a"/>
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+
+  <text x="30" y="36" fill="#e2e8f0" font-size="16" font-weight="700">AI 编程 Agent 是怎么干活的</text>
+
+  <!-- arrows (drawn before boxes) -->
+  <line x1="190" y1="190" x2="298" y2="190" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrow-cyan)"/>
+  <line x1="552" y1="190" x2="638" y2="190" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-emerald)"/>
+  <polyline points="715,232 715,322 115,322 115,232" fill="none" stroke="#fb923c" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-orange)"/>
+
+  <!-- masking rects -->
+  <rect x="40" y="150" width="150" height="80" rx="10" fill="#0f172a"/>
+  <rect x="300" y="110" width="250" height="190" rx="10" fill="#0f172a"/>
+  <rect x="640" y="150" width="150" height="80" rx="10" fill="#0f172a"/>
+
+  <!-- 你 -->
+  <rect x="40" y="150" width="150" height="80" rx="10" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="115" y="184" fill="#ffffff" font-size="16" font-weight="600" text-anchor="middle">你</text>
+  <text x="115" y="206" fill="#94a3b8" font-size="11" text-anchor="middle">用中文提需求</text>
+
+  <!-- AI 编程 Agent -->
+  <rect x="300" y="110" width="250" height="190" rx="10" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="425" y="138" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">AI 编程 Agent</text>
+  <rect x="320" y="156" width="210" height="34" rx="6" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+  <text x="425" y="178" fill="#e2e8f0" font-size="12" text-anchor="middle">① 读懂你的项目</text>
+  <rect x="320" y="200" width="210" height="34" rx="6" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+  <text x="425" y="222" fill="#e2e8f0" font-size="12" text-anchor="middle">② 修改代码文件</text>
+  <rect x="320" y="244" width="210" height="34" rx="6" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+  <text x="425" y="266" fill="#e2e8f0" font-size="12" text-anchor="middle">③ 运行检查命令</text>
+
+  <!-- 你的项目 -->
+  <rect x="640" y="150" width="150" height="80" rx="10" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="715" y="184" fill="#ffffff" font-size="16" font-weight="600" text-anchor="middle">你的项目</text>
+  <text x="715" y="206" fill="#94a3b8" font-size="11" text-anchor="middle">真实文件改动</text>
+
+  <!-- arrow labels -->
+  <text x="244" y="180" fill="#cbd5e1" font-size="10" text-anchor="middle">用中文下指令</text>
+  <text x="595" y="180" fill="#cbd5e1" font-size="10" text-anchor="middle">改完的文件</text>
+  <text x="415" y="312" fill="#fdba74" font-size="10" text-anchor="middle">你 review：不对就让它改，或用 Git 回退</text>
+
+  <!-- note -->
+  <text x="30" y="378" fill="#94a3b8" font-size="10">前提：装好工具 · 登录账号（有额度）· 准备一个练手文件夹</text>
+</svg>

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具与API集成 - 公众号预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.8; color: #333; background: #f5f5f5; padding: 20px 0; }
+        .container { max-width: 680px; margin: 0 auto; background: white; padding: 40px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        h1 { font-size: 26px; font-weight: bold; color: #000; margin-bottom: 30px; line-height: 1.4; }
+        h2 { font-size: 20px; font-weight: bold; color: #000; margin: 50px 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+        h3 { font-size: 18px; font-weight: bold; color: #000; margin: 40px 0 18px 0; }
+        h4 { font-size: 16px; font-weight: bold; color: #000; margin: 35px 0 15px 0; }
+        p { margin-bottom: 15px; text-align: justify; }
+        strong { color: #000; font-weight: bold; }
+        blockquote { border-left: 4px solid #42b983; padding: 10px 15px; margin: 15px 0; background: #f8f8f8; color: #555; font-style: normal; line-height: 1.8; }
+        blockquote p { margin-bottom: 10px; }
+        ul, ol { margin: 15px 0; padding-left: 25px; }
+        li { margin-bottom: 8px; }
+        hr { border: none; height: 1px; background: #e0e0e0; margin: 50px 0; }
+        pre, code { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; margin: 15px 0; line-height: 1.6; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        .highlight { color: #ff6b6b; font-weight: bold; }
+        .key { color: #4facfe; font-weight: bold; }
+        .number { color: #f5a623; font-weight: bold; }
+        .success { color: #42b983; font-weight: bold; }
+        .warning { color: #ff9500; font-weight: bold; }
+        .purple { color: #9b59b6; font-weight: bold; }
+        .blue { color: #3498db; font-weight: bold; }
+        .orange { color: #e67e22; font-weight: bold; }
+        .red { color: #e74c3c; font-weight: bold; }
+        @media (max-width: 768px) { .container { padding: 30px 20px; } h1 { font-size: 22px; } h2 { font-size: 18px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>接入外部世界：工具与API集成</h1>
+
+<p>阅读时间：<span class="number">22</span>分钟</p>
+<p>难度等级：⭐⭐⭐⭐ 进阶篇</p>
+<p>你将收获：学会集成外部工具，扩展能力边界</p>
+
+
+
+<hr/>
+
+
+
+<h2>为什么要学工具集成？</h2>
+
+<p>前三篇你学会了Skill 开发、<span class="highlight">工作流</span>、<span class="highlight">多Agent协作</span>，但可能还有疑问：</p>
+
+<ul>
+<li>"怎么让<span class="orange">龙虾</span>搜索网络？"</li>
+<li>"怎么连接公司的数据库？"</li>
+<li>"怎么调用第三方API？"</li>
+<li>"能接入多少外部服务？"</li>
+</ul>
+<p>答案是：<strong>工具与API集成</strong></p>
+
+<p><strong>学会工具集成后你会发现：</strong></p>
+
+<ul>
+<li>✅ 能力无限扩展</li>
+<li>✅ 连接真实世界</li>
+<li>✅ 获取实时数据</li>
+<li>✅ 操作外部系统</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>一、OpenClaw工具体系</h2>
+
+<h3>1.1 工具分类</h3>
+
+<p><strong>内置工具：</strong></p>
+
+<ul>
+<li>🔍 <strong>搜索工具</strong>：网络搜索</li>
+<li>📁 <strong>文件工具</strong>：文件读写</li>
+<li>💻 <strong>代码工具</strong>：代码执行</li>
+<li>🖼️ <strong>图片工具</strong>：图片处理</li>
+</ul>
+
+
+<p><strong>自定义工具：</strong></p>
+
+<ul>
+<li>你开发的工具</li>
+<li>完全定制</li>
+<li>满足特定需求</li>
+</ul>
+
+
+<p><strong>第三方工具：</strong></p>
+
+<ul>
+<li>外部API封装</li>
+<li>云服务集成</li>
+<li>企业系统对接</li>
+</ul>
+
+
+<h3>1.2 工具 vs <span class="key">Skill</span></h3>
+
+<p>| 维度 | 工具 | <span class="key">Skill</span> |</p>
+<p>|------|------|------|</p>
+<p>| 定位 | 原子能力 | 组合能力 |</p>
+<p>| 复杂度 | 单一功能 | 多步骤流程 |</p>
+<p>| 调用方式 | <span class="highlight">Function Calling</span> | 工作流编排 |</p>
+<p>| 示例 | 搜索、发邮件 | 日报生成 |</p>
+
+<p><strong>简单理解：</strong></p>
+
+<p>> <strong>工具</strong> = 单个动作（如"搜索"）</p>
+<p>> <strong><span class="key">Skill</span></strong> = 多个工具的组合（如"搜索 + 整理 + 发送"）</p>
+
+
+
+<hr/>
+
+
+
+<h2>二、Function Calling详解</h2>
+
+<h3>2.1 什么是Function Calling？</h3>
+
+<p><strong>概念：LLM主动调用函数的能力</strong></p>
+
+<p>传统方式：</p>
+
+<pre>用户 → LLM → 文本回复
+</pre>
+
+<p>Function Calling：</p>
+
+<pre>用户 → LLM → 决定调用工具 → 执行工具 → 返回结果 → LLM → 最终回复
+</pre>
+
+
+
+<h3>2.2 工作原理</h3>
+
+<p><strong>完整流程：</strong></p>
+
+<pre>┌─────────────────────────────────────────────────┐
+<p>│  1. 用户提问："北京今天天气怎么样？"             │</p>
+<p>└─────────────────────┬───────────────────────────┘</p>
+<p>                      ↓</p>
+<p>┌─────────────────────────────────────────────────┐</p>
+<p>│  2. LLM分析：需要调用天气工具                    │</p>
+<p>│     工具名：get_weather                          │</p>
+<p>│     参数：city="北京"                            │</p>
+<p>└─────────────────────┬───────────────────────────┘</p>
+<p>                      ↓</p>
+<p>┌─────────────────────────────────────────────────┐</p>
+<p>│  3. 系统执行工具：调用天气API                    │</p>
+<p>│     返回：{temp: 25, weather: "晴"}             │</p>
+<p>└─────────────────────┬───────────────────────────┘</p>
+<p>                      ↓</p>
+<p>┌─────────────────────────────────────────────────┐</p>
+<p>│  4. LLM生成回复：                                │</p>
+<p>│     "北京今天天气晴朗，气温25度，适合出门哦！"   │</p>
+<p>└─────────────────────────────────────────────────┘</p>
+</pre>
+
+
+
+<h3>2.3 工具定义</h3>
+
+<p><strong>标准格式：</strong></p>
+
+<pre>@tool
+<p>def get_weather(city: str) -> dict:</p>
+<p>    """</p>
+<p>    查询城市天气</p>
+    
+<p>    Args:</p>
+<p>        city: 城市名称，如"北京"、"上海"</p>
+    
+<p>    Returns:</p>
+<p>        包含温度、天气等信息的字典</p>
+<p>    """</p>
+<p>    # 实现代码</p>
+<p>    pass</p>
+</pre>
+
+<p><strong>关键要素：</strong></p>
+
+<ul>
+<li>✅ <strong>函数名</strong>：清晰描述功能</li>
+<li>✅ <strong>参数类型</strong>：明确每个参数类型</li>
+<li>✅ <strong>文档字符串</strong>：详细说明用途</li>
+<li>✅ <strong>返回值</strong>：明确返回格式</li>
+</ul>
+
+
+<h3>2.4 参数自动填充</h3>
+
+<p><strong>LLM会自动理解并填充参数：</strong></p>
+
+<p>用户输入：</p>
+
+<pre>帮我查一下上海明天会下雨吗
+</pre>
+
+<p>LLM自动提取：</p>
+
+<pre>{
+<p>  "tool": "get_weather",</p>
+<p>  "params": {</p>
+<p>    "city": "上海",</p>
+<p>    "date": "明天"</p>
+<p>  }</p>
+<p>}</p>
+</pre>
+
+
+
+<hr/>
+
+
+
+<h2>三、实战1：集成搜索API</h2>
+
+<h3>3.1 需求分析</h3>
+
+<p><strong>目标：让<span class="orange">龙虾</span>能搜索网络</strong></p>
+
+<ul>
+<li>输入：搜索关键词</li>
+<li>输出：搜索结果摘要</li>
+</ul>
+
+
+<h3>3.2 选择搜索API</h3>
+
+<p><strong>常用搜索API：</strong></p>
+
+<p>| <span class="key">API</span> | 特点 | 价格 |</p>
+<p>|-----|------|------|</p>
+<p>| <span class="key">Brave</span> Search | 免费额度大 | 免费/月<span class="number">3000</span>次 |</p>
+<p>| Serper | 速度快 | $50/月<span class="number">5000</span>次 |</p>
+<p>| <span class="key">Google</span> Custom | 结果精准 | $5/<span class="number">1000</span>次 |</p>
+<p>| <span class="key">Bing</span> Search | 微软生态 | 免费/月<span class="number">1000</span>次 |</p>
+
+<p><strong>推荐：<span class="key">Brave</span> Search（免费够用）</strong></p>
+
+
+
+<h3>3.3 实现代码</h3>
+
+<p><strong>创建搜索工具：search_tool.py</strong></p>
+
+<pre>import requests
+<p>from openclaw import tool</p>
+
+<p>@tool</p>
+<p>def web_search(query: str, count: int = 5) -> str:</p>
+<p>    """</p>
+<p>    搜索网络信息</p>
+    
+<p>    Args:</p>
+<p>        query: 搜索关键词</p>
+<p>        count: 返回结果数量，默认5条</p>
+    
+<p>    Returns:</p>
+<p>        搜索结果摘要</p>
+<p>    """</p>
+<p>    # API配置</p>
+<p>    api_key = "YOUR_BRAVE_API_KEY"</p>
+<p>    url = "https://api.search.brave.com/res/v1/web/search"</p>
+    
+<p>    # 请求参数</p>
+<p>    headers = {"X-Subscription-Token": api_key}</p>
+<p>    params = {"q": query, "count": count}</p>
+    
+<p>    try:</p>
+<p>        # 发送请求</p>
+<p>        response = requests.get(url, headers=headers, params=params)</p>
+<p>        response.raise_for_status()</p>
+        
+<p>        # 解析结果</p>
+<p>        data = response.json()</p>
+<p>        results = []</p>
+        
+<p>        for item in data.get("web", {}).get("results", [])[:count]:</p>
+<p>            results.append(f"""</p>
+<p>标题：{item.get("title")}</p>
+<p>链接：{item.get("url")}</p>
+<p>摘要：{item.get("description")}</p>
+<p>---""")</p>
+        
+<p>        return "\n".join(results)</p>
+    
+<p>    except Exception as e:</p>
+<p>        return f"搜索失败：{str(e)}"</p>
+</pre>
+
+
+
+<h3>3.4 注册使用</h3>
+
+<p><strong>注册工具：</strong></p>
+
+<pre>openclaw tool register search_tool.py
+</pre>
+
+<p><strong>测试调用：</strong></p>
+
+<pre>你：搜索一下 OpenClaw 最新动态
+<p>龙虾：让我搜索一下...</p>
+<p>找到以下信息：</p>
+<p>标题：OpenClaw 发布2.0版本</p>
+<p>链接：https://...</p>
+<p>摘要：新增多Agent协作功能...</p>
+</pre>
+
+
+
+<hr/>
+
+
+
+<h2>四、实战2：集成数据库</h2>
+
+<h3>4.1 需求分析</h3>
+
+<p><strong>目标：让<span class="orange">龙虾</span>能查询数据库</strong></p>
+
+<ul>
+<li>支持MySQL、PostgreSQL、<span class="key">MongoDB</span></li>
+<li>安全的SQL执行</li>
+<li>结果格式化</li>
+</ul>
+
+
+<h3>4.2 数据库工具</h3>
+
+<p><strong>创建数据库工具：database_tool.py</strong></p>
+
+<pre>import pymysql
+<p>from openclaw import tool</p>
+<p>from typing import Optional</p>
+
+<p>@tool</p>
+<p>def query_mysql(</p>
+<p>    host: str,</p>
+<p>    database: str,</p>
+<p>    sql: str,</p>
+<p>    user: Optional[str] = None,</p>
+<p>    password: Optional[str] = None</p>
+<p>) -> str:</p>
+<p>    """</p>
+<p>    查询MySQL数据库</p>
+    
+<p>    Args:</p>
+<p>        host: 数据库地址</p>
+<p>        database: 数据库名</p>
+<p>        sql: SQL查询语句（仅支持SELECT）</p>
+<p>        user: 用户名（可从环境变量读取）</p>
+<p>        password: 密码（可从环境变量读取）</p>
+    
+<p>    Returns:</p>
+<p>        查询结果的表格格式</p>
+<p>    """</p>
+<p>    # 安全检查：只允许SELECT</p>
+<p>    if not sql.strip().upper().startswith("SELECT"):</p>
+<p>        return "错误：只允许执行SELECT查询"</p>
+    
+<p>    try:</p>
+<p>        # 连接数据库</p>
+<p>        connection = pymysql.connect(</p>
+<p>            host=host,</p>
+<p>            user=user,</p>
+<p>            password=password,</p>
+<p>            database=database</p>
+<p>        )</p>
+        
+<p>        with connection.cursor() as cursor:</p>
+<p>            cursor.execute(sql)</p>
+<p>            columns = [desc[0] for desc in cursor.description]</p>
+<p>            rows = cursor.fetchall()</p>
+        
+<p>        connection.close()</p>
+        
+<p>        # 格式化输出</p>
+<p>        result = "| " + " | ".join(columns) + " |\n"</p>
+<p>        result += "|" + "|".join(["---"] * len(columns)) + "|\n"</p>
+        
+<p>        for row in rows[:20]:  # 最多返回20条</p>
+<p>            result += "| " + " | ".join(str(cell) for cell in row) + " |\n"</p>
+        
+<p>        return result</p>
+    
+<p>    except Exception as e:</p>
+<p>        return f"查询失败：{str(e)}"</p>
+</pre>
+
+
+
+<h3>4.3 安全考虑</h3>
+
+<p><strong>数据库工具的安全措施：</strong></p>
+
+<ul>
+<li>✅ <strong>只读操作</strong>：限制只能SELECT</li>
+<li>✅ <strong>敏感信息</strong>：从环境变量读取</li>
+<li>✅ <strong>结果限制</strong>：最多返回<span class="number">20</span>条</li>
+<li>✅ <strong>超时控制</strong>：设置查询超时</li>
+<li>✅ <strong>日志记录</strong>：记录所有查询</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>五、实战3：集成云服务</h2>
+
+<h3>5.1 需求分析</h3>
+
+<p><strong>目标：让<span class="orange">龙虾</span>能操作云存储</strong></p>
+
+<ul>
+<li>上传文件到OSS</li>
+<li>下载文件从OSS</li>
+<li>列出文件列表</li>
+</ul>
+
+
+<h3>5.2 阿里云OSS工具</h3>
+
+<p><strong>创建OSS工具：oss_tool.py</strong></p>
+
+<pre>import oss2
+<p>from openclaw import tool</p>
+<p>import os</p>
+
+<p># 初始化OSS客户端</p>
+<p>auth = oss2.Auth(</p>
+<p>    os.getenv("OSS_ACCESS_KEY"),</p>
+<p>    os.getenv("OSS_SECRET_KEY")</p>
+<p>)</p>
+<p>bucket = oss2.Bucket(auth, "oss-cn-shanghai.aliyuncs.com", "my-bucket")</p>
+
+<p>@tool</p>
+<p>def upload_to_oss(file_path: str, object_name: str) -> str:</p>
+<p>    """</p>
+<p>    上传文件到阿里云OSS</p>
+    
+<p>    Args:</p>
+<p>        file_path: 本地文件路径</p>
+<p>        object_name: OSS对象名称</p>
+    
+<p>    Returns:</p>
+<p>        上传结果和文件URL</p>
+<p>    """</p>
+<p>    try:</p>
+<p>        bucket.put_object_from_file(object_name, file_path)</p>
+<p>        url = f"https://my-bucket.oss-cn-shanghai.aliyuncs.com/{object_name}"</p>
+<p>        return f"上传成功！文件URL：{url}"</p>
+<p>    except Exception as e:</p>
+<p>        return f"上传失败：{str(e)}"</p>
+
+<p>@tool</p>
+<p>def download_from_oss(object_name: str, local_path: str) -> str:</p>
+<p>    """</p>
+<p>    从阿里云OSS下载文件</p>
+    
+<p>    Args:</p>
+<p>        object_name: OSS对象名称</p>
+<p>        local_path: 本地保存路径</p>
+    
+<p>    Returns:</p>
+<p>        下载结果</p>
+<p>    """</p>
+<p>    try:</p>
+<p>        bucket.get_object_to_file(object_name, local_path)</p>
+<p>        return f"下载成功！保存到：{local_path}"</p>
+<p>    except Exception as e:</p>
+<p>        return f"下载失败：{str(e)}"</p>
+
+<p>@tool</p>
+<p>def list_oss_files(prefix: str = "") -> str:</p>
+<p>    """</p>
+<p>    列出OSS文件列表</p>
+    
+<p>    Args:</p>
+<p>        prefix: 文件前缀筛选</p>
+    
+<p>    Returns:</p>
+<p>        文件列表</p>
+<p>    """</p>
+<p>    try:</p>
+<p>        files = []</p>
+<p>        for obj in oss2.ObjectIterator(bucket, prefix=prefix):</p>
+<p>            files.append(f"- {obj.key} ({obj.size} bytes)")</p>
+<p>        return "\n".join(files[:50])  # 最多50条</p>
+<p>    except Exception as e:</p>
+<p>        return f"查询失败：{str(e)}"</p>
+</pre>
+
+
+
+<h3>5.3 腾讯云COS工具</h3>
+
+<p><strong>类似实现，使用cos-python-sdk：</strong></p>
+
+<pre>from qcloud_cos import CosConfig, CosS3Client
+
+<p># 初始化客户端</p>
+<p>config = CosConfig(</p>
+<p>    Region="ap-shanghai",</p>
+<p>    SecretId=os.getenv("COS_SECRET_ID"),</p>
+<p>    SecretKey=os.getenv("COS_SECRET_KEY")</p>
+<p>)</p>
+<p>client = CosS3Client(config)</p>
+
+<p>@tool</p>
+<p>def upload_to_cos(file_path: str, key: str) -> str:</p>
+<p>    """上传文件到腾讯云COS"""</p>
+<p>    # 实现代码...</p>
+<p>    pass</p>
+</pre>
+
+
+
+<hr/>
+
+
+
+<h2>六、工具安全</h2>
+
+<h3>6.1 权限控制</h3>
+
+<p><strong>工具级别的权限控制：</strong></p>
+
+<pre>tools:
+<p>  web_search:</p>
+<p>    permission: public  # 所有人可用</p>
+  
+<p>  query_database:</p>
+<p>    permission: admin   # 仅管理员可用</p>
+  
+<p>  send_email:</p>
+<p>    permission: user    # 登录用户可用</p>
+</pre>
+
+
+
+<h3>6.2 敏感信息保护</h3>
+
+<p><strong>最佳实践：</strong></p>
+
+<ul>
+<li>✅ <strong>环境变量</strong>：敏感信息存环境变量</li>
+<li>✅ <strong>加密存储</strong>：密钥加密后存储</li>
+<li>✅ <strong>不记录日志</strong>：敏感信息不入日志</li>
+<li>✅ <strong>定期轮换</strong>：定期更换密钥</li>
+</ul>
+
+
+<h3>6.3 审计日志</h3>
+
+<p><strong>记录所有工具调用：</strong></p>
+
+<pre>audit:
+<p>  enabled: true</p>
+<p>  log_file: /var/log/openclaw/tool_audit.log</p>
+<p>  fields:</p>
+<p>    - timestamp</p>
+<p>    - user</p>
+<p>    - tool_name</p>
+<p>    - params  # 敏感参数脱敏</p>
+<p>    - result_summary</p>
+<p>    - duration</p>
+</pre>
+
+
+
+<hr/>
+
+
+
+<h2>七、最佳实践</h2>
+
+<h3>7.1 工具设计原则</h3>
+
+<p><strong>单一职责：</strong></p>
+
+<pre># ✅ 好的设计
+<p>@tool</p>
+<p>def send_email(to: str, subject: str, body: str):</p>
+<p>    """发送邮件"""</p>
+<p>    pass</p>
+
+<p># ❌ 不好的设计</p>
+<p>@tool</p>
+<p>def send_email_and_sms_and_wechat(...):</p>
+<p>    """发送邮件、短信、微信"""</p>
+<p>    pass</p>
+</pre>
+
+
+
+<p><strong>清晰的参数：</strong></p>
+
+<pre># ✅ 好的设计
+<p>@tool</p>
+<p>def search_product(</p>
+<p>    keyword: str,</p>
+<p>    category: str = None,</p>
+<p>    min_price: float = None,</p>
+<p>    max_price: float = None,</p>
+<p>    sort_by: str = "relevance"</p>
+<p>):</p>
+<p>    """搜索商品"""</p>
+<p>    pass</p>
+
+<p># ❌ 不好的设计</p>
+<p>@tool</p>
+<p>def search_product(params: dict):</p>
+<p>    """搜索商品"""</p>
+<p>    pass</p>
+</pre>
+
+
+
+<h3>7.2 错误处理</h3>
+
+<p><strong>完善的错误处理：</strong></p>
+
+<pre>@tool
+<p>def api_call(url: str) -> str:</p>
+<p>    """调用API"""</p>
+<p>    try:</p>
+<p>        response = requests.get(url, timeout=10)</p>
+<p>        response.raise_for_status()</p>
+<p>        return response.text</p>
+<p>    except requests.Timeout:</p>
+<p>        return "错误：请求超时，请稍后重试"</p>
+<p>    except requests.HTTPError as e:</p>
+<p>        return f"错误：HTTP错误 {e.response.status_code}"</p>
+<p>    except requests.RequestException as e:</p>
+<p>        return f"错误：网络请求失败 - {str(e)}"</p>
+<p>    except Exception as e:</p>
+<p>        return f"错误：未知错误 - {str(e)}"</p>
+</pre>
+
+
+
+<h3>7.3 性能优化</h3>
+
+<p><strong>缓存策略：</strong></p>
+
+<pre>from functools import lru_cache
+
+<p>@tool</p>
+<p>@lru_cache(maxsize=100)</p>
+<p>def get_exchange_rate(currency: str) -> float:</p>
+<p>    """获取汇率（带缓存）"""</p>
+<p>    # 缓存100个结果，避免重复请求</p>
+<p>    pass</p>
+</pre>
+
+
+
+<p><strong>异步执行：</strong></p>
+
+<pre>import asyncio
+<p>import aiohttp</p>
+
+<p>@tool</p>
+<p>async def batch_api_call(urls: list) -> list:</p>
+<p>    """批量异步调用API"""</p>
+<p>    async with aiohttp.ClientSession() as session:</p>
+<p>        tasks = [fetch_url(session, url) for url in urls]</p>
+<p>        return await asyncio.gather(*tasks)</p>
+</pre>
+
+
+
+<hr/>
+
+
+
+<h2>八、常用工具推荐</h2>
+
+<h3>8.1 信息获取类</h3>
+
+<p>| 工具 | 用途 | <span class="key">API</span> |</p>
+<p>|------|------|-----|</p>
+<p>| 网络搜索 | 搜索信息 | <span class="key">Brave</span>/<span class="key">Google</span> |</p>
+<p>| 天气查询 | 查天气 | OpenWeather |</p>
+<p>| 新闻获取 | 获取新闻 | NewsAPI |</p>
+<p>| 汇率查询 | 查汇率 | ExchangeRate |</p>
+
+
+
+<h3>8.2 文件处理类</h3>
+
+<p>| 工具 | 用途 | 服务 |</p>
+<p>|------|------|------|</p>
+<p>| 云存储 | 文件上传下载 | <span class="key">OSS</span>/<span class="key">COS</span> |</p>
+<p>| OCR识别 | 图片转文字 | 百度OCR |</p>
+<p>| 文件转换 | 格式转换 | CloudConvert |</p>
+<p>| 图片处理 | 压缩裁剪 | TinyPNG |</p>
+
+
+
+<h3>8.3 通信类</h3>
+
+<p>| 工具 | 用途 | <span class="key">API</span> |</p>
+<p>|------|------|-----|</p>
+<p>| 邮件发送 | 发邮件 | <span class="key">SMTP</span> |</p>
+<p>| 短信发送 | 发短信 | 阿里短信 |</p>
+<p>| 微信推送 | 公众号推送 | 微信API |</p>
+<p>| 钉钉通知 | 机器人通知 | 钉钉API |</p>
+
+
+
+<hr/>
+
+
+
+<h2>九、小结</h2>
+
+<h3>工具集成核心能力</h3>
+
+<p>> <strong>Function Calling：</strong></p>
+<p>> LLM主动调用工具的能力</p>
+<p>></p>
+<p>> <strong>API集成：</strong></p>
+<p>> 连接外部服务的桥梁</p>
+<p>></p>
+<p>> <strong>安全控制：</strong></p>
+<p>> 权限、加密、审计</p>
+<p>></p>
+<p>> <strong>性能优化：</strong></p>
+<p>> 缓存、异步、批处理</p>
+
+<h3>关键要点</h3>
+
+<ul>
+<li>✅ 单一职责，功能明确</li>
+<li>✅ 参数类型清晰</li>
+<li>✅ 完善的错误处理</li>
+<li>✅ 敏感信息保护</li>
+<li>✅ 合理的性能优化</li>
+</ul>
+<h3>成就达成！</h3>
+
+<p><strong>你已经：</strong></p>
+
+<ul>
+<li>✅ 理解Function Calling原理</li>
+<li>✅ 集成了搜索API</li>
+<li>✅ 集成了数据库</li>
+<li>✅ 集成了云服务</li>
+<li>✅ 掌握安全最佳实践</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>练习题</h2>
+
+<h3>🎯 工具开发挑战</h3>
+
+<p>完成以下工具开发：</p>
+
+<h4>挑战1：翻译工具</h4>
+
+<p>集成翻译API（百度/有道/<span class="key">DeepL</span>）</p>
+
+<h4>挑战2：地图工具</h4>
+
+<p>集成地图API，查询路线和地点</p>
+
+<h4>挑战3：支付工具</h4>
+
+<p>集成支付宝/微信支付API</p>
+
+<h4>挑战4：AI绘图工具</h4>
+
+<p>集成Midjourney/<span class="key">DALL-E</span> <span class="key">API</span></p>
+
+<p><strong>完成的同学，评论区分享你的工具代码！</strong> 🎉</p>
+
+
+
+<hr/>
+
+
+
+<h2>下期预告</h2>
+
+<p><strong>下一篇：</strong>《进阶篇总结：你已经进阶了！》</p>
+
+<p><strong>你将学到：</strong></p>
+
+<ul>
+<li>✅ 进阶篇内容回顾</li>
+<li>✅ 能力自测清单</li>
+<li>✅ 接下来的学习路径</li>
+<li>✅ 原理篇预告</li>
+</ul>
+<p><strong>准备好进入原理篇了吗？</strong> 🚀</p>
+
+
+
+<hr/>
+
+<p><strong>系列导航</strong></p>
+
+<ul>
+<li>上一篇：多Agent协作：1+1>2的魔法</li>
+<li>下一篇：进阶篇总结：你已经进阶了！</li>
+</ul>
+
+
+<hr/>
+
+<p>本文是《OpenClaw从入门到精通》系列第<span class="number">9</span>篇</p>
+<p>作者：<span class="purple">生活助理</span> | 发布时间：2026-03-23</p>
+
+    </div>
+</body>
+</html>

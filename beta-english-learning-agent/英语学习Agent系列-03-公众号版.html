@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>语法学习模块——知识图谱驱动的语法教学</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 30px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  📖 <strong>系列导航：</strong><br>
+  【本地大模型知识库系列】01-12篇（已完成）| 
+  【英语学习Agent系列】当前第03篇（共8篇）
+</p>
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  语法学习模块
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  知识图谱驱动的语法教学
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  英语学习Agent系列第03篇 | 语法学习
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  语法是英语学习的骨架。传统语法学习往往是零散的知识点记忆，缺乏系统性。我们将使用知识图谱来构建语法知识点之间的依赖关系，让学习更有逻辑性。
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">构建语法知识图谱</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用NetworkX构建语法知识点的依赖关系图谱：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> networkx </span><span class="code-keyword">as</span><span class="code-name"> nx</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> GrammarKnowledgeGraph</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator"> = </span><span class="code-name">nx</span><span class="code-operator">.</span><span class="code-function">DiGraph</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_build_graph</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _build_graph</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">grammar_topics</span><span class="code-operator"> = </span><span class="code-operator">{</span>
+            <span class="code-string">"基础句型"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"主谓宾、主系表等基本句型结构"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">1</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"名词"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"可数名词、不可数名词、名词所有格"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">1</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"冠词"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"a/an/the的用法和区别"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">1</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"名词"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"代词"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"人称代词、物主代词、反身代词"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">1</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"一般现在时"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"经常性动作和客观事实"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">2</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"基础句型"</span><span class="code-operator">, </span><span class="code-string">"动词"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"一般过去时"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"过去发生的动作"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">2</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"一般现在时"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"一般将来时"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"将要发生的动作"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">2</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"一般现在时"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"现在进行时"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"正在发生的动作"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">2</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"一般现在时"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"动词"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"及物动词、不及物动词、系动词"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">1</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"情态动词"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"can/may/must/should等"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">3</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"动词"</span><span class="code-operator">, </span><span class="code-string">"一般现在时"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"非谓语动词"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"不定式、动名词、分词"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">4</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"动词"</span><span class="code-operator">, </span><span class="code-string">"一般现在时"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"定语从句"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"修饰名词的从句"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">4</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"名词"</span><span class="code-operator">, </span><span class="code-string">"基础句型"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"状语从句"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"修饰动词/形容词/副词的从句"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">4</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"基础句型"</span><span class="code-operator">, </span><span class="code-string">"一般现在时"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"虚拟语气"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"与事实相反的假设"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-number">5</span><span class="code-operator">,</span>
+                <span class="code-string">"prerequisites"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"情态动词"</span><span class="code-operator">, </span><span class="code-string">"一般过去时"</span><span class="code-operator">]</span>
+            <span class="code-operator">}</span>
+        <span class="code-operator">}</span>
+        
+        <span class="code-keyword">for</span><span class="code-name"> topic</span><span class="code-keyword">, </span><span class="code-name"> info </span><span class="code-keyword">in</span><span class="code-name"> grammar_topics</span><span class="code-operator">.</span><span class="code-function">items</span><span class="code-operator">():</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-function">add_node</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">, **info</span><span class="code-operator">)</span>
+            <span class="code-keyword">for</span><span class="code-name"> prereq </span><span class="code-keyword">in</span><span class="code-name"> info</span><span class="code-operator">[</span><span class="code-string">"prerequisites"</span><span class="code-operator">]:</span>
+                <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-function">add_edge</span><span class="code-operator">(</span><span class="code-name">prereq</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">, </span><span class="code-name">relation</span><span class="code-operator">=</span><span class="code-string">"prerequisite"</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_prerequisites</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">):</span>
+        <span class="code-keyword">if</span><span class="code-name"> topic </span><span class="code-keyword">not</span><span class="code-name"> in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">nodes</span><span class="code-operator">:</span>
+            <span class="code-keyword">return</span><span class="code-operator">[]</span>
+        <span class="keyword">return</span><span class="code-name"> list</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">predecessors</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">))</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_next_topics</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> topic </span><span class="keyword">not</span><span class="code-name"> in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">nodes</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">[]</span>
+        <span class="keyword">return</span><span class="code-name"> list</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">successors</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">))</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_learning_path</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">start_topic</span><span class="code-operator">=None</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> start_topic </span><span class="keyword">is</span><span class="code-name"> None</span><span class="code-operator">:</span>
+            <span class="code-name">start_nodes</span><span class="code-operator"> = </span><span class="code-operator">[</span><span class="code-name">n</span> <span class="keyword">for</span><span class="code-name"> n </span><span class="keyword">in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">nodes</span><span class="code-operator"> </span><span class="keyword">if</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">in_degree</span><span class="code-operator">(</span><span class="code-name">n</span><span class="code-operator">)</span> <span class="code-operator">== </span><span class="code-number">0</span><span class="code-operator">]</span>
+            <span class="code-name">start_topic</span><span class="code-operator"> = </span><span class="code-name">start_nodes</span><span class="code-operator">[</span><span class="code-number">0</span><span class="code-operator">]</span>
+        
+        <span class="code-name">path</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        <span class="code-name">visited</span><span class="code-operator"> = </span><span class="code-operator">set</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_dfs_path</span><span class="code-operator">(</span><span class="code-name">start_topic</span><span class="code-operator">, </span><span class="code-name">visited</span><span class="code-operator">, </span><span class="code-name">path</span><span class="code-operator">)</span>
+        <span class="keyword">return</span><span class="code-name"> path</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _dfs_path</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">, </span><span class="code-name">visited</span><span class="code-operator">, </span><span class="code-name">path</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> topic </span><span class="keyword">in</span><span class="code-name"> visited</span><span class="code-operator">:</span>
+            <span class="keyword">return</span>
+        <span class="code-name">visited</span><span class="code-operator">.</span><span class="code-function">add</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        <span class="code-name">path</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        <span class="keyword">for</span><span class="code-name"> successor </span><span class="keyword">in</span><span class="code-name"> sorted</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">get_next_topics</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)):</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_dfs_path</span><span class="code-operator">(</span><span class="code-name">successor</span><span class="code-operator">, </span><span class="code-name">visited</span><span class="code-operator">, </span><span class="code-name">path</span><span class="code-operator">)</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">语法点讲解与练习生成</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Ollama生成语法点的详细讲解和练习题：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> GrammarTutor</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator"> = </span><span class="code-function">GrammarKnowledgeGraph</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> explain_topic</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">):</span>
+        <span class="code-name">prerequisites</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-function">get_prerequisites</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+你是一位专业的英语语法老师。请详细讲解语法点"{topic}"：
+
+要求：
+1. 简明扼要的定义和核心规则
+2. 常见用法和注意事项
+3. 至少3个典型例句（中英文对照）
+4. 常见错误和纠正方法
+5. 如果有前置知识"{prerequisites}"，请简要回顾相关内容
+
+请以JSON格式输出：
+{{
+  "topic": "语法点名称",
+  "definition": "定义",
+  "rules": ["规则1", "规则2", "规则3"],
+  "examples": [{{"english": "例句", "chinese": "翻译", "explanation": "解析"}}],
+  "common_mistakes": [{{"wrong": "错误句子", "correct": "正确句子", "reason": "原因"}}],
+  "difficulty": "难度等级(1-5)"
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_exercises</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">, </span><span class="code-name">count</span><span class="code-operator">=</span><span class="code-number">5</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+你是一位专业的英语语法老师。请为语法点"{topic}"生成{count}道练习题。
+
+题型包括：
+1. 选择题
+2. 填空题
+3. 改错题
+
+请以JSON格式输出：
+{{
+  "topic": "{topic}",
+  "exercises": [
+    {{
+      "type": "choice/fill/error",
+      "question": "题目内容",
+      "options": ["选项A", "选项B", "选项C", "选项D"],
+      "answer": "正确答案",
+      "explanation": "答案解析"
+    }}
+  ]
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> check_answer</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">exercise</span><span class="code-operator">, </span><span class="code-name">user_answer</span><span class="code-operator">):</span>
+        <span class="code-name">is_correct</span><span class="code-operator"> = </span><span class="code-name">user_answer</span><span class="code-operator">.</span><span class="code-function">strip</span><span class="code-operator">()</span><span class="code-operator">.</span><span class="code-function">lower</span><span class="code-operator">()</span> == <span class="code-name">exercise</span><span class="code-operator">[</span><span class="code-string">"answer"</span><span class="code-operator">]</span><span class="code-operator">.</span><span class="code-function">strip</span><span class="code-operator">()</span><span class="code-operator">.</span><span class="code-function">lower</span><span class="code-operator">()</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"correct"</span><span class="code-operator">: </span><span class="code-name">is_correct</span><span class="code-operator">,</span>
+            <span class="code-string">"correct_answer"</span><span class="code-operator">: </span><span class="code-name">exercise</span><span class="code-operator">[</span><span class="code-string">"answer"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"explanation"</span><span class="code-operator">: </span><span class="code-name">exercise</span><span class="code-operator">[</span><span class="code-string">"explanation"</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">语法学习流程</span>
+  </p>
+</section>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="grammar_learning_flow.png" alt="语法学习流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">class</span><span class="code-function"> GrammarLearner</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator"> = </span><span class="code-function">GrammarTutor</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">completed_topics</span><span class="code-operator"> = </span><span class="code-operator">set</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_topic</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> start_topic</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">):</span>
+        <span class="code-name">prerequisites</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-function">get_prerequisites</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        
+        <span class="keyword">for</span><span class="code-name"> prereq </span><span class="keyword">in</span><span class="code-name"> prerequisites</span><span class="code-operator">:</span>
+            <span class="keyword">if</span><span class="code-name"> prereq </span><span class="keyword">not</span><span class="code-name"> in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">completed_topics</span><span class="code-operator">:</span>
+                <span class="keyword">return</span><span class="code-operator">{</span>
+                    <span class="code-string">"status"</span><span class="code-operator">: </span><span class="code-string">"error"</span><span class="code-operator">,</span>
+                    <span class="code-string">"message"</span><span class="code-operator">: </span><span class="code-operator">f"需要先学习前置知识：{prerequisites}"</span>
+                <span class="code-operator">}</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_topic</span><span class="code-operator"> = </span><span class="code-name">topic</span>
+        <span class="code-name">explanation</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator">.</span><span class="code-function">explain_topic</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        <span class="code-name">exercises</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator">.</span><span class="code-function">generate_exercises</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"status"</span><span class="code-operator">: </span><span class="code-string">"success"</span><span class="code-operator">,</span>
+            <span class="code-string">"topic"</span><span class="code-operator">: </span><span class="code-name">topic</span><span class="code-operator">,</span>
+            <span class="code-string">"explanation"</span><span class="code-operator">: </span><span class="code-name">explanation</span><span class="code-operator">,</span>
+            <span class="code-string">"exercises"</span><span class="code-operator">: </span><span class="code-name">exercises</span><span class="code-operator">[</span><span class="code-string">"exercises"</span><span class="code-operator">]</span> <span class="keyword">if</span><span class="code-name"> exercises </span><span class="keyword">else</span><span class="code-name"> []</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> submit_answer</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">exercise</span><span class="code-operator">, </span><span class="code-name">answer</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator">.</span><span class="code-function">check_answer</span><span class="code-operator">(</span><span class="code-name">exercise</span><span class="code-operator">, </span><span class="code-name">answer</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> complete_topic</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">completed_topics</span><span class="code-operator">.</span><span class="code-function">add</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        <span class="code-name">next_topics</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-function">get_next_topics</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"message"</span><span class="code-operator">: </span><span class="code-operator">f"恭喜完成'{topic}'！"</span><span class="code-operator">,</span>
+            <span class="code-string">"next_topics"</span><span class="code-operator">: </span><span class="code-name">next_topics</span><span class="code-operator">,</span>
+            <span class="code-string">"completed_count"</span><span class="code-operator">: </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">completed_topics</span><span class="code-operator">)</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_learning_progress</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">total_topics</span><span class="code-operator"> = </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">tutor</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">graph</span><span class="code-operator">.</span><span class="code-name">nodes</span><span class="code-operator">)</span>
+        <span class="code-name">completed_count</span><span class="code-operator"> = </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">completed_topics</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"completed_topics"</span><span class="code-operator">: </span><span class="code-name">list</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">completed_topics</span><span class="code-operator">),</span>
+            <span class="code-string">"total_topics"</span><span class="code-operator">: </span><span class="code-name">total_topics</span><span class="code-operator">,</span>
+            <span class="code-string">"progress"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">completed_count</span><span class="code-operator"> / </span><span class="code-name">total_topics</span> <span class="code-operator">* </span><span class="code-number">100</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">)</span>
+        <span class="code-operator">}</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 知识点依赖关系不正确：可以手动调整知识图谱中的prerequisites配置</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 练习题难度不合适：在generate_exercises中添加难度参数</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 进度数据丢失：添加进度持久化存储（参考第02篇的WordBook实现）</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 讲解内容太复杂：优化prompt，要求更简洁易懂的解释</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  📖 <strong>系列导航：</strong><br>
+  • 本地大模型知识库系列（12篇，已完成）<br>
+  • 英语学习Agent系列（8篇，当前第03篇）<br>
+  <br>
+  英语学习Agent系列第03篇<br>
+  下一篇：阅读理解模块——自适应难度阅读
+</p>
+
+</section>
+</body>
+</html>

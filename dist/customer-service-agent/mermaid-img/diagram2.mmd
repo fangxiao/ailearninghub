@@ -1,0 +1,17 @@
+graph LR
+    subgraph 云端部署
+        C1[智谱 GLM-5.1] --> C1a[性价比高<br/>中文强]
+        C2[通义千问3] --> C2a[极速响应<br/>企业级]
+        C3[DeepSeek V3] --> C3a[代码能力强]
+    end
+    
+    subgraph 本地部署
+        L1[Ollama + Qwen3] --> L1a[无需API Key<br/>数据不出本地]
+        L2[vLLM + GLM5] --> L2a[高性能推理<br/>生产环境]
+    end
+    
+    style C1 fill:#e3f2fd
+    style C2 fill:#e3f2fd
+    style C3 fill:#e3f2fd
+    style L1 fill:#fff3e0
+    style L2 fill:#fff3e0

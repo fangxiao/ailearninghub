@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 07-08</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+p { padding: 14px 0; color: #3f3f3f; }
+
+h2 {
+  margin: 50px 0 30px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+h3 {
+  margin: 40px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.num { color: #ff6b35; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+.hl { color: #e63946; font-weight: 600; }
+.success { color: #2a9d8f; }
+.tip { color: #7b68ee; }
+.warn { color: #f4a261; }
+
+strong { color: #2c2c2c; font-weight: 600; }
+em { font-style: italic; color: #5a5a5a; }
+
+.card {
+  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+
+.card h4 {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  color: #00897B;
+  font-weight: bold;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  padding: 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">反思：Agent是怎么"反省"的</span></h2>
+
+<p>上一期我们说了行动。Agent调用了工具，拿到了结果。</p>
+
+<p>然后呢？然后就结束了吗？</p>
+
+<p>不是。Agent还需要反思：这次做得怎么样？结果对不对？要不要重来一次？<a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">(见OpenClaw原理篇11)</a></p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>反思是Agent自我纠错的关键。没有反思，Agent就会"一条道走到黑"，不管结果对不对都继续执行。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">为什么要反思</span></h3>
+
+<p>举个例子。用户让Agent帮他写一封邮件。Agent调用工具写完了，把结果返回给用户。</p>
+
+<p>但用户可能不满意——语气太正式了，或者遗漏了什么信息。</p>
+
+<p>如果没有反思环节，Agent就只会机械地执行任务，不会自我改进。加上反思，Agent才能知道自己的不足，然后调整策略、重新尝试。</p>
+
+<div style="text-align: center; margin: 30px 0;">
+<img src="data:image/png;base64,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" alt="Figure: Agent Reflection Flow - Action -> Check -> Judge -> Adjust" style="max-width: 100%; border-radius: 8px;">
+<p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic;">Figure: Agent Reflection Flow - Action -> Check -> Judge -> Adjust</p>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">代码实现</span></h3>
+
+<p>反思的核心是判断结果是否正确。简单来说，就是问自己几个问题：</p>
+
+<ul>
+<li>工具调用成功了吗？</li>
+<li>返回的结果合理吗？</li>
+<li>用户的问题解决了吗？</li>
+<li>要不要重试？</li>
+</ul>
+
+<p>代码大概是这样：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">reflect</span><span style="color: #f8f8f2">(self, context, result):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> result.is_error:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"success"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"reason"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"工具调用出错"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"retry"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"strategy"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"换工具或换参数"</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">validate_result</span><span style="color: #f8f8f2">(result):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"success"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"reason"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"结果验证失败"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"retry"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"strategy"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"调整参数重试"</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">is_task_done</span><span style="color: #f8f8f2">(context, result):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"success"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"reason"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"任务未完成"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"retry"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"strategy"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"继续执行下一步"</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"success"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"reason"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"任务完成"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"retry"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"strategy"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">    }</span></code></pre>
+
+<blockquote><p>💡 <strong>实践要点：</strong>反思就是让Agent"回头看"：这次做得怎么样？要不要调整？要不要重试？</p></blockquote>
+
+<h3><span class="icon">3</span><span class="title-text">反思的粒度</span></h3>
+
+<p>反思可以做得很简单，也可以做得复杂。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>级别</th>
+      <th>做法</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>简单版</td>
+      <td>检查工具调用有没有报错</td>
+      <td>快速原型、简单任务</td>
+    </tr>
+    <tr>
+      <td>中等版</td>
+      <td>检查返回结果是否合理</td>
+      <td>一般业务场景</td>
+    </tr>
+    <tr>
+      <td>复杂版</td>
+      <td>让大模型判断结果质量</td>
+      <td>对准确性要求高的任务</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote><p>⚠️ <strong>建议：</strong>实际项目中，可以先做简单版，再慢慢加复杂逻辑。过早追求复杂的反思机制，往往是过度设计。</p></blockquote>
+
+<p>说完反思，接下来我们来说说记忆系统——Agent是怎么记住之前说过的话的。</p>
+
+<hr/>
+
+<h2><span class="title-text">记忆系统：Agent是怎么"记住"东西的</span></h2>
+
+<p>之前我们写的最小可行Agent，有个问题：每次对话都是从零开始。<a href="../../../.openclaw/workspace/openclaw-complete-series/12-记忆系统-公众号版.md" class="key">(见OpenClaw原理篇12)</a></p>
+
+<p>你跟它说"帮我写一封邮件"，它写完了。你再说"把语气改得更正式一点"，它不知道你说的是哪封邮件，因为它记不住。</p>
+
+<p>记忆系统就是来解决这个问题的。Agent需要记住之前说过的话、做过的事，这样才能连续对话。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>没有记忆的Agent，每次对话都是"陌生人"。记忆让Agent能认识"回头客"。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">四层记忆架构</span></h3>
+
+<p>一般来说，Agent的记忆分四层：<a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">(参考AI Coding第28篇)</a></p>
+
+<div class="card">
+  <h4>第一层：对话历史（短期记忆）</h4>
+  <p>记录当前对话的内容。对话结束就消失。每次API调用都会带上。</p>
+</div>
+
+<div class="card">
+  <h4>第二层：实体记忆（中期记忆）</h4>
+  <p>记录用户的基本信息，比如姓名、偏好、常驻城市。跨对话保持。</p>
+</div>
+
+<div class="card">
+  <h4>第三层：知识记忆（长期记忆）</h4>
+  <p>Agent从训练中学会的知识，或者从外部检索来的信息。</p>
+</div>
+
+<div class="card">
+  <h4>第四层：技能记忆</h4>
+  <p>Agent学会的技能，比如怎么写代码、怎么分析数据。</p>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">代码实现</span></h3>
+
+<p>最简单的记忆系统，就是把对话历史存起来，每次调用的时候带上：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">AgentWithMemory</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.messages = []</span>
+<span style="color: #f8f8f2">        self.entities = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(self, role, content):</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: role, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: content})</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_entity</span><span style="color: #f8f8f2">(self, key, value):</span>
+<span style="color: #f8f8f2">        self.entities[key] = value</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">build_context</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        context = []</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> self.entities:</span>
+<span style="color: #f8f8f2">            entity_prompt = </span><span style="color: #e6db74">"你知道以下关于用户的信息："</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> key, value </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.entities.items():</span>
+<span style="color: #f8f8f2">                entity_prompt += </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"\n- {key}：{value}"</span>
+<span style="color: #f8f8f2">            context.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"system"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: entity_prompt})</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        context.extend(self.messages)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> context</span></code></pre>
+
+<p>用起来是这样的：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">agent</span><span style="color: #f8f8f2"> = AgentWithMemory()</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_entity</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"张三"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"帮我订明天去上海的机票"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"assistant"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"好的，张三，我来帮你查..."</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"改成后天的"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"># Agent现在知道用户是张三，知道之前订的是上海机票</span></code></pre>
+
+<blockquote><p>💡 <strong>实践要点：</strong>记忆系统让Agent能"记住"用户说过的话、做过的操作。这样它才能真正帮你完成任务，而不是每次都从零开始。</p></blockquote>
+
+<h3><span class="icon">3</span><span class="title-text">记忆的管理</span></h3>
+
+<p>记忆多了会有问题。上下文窗口是有限的，存太多东西API会爆。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>策略</th>
+      <th>做法</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>定期压缩</td>
+      <td>把多轮对话压缩成摘要</td>
+      <td>长对话场景</td>
+    </tr>
+    <tr>
+      <td>重要性筛选</td>
+      <td>只保留重要的信息</td>
+      <td>信息繁多的场景</td>
+    </tr>
+    <tr>
+      <td>向量检索</td>
+      <td>把记忆向量化，需要时检索</td>
+      <td>大规模记忆存储</td>
+    </tr>
+    <tr>
+      <td>分层存储</td>
+      <td>短期记忆放内存，长期记忆放数据库</td>
+      <td>需要持久化的场景</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote><p>⚠️ <strong>注意事项：</strong>不是记忆越多越好。有效的记忆管理比盲目存储更重要。</p></blockquote>
+
+<p>到这里，Agent的核心循环我们就全讲完了——感知、思考、行动、反思，再加上记忆系统。</p>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>OpenClaw原理篇11：核心循环 <span class="file-tag">{原文件:11-核心循环-公众号版.md}</span></li>
+<li>OpenClaw原理篇12：记忆系统 <span class="file-tag">{原文件:12-记忆系统-公众号版.md}</span></li>
+<li>AI Coding第28篇：Agent核心实现 <span class="file-tag">{原文件:AI-28-Agent核心实现-公众号版.md}</span></li>
+</ul>
+
+<p>下期预告：Agent开发系列 09-10 — 规划系统 + 多Agent协作</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

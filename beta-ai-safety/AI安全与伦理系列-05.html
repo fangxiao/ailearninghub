@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI安全与伦理系列 05 · AI安全</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.8; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+.quiz-box { background: linear-gradient(135deg, #fff8e1 0%, #fff 100%); border: 2px dashed #ff9800; border-radius: 12px; padding: 20px; margin: 24px 0; }
+.quiz-box .quiz-title { font-size: 15px; font-weight: bold; color: #e65100; margin-bottom: 12px; }
+.quiz-box .quiz-answer { background: #fff; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 14px; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #ff6b6b; font-weight: 500; }
+.series-link { display: inline-block; padding: 4px 12px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: #fff; border-radius: 20px; font-size: 12px; margin-right: 8px; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.case-box { background: #fff3e0; border-radius: 8px; border: 1px solid #ff9800; padding: 16px; margin: 20px 0; }
+.case-title { font-size: 15px; font-weight: bold; color: #e65100; margin-bottom: 10px; }
+.case-content { font-size: 14px; color: #555; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">AI安全与伦理系列 05</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+<span class="series-link">系列一</span>
+AI安全：对抗攻击与防御
+</p>
+
+<blockquote class="opinion">
+<p><strong>我的观点：</strong>2026年，对抗攻击的威胁依然存在，但防御技术已经有了很大进步。主流AI服务现在都内置了对抗攻击检测和防御机制。对抗攻击不再是致命威胁，但仍然是需要关注的安全问题。</p>
+</blockquote>
+
+<section class="quiz-box">
+<p class="quiz-title">2025年的真实案例</p>
+<p>研究人员测试了2025年主流的自动驾驶系统：</p>
+<p style="font-size: 16px; text-align: center; padding: 12px 0; color: #333;">
+在交通标志上贴特制贴纸<br>
+老系统：识别错误！<br>
+新系统：成功识别！
+</p>
+<p>为什么新系统能成功？</p>
+<section class="quiz-answer">
+<p><strong>因为2025年的自动驾驶系统已经内置了对抗攻击防御机制。</strong>它们会检测输入中的异常模式，并进行预处理来消除对抗噪声。这就是技术进步的力量。</p>
+</section>
+</section>
+
+<h3><span class="icon">1</span><span class="title-text">什么是对抗攻击？</span></h3>
+
+<p>对抗攻击是指通过在输入上添加精心设计的微小扰动，让AI模型产生错误的输出。</p>
+
+<div class="detail-box">
+<p class="detail-title">⚠️ 对抗攻击的特点：</p>
+<p class="detail-content">1. <strong>人类不可见</strong>：噪声微小到人类看不见<br>2. <strong>针对性强</strong>：专门让AI犯特定错误<br>3. <strong>泛化性</strong>：可能在物理世界也有效<br>4. <strong>难以防御</strong>：很难完全避免</p>
+</div>
+
+<div class="case-box">
+<p class="case-title">📋 真实案例：停车标志攻击</p>
+<p class="case-content">
+研究人员在停车标志上贴了几个小贴纸。<br>人类看：还是停车标志！<br>自动驾驶汽车看：限速45公里！<br><br>这可能会导致严重的交通事故！
+</p>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">对抗攻击的类型</span></h3>
+
+<p>常见的对抗攻击有这几种：</p>
+
+<table>
+<tr>
+<th>类型</th>
+<th>目标</th>
+<th>示例</th>
+</tr>
+<tr>
+<td><strong>白盒攻击</strong></td>
+<td>知道模型结构和参数</td>
+<td>研究人员攻击自己的模型</td>
+</tr>
+<tr>
+<td><strong>黑盒攻击</strong></td>
+<td>不知道模型内部信息</td>
+<td>攻击者只能查询API</td>
+</tr>
+<tr>
+<td><strong>有目标攻击</strong></td>
+<td>让AI输出特定错误结果</td>
+<td>让熊猫被识别为长臂猿</td>
+</tr>
+<tr>
+<td><strong>无目标攻击</strong></td>
+<td>只要AI出错就行</td>
+<td>让AI认不出任何东西</td>
+</tr>
+<tr>
+<td><strong>物理攻击</strong></td>
+<td>在真实世界里的攻击</td>
+<td>在停车标志上贴贴纸</td>
+</tr>
+</table>
+
+<h3><span class="icon">3</span><span class="title-text">真实世界的风险</span></h3>
+
+<p>对抗攻击不只是实验室里的玩具，在真实世界里有严重风险：</p>
+
+<div class="detail-box">
+<p class="detail-title">🚗 真实世界风险场景：</p>
+<p class="detail-content">1. <strong>自动驾驶</strong>：让汽车看错交通标志<br>2. <strong>安防系统</strong>：让面部识别认不出人，或者认错人<br>3. <strong>垃圾邮件过滤</strong>：让垃圾邮件绕过检测<br>4. <strong>医疗诊断</strong>：让AI看错医疗影像<br>5. <strong>金融欺诈</strong>：让风控系统漏掉欺诈</p>
+</div>
+
+<p>每一个场景都可能造成严重损失。
+
+<h3><span class="icon">4</span><span class="title-text">为什么会有对抗攻击？</span></h3>
+
+<p>这是深度学习的一个基本特性：</p>
+
+<blockquote class="highlight">
+<p><strong>原因分析：</strong></p>
+<p>1. <strong>高维空间</strong>：神经网络在极高维空间里工作，有很多"脆弱"的方向<br>2. <strong>线性假设</strong>：很多攻击利用了神经网络的局部线性特性<br>3. <strong>过拟合</strong>：模型可能学到了虚假的特征<br>4. <strong>缺少鲁棒性</strong>：模型没有训练过对抗样本</p>
+</blockquote>
+
+<p>简单说：神经网络的工作方式和人类视觉系统不一样。
+
+<h3><span class="icon">5</span><span class="title-text">2026年的对抗攻击防御技术：深度解析</span></h3>
+
+<p>2026年，防御技术已经相当成熟：</p>
+
+<div class="detail-box">
+<p class="detail-title">🛡️ 对抗训练：最有效的防御方法</p>
+<p class="detail-content"><strong>原理：</strong>在训练过程中加入对抗样本，让模型学习如何应对攻击。<br><br><strong>方法：</strong><br>• FGSM（快速梯度符号法）：计算损失函数对输入的梯度，沿梯度方向添加噪声<br>• PGD（投影梯度下降）：迭代优化对抗扰动<br>• TRADES：在训练时同时优化准确率和鲁棒性<br><br><strong>技术细节：</strong>2026年，对抗训练已经成为大多数AI系统训练流程的标准环节。</p>
+</div>
+
+<div class="detail-box">
+<p class="detail-title">🧹 输入净化：去除对抗噪声</p>
+<p class="detail-content"><strong>原理：</strong>在输入进入模型之前，先检测并去除对抗扰动。<br><br><strong>方法：</strong><br>• 降噪自编码器：训练一个自动编码器来还原干净的输入<br>• 随机化：对输入进行随机变换，破坏对抗噪声<br>• 特征挤压：减少输入的精度或颜色通道<br><br><strong>技术细节：</strong>输入净化可以作为防御的第一道防线，但可能会影响模型的准确率。</p>
+</div>
+
+<div class="detail-box">
+<p class="detail-title">🔄 自适应防御：动态调整策略</p>
+<p class="detail-content"><strong>原理：</strong>根据检测到的攻击类型，动态调整防御策略。<br><br><strong>方法：</strong><br>• 攻击检测：使用专门的模型检测是否受到攻击<br>• 模型切换：根据攻击类型切换到更鲁棒的模型<br>• 动态参数调整：实时调整模型的超参数<br><br><strong>技术细节：</strong>自适应防御需要实时监控和快速响应能力。</p>
+</div>
+
+<p>现在大多数生产环境的AI系统都已经内置了这些防御机制。</p>
+
+<h3><span class="icon">6</span><span class="title-text">深度思考：安全的AI</span></h3>
+
+<p>对抗攻击让我们思考一个更深的问题：</p>
+
+<div class="detail-box">
+<p class="detail-title">🤔 什么是"安全的"AI？</p>
+<p class="detail-content">AI不仅要在正常情况下工作，还要在有人故意攻击的情况下也能正常工作。<br><br>就像传统的网络安全一样，AI系统也需要"安全设计"。<br><br>这不仅是技术问题，也是工程问题——我们需要像设计安全软件那样设计AI系统。</p>
+</div>
+
+<h3><span class="icon">7</span><span class="title-text">总结：2026年的AI安全</span></h3>
+
+<blockquote class="highlight">
+<p><strong>核心结论：</strong></p>
+<p>1. 2026年，对抗攻击的威胁依然存在，但防御技术已经成熟<br>2. 主流AI服务都内置了对抗攻击检测和防御机制<br>3. 对抗训练已经成为标准训练流程<br>4. AI系统需要像传统软件那样考虑安全问题<br>5. 安全是持续的过程，不是一次性的解决方案</p>
+</blockquote>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>系列一：AI安全与伦理系列</strong><br>
+01 · AI幻觉：为什么AI会“胡说八道”？<br>
+02 · 数据隐私：你的对话被用来训练了吗？<br>
+03 · AI偏见：算法歧视是怎么产生的？<br>
+04 · 深度伪造：如何识别AI生成的内容？<br>
+05 · AI安全：对抗攻击与防御 ← 你在这里<br>
+06 · 伦理困境：AI决策的责任归属<br><br>
+<a href="AI安全与伦理系列-总结.html" style="color: #667eea; text-decoration: none; font-weight: bold;">📖 系列总结</a>
+</p>
+
+</div>
+</body>
+</html>

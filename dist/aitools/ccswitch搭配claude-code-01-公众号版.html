@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>还在手动改JSON？用Claude Code的都应该试试cc-switch</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    推荐一款工具：让 Claude Code 配置变得简单
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    不用手动改配置，一键切换模型
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | cc-switch 使用指南
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 写代码的，十有八九都经历过这种糟心事：
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    想换个模型测效果，得先去翻 <strong style="color: #00897B;">~/.claude/settings.json</strong>，小心翼翼地改 <strong style="color: #00897B;">ANTHROPIC_BASE_URL</strong> 和 <strong style="color: #00897B;">ANTHROPIC_AUTH_TOKEN</strong>。一个转义符写错，整个 JSON 就会崩掉，Claude Code 直接罢工。
+  </p>
+
+<section style="text-align: center; margin: 35px 0;">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAGQCAIAAADZR5NjAAAvWElEQVR4nO3deXRU9f3/8fedmUyWyUZIWAIkkGBYZBVRsJVFK5s9ilRABbRWv18r2oooagVbq8UFBKWnalUQqBabAAo1SJRSRVH4KiExv0hIJEEgQkL2yUKWmbm/P66OQyYJA3wmBHg+/uDc9f1Z5p4zL+7cmWgjRowQAAAAqGM61x0AAAC40BCwAAAAFCNgAQAAKEbAAgAAUIyABQAAoBgBCwAAQDECFgAAgGIW3w/dMyjRc/Xy7PzTOHdJ00nnPhLg+7k1r4R6robOrfH9XAAAgPbn6x2sZumqxS2tnntyumpxS2uapasWtwAAAHQoPgWs1rKULxmrtSzlS8ZqLUuRsQAAQEd26oDVdoo6xd42U1Tbe9tOUWQsoD2NGjXqbE6Pjo4ePny478fPmzfvjNvy8dz4+PjZs2ffeuuts2bN6tGjh4gEBgZOmzZt1qxZ06ZNCwwMbPGsIUOGzJo168477+zTp4/n9sTExIceeuiM+wzgwnOKgOXTParW7m/5cI+qtWN8yU9kLKDdnGXAKi0tzcjIUNUZJaZMmfL++++/8847W7ZsmTx5soiMHj36yJEj//znPwsLC1scb0hIyKBBg9atW/fvf//72muvdW+3Wq2jR492uVzt13sAHd5pPOQO4OL085//3Gq1zpw5c/Pmzdddd53NZjObzf/973+PHTsmIvPmzcvLyysuLk5PTzeWe/Xq9eWXX/bs2bNHjx7p6elfffWVcdhLL71kLOzdu7dnz55BQUE7d+7My8uLjo6eOHFiUFBQVlaWcXDbJkyYEB0drWlabGzs0qVLR4wYMWTIEF3Xd+zYcfDgQREZM2aMZ/0Wi5w4cSI4OLiqqio4ODggIEBEEhMTk5OTRSQnJ2f69Ok7duy46aabsrOzv/3220mTJh05cqSoqGjv3r26rtvt9uDgYHepcePG7dmzZ9KkSWc/1QAuGAQsAKewc+fOyy+/PDk5efLkyenp6UePHg0PD//Vr361evVqETGbzTk5OUaysVgsmZmZO3fuvPfee//xj3/s2LFjzpw5zTKT2Ww+ceLEunXrIiMjb7311ry8vMsuu2zHjh2lpaV33XWXLwHro48+EpGrrrrq0KFDxsJrr70WFhY2evTogwcPuutHRUXNnDmztYD14Ycfzp49u7y8PCoq6r333hMRm81WW1srIjU1NTabTUT+85//3HzzzTU1NWFhYd98842IlJWViUi/fv0OHDhg1OnZs2doaOj+/fsJWAA8EbAA/GTcuHHdu3ffs2dPZWVlbGzs119/7bm3T58+nTp1MpYDAgI0TdN1Xdf17777ztio6/qxY8d0XXc6nUVFRbquGzeHPGmalpWVJSKVlZXGo06ffPLJgAED+vbt2+KTT8btqD179nhGpZiYmL59+7799tsiUlBQ8Mtf/nLv3r2pqame9cvLyz0LNqszfvz4999/Pzc3t3///v369cvPb+F3Z6qrq7Ozs6dNm2Y0ZIiMjLzyyivfeecdETGbzePHjzfyGQB4ImAB+InL5Xr33XdHjRo1YsSIrVu3NttrMplSUlIcDoemaT179tR13TjFWBARp9NpLDscDvfGZpxOZ0NDg+eWqVOn5ubmpqent/gg/KeffurdjUmTJqWlpRmPPW3ZsqVXr16XX375wIEDP/jgA+/6LdaJiYkxklZubu6ECRNEpLa21maz1dTUhIaGGreyRMRqtbpcLqvV6l698cYbt27dWldXJyL9+vWzWq033HCDseuXv/ylEfIA4BQPufvya6KtHePLr4m2dowvvybKL44Cyn366acNDQ07duz417/+VVVV5d6uaZqmaYWFhUlJSSKSkJBwxo+9ewevbt267d+/32KxmM1mXyqMGjXq4MGDx48fF5HAwMDbbrvt+++/T01NTUxMbLF+i8rLy40vD/bo0cMYaX5+/oABA0RkwIABBQUFIhIVFdW7d+8NGzZcd911xlnXX3/9V199dfToUWN13759q1atWrdu3bp16xobG0lXANxOfQfr8uz8Nr5L2HYCu/yRgDa+S9h2AgudW9PG9wRJV0B7OnLkyK9+9auPPvpo4sSJw4YNc7lcaWlpqopnZGTMnj37+PHjDQ0NZrPZ6XRWVFSMGjVq9+7dLR7/s5/97NixY3FxcSKSkpKSn59/++23a5r2+eef+97ohx9++Itf/MJYNu7V7dq16/rrr09KSjpx4sSWLVtEZOLEiZ988klJSUlpaenQoUNdLlefPn2Cg4OHDRvW2Ni4YcOGsx05gAuXNmLECF+OazFj+fjXclrMWD7+tZwWMxbpCgAAdGS+/qkc7yzl+98i9M5Svv8tQu8sRboCAAAdnK93sAAAAOAj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" alt="终端报错截图" style="max-width: 100%; border-radius: 8px;">
+    <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px; font-style: italic;">“不小心多打了一个逗号，整个下午都在排查 JSON 错误”</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    更痛苦的是，当你想在不同供应商（官方 Claude / DeepSeek / GLM / Kimi）之间来回切换时，每次都要折腾好几分钟：改完还要重启终端、重新验证认证状态，生怕配置没生效却不自知。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">这不是你的问题，是"手动改配置"这个姿势本身就错了。</strong>
+  </p>
+
+  <!-- 章节01：cc-switch 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">一句话讲清 cc-switch 是什么</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">cc-switch 是一款面向 AI 编程 CLI 工具的桌面端配置管理器。</strong>它的本质，是把"编辑配置文件"这件事，从"手抠 JSON"变成"点一下鼠标"。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它管的不只是 Claude Code。目前支持 7 款主流 AI 编程工具：
+  </p>
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8; text-align: center;">
+      Claude Code · Claude Desktop · Codex · Gemini CLI · OpenCode · OpenClaw · Hermes Agent
+    </p>
+  </section>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    技术栈是基于 <strong style="color: #00897B;">Tauri 2（Rust 后端 + React 前端）</strong>的开源桌面应用，GitHub 上已经拿了 <strong style="color: #00897B;">40K+ Star</strong>，MIT 协议完全免费，作者维护活跃。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">核心定位：它是一个全家桶式的 AI CLI 管理中心。</strong>它把散落在各个工具里的 Provider、MCP、Skills、Prompt、用量统计……全部收拢到一个面板里。
+  </p>
+
+  <!-- 章节02：安装与基础配置 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装与基础配置详解</span>
+    </p>
+  </section>
+
+  <!-- 步骤1：安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      安装：支持全平台
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">cc-switch 支持 Windows、macOS 和 Linux 三大平台。推荐使用包管理器安装，最省心。</p>
+    
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">macOS 用户</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 先添加仓库源</span>
+brew tap farion1231/ccswitch
+
+<span style="color: #7cb342;"># 再安装 cc-switch</span>
+brew install --cask cc-switch</p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">Windows 用户</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;"><strong>方式一：MSI 安装包（推荐）</strong></p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">1. 访问 <strong style="color: #00897B;">GitHub Releases</strong> 页面：<span style="color: #00897B;">https://github.com/farion1231/cc-switch/releases/latest</span>，下载 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">CC-Switch-v{版本}-Windows.msi</code>。</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">2. 双击运行安装程序，按提示完成安装。若弹窗无反应，右键文件 → 属性 → 勾选「解除锁定」。</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">3. 若遇到 SmartScreen 安全拦截，点击「更多信息」→「仍要运行」即可（开源软件无数字签名属正常）。</p>
+    <p style="margin: 12px 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;"><strong>方式二：便携版（免安装）</strong></p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">下载 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">CC-Switch-v{版本}-Windows-Portable.zip</code>，解压到纯英文无空格路径，直接运行 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">CC-Switch.exe</code> 即可，删除文件夹即卸载。</p>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">Linux 用户</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;"><strong>Debian / Ubuntu（.deb）</strong></p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 下载 deb 包（将 {版本} 替换为实际版本号，如 v3.16.1）</span>
+wget https://github.com/farion1231/cc-switch/releases/latest/download/CC-Switch-v{版本}-Linux-x86_64.deb
+
+<span style="color: #7cb342;"># 安装</span>
+sudo dpkg -i CC-Switch-v{版本}-Linux-x86_64.deb
+
+<span style="color: #7cb342;"># 若有依赖问题，执行修复</span>
+sudo apt-get install -f</p>
+    </section>
+    <p style="margin: 12px 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;"><strong>Fedora / RHEL（.rpm）</strong></p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 下载并安装 rpm 包</span>
+wget https://github.com/farion1231/cc-switch/releases/latest/download/CC-Switch-v{版本}-Linux-x86_64.rpm
+sudo rpm -i CC-Switch-v{版本}-Linux-x86_64.rpm</p>
+    </section>
+    <p style="margin: 12px 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;"><strong>通用 AppImage（全发行版）</strong></p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 下载 AppImage</span>
+wget https://github.com/farion1231/cc-switch/releases/latest/download/CC-Switch-v{版本}-Linux-x86_64.AppImage
+
+<span style="color: #7cb342;"># 赋予执行权限</span>
+chmod +x CC-Switch-v{版本}-Linux-x86_64.AppImage
+
+<span style="color: #7cb342;"># 直接运行</span>
+./CC-Switch-v{版本}-Linux-x86_64.AppImage</p>
+    </section>
+    <p style="margin: 12px 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;"><strong>ArchLinux（AUR）</strong></p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">paru -S cc-switch-bin  <span style="color: #7cb342;"># 或 yay -S cc-switch-bin</span></p>
+    </section>
+  </section>
+
+  <!-- 步骤2：添加 Provider -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      添加 Provider：配置你的第一个供应商
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">启动软件后，点击右上角的 <strong style="color: #00897B;">"Add Provider"</strong> 按钮，进入配置界面。这里提供了两种选择：</p>
+    
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">① 使用内置预设 (推荐新手)</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">cc-switch 内置了 <strong style="color: #00897B;">50+ 主流供应商预设</strong>，包括 Claude 官方、DeepSeek、智谱 GLM、Kimi、通义千问、阿里百炼、OpenRouter 等。选择一个预设后，你只需填入 API Key，Base URL 等信息会自动填充，连格式都帮你选好。</p>
+    
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">② 手动自定义 (适合高级用户)</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">如果你使用的是私有代理或不在预设列表里的供应商，可以手动填写关键信息：</p>
+    
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-size: 14px; line-height: 1.7; color: #333;"><span style="color: #00897B; font-weight: bold;">Provider Name:</span> 为你的供应商起个好记的名字，比如“我的私有代理”<br>
+      <span style="color: #00897B; font-weight: bold;">Base URL:</span> 供应商的 API 接口地址。<strong style="color: #B26B00;">注意：Claude 官方地址不要带 /v1，而第三方 OpenAI 格式通常需要带 /v1</strong>。<br>
+      <span style="color: #00897B; font-weight: bold;">API Key:</span> 从供应商控制台获取的密钥。<br>
+      <span style="color: #00897B; font-weight: bold;">API Format:</span> 选择协议格式。如果是 Claude 官方选 "Anthropic"，如果是兼容 OpenAI 格式的选 "OpenAI Chat Completions"。<br>
+      <span style="color: #00897B; font-weight: bold;">Default Model:</span> 设置默认使用的模型名称。</p>
+    </section>
+  </section>
+
+  <!-- 图片占位 2：Provider 配置界面 -->
+  <section style="text-align: center; margin: 35px 0; padding: 40px 20px; background: #fafafa; border: 2px dashed #ccc; border-radius: 8px;">
+    <p style="margin: 0; font-size: 15px; color: #999;">[ 此处插入截图：Add Provider 配置界面 ]</p>
+  </section>
+  <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px; font-style: italic;">图形化的配置界面，不用再手写 JSON</p>
+
+  <!-- 步骤3：启用与切换 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      启用与切换：你的配置已生效
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">配置完成后，点击 <strong style="color: #00897B;">"Enable" (启用)</strong> 按钮。cc-switch 会自动将配置写入对应工具的配置文件。</p>
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">三种切换姿势，任君选择：</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">① 主界面一键启用</strong>：在供应商列表里，点击目标卡片右上角的“启用”按钮。<br>
+      <strong style="color: #00897B;">② 系统托盘后台切 (最高效)</strong>：右键电脑右下角/右上角的 cc-switch 托盘图标 → 悬浮到“Claude · 当前供应商”子菜单 → 直接点击要切的供应商。<strong style="color: #00897B;">一秒完成，连软件窗口都不用开。</strong><br>
+      <strong style="color: #00897B;">③ 只换内部模型</strong>：编辑已启用的供应商，修改 Sonnet / Opus / Haiku 对应的模型映射。这在同一个 API 账号内切“小模型快打 / 大模型推理”时非常有用。
+    </p>
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">验证切换是否成功？</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">在终端中运行 `claude` 命令，然后输入 <strong style="color: #00897B;">/model</strong>，它会直接显示当前正在调用的模型名称。</p>
+  </section>
+
+  <!-- 图片占位 3：系统托盘切换 -->
+  <section style="text-align: center; margin: 35px 0; padding: 40px 20px; background: #fafafa; border: 2px dashed #ccc; border-radius: 8px;">
+    <p style="margin: 0; font-size: 15px; color: #999;">[ 此处插入截图：系统托盘快速切换菜单 ]</p>
+  </section>
+  <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px; font-style: italic;">开发时突然想换个模型？托盘里点一下，根本不需要打断思路</p>
+
+  <!-- 章节03：进阶能力深度解析 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">进阶能力深度解析</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    “一键切换”是及格线，但 cc-switch 还有几个进阶能力值得说一下。
+  </p>
+
+  <!-- 进阶1：本地路由与故障转移 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">核心功能：本地路由与自动故障转移</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">这是 cc-switch 最容易被忽视的功能。开启“本地路由”后，cc-switch 会在本地启动一个代理服务器（默认端口 15721），接管所有 AI 编程工具的 API 请求。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它内置了一套<strong style="color: #00897B;">调度机制</strong>：
+  </p>
+  <p style="margin: 20px 0; padding: 15px 20px; background: #fafafa; border-radius: 8px; border-left: 3px solid #00897B; font-size: 15px; line-height: 1.8;">
+    <strong style="color: #00897B;">• 格式转换</strong>：自动处理不同供应商 API 格式差异（如 Anthropic Messages vs OpenAI Chat Completions），你无需关心底层兼容问题。<br>
+    <strong style="color: #00897B;">• 自动故障转移</strong>：当主供应商 API 异常（如超时、返回 5xx 错误）时，cc-switch 会自动将请求切到备用供应商队列，实现无感降级。<br>
+    <strong style="color: #00897B;">• 熔断器模式</strong>：如果某个供应商持续失败，cc-switch 会触发“熔断”机制，在一段时间内不再尝试该供应商，避免无效请求堆积，同时保持主流程畅通。<br>
+    <strong style="color: #00897B;">• 健康监控</strong>：实时监控每个供应商的响应状态、延迟和成功率，并在界面上可视化展示。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    开启此功能后，Claude Code 的 <code>settings.json</code> 会被自动更新为指向本地代理：
+  </p>
+  <section style="background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 8px; padding: 18px 20px; margin: 25px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #00897B;">{</span>
+  <span style="color: #00897B;">"env"</span>: {
+    <span style="color: #00897B;">"ANTHROPIC_AUTH_TOKEN"</span>: <span style="color: #B26B00;">"PROXY_MANAGED"</span>,
+    <span style="color: #00897B;">"ANTHROPIC_BASE_URL"</span>: <span style="color: #B26B00;">"http://127.0.0.1:15721"</span>
+  }
+<span style="color: #00897B;">}</span></p>
+  </section>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">这相当于给你的 AI 编程工具套了一层网关。</strong>某家 API 服务商的偶发故障不会再中断你的工作流。
+  </p>
+
+  <!-- 进阶2：MCP 统一管理 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 40px 0 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">生态整合：MCP 服务器统一管理</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">MCP（Model Context Protocol）正在被越来越多 AI 编程工具采用，用于连接外部数据源和工具。但每个客户端（Claude Code, Codex 等）都有自己的配置格式，管理起来非常繁琐。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    cc-switch 提供了一个<strong style="color: #00897B;">跨应用的统一 MCP 管理面板</strong>：
+  </p>
+  <p style="margin: 20px 0; padding: 15px 20px; background: #fafafa; border-radius: 8px; border-left: 3px solid #00897B; font-size: 15px; line-height: 1.8;">
+    <strong style="color: #00897B;">• 支持双向同步</strong>：配置可以同步到 Claude Code、Codex、OpenCode、OpenClaw 四款工具。<br>
+    <strong style="color: #00897B;">• 支持多种协议</strong>：兼容 stdio、HTTP、SSE 三种 MCP 服务器传输方式。<br>
+    <strong style="color: #00897B;">• Deep Link 分发</strong>：支持 <code>ccswitch://</code> 开头的专属协议，适合团队负责人一键分发统一配置。
+  </p>
+
+  <!-- 进阶3：Skills 管理 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 40px 0 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">效率提升：Skills 一键安装与管理</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Claude Code 的 Skills（技能包）越来越多。手动下载、解压、复制到 <code>~/.claude/skills</code> 目录繁琐，也不利于版本管理。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    cc-switch 的 Skills 面板让这一切变得像 <strong style="color: #00897B;">用 npm 装包</strong> 一样简单：
+  </p>
+  <p style="margin: 20px 0; padding: 15px 20px; background: #fafafa; border-radius: 8px; border-left: 3px solid #00897B; font-size: 15px; line-height: 1.8;">
+    <strong style="color: #00897B;">• 一键安装</strong>：只需输入 GitHub 仓库地址（owner/repo 格式），即可自动下载并安装 Skills。<br>
+    <strong style="color: #00897B;">• 版本管理</strong>：支持对已安装的 Skills 进行版本控制和更新。<br>
+    <strong style="color: #00897B;">• 软链接同步</strong>：使用软链接而不是复制文件，确保多处的 Skills 内容始终一致。<br>
+    <strong style="color: #00897B;">• 热门扫描</strong>：自动扫描 GitHub 上的热门 Skills 仓库，发现好用的技能包。
+  </p>
+
+  <!-- 进阶4：成本控制 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 40px 0 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">团队必备：用量统计与成本控制</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">对于团队或高频用户来说，“每天烧了多少 Token、花了多少钱”是一个必须面对的问题。cc-switch 内置了成本追踪系统：</p>
+  </section>
+
+  <p style="margin: 20px 0; padding: 15px 20px; background: #fafafa; border-radius: 8px; border-left: 3px solid #00897B; font-size: 15px; line-height: 1.8;">
+    <strong style="color: #00897B;">• 实时消费视图</strong>：可以看到每个 Provider 的实时 Token 消耗量和费用。<br>
+    <strong style="color: #00897B;">• 模型分级统计</strong>：区分 Opus / Sonnet / Haiku 等不同模型的消耗，便于成本优化。<br>
+    <strong style="color: #00897B;">• 预算预警</strong>：设置月度预算，快超支时自动提醒。<br>
+    <strong style="color: #00897B;">• 历史报表</strong>：生成日、周、月维度的成本报表，方便财务核算。
+  </p>
+
+  <!-- 章节04：高频避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">高频避坑指南</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    我搜集了大量真实用户的反馈，总结出以下几个最容易踩坑的点：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 16px; font-weight: bold;">⚠️ 坑 1：切换后没生效</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">彻底关掉所有 Claude Code 终端窗口，完全退出 cc-switch 再重新打开。同时检查“设置-路由”中，是否勾选了“接管 Claude Code”。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 16px; font-weight: bold;">⚠️ 坑 2：401 鉴权失败</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">1. 检查 API Key 是否有多余空格。<br>2. <strong style="color: #00897B;">Claude 官方 API 的 Base URL 不要带 /v1</strong>，而第三方 OpenAI 格式的 API <strong style="color: #00897B;">必须带 /v1</strong>。这是最常见的错误。<br>3. 确认 API Format 选项是否正确。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 16px; font-weight: bold;">⚠️ 坑 3：端口被占用</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">如果本地代理端口（默认 15721）被其他程序占用，可在 cc-switch 的“设置-路由”中修改端口号，并确保防火墙放行本地地址。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 16px; font-weight: bold;">⚠️ 坑 4：模型名不匹配</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">在“模型映射”设置中，确保你填写的模型名称是供应商实际支持的。如果调用时报 404 或模型不存在，90% 是模型名写错了。可以查看供应商的 API 文档获取准确的模型 ID。</p>
+  </section>
+
+  <!-- 章节05：总结 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">总结：它值不值得装，装完省下什么</span>
+    </p>
+  </section>
+
+  <!-- 对比表格 -->
+  <section style="margin: 30px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 15px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 12px 10px; color: #00897B; font-weight: bold; width: 25%;">对比维度</th>
+          <th style="padding: 12px 10px; color: #3f3f3f; font-weight: bold; width: 37.5%; text-align: center;">传统方式 (手动改 JSON)</th>
+          <th style="padding: 12px 10px; color: #00897B; font-weight: bold; width: 37.5%; text-align: center;">cc-switch</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">切换效率</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">分钟级，需重启</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">秒级，热切换</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">出错风险</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">高 (JSON 格式错误)</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">零 (图形化校验)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">多供应商管理</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">混乱 (多处配置)</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">统一 (单一数据源)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">故障转移</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">无</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">自动 (熔断器)</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; font-weight: bold;">扩展能力</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">仅切换模型</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">MCP/Skills/成本统计</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 最后的话</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">说实话，这个领域现在能改配置文件的工具不少，但能让你忘掉配置文件存在的工具不多。cc-switch 做对了一件事：把"切换"这个高频动作做到零摩擦。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">当你不用再去想"今天用的哪个模型"，当 API 故障能自动切到备用，你会发现，之前那些"为了切个模型折腾半天"的时光，真的纯属浪费。<strong style="color: #00897B;">别让你的手，还停在 2023 年的配置方式上。</strong></p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📦 立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      官方文档：<span style="color: #00897B;">https://ccswitch.co/zh/docs</span><br>
+      项目地址：<span style="color: #00897B;">https://github.com/farion1231/cc-switch</span><br>
+      官方网站：<span style="color: #00897B;">https://ccswitch.io</span><br>
+      一键安装 (macOS)：<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">brew install --cask cc-switch</code>
+    </p>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #999; line-height: 1.8;">Windows / Linux 的详细安装步骤，可在官方文档的「安装指南」章节查看。</p>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你现在的“切模型”姿势是什么？用了 cc-switch 后有什么变化？欢迎在评论区聊聊你的体验。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 编程工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

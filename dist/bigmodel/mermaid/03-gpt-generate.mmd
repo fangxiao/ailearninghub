@@ -1,0 +1,12 @@
+flowchart LR
+    A["输入: 你好"] --> B["Transformer"]
+    B --> C["字1: 啊"]
+    C --> D["字2: ？"]
+    D --> E["...生成中"]
+    E --> F["结束符"]
+
+    B1["历史上下文"] --> B
+    B2["记忆信息"] --> B
+
+    style A fill:#e1f5fe
+    style F fill:#ffecb3

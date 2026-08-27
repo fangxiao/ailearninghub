@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 AI 能"上网"搜资料——Agent Reach 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    让 AI 能"上网"搜资料——Agent Reach 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    一句话安装，14 个平台即刻可用
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 工具推荐 | Agent 能力扩展实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 AI 助手查资料时，你大概率撞过这堵墙：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 问它小红书最新的防晒测评，它说"无法访问"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 让它读一篇 B 站视频的完整介绍，它只能"根据标题猜测"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想看 Twitter 某个博主最近的发言，它直接摆手"我没联网"
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想自己装个搜索工具，配 MCP、写 Cookie、装依赖，折腾半天还没跑通
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    AI 训练得再聪明，搜不到<strong style="color: #00897B;">实时、中文、平台原生的内容</strong>，输出就只能停在"过期知识"那一层。而手动给 Agent 接搜索能力，又是一道门槛：配环境、装依赖、填 Cookie，劝退大半人。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Agent Reach</strong>就是来解决这件事的。它给 AI Agent 装上"上网"能力，覆盖 14 个国内外主流平台，一句话安装就能用。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">它在干什么：</strong>开源的 Agent 网络访问增强工具，让 AI 能读小红书、知乎、B 站、Twitter 等 14 个平台的真实内容，安装只需一句话。
+    </p>
+  </section>
+
+  <!-- 章节01：Agent Reach 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Agent Reach 到底是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Agent Reach 是一个<strong style="color: #00897B;">开源工具</strong>，专门给 AI Agent 装"上网"能力。它的核心思路是把"读网页、读视频、读社交平台"这件事标准化。你不用再为每个平台单独写爬虫、配代理、存 Cookie，Agent Reach 已经封装好 14 个平台的访问接口，AI 直接调用即可。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说得再直白一点：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🌐 不是搜索引擎</strong>：它不索引全网，而是帮 AI 实时访问具体平台的内容
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔌 不是 MCP 服务器</strong>：它通过 MCP 协议接入，但本身是一个独立的工具集
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🎯 不是浏览器自动化</strong>：不依赖 Playwright/Selenium 那套，直接走平台接口，速度快、稳定
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📦 是一个"网络访问增强层"</strong>：装上之后，AI 就有了读小红书、B 站、Twitter 等平台内容的能力
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    以前想让 AI 读个 B 站视频详情，得自己写脚本抓接口、处理反爬、清洗数据，再喂给 AI。现在装上 Agent Reach，直接说"读一下这个 B 站视频的详情"，AI 自己就会调用对应工具，把标题、简介、UP 主、评论数都拿回来。
+  </p>
+
+  <!-- 章节02：一句话安装 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">一句话安装，更新也是一句话</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Agent Reach 的安装方式很特别，不是敲命令，而是<strong style="color: #00897B;">用自然语言让 AI 帮你装</strong>。你只需要在对话里说一句"帮我安装 Agent Reach"，AI 会自己拉取安装文档、执行安装流程。
+  </p>
+
+  <!-- 安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      安装：一句话触发
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      在 AI 对话框里直接说：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333;">帮我安装 Agent Reach <span style="color: #999; font-size: 12px;"># AI 会自动拉取下面的安装文档并执行</span></p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      安装文档地址（AI 会自动读取）：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md</p>
+    </section>
+  </section>
+
+  <!-- 更新 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      更新：同样一句话
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      已安装的用户想升级到最新版，直接说：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333;">帮我更新 Agent Reach <span style="color: #999; font-size: 12px;"># AI 会读取更新文档并执行升级</span></p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      更新文档地址：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md</p>
+    </section>
+  </section>
+
+  <!-- 诊断 + OpenClaw 提示 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      诊断：检查是否装好
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      装完跑一遍诊断命令，检查所有平台连通性：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333;">agent-reach doctor <span style="color: #999; font-size: 12px;"># 检查所有平台连通性</span></p>
+    </section>
+  </section>
+
+  <!-- OpenClaw 提示 -->
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>⚠️ OpenClaw 用户注意：</strong>需要先开启 exec 权限，否则 Agent Reach 无法执行命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333;">openclaw config set tools.profile "coding" <span style="color: #999; font-size: 12px;"># OpenClaw 用户先开启 exec 权限</span></p>
+    </section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>🔐 安全提示：</strong><code style="background: #fff3e0; padding: 2px 6px; border-radius: 4px; font-size: 13px;">agent-reach install --system</code> 是系统级安装，会写入全局配置，仅在明确授权后由 AI 执行。
+    </p>
+  </section>
+
+  <!-- 章节03：14 个支持平台一览表 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">14 个支持平台一览表</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Agent Reach 覆盖国内外主流内容平台。下面这张表标注了<strong style="color: #00897B;">哪些零配置即用、哪些需要登录</strong>，方便你按需启用。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00695C; font-weight: bold; font-size: 17px;">
+      📋 14 个支持平台速查
+    </p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 22%;">平台</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 33%;">类型</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 45%;">配置要求</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">网页</td>
+          <td style="padding: 10px 8px;">通用网页抓取</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">YouTube</td>
+          <td style="padding: 10px 8px;">视频平台</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">RSS</td>
+          <td style="padding: 10px 8px;">订阅源</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">GitHub</td>
+          <td style="padding: 10px 8px;">代码托管</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置（私有库需 Token）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">Twitter</td>
+          <td style="padding: 10px 8px;">社交平台</td>
+          <td style="padding: 10px 8px; color: #E65100;">需要登录 Cookie</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">B 站</td>
+          <td style="padding: 10px 8px;">视频平台</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置（部分接口需登录）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">Reddit</td>
+          <td style="padding: 10px 8px;">社区论坛</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">Facebook</td>
+          <td style="padding: 10px 8px;">社交平台</td>
+          <td style="padding: 10px 8px; color: #E65100;">需要登录 Cookie</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">Instagram</td>
+          <td style="padding: 10px 8px;">图片社交</td>
+          <td style="padding: 10px 8px; color: #E65100;">需要登录 Cookie</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">小红书</td>
+          <td style="padding: 10px 8px;">生活方式社区</td>
+          <td style="padding: 10px 8px; color: #E65100;">需要登录 Cookie</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">LinkedIn</td>
+          <td style="padding: 10px 8px;">职场社交</td>
+          <td style="padding: 10px 8px; color: #E65100;">需要登录 Cookie</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">V2EX</td>
+          <td style="padding: 10px 8px;">技术社区</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">雪球</td>
+          <td style="padding: 10px 8px;">财经社区</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px; font-weight: bold;">小宇宙播客</td>
+          <td style="padding: 10px 8px;">音频平台</td>
+          <td style="padding: 10px 8px; color: #2E7D32;">零配置</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 一眼看懂配置</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #2E7D32;">绿色「零配置」</strong>：装完就能用，AI 直接抓公开内容<br>
+      <strong style="color: #E65100;">橙色「需要登录」</strong>：把对应平台的 Cookie 配到本地，AI 才能访问需要登录才能看的内容（如小红书正文、Twitter 时间线）
+    </p>
+  </section>
+
+  <!-- 章节04：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：3 个典型场景</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    光说能力不够直观，下面跑 3 个真实场景，看看装上 Agent Reach 之后 AI 是怎么"上网"的。
+  </p>
+
+  <!-- 场景1：B站视频详情 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      场景一：读 B 站视频详情
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">你的需求：</strong>拿到一个 B 站视频链接，让 AI 总结视频讲了什么。
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">对 AI 说：</strong>
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-size: 14px; line-height: 1.8; color: #333;">读一下这个 B 站视频的详情，总结要点：https://www.bilibili.com/video/BV1xxxxxx</p>
+    </section>
+    <p style="margin: 12px 0 5px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">AI 自动做的事：</strong>
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>调用 Agent Reach 的 B 站工具，拉取视频标题、简介、标签、UP 主信息</li>
+      <li>提取分 P 列表和评论数，判断视频热度和讨论方向</li>
+      <li>把原始数据整理成"一句话总结 + 3 个要点 + 适合人群"的结构</li>
+    </ul>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      <strong>耗时：</strong>约 10 秒，对比之前自己复制粘贴简介再喂给 AI，省了好几步。
+    </p>
+  </section>
+
+  <!-- 场景2：搜小红书 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      场景二：搜小红书最新防晒测评
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">你的需求：</strong>想知道最近小红书上热门的防晒霜测评，挑出 3 款口碑好的。
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">对 AI 说：</strong>
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-size: 14px; line-height: 1.8; color: #333;">帮我搜一下小红书上"防晒霜 测评"这个关键词，挑出最近 3 篇互动量最高的笔记，总结推荐</p>
+    </section>
+    <p style="margin: 12px 0 5px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">AI 自动做的事：</strong>
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>通过预先配置的小红书 Cookie 访问搜索接口</li>
+      <li>按互动数（点赞 + 收藏 + 评论）排序，取前 3 篇笔记正文</li>
+      <li>提取每篇笔记推荐的产品、肤质适用场景、踩雷点</li>
+      <li>交叉对比，给出"油皮推荐 / 干皮推荐 / 敏感肌推荐"三档结论</li>
+    </ul>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #E65100; line-height: 1.8;">
+      <strong>前提：</strong>需要先在小红书平台登录，把 Cookie 配到本地，这是一次性操作，配完之后所有对话都能用。
+    </p>
+  </section>
+
+  <!-- 场景3：读 Twitter 时间线 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      场景三：读 Twitter 某博主最近发言
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">你的需求：</strong>想了解某个 AI 领域博主最近一周发了什么，有没有新观点。
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">对 AI 说：</strong>
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-size: 14px; line-height: 1.8; color: #333;">读一下 @某个博主 的 Twitter 时间线，挑出最近一周关于 AI Agent 的发言，整理成中文摘要</p>
+    </section>
+    <p style="margin: 12px 0 5px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">AI 自动做的事：</strong>
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>用配置好的 Twitter Cookie 拉取博主时间线</li>
+      <li>按时间过滤近 7 天内容，关键词匹配"AI / Agent / LLM"</li>
+      <li>翻译英文推文，提取核心观点和引用的链接</li>
+      <li>输出"博主本周 3 个核心观点 + 2 个值得关注的趋势"</li>
+    </ul>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      <strong>对比传统方式：</strong>不用自己一条条刷 Twitter、复制粘贴、再让 AI 总结，一句话搞定。
+    </p>
+  </section>
+
+  <!-- 章节05：安全与隐私 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安全与隐私：Cookie 不外泄</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    涉及到 Cookie、登录态这种敏感信息，大家最关心的就是：<strong style="color: #00897B;">我的账号会不会被盗？数据会不会被上传？</strong>Agent Reach 在这件事上做了三层防护。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">🔒 第一层：Cookie 只存本地</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      所有平台的 Cookie 都保存在你本机，不会上传到任何服务器。AI 调用工具时，是在你的本地环境里读取 Cookie 发起请求，整个过程不经过第三方。
+    </p>
+  </section>
+
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">📂 第二层：代码完全开源</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      Agent Reach 是开源项目，所有代码在 GitHub 公开。你可以审查每一行逻辑，确认它到底读了什么、发了什么请求、有没有偷偷上报数据。开源是隐私保护最硬核的底气。
+    </p>
+  </section>
+
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">🛡️ 第三层：install 默认安全模式</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">agent-reach install</code> 默认只装公开平台访问能力，不会自动配置任何需要登录的平台。需要登录的平台（小红书、Twitter 等）必须你手动配 Cookie 才会启用，<strong>不会偷偷开权限</strong>。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 实操建议：</strong>建议给需要登录的平台单独配一个低权限账号的 Cookie，别用主账号。这样即使 Cookie 意外泄露，影响也有限。
+    </p>
+  </section>
+
+  <!-- 章节06：适用场景 + 与其他工具关联 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">适用场景 + 与其他工具联动</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Agent Reach 不是"非用不可"的工具，但下面这些场景，它能省掉大量重复劳动：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">① 内容调研</strong>：写公众号、做选题时，让 AI 一次性读小红书、知乎、B 站的同类内容，快速摸清热点和竞品角度</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">② 行业情报</strong>：跟踪 Twitter、LinkedIn 上某领域 KOL 的最新发言，整理成周报</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">③ 视频内容提炼</strong>：拿到 B 站、YouTube 视频链接，直接让 AI 总结要点，不用自己看完整段视频</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">④ 财经信息聚合</strong>：读雪球上的研报、讨论，辅助投资决策参考</p>
+    <p style="margin: 0;"><strong style="color: #00897B;">⑤ 技术资料搜集</strong>：扫 GitHub 仓库、V2EX 讨论、Reddit 技术版，给技术调研提速</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这样一来，<strong style="color: #00897B;">Agent Reach 本身不孤立</strong>，能和你已经在用的其他工具摆在一起搭配着用。
+  </p>
+
+  <!-- 工具联动 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      🔗 与其他工具联动
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">配合 cc-switch 管理 MCP</p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">如果你在用 cc-switch 管理 MCP</strong>，Agent Reach 的全网搜索功能也是通过 MCP 接入的，可以直接在 cc-switch 里统一管理、切换、查看调用日志，不用单独维护一套配置。
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">配合 Humanizer 去 AI 味</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">配合 Humanizer 使用</strong>：用 Agent Reach 搜集真实素材（小红书用户原话、B 站评论、Twitter 讨论），再用 Humanizer 去掉 AI 味，让文章既信息扎实又像真人写的。资料靠 Agent Reach 抓，文本靠 Humanizer 收，两头一接，挺省事。
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 个常见疑问</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：需要翻墙吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      国内平台（小红书、B 站、知乎、雪球、V2EX、小宇宙）不需要翻墙，直接走本地网络。访问 Twitter、Facebook、Instagram、YouTube、Reddit、LinkedIn 这些海外平台时，需要你本机能正常访问这些站点——能不能直连取决于你的网络环境，Agent Reach 本身不内置代理。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：收费吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Agent Reach 是<strong style="color: #00897B;">完全开源免费</strong>的，代码在 GitHub 公开，不收任何费用。你只需要承担自己使用 AI 助手时产生的 token 费用（如果用的是付费 AI 服务），Agent Reach 本身不收费。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：支持哪些 AI Agent？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Agent Reach 通过 MCP 协议接入，<strong style="color: #00897B;">凡是支持 MCP 的 AI Agent 都能用</strong>，包括 Claude Code、Cursor、OpenClaw、Codex、OpenCode 等主流编程 Agent，也包括其他支持 MCP 协议的对话型助手。安装方式都是一句话触发，AI 自己读文档搞定。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">AI 很多时候显得"不够聪明"，毛病往往不在模型身上，而在于它<strong style="color: #00897B;">看不到最新、真实的世界</strong>。训练数据有截止日期，平台内容每天都在变，没有联网能力的 AI 就像个只能翻旧报纸的助手。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">Agent Reach 把"上网"做成了一件开源、一句话安装、覆盖 14 个平台的标准能力。装上之后，AI 终于能读到小红书的真实测评、B 站的视频内容、Twitter 的实时讨论，即时感和信息量都和过去完全不一样了。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📖 立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      安装文档：<span style="color: #00897B;">https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md</span><br>
+      更新文档：<span style="color: #00897B;">https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md</span><br>
+      对 AI 说：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">帮我安装 Agent Reach <span style="color: #999; font-size: 12px;"># AI 会自动拉取安装文档并执行</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">agent-reach doctor <span style="color: #999; font-size: 12px;"># 检查所有平台连通性</span></p>
+    </section>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你最想让 AI 读哪个平台的内容？装上 Agent Reach 之后效果怎么样？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

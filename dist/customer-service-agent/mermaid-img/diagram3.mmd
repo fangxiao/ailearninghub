@@ -1,0 +1,13 @@
+graph LR
+    U[用户问题] --> I[意图识别<br/>intents.json]
+    I --> |匹配FAQ| F[FAQ知识库<br/>faq.json]
+    I --> |提取实体| E[实体词典<br/>entities.json]
+    
+    F --> R[检索相关答案]
+    E --> R
+    R --> A[生成响应]
+    
+    style U fill:#e3f2fd
+    style A fill:#e8f5e9
+    style F fill:#fff3e0
+    style E fill:#fff3e0

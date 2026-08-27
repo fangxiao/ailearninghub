@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实战01：设计你的专属AI助手</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">20</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐ 实战入门</p>
+<p data-tool="mdnice编辑器">你将收获：完成个人助手的完整设计，为开发做准备</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">从原理到实战：为什么从个人助手开始？</span></h2>
+<p data-tool="mdnice编辑器">恭喜你完成了原理篇！你已经：</p>
+<ul>
+<li><section>✅ 理解了Agent的核心循环</section></li>
+<li><section>✅ 掌握了记忆系统原理</section></li>
+<li><section>✅ 了解了架构设计</section></li>
+<li><section>✅ 学会了企业级部署</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>现在是时候动手了！</strong></p>
+<p data-tool="mdnice编辑器">为什么从个人助手开始？</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>个人助手的优势：<br/>1. 贴近生活：解决你自己的问题<br/>2. 难度适中：综合运用所学知识<br/>3. 快速见效：2周就能用上<br/>4. 可扩展：从简单到复杂，逐步演进</code></pre>
+<p data-tool="mdnice编辑器">这一篇，我们一起设计你的专属AI助手。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、需求分析：你想要什么助手？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">助手能做什么？</span></h3>
+<p data-tool="mdnice编辑器"><strong>OpenClaw的能力范围：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 可以做：<br/>• 文件操作（读写、整理、搜索）<br/>• 网络搜索（获取信息）<br/>• 消息处理（邮件、通知）<br/>• 日程管理（日历、提醒）<br/>• 文档处理（PDF、Word、Excel）<br/>• API调用（外部服务）<br/>• 定时任务（自动化）<br/><br/>❌ 不能做：<br/>• 控制物理设备（除非有API）<br/>• 突破系统权限<br/>• 违反法律法规</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">你的痛点是什么？</span></h3>
+<p data-tool="mdnice编辑器"><strong>常见需求场景：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>场景</th>
+<th>痛点</th>
+<th>助手能帮什么</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>日程管理</td>
+<td>会议冲突、忘记事项</td>
+<td>自动提醒、冲突检测</td>
+</tr>
+<tr>
+<td>邮件处理</td>
+<td>邮件太多看不完</td>
+<td>自动分类、摘要</td>
+</tr>
+<tr>
+<td>文件整理</td>
+<td>文件乱、找不到</td>
+<td>自动分类、搜索</td>
+</tr>
+<tr>
+<td>信息收集</td>
+<td>每天重复搜索</td>
+<td>自动抓取、汇总</td>
+</tr>
+<tr>
+<td>待办事项</td>
+<td>忘记跟进</td>
+<td>智能提醒、优先级</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.3</span><span class="title-text">需求收集模板</span></h3>
+<p data-tool="mdnice编辑器"><strong>填写你的需求：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>## 我的助手需求<br/><br/>### 基本信息<br/>- 职业：[上班族/自由职业/学生/其他]<br/>- 电脑系统：[macOS/Windows/Linux]<br/>- 主要工作：[描述你的日常工作]<br/><br/>### 核心需求（选3个最重要的）<br/>1. [需求1]：[具体描述]<br/>   - 例如：日程管理 - 每天早上8点提醒今天日程<br/>2. [需求2]：[具体描述]<br/>3. [需求3]：[具体描述]<br/><br/>### 使用频率<br/>- [ ] 每天都用<br/>- [ ] 每周几次<br/>- [ ] 偶尔用<br/><br/>### 技术水平<br/>- [ ] 完全新手（只会基本操作）<br/>- [ ] 有一定基础（会写简单代码）<br/>- [ ] 开发者（熟悉编程）<br/><br/>### 期望的交互方式<br/>- [ ] 命令行（终端）<br/>- [ ] 网页界面<br/>- [ ] 桌面应用<br/>- [ ] 手机App<br/>- [ ] 聊天软件（微信/飞书）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.4</span><span class="title-text">示例：小王的需求</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>## 小王的助手需求<br/><br/>### 基本信息<br/>- 职业：上班族（产品经理）<br/>- 电脑系统：macOS<br/>- 主要工作：开会、写文档、回复消息、跟进项目<br/><br/>### 核心需求<br/>1. 日程管理：每天早上提醒今天的会议和待办<br/>2. 会议纪要：自动整理会议录音成纪要<br/>3. 邮件摘要：每天早上汇总重要邮件<br/><br/>### 使用频率<br/>- [x] 每天都用<br/><br/>### 技术水平<br/>- [x] 有一定基础（会写简单代码）<br/><br/>### 期望的交互方式<br/>- [x] 聊天软件（飞书）</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、功能设计：MVP vs 完整版</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">什么是MVP？</span></h3>
+<p data-tool="mdnice编辑器"><strong>MVP = Minimum Viable Product（最小可行产品）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>MVP原则：<br/>• 只做最核心的功能<br/>• 快速上线验证<br/>• 根据反馈迭代<br/>• 避免过度设计</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">小王助手的功能规划</span></h3>
+<p data-tool="mdnice编辑器"><strong>MVP版本（第<span class="num">1</span>周）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>核心功能：<br/>✅ 日程提醒<br/>   - 连接飞书日历<br/>   - 每天早上8点推送今日日程<br/>   - 会议前15分钟提醒<br/><br/>✅ 简单待办<br/>   - 添加待办事项<br/>   - 标记完成<br/>   - 每日回顾<br/><br/>✅ 基础交互<br/>   - 飞书私聊<br/>   - 自然语言理解</code></pre>
+<p data-tool="mdnice编辑器"><strong>完整版（第<span class="num">2</span>周及以后）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>扩展功能：<br/>• 会议纪要（语音转文字）<br/>• 邮件摘要（连接邮箱）<br/>• 智能建议（根据习惯推荐）<br/>• 项目追踪（进度管理）<br/>• 周报生成（自动汇总）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">功能优先级矩阵</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>           高价值<br/>              ↑<br/>    ┌─────────┼─────────┐<br/>    │  优先做  │  也要做  │<br/>    │ (MVP)   │ (V2.0)  │<br/>────┼─────────┼─────────┼───→ 高频<br/>    │  可选做  │  暂不做  │<br/>    │ (V3.0)  │ (砍掉)  │<br/>    └─────────┼─────────┘<br/>              ↓<br/>           低价值</code></pre>
+<p data-tool="mdnice编辑器"><strong>小王的功能优先级：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>功能</th>
+<th>价值</th>
+<th>频率</th>
+<th>优先级</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>日程提醒</td>
+<td>高</td>
+<td>每天</td>
+<td>P0（MVP）</td>
+</tr>
+<tr>
+<td>待办管理</td>
+<td>高</td>
+<td>每天</td>
+<td>P0（MVP）</td>
+</tr>
+<tr>
+<td>会议纪要</td>
+<td>高</td>
+<td>每周2-<span class="num">3</span>次</td>
+<td>P1（V1.5）</td>
+</tr>
+<tr>
+<td>邮件摘要</td>
+<td>中</td>
+<td>每天</td>
+<td>P2（V2.0）</td>
+</tr>
+<tr>
+<td>项目追踪</td>
+<td>中</td>
+<td>每周</td>
+<td>P2（V2.0）</td>
+</tr>
+<tr>
+<td>周报生成</td>
+<td>低</td>
+<td>每周</td>
+<td>P3（V3.0）</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、技术选型：用哪些Skill？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">技能盘点</span></h3>
+<p data-tool="mdnice编辑器"><strong>需要的Skills：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># 1. 日历Skill</span><br/><span style="color: #FF4689">calendar</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">功能</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">读取日历事件</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">支持</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">飞书日历、Google Calendar</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">难度</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">⭐⭐</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #e0e0e0"># 2. 提醒Skill</span><br/><span style="color: #FF4689">reminder</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">功能</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">定时提醒</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">支持</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">飞书消息、系统通知</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">难度</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">⭐</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #e0e0e0"># 3. 待办Skill</span><br/><span style="color: #FF4689">todo</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">功能</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">待办事项管理</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">支持</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">本地存储</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">难度</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">⭐</span><br/><br/><span style="color: #e0e0e0"># 4. 自然语言理解</span><br/><span style="color: #FF4689">nlu</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">功能</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">理解用户意图</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">支持</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">LLM</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">难度</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">⭐⭐</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">数据存储</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># 选择存储方案</span><br/><span style="color: #FF4689">storage</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">待办事项</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">方案</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">SQLite</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">理由</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">轻量、本地、够用</span><br/><span style="color: #F8F8F2">    </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">日历数据</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">方案</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">API调用（不存储）</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">理由</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">实时性</span><br/><span style="color: #F8F8F2">    </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">用户配置</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">方案</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">YAML文件</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">理由</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">简单易改</span><br/><span style="color: #F8F8F2">    </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">对话历史</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">方案</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">JSON文件</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">理由</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">便于调试</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">交互渠道</span></h3>
+<p data-tool="mdnice编辑器"><strong>飞书私聊接入：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 为什么选飞书？</span><br/><span style="color: #F8F8F2">优势</span><span style="color: #ED007E; background-color: #1E0010">：</span><br/><span style="color: #ED007E; background-color: #1E0010">✅</span> <span style="color: #F8F8F2">企业常用</span><span style="color: #ED007E; background-color: #1E0010">（</span><span style="color: #F8F8F2">小王公司用飞书</span><span style="color: #ED007E; background-color: #1E0010">）</span><br/><span style="color: #ED007E; background-color: #1E0010">✅</span> <span style="color: #F8F8F2">API完善</span><br/><span style="color: #ED007E; background-color: #1E0010">✅</span> <span style="color: #F8F8F2">免费额度足够</span><br/><span style="color: #ED007E; background-color: #1E0010">✅</span> <span style="color: #F8F8F2">多端同步</span><br/><br/><span style="color: #e0e0e0"># 对比其他渠道</span><br/><span style="color: #F8F8F2">微信</span><span style="color: #ED007E; background-color: #1E0010">：</span><br/>  <span style="color: #ED007E; background-color: #1E0010">❌</span> <span style="color: #F8F8F2">个人号API不稳定</span><br/>  <span style="color: #ED007E; background-color: #1E0010">❌</span> <span style="color: #F8F8F2">官方API要企业认证</span><br/>  <br/><span style="color: #F8F8F2">Telegram</span><span style="color: #ED007E; background-color: #1E0010">：</span><br/>  <span style="color: #ED007E; background-color: #1E0010">✅</span> <span style="color: #F8F8F2">API友好</span><br/>  <span style="color: #ED007E; background-color: #1E0010">❌</span> <span style="color: #F8F8F2">国内网络问题</span><br/>  <br/><span style="color: #F8F8F2">命令行</span><span style="color: #ED007E; background-color: #1E0010">：</span><br/>  <span style="color: #ED007E; background-color: #1E0010">✅</span> <span style="color: #F8F8F2">最简单</span><br/>  <span style="color: #ED007E; background-color: #1E0010">❌</span> <span style="color: #F8F8F2">不方便</span><span style="color: #ED007E; background-color: #1E0010">（</span><span style="color: #F8F8F2">需要开终端</span><span style="color: #ED007E; background-color: #1E0010">）</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、架构设计：单Agent vs 多Agent</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">架构选项</span></h3>
+<p data-tool="mdnice编辑器"><strong>选项A：单Agent（推荐新手）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────┐<br/>│         主Agent             │<br/>│  ┌─────────────────────┐   │<br/>│  │  意图识别            │   │<br/>│  │  日程/待办/提醒      │   │<br/>│  │  对话管理            │   │<br/>│  └─────────────────────┘   │<br/>└─────────────────────────────┘<br/><br/>优点：<br/>✅ 简单易懂<br/>✅ 调试方便<br/>✅ 资源占用少<br/><br/>缺点：<br/>❌ 功能耦合<br/>❌ 扩展性一般</code></pre>
+<p data-tool="mdnice编辑器"><strong>选项B：多Agent（进阶）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌──────────┐    ┌──────────┐    ┌──────────┐<br/>│ 调度Agent │───→│ 日程Agent │    │ 待办Agent │<br/>└──────────┘    └──────────┘    └──────────┘<br/>     ↓<br/>┌──────────┐<br/>│ 提醒Agent │<br/>└──────────┘<br/><br/>优点：<br/>✅ 模块化<br/>✅ 易扩展<br/>✅ 可并行<br/><br/>缺点：<br/>❌ 复杂度高<br/>❌ 通信成本</code></pre>
+<p data-tool="mdnice编辑器"><strong>选项C：工作流模式（推荐）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────────────┐<br/>│            主工作流                  │<br/>│  ┌─────┐   ┌─────┐   ┌─────┐      │<br/>│  │意图  │→ │路由  │→ │执行  │      │<br/>│  │识别  │   │分发  │   │任务  │      │<br/>│  └─────┘   └─────┘   └─────┘      │<br/>└─────────────────────────────────────┘<br/><br/>优点：<br/>✅ 清晰的流程<br/>✅ 易于调试<br/>✅ 平衡复杂度</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">小王的架构选择</span></h3>
+<p data-tool="mdnice编辑器"><strong>选择：工作流模式</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># 架构设计</span><br/><span style="color: #FF4689">architecture</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">模式</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">工作流</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">组件</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    - </span><span style="color: #FF4689">入口</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">飞书消息接收</span><br/><span style="color: #F8F8F2">    - </span><span style="color: #FF4689">意图识别</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">LLM分类</span><br/><span style="color: #F8F8F2">    - </span><span style="color: #FF4689">路由分发</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">根据意图分发</span><br/><span style="color: #F8F8F2">    - </span><span style="color: #FF4689">任务执行</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">对应Skill</span><br/><span style="color: #F8F8F2">    - </span><span style="color: #FF4689">结果返回</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">飞书消息</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">数据流</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #AE81FF">用户消息 → 意图识别 → 路由 → Skill执行 → 返回结果</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">详细架构图</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────────────────────────────────┐<br/>│                    个人助手系统                          │<br/>├─────────────────────────────────────────────────────────┤<br/>│                                                         │<br/>│  ┌─────────┐                                           │<br/>│  │ 飞书Bot │ ← 用户交互入口                            │<br/>│  └────┬────┘                                           │<br/>│       │                                                 │<br/>│       ↓                                                 │<br/>│  ┌─────────┐                                           │<br/>│  │消息接收  │                                           │<br/>│  └────┬────┘                                           │<br/>│       │                                                 │<br/>│       ↓                                                 │<br/>│  ┌─────────────────────────────────────┐               │<br/>│  │          意图识别（LLM）             │               │<br/>│  │  • 日程查询    • 待办管理    • 其他  │               │<br/>│  └────┬────────────┬────────────┬─────┘               │<br/>│       │            │            │                      │<br/>│       ↓            ↓            ↓                      │<br/>│  ┌─────────┐ ┌─────────┐ ┌─────────┐                  │<br/>│  │日程Skill│ │待办Skill│ │聊天Skill│                  │<br/>│  └────┬────┘ └────┬────┘ └────┬────┘                  │<br/>│       │            │            │                      │<br/>│       ↓            ↓            ↓                      │<br/>│  ┌─────────┐ ┌─────────┐ ┌─────────┐                  │<br/>│  │飞书日历 │ │ SQLite  │ │  LLM    │                  │<br/>│  └─────────┘ └─────────┘ └─────────┘                  │<br/>│                                                         │<br/>├─────────────────────────────────────────────────────────┤<br/>│  ┌─────────────────────────────────────────────┐       │<br/>│  │           定时任务（提醒系统）               │       │<br/>│  │  • 每日日程提醒    • 会议前提醒              │       │<br/>│  └─────────────────────────────────────────────┘       │<br/>└─────────────────────────────────────────────────────────┘</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、数据模型设计</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">待办事项</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># models/todo.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> dataclasses </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">dataclass</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> datetime </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">datetime</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> typing </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Optional</span><br/><br/><span style="color: #A6E22E">@dataclass</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">Todo</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;待办事项&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">id:</span> <span style="color: #F8F8F2">str</span>                    <span style="color: #e0e0e0"># 唯一ID</span><br/>    <span style="color: #F8F8F2">title:</span> <span style="color: #F8F8F2">str</span>                 <span style="color: #e0e0e0"># 标题</span><br/>    <span style="color: #F8F8F2">description:</span> <span style="color: #F8F8F2">str</span>           <span style="color: #e0e0e0"># 描述</span><br/>    <span style="color: #F8F8F2">status:</span> <span style="color: #F8F8F2">str</span>                <span style="color: #e0e0e0"># pending/completed</span><br/>    <span style="color: #F8F8F2">priority:</span> <span style="color: #F8F8F2">str</span>              <span style="color: #e0e0e0"># high/medium/low</span><br/>    <span style="color: #F8F8F2">due_date:</span> <span style="color: #F8F8F2">Optional[datetime]</span>  <span style="color: #e0e0e0"># 截止时间</span><br/>    <span style="color: #F8F8F2">created_at:</span> <span style="color: #F8F8F2">datetime</span>       <span style="color: #e0e0e0"># 创建时间</span><br/>    <span style="color: #F8F8F2">completed_at:</span> <span style="color: #F8F8F2">Optional[datetime]</span>  <span style="color: #e0e0e0"># 完成时间</span><br/>    <span style="color: #F8F8F2">tags:</span> <span style="color: #F8F8F2">list[str]</span>            <span style="color: #e0e0e0"># 标签</span><br/><br/><span style="color: #e0e0e0"># 存储结构（SQLite）</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">CREATE TABLE todos (</span><br/><span style="color: #E6DB74">    id TEXT PRIMARY KEY,</span><br/><span style="color: #E6DB74">    title TEXT NOT NULL,</span><br/><span style="color: #E6DB74">    description TEXT,</span><br/><span style="color: #E6DB74">    status TEXT DEFAULT &#39;pending&#39;,</span><br/><span style="color: #E6DB74">    priority TEXT DEFAULT &#39;medium&#39;,</span><br/><span style="color: #E6DB74">    due_date TIMESTAMP,</span><br/><span style="color: #E6DB74">    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,</span><br/><span style="color: #E6DB74">    completed_at TIMESTAMP,</span><br/><span style="color: #E6DB74">    tags TEXT  -- JSON格式</span><br/><span style="color: #E6DB74">);</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">日程事件</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># models/event.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> dataclasses </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">dataclass</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> datetime </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">datetime</span><br/><br/><span style="color: #A6E22E">@dataclass</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">Event</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;日程事件&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">id:</span> <span style="color: #F8F8F2">str</span>                    <span style="color: #e0e0e0"># 事件ID</span><br/>    <span style="color: #F8F8F2">title:</span> <span style="color: #F8F8F2">str</span>                 <span style="color: #e0e0e0"># 标题</span><br/>    <span style="color: #F8F8F2">start_time:</span> <span style="color: #F8F8F2">datetime</span>       <span style="color: #e0e0e0"># 开始时间</span><br/>    <span style="color: #F8F8F2">end_time:</span> <span style="color: #F8F8F2">datetime</span>         <span style="color: #e0e0e0"># 结束时间</span><br/>    <span style="color: #F8F8F2">location:</span> <span style="color: #F8F8F2">str</span>              <span style="color: #e0e0e0"># 地点</span><br/>    <span style="color: #F8F8F2">attendees:</span> <span style="color: #F8F8F2">list[str]</span>       <span style="color: #e0e0e0"># 参与人</span><br/>    <span style="color: #F8F8F2">description:</span> <span style="color: #F8F8F2">str</span>           <span style="color: #e0e0e0"># 描述</span><br/>    <span style="color: #F8F8F2">source:</span> <span style="color: #F8F8F2">str</span>                <span style="color: #e0e0e0"># 来源（飞书/Google）</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.3</span><span class="title-text">用户配置</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># config.yaml</span><br/><span style="color: #FF4689">user</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">小王</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">timezone</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">Asia/Shanghai</span><br/><br/><span style="color: #e0e0e0"># 飞书配置</span><br/><span style="color: #FF4689">feishu</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">app_id</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">cli_xxx</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">app_secret</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">xxx</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #e0e0e0"># 提醒配置</span><br/><span style="color: #FF4689">reminder</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">daily_schedule</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">enabled</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">time</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;08:00&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">meeting_reminder</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">enabled</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">advance_minutes</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">15</span><br/><br/><span style="color: #e0e0e0"># 工作时间</span><br/><span style="color: #FF4689">work_hours</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">start</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;09:00&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">end</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;18:00&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">workdays</span><span style="color: #F8F8F2">: [1, 2, 3, 4, 5]  </span><span style="color: #e0e0e0"># 周一到周五</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、开发计划</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">第一周：MVP</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #FF4689">Week 1 - MVP版本</span><span style="color: #F8F8F2">:</span><br/><br/><span style="color: #FF4689">Day 1-2</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">基础框架</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 项目初始化</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 飞书Bot接入</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 基本消息收发</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">Day 3-4</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">核心功能</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 日程Skill开发</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 待办Skill开发</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 意图识别集成</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">Day 5</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">定时任务</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 每日提醒</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 会议提醒</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">Day 6-7</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">测试优化</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 功能测试</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- Bug修复</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 体验优化</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">第二周：增强版</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #FF4689">Week 2 - 增强版</span><span style="color: #F8F8F2">:</span><br/><br/><span style="color: #FF4689">Day 1-2</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">功能增强</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 待办优先级</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 标签系统</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 搜索功能</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">Day 3-4</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">体验优化</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 自然语言优化</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 快捷指令</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 错误处理</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">Day 5-6</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">部署上线</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 服务器部署</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 域名配置</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 监控告警</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">Day 7</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">文档整理</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 使用文档</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 开发文档</span><br/><span style="color: #F8F8F2">  </span><span style="color: #AE81FF">- 分享文章</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">任务分解</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #e0e0e0">## MVP任务清单</span><br/><br/><span style="color: #e0e0e0">### 基础框架</span><br/><span style="color: #66D9EF">- [ ]</span> 创建项目目录结构<br/><span style="color: #66D9EF">- [ ]</span> 配置依赖（requirements.txt）<br/><span style="color: #66D9EF">- [ ]</span> 飞书Bot注册<br/><span style="color: #66D9EF">- [ ]</span> 消息接收Webhook<br/><span style="color: #66D9EF">- [ ]</span> 消息发送API<br/><br/><span style="color: #e0e0e0">### 日程Skill</span><br/><span style="color: #66D9EF">- [ ]</span> 飞书日历API集成<br/><span style="color: #66D9EF">- [ ]</span> 获取今日日程<br/><span style="color: #66D9EF">- [ ]</span> 格式化输出<br/><br/><span style="color: #e0e0e0">### 待办Skill</span><br/><span style="color: #66D9EF">- [ ]</span> SQLite数据库初始化<br/><span style="color: #66D9EF">- [ ]</span> 添加待办<br/><span style="color: #66D9EF">- [ ]</span> 查看待办<br/><span style="color: #66D9EF">- [ ]</span> 完成待办<br/><span style="color: #66D9EF">- [ ]</span> 删除待办<br/><br/><span style="color: #e0e0e0">### 意图识别</span><br/><span style="color: #66D9EF">- [ ]</span> 设计提示词<br/><span style="color: #66D9EF">- [ ]</span> LLM调用封装<br/><span style="color: #66D9EF">- [ ]</span> 意图分类逻辑<br/><br/><span style="color: #e0e0e0">### 定时任务</span><br/><span style="color: #66D9EF">- [ ]</span> 每日日程提醒<br/><span style="color: #66D9EF">- [ ]</span> 会议前提醒<br/><span style="color: #66D9EF">- [ ]</span> 定时任务管理<br/><br/><span style="color: #e0e0e0">### 测试部署</span><br/><span style="color: #66D9EF">- [ ]</span> 单元测试<br/><span style="color: #66D9EF">- [ ]</span> 集成测试<br/><span style="color: #66D9EF">- [ ]</span> 服务器部署<br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、项目初始化</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">创建项目结构</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 创建项目目录</span><br/>mkdir<span style="color: #F8F8F2"> </span>personal-assistant<br/><span style="color: #F8F8F2">cd </span>personal-assistant<br/><br/><span style="color: #e0e0e0"># 创建目录结构</span><br/>mkdir<span style="color: #F8F8F2"> </span>-p<span style="color: #F8F8F2"> </span><span style="color: #FF4689">{</span>skills,models,utils,config,tests<span style="color: #FF4689">}</span><br/>touch<span style="color: #F8F8F2"> </span>requirements.txt<br/>touch<span style="color: #F8F8F2"> </span>main.py<br/>touch<span style="color: #F8F8F2"> </span>config.yaml<br/>touch<span style="color: #F8F8F2"> </span>README.md<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>最终结构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>personal-assistant/<br/>├── main.py              # 入口文件<br/>├── config.yaml          # 配置文件<br/>├── requirements.txt     # 依赖<br/>├── README.md            # 文档<br/>│<br/>├── skills/              # 技能目录<br/>│   ├── __init__.py<br/>│   ├── calendar_skill.py<br/>│   ├── todo_skill.py<br/>│   └── reminder_skill.py<br/>│<br/>├── models/              # 数据模型<br/>│   ├── __init__.py<br/>│   ├── todo.py<br/>│   └── event.py<br/>│<br/>├── utils/               # 工具函数<br/>│   ├── __init__.py<br/>│   ├── feishu.py<br/>│   ├── llm.py<br/>│   └── scheduler.py<br/>│<br/>├── config/              # 配置管理<br/>│   ├── __init__.py<br/>│   └── settings.py<br/>│<br/>├── tests/               # 测试<br/>│   ├── test_calendar.py<br/>│   └── test_todo.py<br/>│<br/>└── data/                # 数据存储<br/>    ├── todos.db<br/>    └── history.json</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">依赖配置</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">txt</span></span><code># requirements.txt<br/><br/># OpenClaw<br/>openclaw&gt;=2.0.0<br/><br/># 飞书SDK<br/>lark-oapi&gt;=1.0.0<br/><br/># 数据库<br/>sqlite3  # 内置<br/><br/># 定时任务<br/>apscheduler&gt;=3.10.0<br/><br/># LLM<br/>openai&gt;=1.0.0<br/># 或<br/>zhipuai&gt;=2.0.0  # 智谱AI<br/><br/># 工具库<br/>pyyaml&gt;=6.0<br/>python-dateutil&gt;=2.8.0<br/>pydantic&gt;=2.0.0<br/><br/># 开发工具<br/>pytest&gt;=7.0.0<br/>black&gt;=23.0.0</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.3</span><span class="title-text">配置文件模板</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># config.yaml</span><br/><br/><span style="color: #e0e0e0"># 应用配置</span><br/><span style="color: #FF4689">app</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">个人助手</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">version</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">1.0.0</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">debug</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">false</span><br/><br/><span style="color: #e0e0e0"># 用户配置</span><br/><span style="color: #FF4689">user</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">你的名字</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">timezone</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">Asia/Shanghai</span><br/><br/><span style="color: #e0e0e0"># 飞书配置</span><br/><span style="color: #FF4689">feishu</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">app_id</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">${FEISHU_APP_ID}</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">app_secret</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">${FEISHU_APP_SECRET}</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">verify_token</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">${FEISHU_VERIFY_TOKEN}</span><br/><br/><span style="color: #e0e0e0"># LLM配置</span><br/><span style="color: #FF4689">llm</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">provider</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">zhipu</span><span style="color: #F8F8F2">  </span><span style="color: #e0e0e0"># openai/zhipu</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">model</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">glm-4</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">api_key</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">${LLM_API_KEY}</span><br/><br/><span style="color: #e0e0e0"># 提醒配置</span><br/><span style="color: #FF4689">reminder</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">daily_schedule</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">enabled</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">time</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;08:00&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">meeting_reminder</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">enabled</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">advance_minutes</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">15</span><br/><br/><span style="color: #e0e0e0"># 工作时间</span><br/><span style="color: #FF4689">work_hours</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">start</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;09:00&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">end</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;18:00&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">workdays</span><span style="color: #F8F8F2">: [1, 2, 3, 4, 5]</span><br/><br/><span style="color: #e0e0e0"># 数据库</span><br/><span style="color: #FF4689">database</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">type</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">sqlite</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">path</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">./data/todos.db</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、下一步</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.1</span><span class="title-text">本篇回顾</span></h3>
+<p data-tool="mdnice编辑器"><strong>你完成了：</strong></p>
+<ul>
+<li><section>✅ 需求分析（知道自己要什么）</section></li>
+<li><section>✅ 功能设计（MVP vs 完整版）</section></li>
+<li><section>✅ 技术选型（<span class="key">Skills</span>、存储、交互）</section></li>
+<li><section>✅ 架构设计（工作流模式）</section></li>
+<li><section>✅ 数据模型（待办、日程、配置）</section></li>
+<li><section>✅ 开发计划（2周任务分解）</section></li>
+<li><section>✅ 项目初始化（目录结构）</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.2</span><span class="title-text">下期预告</span></h3>
+<p data-tool="mdnice编辑器"><strong>下一篇：核心功能开发 - 日程管理与提醒</strong></p>
+<p data-tool="mdnice编辑器"><strong>你将学到：</strong></p>
+<ul>
+<li><section>✅ 飞书Bot接入</section></li>
+<li><section>✅ 日程Skill开发</section></li>
+<li><section>✅ 提醒Skill开发</section></li>
+<li><section>✅ 定时任务配置</section></li>
+<li><section>✅ 完整代码实现</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>准备工作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 1. 注册飞书开发者账号</span><br/><span style="color: #e0e0e0"># https://open.feishu.cn</span><br/><br/><span style="color: #e0e0e0"># 2. 创建企业自建应用</span><br/><span style="color: #e0e0e0"># 获取 app_id 和 app_secret</span><br/><br/><span style="color: #e0e0e0"># 3. 配置权限</span><br/><span style="color: #e0e0e0"># - 日历：calendar:calendar:readonly</span><br/><span style="color: #e0e0e0"># - 消息：im:message</span><br/><br/><span style="color: #e0e0e0"># 4. 安装依赖</span><br/>pip<span style="color: #F8F8F2"> </span>install<span style="color: #F8F8F2"> </span>-r<span style="color: #F8F8F2"> </span>requirements.txt<br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">九、动手练习</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">🎯 设计你的助手</span></h3>
+<p data-tool="mdnice编辑器">完成以下练习，为下一篇做准备：</p>
+<p data-tool="mdnice编辑器"><strong>练习1：需求文档</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #e0e0e0">## 我的个人助手需求</span><br/><br/><span style="color: #e0e0e0">### 基本信息</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>职业：<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>电脑系统：<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>主要工作：<br/><br/><span style="color: #e0e0e0">### 核心需求（3个）</span><br/>1. <br/>2. <br/>3. <br/><br/><span style="color: #e0e0e0">### 使用场景</span><br/>每天早上：<br/>工作中：<br/>下班后：<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>练习2：功能清单</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #e0e0e0">## 功能优先级</span><br/><br/>| 功能 | 价值 | 频率 | 优先级 |<br/>|------|------|------|--------|<br/>|      |      |      |        |<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>练习3：架构草图</strong></p>
+<p data-tool="mdnice编辑器">画一个简单的架构图，标注：</p>
+<ul>
+<li><section>用户入口</section></li>
+<li><section>核心Skills</section></li>
+<li><section>数据存储</section></li>
+<li><section>外部服务</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：企业级部署：从开发到生产（原理篇完结）</section></li>
+<li><section>下一篇：核心功能：日程管理与提醒</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《OpenClaw实战系列》第<span class="num">1</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-03-26</p>
+<p data-tool="mdnice编辑器"><strong>准备好了吗？下一篇开始写代码！</strong> 💻</p>
+</article>
+</div>
+</body>
+</html>

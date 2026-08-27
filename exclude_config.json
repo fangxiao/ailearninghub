@@ -1,0 +1,18 @@
+{
+  "description": "AI 学习智库 · 隐藏/未成熟文档排除配置文件",
+  "hidden_categories": [],
+  "hidden_files": [],
+  "hidden_patterns": [
+    "_*",
+    "*_draft*",
+    "*draft*",
+    "*草稿*",
+    "*wip*",
+    "*temp*",
+    "beta-*",
+    "*beta*",
+    "todo-*",
+    "*todo*"
+  ],
+  "coming_soon_articles": []
+}

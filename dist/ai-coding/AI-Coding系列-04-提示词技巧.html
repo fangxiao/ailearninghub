@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提示词技巧：让 Claude 更懂你</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">12</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐ 初学者</p>
+<p data-tool="mdnice编辑器">你将收获：掌握高质量提示词的写作技巧</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：你已经学会了什么？</span></h2>
+<p data-tool="mdnice编辑器"><strong>前<span class="num">3</span>篇我们完成了：</strong></p>
+<p data-tool="mdnice编辑器"><strong>第<span class="num">1</span>篇：理解 AI Coding</strong></p>
+<ul>
+<li><section>✅ 知道了 AI Coding 是什么</section></li>
+<li><section>✅ 了解了主流工具对比</section></li>
+<li><section>✅ 选择了 <span class="key">Claude</span> Code</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>第<span class="num">2</span>篇：完成安装配置</strong></p>
+<ul>
+<li><section>✅ 选择了合适的 Coding Plan</section></li>
+<li><section>✅ 完成了安装和配置</section></li>
+<li><section>✅ 运行了第一个示例</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>第<span class="num">3</span>篇：掌握基础操作</strong></p>
+<ul>
+<li><section>✅ 学会了代码生成</section></li>
+<li><section>✅ 学会了代码解释</section></li>
+<li><section>✅ 学会了 Bug 修复</section></li>
+<li><section>✅ 学会了重构优化</section></li>
+<li><section>✅ 学会了测试生成</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>这一篇：提升提示词质量</strong></p>
+<p data-tool="mdnice编辑器">你已经能用 <span class="key">Claude</span> Code 做基本任务了，但可能发现：</p>
+<ul>
+<li><section>有时候生成的代码不符合预期</section></li>
+<li><section>有时候需要多次沟通才能说清楚</section></li>
+<li><section>有时候 <span class="key">Claude</span> 理解不到位</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>问题根源：</strong> 提示词写得不够好。</p>
+<p data-tool="mdnice编辑器"><strong>这一篇将教你：</strong> 如何写出高质量的提示词，让 <span class="key">Claude</span> 准确理解你的需求。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">为什么提示词很重要？</span></h2>
+<p data-tool="mdnice编辑器"><strong>同样的 <span class="key">Claude</span>，不同的提示词，效果天壤之别：</strong></p>
+<p data-tool="mdnice编辑器"><strong>差的提示词：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>写个函数</code></pre>
+<p data-tool="mdnice编辑器"><span class="key">Claude</span> 会问：什么函数？什么语言？什么功能？</p>
+<p data-tool="mdnice编辑器"><strong>好的提示词：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用 Python 写一个函数：<br/>- 功能：验证邮箱格式<br/>- 参数：邮箱字符串<br/>- 返回：布尔值<br/>- 使用正则表达式<br/>- 包含测试用例</code></pre>
+<p data-tool="mdnice编辑器"><span class="key">Claude</span> Code 会生成完整、高质量的代码。</p>
+<p data-tool="mdnice编辑器"><strong>结论：提示词质量 = 输出质量</strong></p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、提示词的5个要素</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">完整的提示词结构</span></h3>
+<p data-tool="mdnice编辑器"><strong>黄金公式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>背景 + 任务 + 要求 + 示例 + 格式</code></pre>
+<p data-tool="mdnice编辑器"><strong>示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>【背景】我在做一个 Django 电商项目<br/><br/>【任务】写一个商品搜索 API<br/><br/>【要求】<br/>- 支持关键词搜索<br/>- 支持价格区间筛选<br/>- 支持分页（每页20条）<br/>- 返回 JSON 格式<br/>- 包含错误处理<br/><br/>【示例】<br/>请求：GET /api/products?keyword=iPhone&amp;min_price=5000&amp;max_price=10000&amp;page=1<br/>响应：{<br/>  "products": [...],<br/>  "total": 100,<br/>  "page": 1,<br/>  "pages": 5<br/>}<br/><br/>【格式】<br/>- 遵循 Django REST framework 规范<br/>- 包含视图、序列化器、URL 配置</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">要素详解</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 背景（Context）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>提供项目背景：<br/>- 使用的框架/库<br/>- 项目规模<br/>- 技术栈<br/>- 限制条件</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. 任务（Task）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>明确说明要做什么：<br/>- 具体功能<br/>- 输入输出<br/>- 核心逻辑</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 要求（Requirements）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>质量要求：<br/>- 性能要求<br/>- 安全要求<br/>- 代码风格<br/>- 文档要求</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 示例（Examples）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输入输出示例：<br/>- 正常用例<br/>- 边界用例<br/>- 异常用例</code></pre>
+<p data-tool="mdnice编辑器"><strong>5. 格式（Format）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输出格式：<br/>- 代码格式<br/>- 文件结构<br/>- 注释要求</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、常见错误和改进</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">错误1：太简单</span></h3>
+<p data-tool="mdnice编辑器"><strong>错误示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>写个登录功能</code></pre>
+<p data-tool="mdnice编辑器"><strong>改进版本：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用 Python Flask 实现用户登录功能：<br/><br/>1. 接收参数：用户名、密码<br/>2. 验证：<br/>   - 用户名长度 3-20<br/>   - 密码至少8位<br/>   - 数据库查询验证<br/>3. 成功返回：<br/>   - JWT token<br/>   - 用户基本信息<br/>4. 失败返回：<br/>   - 错误信息<br/>   - 状态码 401<br/>5. 安全措施：<br/>   - 密码加密存储<br/>   - 防止 SQL 注入<br/>   - 登录失败次数限制</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">错误2：缺少上下文</span></h3>
+<p data-tool="mdnice编辑器"><strong>错误示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优化这个函数：<br/>[code]</code></pre>
+<p data-tool="mdnice编辑器"><strong>改进版本：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我在做一个数据处理项目，这个函数用于处理用户上传的 CSV 文件：<br/><br/>当前问题：<br/>- 处理 10万行数据需要 30秒，太慢<br/>- 内存占用过高（500MB+）<br/><br/>优化目标：<br/>- 处理时间降到 5秒以内<br/>- 内存占用控制在 100MB 以内<br/><br/>环境：<br/>- Python 3.10<br/>- Pandas 库<br/>- 服务器 4核8G<br/><br/>[code]<br/><br/>请提供优化方案，并解释原理。</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">错误3：矛盾要求</span></h3>
+<p data-tool="mdnice编辑器"><strong>错误示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>写一个快速排序：<br/>- 时间复杂度 O(n)<br/>- 稳定排序</code></pre>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 快速排序平均 O(n log n)，不稳定</p>
+<p data-tool="mdnice编辑器"><strong>改进版本：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>实现一个高效的排序算法：<br/><br/>数据特点：<br/>- 100万整数<br/>- 范围 0-1000<br/>- 有大量重复<br/><br/>要求：<br/>- 时间复杂度尽可能低<br/>- 稳定排序<br/>- 内存占用合理<br/><br/>建议：考虑计数排序或基数排序</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、提示词模板</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">代码生成模板</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #e0e0e0">## 任务描述</span><br/>[一句话说明要做什么]<br/><br/><span style="color: #e0e0e0">## 功能需求</span><br/><span style="color: #66D9EF">1.</span> [需求1]<br/><span style="color: #66D9EF">2.</span> [需求2]<br/><span style="color: #66D9EF">3.</span> [需求3]<br/><br/><span style="color: #e0e0e0">## 技术要求</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>语言：[Python/JavaScript/etc]<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>框架：[Django/Flask/etc]<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>风格：[PEP 8/etc]<br/><br/><span style="color: #e0e0e0">## 输入输出</span><br/>输入：[描述]<br/>输出：[描述]<br/><br/><span style="color: #e0e0e0">## 示例</span><br/>输入：[example]<br/>输出：[example]<br/><br/><span style="color: #e0e0e0">## 其他要求</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>[错误处理]<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>[性能要求]<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>[文档要求]<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">Bug 修复模板</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #e0e0e0">## 问题描述</span><br/>[描述 bug 现象]<br/><br/><span style="color: #e0e0e0">## 代码</span><br/></code></pre>
+<p data-tool="mdnice编辑器">[粘贴代码]</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code><br/>## 错误信息</code></pre>
+<p data-tool="mdnice编辑器">[粘贴错误堆栈]</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code><br/>## 预期行为<br/>[应该发生什么]<br/><br/>## 实际行为<br/>[实际发生了什么]<br/><br/>## 环境<br/>- Python 版本：<br/>- 操作系统：<br/>- 相关库版本：<br/><br/>## 已尝试<br/>1. [方法1]<br/>2. [方法2]<br/><br/>请帮我找出问题并提供修复方案。</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">代码审查模板</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #e0e0e0">## 审查目标</span><br/>请审查这段代码，关注：<br/><span style="color: #66D9EF">1.</span> 代码质量<br/><span style="color: #66D9EF">2.</span> 潜在 bug<br/><span style="color: #66D9EF">3.</span> 性能问题<br/><span style="color: #66D9EF">4.</span> 安全隐患<br/><br/><span style="color: #e0e0e0">## 代码</span><br/></code></pre>
+<p data-tool="mdnice编辑器">[粘贴代码]</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code><br/>## 项目背景<br/>[项目类型、规模、团队情况]<br/><br/>## 特别关注<br/>- [需要重点审查的部分]<br/><br/>## 审查标准<br/>- [团队规范或行业标准]</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、高级技巧</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">分步骤提问</span></h3>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 一次性问太多，回答可能不深入</p>
+<p data-tool="mdnice编辑器"><strong>技巧：</strong> 分步提问，逐步深入</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1步：<br/>"设计一个用户认证系统的架构"<br/><br/>第2步（基于第1步的回答）：<br/>"根据这个架构，实现登录功能的代码"<br/><br/>第3步：<br/>"为这个登录功能写单元测试"<br/><br/>第4步：<br/>"优化这个测试的覆盖率"</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">提供约束条件</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧：</strong> 明确告诉 <span class="key">Claude</span> 限制条件</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>实现一个缓存系统，要求：<br/><br/>约束条件：<br/>- 不能使用第三方库<br/>- 只用 Python 标准库<br/>- Python 3.8+<br/>- 单文件实现<br/>- 代码不超过 200 行<br/><br/>功能：<br/>- 支持 get/set/delete<br/>- 支持 TTL（过期时间）<br/>- 支持 LRU 淘汰</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">要求解释</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧：</strong> 要求 <span class="key">Claude</span> 解释代码原理</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用 Python 实现一个线程安全的单例模式<br/><br/>要求：<br/>1. 完整代码<br/>2. 解释实现原理<br/>3. 说明为什么是线程安全的<br/>4. 指出潜在问题<br/>5. 提供测试方法</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.4</span><span class="title-text">对比方案</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧：</strong> 要求提供多个方案对比</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>实现一个 Python Web API，有三种方案：<br/>1. Flask<br/>2. FastAPI<br/>3. Django REST Framework<br/><br/>请对比这三种方案：<br/>- 代码示例<br/>- 性能对比<br/>- 适用场景<br/>- 优缺点<br/><br/>项目背景：<br/>- 团队 3人<br/>- API 数量约 50个<br/>- 预计 QPS 1000</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、实战案例</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">案例1：学习新技术</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 学习 React Hooks</p>
+<p data-tool="mdnice编辑器"><strong>提示词：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我是 React 新手，想学习 Hooks。<br/><br/>请帮我：<br/>1. 解释 useState 和 useEffect 的原理<br/>2. 提供实用示例（计数器、数据获取）<br/>3. 指出常见错误和避免方法<br/>4. 推荐学习资源<br/><br/>要求：<br/>- 代码简洁易懂<br/>- 有详细注释<br/>- 包含最佳实践</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">案例2：优化性能</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 优化慢查询</p>
+<p data-tool="mdnice编辑器"><strong>提示词：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>这个 SQL 查询很慢（10秒+），请帮我优化：<br/><br/>[SQL 语句]<br/><br/>表结构：<br/>[表定义]<br/><br/>数据量：<br/>- 表A：1000万行<br/>- 表B：500万行<br/><br/>当前索引：<br/>[索引信息]<br/><br/>优化目标：<br/>- 查询时间降到 1秒以内<br/>- 不改变表结构<br/><br/>请提供：<br/>1. 问题分析<br/>2. 优化方案（多个）<br/>3. 索引建议<br/>4. 优化后的 SQL</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">案例3：代码重构</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 重构遗留代码</p>
+<p data-tool="mdnice编辑器"><strong>提示词：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我接手了一个遗留项目，需要重构这段代码：<br/><br/>目标：<br/>1. 提升可读性<br/>2. 降低耦合度<br/>3. 增加可测试性<br/>4. 性能不下降<br/><br/>约束：<br/>- 不能改变对外接口<br/>- 必须保持功能一致<br/>- 循序渐进，可分步骤<br/><br/>当前问题：<br/>- 函数太长（200行）<br/>- 嵌套太深（5层）<br/>- 缺少测试<br/>- 难以维护<br/><br/>[粘贴代码]<br/><br/>请提供重构方案，包括：<br/>1. 重构步骤<br/>2. 每步的代码改动<br/>3. 对应的测试<br/>4. 注意事项</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、提示词检查清单</span></h2>
+<p data-tool="mdnice编辑器"><strong>写完提示词，检查这些：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 背景信息是否充分？<br/>✅ 任务描述是否清晰？<br/>✅ 要求是否具体？<br/>✅ 有没有示例？<br/>✅ 格式要求是否明确？<br/>✅ 有没有矛盾的地方？<br/>✅ 约束条件是否列出？<br/>✅ 预期输出是否明确？</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>好提示词 = 好结果</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>记住这个公式：<br/>背景 + 任务 + 要求 + 示例 + 格式</code></pre>
+<p data-tool="mdnice编辑器"><strong>三个避免：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>❌ 太简单<br/>❌ 缺上下文<br/>❌ 矛盾要求</code></pre>
+<p data-tool="mdnice编辑器"><strong>三个技巧：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 分步提问<br/>✅ 提供约束<br/>✅ 要求解释</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">下期预告</span></h3>
+<p data-tool="mdnice编辑器"><strong>下一篇：新手总结：从入门到日常使用</strong></p>
+<p data-tool="mdnice编辑器"><strong>你将学到：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>• 知识点回顾<br/>• 常见问题汇总<br/>• 最佳实践<br/>• 学习资源推荐</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：基础操作：<span class="num">5</span>个必会命令</section></li>
+<li><section>下一篇：新手总结：从入门到日常使用</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">4</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-03-27</p>
+<p data-tool="mdnice编辑器"><strong>提示词写得好，<span class="key">Claude</span> 才能帮得好！</strong> 📝</p>
+</article>
+</div>
+</body>
+</html>

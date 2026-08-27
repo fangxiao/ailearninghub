@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 10</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">内置插件实现</span></h2>
+
+<p>上一讲讲了插件架构，这一讲来实现几个内置插件。<a href="Agent开发系列-14.html" class="key">(详见Agent开发系列14：内置工具实现)</a></p>
+
+<p>myAgent内置几个最常用的插件：Search（搜索）、DALLE（绘图）、Browser（浏览器）。这些插件覆盖了大部分日常场景。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>内置插件要"够用但不臃肿"。每个插件只做一件事，但把这件事做到极致。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">Search插件：让Bot能上网</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> httpx</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> .base </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> BaseTool, ToolDefinition, ToolResult</span>
+
+<span style="color: #a6e22e">@register_tool</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> SearchTool(BaseTool):</span>
+
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">definition</span><span style="color: #f8f8f2">(self) -> ToolDefinition:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolDefinition(</span>
+<span style="color: #f8f8f2">            name=</span><span style="color: #e6db74">"search"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            description=</span><span style="color: #e6db74">"搜索互联网获取实时信息"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            parameters=[{</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"搜索关键词，最多50字"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span>
+<span style="color: #f8f8f2">            }]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, query: str) -> ToolResult:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            async </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> httpx.AsyncClient() </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> client:</span>
+<span style="color: #f8f8f2">                response = </span><span style="color: #66d9ef">await</span><span style="color: #f8f8f2"> client.</span><span style="color: #a6e22e">POST</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"https://api.search.example.com/search"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                    json={</span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">: query, </span><span style="color: #e6db74">"limit"</span><span style="color: #f8f8f2">: </span><span style="color: #ae81ff">5</span>
+<span style="color: #f8f8f2">                },</span>
+<span style="color: #f8f8f2">                timeout=</span><span style="color: #ae81ff">10.0</span>
+<span style="color: #f8f8f2">            )
+<span style="color: #f8f8f2">            results = response.</span><span style="color: #a6e22e">json</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">, result=results)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">, error=</span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(e))</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">DALLE插件：让Bot能画画</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">@register_tool</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> DALLETotem(BaseTool):</span>
+
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">definition</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolDefinition(</span>
+<span style="color: #f8f8f2">            name=</span><span style="color: #e6db74">"generate_image"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            description=</span><span style="color: #e6db74">"根据描述生成图片"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            parameters=[{</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"prompt"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"图片描述，英文最佳"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span>
+<span style="color: #f8f8f2">            }, {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"size"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"图片尺寸：256x256, 512x512, 1024x1024"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"default"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"1024x1024"</span>
+<span style="color: #f8f8f2">            }]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, prompt: str, size: str = </span><span style="color: #e6db74">"1024x1024"</span><span style="color: #f8f8f2">) -> ToolResult:</span>
+<span style="color: #f8f8f2">        response = </span><span style="color: #66d9ef">await</span><span style="color: #f8f8f2"> openai.Image.</span><span style="color: #a6e22e">acreate</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            prompt=prompt,</span>
+<span style="color: #f8f8f2">            size=size</span>
+<span style="color: #f8f8f2">        )
+<span style="color: #f8f8f2">        image_url = response.data[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].url</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">, result={</span><span style="color: #e6db74">"url"</span><span style="color: #f8f8f2">: image_url})</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">Browser插件：让Bot能浏览网页</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">@register_tool</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BrowserTool(BaseTool):</span>
+
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">definition</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolDefinition(</span>
+<span style="color: #f8f8f2">            name=</span><span style="color: #e6db74">"browser"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            description=</span><span style="color: #e6db74">"打开网页并提取内容"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            parameters=[{</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"url"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"要访问的网页URL"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span>
+<span style="color: #f8f8f2">            }]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, url: str) -> ToolResult:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            content = </span><span style="color: #66d9ef">await</span><span style="color: #f8f8f2"> self._fetch_page(url)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">, result={</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: content})</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">, error=</span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(e))</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_fetch_page</span><span style="color: #f8f8f2">(self, url: str) -> str:</span>
+<span style="color: #f8f8f2">        async </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> httpx.AsyncClient() </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> client:</span>
+<span style="color: #f8f8f2">            response = </span><span style="color: #66d9ef">await</span><span style="color: #f8f8f2"> client.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(url, timeout=</span><span style="color: #ae81ff">30.0</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self._extract_text(response.text)</span></code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">插件参数校验</span></h3>
+
+<p>参数校验是插件安全的重要一环。<a href="Agent开发系列-15.html" class="key">(详见Agent开发系列15：工具安全)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">validate_parameters</span><span style="color: #f8f8f2">(definition: ToolDefinition, params: dict) -> tuple[bool, str]:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 检查必填参数</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> param </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> definition.parameters:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> param.required </span><span style="color: #66d9ef">and</span><span style="color: #f8f8f2"> param.name </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> params:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">, </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"Missing required parameter: </span><span style="color: #f8f8f2">{param.name}</span><span style="color: #e6db74">"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 检查类型</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> name, value </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> params.items():</span>
+<span style="color: #f8f8f2">        param_def = </span><span style="color: #66d9ef">next</span><span style="color: #f8f8f2">((p </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> p </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> definition.parameters </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> p.name == name), </span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> param_def </span><span style="color: #66d9ef">and</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">isinstance</span><span style="color: #f8f8f2">(value, </span><span style="color: #a6e22e">eval</span><span style="color: #f8f8f2">(param_def.type)):</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">, </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"Invalid type for </span><span style="color: #f8f8f2">{name}</span><span style="color: #e6db74">: expected </span><span style="color: #f8f8f2">{param_def.type}</span><span style="color: #e6db74">"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">""</span></code></pre>
+
+<blockquote><p>💡 <strong>总结：</strong>内置插件包括Search、DALLE、Browser。每个插件遵循统一的BaseTool接口，参数定义明确，支持生命周期钩子。参数校验是安全的重要保障。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="Agent开发系列-14.html" class="key">Agent开发系列 14：内置工具实现</a></li>
+<li><a href="Agent开发系列-15.html" class="key">Agent开发系列 15：Function Calling + 工具安全</a></li>
+<li><a href="myAgent开发系列-09.html" class="key">myAgent开发系列 09：插件架构设计</a></li>
+</ul>
+
+<p>下期预告：第11篇《插件市场与发布》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

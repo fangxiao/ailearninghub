@@ -1,0 +1,685 @@
+/* ==========================================================================
+   AI 全系列学习智库 - 样式系统 (app.css)
+   ========================================================================== */
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  
+  /* Dark Theme (Default) */
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(99, 102, 241, 0.4);
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --accent-primary: #6366f1;
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  --header-bg: rgba(11, 15, 25, 0.85);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --card-hover-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25);
+}
+
+/* ==========================================================================
+   Overseas & Auto-Translation Optimization
+   Prevent Google / Edge / Safari Translate from corrupting code blocks & symbols
+   ========================================================================== */
+.notranslate, pre, code, kbd, .font-mono, .code-block {
+  translate: no !important;
+}
+
+/* ==========================================================================
+   Light Theme Definition & High-Contrast Overrides
+   ========================================================================== */
+.light-theme, html:not(.dark) {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-hover: rgba(79, 70, 229, 0.6);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+  --card-hover-shadow: 0 12px 32px -4px rgba(99, 102, 241, 0.18);
+}
+
+/* Light Theme Typography & Element Overrides */
+.light-theme body,
+html:not(.dark) body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Text Colors in Light Mode */
+.light-theme .text-white,
+html:not(.dark) .text-white {
+  color: #0f172a !important;
+}
+
+.light-theme .text-slate-100,
+.light-theme .text-slate-200,
+.light-theme .text-slate-300,
+html:not(.dark) .text-slate-100,
+html:not(.dark) .text-slate-200,
+html:not(.dark) .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light-theme .text-slate-400,
+html:not(.dark) .text-slate-400 {
+  color: #64748b !important;
+}
+
+.light-theme .text-slate-500,
+html:not(.dark) .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* Cards & Glass Containers in Light Mode */
+.light-theme .glass,
+html:not(.dark) .glass {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .glass-nav,
+html:not(.dark) .glass-nav {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Background Opacity Overrides in Light Mode */
+.light-theme .bg-white\/5,
+.light-theme .bg-white\/10,
+html:not(.dark) .bg-white\/5,
+html:not(.dark) .bg-white\/10 {
+  background-color: #f1f5f9 !important;
+  color: #334155;
+}
+
+.light-theme .bg-white\/15,
+.light-theme .bg-white\/20,
+html:not(.dark) .bg-white\/15,
+html:not(.dark) .bg-white\/20 {
+  background-color: #e2e8f0 !important;
+  color: #0f172a;
+}
+
+.light-theme .hover\:bg-white\/5:hover,
+.light-theme .hover\:bg-white\/10:hover,
+.light-theme .hover\:bg-white\/15:hover,
+.light-theme .hover\:bg-white\/20:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.light-theme .border-white\/5,
+.light-theme .border-white\/10,
+.light-theme .border-white\/15,
+.light-theme .border-white\/20,
+.light-theme .border-white\/30,
+html:not(.dark) .border-white\/5,
+html:not(.dark) .border-white\/10,
+html:not(.dark) .border-white\/15,
+html:not(.dark) .border-white\/20,
+html:not(.dark) .border-white\/30 {
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme .divide-white\/5 > * + *,
+.light-theme .divide-white\/10 > * + * {
+  border-color: #f1f5f9 !important;
+}
+
+.light-theme th.bg-white\/5 {
+  background-color: #f8fafc !important;
+  color: #475569 !important;
+}
+
+/* Search input & Select in Light Mode */
+.light-theme input#search-input,
+html:not(.dark) input#search-input {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light-theme input#search-input::placeholder,
+html:not(.dark) input#search-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme select#category-select,
+html:not(.dark) select#category-select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Category Tabs in Light Mode */
+.light-theme .category-tab:not(.active),
+html:not(.dark) .category-tab:not(.active) {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+.light-theme .category-tab:not(.active):hover,
+html:not(.dark) .category-tab:not(.active):hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light-theme .category-tab.active,
+html:not(.dark) .category-tab.active {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35);
+}
+
+.light-theme .category-tab.active span,
+html:not(.dark) .category-tab.active span {
+  color: #ffffff !important;
+}
+
+/* Active buttons in Light Mode */
+.light-theme button.bg-indigo-600,
+html:not(.dark) button.bg-indigo-600 {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+.light-theme button.bg-indigo-600 *,
+html:not(.dark) button.bg-indigo-600 * {
+  color: #ffffff !important;
+}
+
+.light-theme button.bg-emerald-600,
+html:not(.dark) button.bg-emerald-600 {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+.light-theme button.bg-emerald-600 *,
+html:not(.dark) button.bg-emerald-600 * {
+  color: #ffffff !important;
+}
+
+/* Article Cards in Light Mode */
+.light-theme .article-card,
+html:not(.dark) .article-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .article-card:hover,
+html:not(.dark) .article-card:hover {
+  border-color: #818cf8 !important;
+  box-shadow: 0 12px 30px -4px rgba(99, 102, 241, 0.15);
+}
+
+.light-theme .article-card h3,
+html:not(.dark) .article-card h3 {
+  color: #0f172a !important;
+}
+
+.light-theme .article-card:hover h3,
+html:not(.dark) .article-card:hover h3 {
+  color: #4f46e5 !important;
+}
+
+.light-theme .article-card p,
+html:not(.dark) .article-card p {
+  color: #475569 !important;
+}
+
+/* Reader Modal in Light Mode */
+.light-theme #reader-modal > div,
+html:not(.dark) #reader-modal > div {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme #reader-modal .glass-nav,
+html:not(.dark) #reader-modal .glass-nav {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme #reader-modal .glass-nav h3,
+html:not(.dark) #reader-modal .glass-nav h3 {
+  color: #0f172a !important;
+}
+
+.light-theme #reader-toc-drawer,
+html:not(.dark) #reader-toc-drawer {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme #reader-toc-drawer button,
+html:not(.dark) #reader-toc-drawer button {
+  color: #334155 !important;
+}
+
+.light-theme #reader-toc-drawer button:hover,
+html:not(.dark) #reader-toc-drawer button:hover {
+  background-color: #f1f5f9 !important;
+  color: #4f46e5 !important;
+}
+
+/* WeChat Modal in Light Mode */
+.light-theme #wechat-modal > div,
+html:not(.dark) #wechat-modal > div {
+  background: #ffffff !important;
+  border-color: #a7f3d0 !important;
+}
+
+.light-theme #wechat-modal h3,
+html:not(.dark) #wechat-modal h3 {
+  color: #0f172a !important;
+}
+
+.light-theme #wechat-modal p,
+html:not(.dark) #wechat-modal p {
+  color: #475569 !important;
+}
+
+/* Footer Section Card in Light Mode */
+.light-theme section .bg-gradient-to-br,
+html:not(.dark) section .bg-gradient-to-br {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme section .bg-black\/20,
+html:not(.dark) section .bg-black\/20 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Base resets & typography */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hero Background Glow */
+.hero-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.15) 35%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.light-theme .hero-glow,
+html:not(.dark) .hero-glow {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.06) 35%, rgba(255, 255, 255, 0) 70%);
+}
+
+/* Card Hover Interactions */
+.article-card {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--card-shadow);
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* Category Tab Pills */
+.category-tab {
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+/* 3D Book Shelf Styles */
+.book-card {
+  perspective: 1000px;
+  transition: transform 0.3s ease;
+}
+
+.book-cover-3d {
+  position: relative;
+  width: 190px;
+  height: 270px;
+  border-radius: 6px 12px 12px 6px;
+  box-shadow: 
+    -6px 6px 20px rgba(0, 0, 0, 0.5),
+    inset 4px 0 8px rgba(255, 255, 255, 0.2),
+    inset -4px 0 8px rgba(0, 0, 0, 0.4);
+  transform: rotateY(-15deg);
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.light-theme .book-cover-3d,
+html:not(.dark) .book-cover-3d {
+  box-shadow: 
+    -4px 6px 16px rgba(0, 0, 0, 0.2),
+    inset 4px 0 8px rgba(255, 255, 255, 0.3),
+    inset -4px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.book-card:hover .book-cover-3d {
+  transform: rotateY(0deg) scale(1.05);
+  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3);
+}
+
+.book-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px 0 0 6px;
+}
+
+/* Badge styles */
+.badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Roadmap Tree */
+.roadmap-step {
+  position: relative;
+  padding-left: 2rem;
+}
+.roadmap-step::before {
+  content: '';
+  position: absolute;
+  left: 0.45rem;
+  top: 1.5rem;
+  bottom: -1rem;
+  width: 2px;
+  background: var(--border-color);
+}
+.roadmap-step:last-child::before {
+  display: none;
+}
+
+.roadmap-dot {
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  border: 3px solid var(--bg-primary);
+}
+
+/* ==========================================================================
+   Markdown Reader Styles (GitHub Markdown Theme)
+   ========================================================================== */
+.markdown-body {
+  color: var(--text-primary);
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.markdown-body h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  color: #ffffff;
+}
+
+.light-theme .markdown-body h1,
+html:not(.dark) .markdown-body h1 {
+  color: #0f172a !important;
+}
+
+.markdown-body h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-color);
+  color: #818cf8;
+}
+
+.light-theme .markdown-body h2,
+html:not(.dark) .markdown-body h2 {
+  color: #4f46e5 !important;
+}
+
+.markdown-body h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+  color: #a5b4fc;
+}
+
+.light-theme .markdown-body h3,
+html:not(.dark) .markdown-body h3 {
+  color: #6366f1 !important;
+}
+
+.markdown-body h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.markdown-body p {
+  margin-bottom: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.light-theme .markdown-body p,
+html:not(.dark) .markdown-body p {
+  color: #334155 !important;
+}
+
+.markdown-body strong {
+  color: #f3f4f6;
+  font-weight: 600;
+}
+
+.light-theme .markdown-body strong,
+html:not(.dark) .markdown-body strong {
+  color: #0f172a !important;
+}
+
+.markdown-body ul, .markdown-body ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.light-theme .markdown-body ul,
+.light-theme .markdown-body ol,
+html:not(.dark) .markdown-body ul,
+html:not(.dark) .markdown-body ol {
+  color: #334155 !important;
+}
+
+.markdown-body li {
+  margin-bottom: 0.4rem;
+}
+
+.markdown-body pre {
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.2rem;
+  overflow-x: auto;
+  margin-bottom: 1.4rem;
+  position: relative;
+}
+
+.light-theme .markdown-body pre,
+html:not(.dark) .markdown-body pre {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.markdown-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(99, 102, 241, 0.12);
+  color: #a5b4fc;
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.light-theme .markdown-body code,
+html:not(.dark) .markdown-body code {
+  background: #f1f5f9 !important;
+  color: #4f46e5 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.markdown-body pre code {
+  background: transparent !important;
+  padding: 0;
+  border: none;
+  color: #e6edf3;
+}
+
+.light-theme .markdown-body pre code,
+html:not(.dark) .markdown-body pre code {
+  color: #0f172a !important;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+  padding: 0.8rem 1.2rem;
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.light-theme .markdown-body blockquote,
+html:not(.dark) .markdown-body blockquote {
+  background: #f8fafc !important;
+  color: #475569 !important;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.4rem;
+}
+
+.markdown-body th, .markdown-body td {
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.light-theme .markdown-body th,
+html:not(.dark) .markdown-body th {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 1.5rem auto;
+  display: block;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.markdown-body a {
+  color: #818cf8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.light-theme .markdown-body a,
+html:not(.dark) .markdown-body a {
+  color: #4f46e5 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .book-cover-3d {
+    width: 150px;
+    height: 220px;
+  }
+}

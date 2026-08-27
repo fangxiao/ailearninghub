@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型原理系列 03 · 位置编码</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #e8f5e9 0%, #fff 100%); border-left-color: #66bb6a; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.feynman { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.feynman p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #fce4ec 0%, #fff 100%); border-left-color: #e91e63; }
+blockquote.opinion p { color: #5a5a5a; }
+.quiz-box { background: linear-gradient(135deg, #ffe0b2 0%, #fff 100%); border: 2px dashed #ff9800; border-radius: 12px; padding: 20px; margin: 24px 0; }
+.quiz-box .quiz-title { font-size: 15px; font-weight: bold; color: #e65100; margin-bottom: 12px; }
+.quiz-box .quiz-answer { background: #fff8e1; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 14px; }
+.dialogue { background: #f0f4ff; border-radius: 10px; padding: 16px; margin: 20px 0; }
+.dialogue .teacher { font-weight: bold; color: #667eea; }
+.dialogue .student { font-weight: bold; color: #ff9800; }
+.dialogue p { margin: 8px 0; font-size: 14px; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2b8cc4; font-weight: 500; }
+.series-link { display: inline-block; padding: 4px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 20px; font-size: 12px; margin-right: 8px; }
+.img-block { text-align: center; margin: 30px 0; }
+.img-block img { max-width: 100%; border-radius: 8px; }
+.img-caption { font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic; }
+.fun-fact { background: linear-gradient(135deg, #e1bee7 0%, #fff 100%); border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+.fun-fact .fact-title { font-size: 14px; font-weight: bold; color: #7b1fa2; margin-bottom: 8px; }
+.math-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px 18px; margin: 16px 0; border-left: 4px solid #667eea; }
+.math-card .card-title { font-size: 15px; font-weight: bold; color: #353535; margin: 0 0 6px; }
+.math-card .card-content { font-size: 14px; color: #5a5a5a; line-height: 1.8; margin: 0 0 6px; }
+.math-card .analogy { background: #e8f5e9; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 13px; color: #2e7d32; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">大模型原理系列 03</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+<span class="series-link">系列三</span>
+位置编码 —— 让模型知道"谁在前面"
+</p>
+
+<blockquote class="opinion">
+<p><strong>我的观点：</strong>位置编码是Transformer里最被低估的组件。很多人觉得它就是"加个位置信息"，没什么了不起。但真相是：没有位置编码，GPT-4再大也看不懂任何一句话。</p>
+</blockquote>
+
+<section class="quiz-box">
+<p class="quiz-title">先做个小测试</p>
+<p>下面两句话有什么区别？</p>
+<p style="font-size: 18px; text-align: center; padding: 12px 0; color: #333;">
+"我爱你"<br>
+"你爱我"
+</p>
+<p>你会说："废话！意思完全相反！"</p>
+<p>但如果让一个没有位置编码的AI模型来看，它的答案是——</p>
+<section class="quiz-answer">
+<p>一模一样。因为Self-Attention只看"有哪些字"，不看"字的顺序"。三个字完全一样，所以AI觉得两句话是一个意思。</p>
+</section>
+</section>
+
+<h3><span class="icon">0</span><span class="title-text">上期回顾：Self-Attention解决了什么问题</span></h3>
+
+<p>前两期我们讲了Transformer的整体架构，以及Self-Attention机制——让每个词都能"看到"其他所有词，从而理解它们之间的关系。</p>
+
+<p>但还有一个问题没解决：<strong>这些词在句子里位置不同，意思就不一样——AI怎么知道谁在前面谁在后面？</strong></p>
+
+<h3><span class="icon">1</span><span class="title-text">一个致命的问题</span></h3>
+
+<p>上一篇讲了Self-Attention：所有字同时参与计算，互相"查户口"。</p>
+
+<p>但并行计算带来一个致命缺陷：<strong>模型不知道字的顺序</strong>。</p>
+
+<p>"我爱你"和"你爱我"——同样的三个字，在Self-Attention看来完全一样！因为每个字都和其他字做了点积，顺序根本不存在。</p>
+
+<p><strong>这对NLP是灾难级的。</strong>因为语言的核心就是"顺序"。</p>
+
+<div class="fun-fact">
+<p class="fact-title">冷知识</p>
+<p>中文里有很多"顺序决定一切"的例子：上海自来水来自海上——正着读反着读都是同一句话，但意思完全不同。如果没有位置编码，AI连这种文字游戏都玩不明白。</p>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">解决方案：位置编码</span></h3>
+
+<p>2017年的《Attention Is All You Need》论文给出的方案是：在Self-Attention之前，给每个词的位置信息编码到它的向量里。</p>
+
+<p>核心思路很简单：</p>
+
+<p>如果一个词的embedding向量是x，位置信息是p，那么输入到Self-Attention的向量就是：</p>
+
+<section style="background:#fafafa;border:1px solid #e8e8e8;border-radius:8px;padding:16px 20px;margin:20px 0;text-align:center;font-family:Times New Roman,Georgia,serif;font-size:16px;color:#2c2c2c;line-height:1.6">
+<span style="display:block;min-height:1.6em;line-height:1.8"><strong>输入向量 = x + p</strong></span>
+</section>
+
+<p>这里的p就是<strong>位置编码（Positional Encoding）</strong>，每个位置都有自己独特的编码向量。</p>
+
+<div class="dialogue">
+<p class="teacher">老师：位置编码是什么？</p>
+<p class="student">小明：就是给每个字贴个"座位号"。</p>
+<p class="teacher">老师：那为什么不用1、2、3这样的座位号？</p>
+<p class="student">小明：嗯……</p>
+</div>
+
+<h3><span class="icon">3</span><span class="title-text">为什么不能用简单的序号？</span></h3>
+
+<p>很多人第一反应：给第一个字编号1，第二个字编号2，第三个字编号3……不就行了吗？</p>
+
+<p><strong>不行。</strong>原因有两个：</p>
+
+<p>第一：序号无法比较。位置1和位置3的距离是2，位置2和位置4的距离也是2。但机器看到的只是数字"1"和"3"、"2"和"4"，它们无法从数字本身推断出"距离相等"这个关系。</p>
+
+<p>第二：序号无法泛化。如果训练时最长句子是100个字，那序号就是1-100。推理时来了一个150个字的句子，模型根本没学过101-150怎么处理。</p>
+
+<p>所以位置编码必须满足三个要求：</p>
+
+<ul>
+<li>能让模型感知<strong>绝对位置</strong>（我是第几个）</li>
+<li>能让模型感知<strong>相对位置</strong>（我和别人差多远）</li>
+<li>能泛化到<strong>没见过的长度</strong></li>
+</ul>
+
+<div class="fun-fact">
+<p class="fact-title">生活中的例子</p>
+<p>想象你在电影院找座位。如果座位号只是1、2、3……你能找到第8排和第10排中间隔了几排。但如果座位号是随机分配的A、B、C、F……你就无法判断谁离谁更近。位置编码就是让每个位置有一个"智能编号"，既能找自己，又能算距离。</p>
+</div>
+
+<h3><span class="icon">4</span><span class="title-text">正弦位置编码：最优雅的设计</span></h3>
+
+<p>Transformer论文用的是正弦和余弦函数，生成位置编码。</p>
+
+<p>公式是这样的：</p>
+
+<div class="math-card">
+<p class="card-title"> 正弦函数（sin）</p>
+<p class="card-content">一种周期性波动的数学函数，取值范围是[-1, 1]。sin(0)=0, sin(π/2)=1, sin(π)=0。</p>
+<p class="analogy"><strong>类比：</strong>就像荡秋千，从最低点荡到最高点再荡回来，这个往复运动就是正弦波。</p>
+</div>
+
+<div class="math-card">
+<p class="card-title"> 余弦函数（cos）</p>
+<p class="card-content">和正弦函数类似，也是周期性波动，取值范围[-1, 1]。区别是cos(0)=1，起点不同。</p>
+<p class="analogy"><strong>类比：</strong>两个人一起荡秋千，一个人先出发（sin），另一个人晚四分之一拍出发（cos）。节奏一样，但起点不同。</p>
+</div>
+
+<p>公式如下：</p>
+
+<section style="background:#fafafa;border:1px solid #e8e8e8;border-radius:8px;padding:16px 20px;margin:20px 0;text-align:center;font-family:Times New Roman,Georgia,serif;font-size:16px;color:#2c2c2c;line-height:1.6">
+<span style="display:block;min-height:1.6em;line-height:1.8">PE(pos, 2i) = sin(pos / 10000^(2i/d))</span>
+<span style="display:block;min-height:1.6em;line-height:1.8">PE(pos, 2i+1) = cos(pos / 10000^(2i/d))</span>
+</section>
+
+<p>看起来复杂，但其实很好理解。</p>
+
+<p><strong>拆解公式</strong></p>
+
+<p>pos：词在句子中的位置，比如0、1、2、3……</p>
+
+<p>i：维度的索引，比如第0维、第1维、第2维……</p>
+
+<p>d：向量的总维度，比如512</p>
+
+<p>10000^(2i/d)：这是一个"缩放因子"，不同维度用不同的缩放——前面的维度变化快（高频），后面的维度变化慢（低频）。</p>
+
+<blockquote class="feynman">
+<p>类比：位置编码就像"GPS坐标"。经度和纬度组合起来，能精确标识地球上的任何一个位置。正弦和余弦函数就像经度和纬度——不同频率的正弦波组合起来，能唯一标识任何一个位置。而且GPS坐标有个特点：相邻位置的坐标值相差不大，远距离位置的坐标相差很大。位置编码也一样——相邻位置的编码向量相近，远距离位置的编码向量差异大。</p>
+</blockquote>
+
+<p><strong>为什么用sin和cos两个函数？</strong></p>
+
+<p>因为sin和cos之间有一个天然关系：</p>
+
+<section style="background:#fafafa;border:1px solid #e8e8e8;border-radius:8px;padding:16px 20px;margin:20px 0;text-align:center;font-family:Times New Roman,Georgia,serif;font-size:16px;color:#2c2c2c;line-height:1.6">
+<span style="display:block;min-height:1.6em;line-height:1.8">sin(θ + φ) = sin(θ)cos(φ) + cos(θ)sin(φ)</span>
+</section>
+
+<p>这个性质意味着：位置pos+k的编码，可以通过pos的编码的线性变换得到。换句话说，模型可以很容易地学会"两个位置之间差多少"。</p>
+
+<h3><span class="icon">5</span><span class="title-text">位置编码长什么样？</span></h3>
+
+<p>假设我们有一个4维向量（为了简化说明），位置0的位置编码是：</p>
+
+<section style="background:#fafafa;border:1px solid #e8e8e8;border-radius:8px;padding:16px 20px;margin:20px 0;text-align:center;font-family:Times New Roman,Georgia,serif;font-size:15px;color:#2c2c2c;line-height:1.6">
+<span style="display:block;min-height:1.6em;line-height:1.8">PE(0) = [sin(0), cos(0), sin(0), cos(0)]</span>
+<span style="display:block;min-height:1.6em;line-height:1.8">= [0, 1, 0, 1]</span>
+</section>
+
+<p>位置1的编码是：</p>
+
+<section style="background:#fafafa;border:1px solid #e8e8e8;border-radius:8px;padding:16px 20px;margin:20px 0;text-align:center;font-family:Times New Roman,Georgia,serif;font-size:15px;color:#2c2c2c;line-height:1.6">
+<span style="display:block;min-height:1.6em;line-height:1.8">PE(1) = [sin(1/10000^0), cos(1/10000^0), sin(1/10000^(2/4)), cos(1/10000^(2/4))]</span>
+<span style="display:block;min-height:1.6em;line-height:1.8">≈ [0.84, 0.54, 0.01, 1.00]</span>
+</section>
+
+<div class="img-block">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGQCAIAAADDXiTEAAB76UlEQVR4nO2dd3wURRvHn72WXCopJBB6aKGDhF6UqqKhVxVFQREsIEp5saEiICgdkRLpTVogihRBKVJCFQKEFnqAAOnJ9d33j002y7Xs3e3d7e49348fvOzt7c7dzDzzm+d5ZpagKAoQBEEQBEHKQubtAiAIgiAIIg5QNCAIgiAIwgkUDQiCIAiCcAJFA4IgCIIgnEDRgCAIgiAIJ1A0IAiCIAjCCRQNCIIgCIJwAkUDgiAIgiCcQNGAIAiCIAgnUDQgCIIgCMIJFA1SY8mSJfPnzz979iz74PHjxz/99NPZs2d7oACZmZmrVq168uSJ5Vs///xz//7979+/74FiWCUjI6Nbt26DBg3KzMz0Vhl4JyUlpWXLlrdu3fJ2QWzi9TbpDubPnz969Og7d+448dlbt269++67e/bs0ev17OOJiYnx8fE9evQgSdLWZy9dutS6detr1645cV8EcR2FtwuA8Mxff/118+bNe/fuNWnSRCYrFoV37tw5ePCgSqV68803IyMjbX32rbfeCgoKiouLi4uLq1ixYlBQUGBgYFBQkEqlKiwsLCgoKCwszMvLu3HjRlpa2pUrV/r27duvXz+zi+zfv3/BggVbt25dtWpVWFgY+62cnJxbt26lpqZWqlTJ8u5arfbp06dhYWH+/v4ymYyiKKPRWFRUlJ+fX7ly5R49elgd6WfPnt2xY0f2LUaPHt2/f/++fftanhwZGZmdna1Wq6Oiomz9CHfv3g0NDfX391coFARBEAQBACRJGo1GvV6v0+kiIiKYk7///vsqVar0798/ICCAObh06dKlS5faur5VRo8e/c477zj0ERq9Xj916tSXXnqpevXqTnzcPl27ds3JyeF+fnJycsWKFS2Pe71N7t27d/LkyUql8rfffqtSpQpz/NatWwMHDgSAn376qUOHDty/6b1791avXg0AW7ZsGTduHPcP0hw4cODs2bMmk6lDhw4qlYo5rlQqAaBTp07Mr2RJ/fr1W7RoMXXq1JUrV9KNE0E8CYoGSZGRkXHz5k2VSjVhwgS23enbt+/y5cuzsrJWrFgxfvx4Wx/XarUXL148ceIEx9v5+flZHty3bx9BEFOnTjVTDADQqFGjbdu2Xb169cUXX7T84LVr195++23L45UrV05KSrJVhujoaPafKSkpN2/enDZt2qFDh6ZMmRIaGpqfn08rAJlMplKpFAqFHcVgMpn69Olj610A6Ny588yZM+nXp06dSkpKUqvVVapU6dSpE3NOUFCQnStYJTQ01NGP0Kxdu/bBgwdz585lH7x161b//v2duFq9evXWrFnD/Gm1fu1g9XwhtMmCggIA6NatG1sxAEBqaipJkl26dHFIMQBAxYoV27Vrd+3atS5dujj0QZrdu3cDwPjx42ndExQUpFQq5XK50WgEgNjYWAAgSZIkSYPBoNPptFpthQoVmI+/+eabo0aNSk5O7tmzpxN3RxBXQNEgKfbt2wcAvXr1ioyMzMjICAoKUqvVcrlcoVCMHDlSJpN1794dSubNRUVFer2ePYJSFBUeHr537176z7Zt2w4bNuy9994DgIyMjJ49e06bNo2+wtatW6dPn2450blz58758+d79erVuHFj+sinn3568OBB9jmrVq1atWoV82dSUlLlypXL/Gq//PJLYGBgQECAv78/fd8xY8b8+++/Zgqge/fuVatWnThx4pEjR2bMmPHVV1917tzZ7FLnzp1r2bIlABAEIZPJCIKYP39+fHx8mWVg8/jx48mTJxME8cMPP7Rp04b9Fj13/OGHH5gRhaKoFStWtG/fvk6dOmbXWb9+/ezZs+kppqMUFBSsWbOmdevW9DDDO3K5PDQ0dP/+/WWeSdey1fmx19skANARMUtl8N9//wHA66+zunnYCGXy+fNm+fop2hSU1PT09Pj[... 40420 chars omitted ...]
+</p>
+<p class="img-caption">图1：位置编码的波形图——不同位置对应不同的正弦波组合</p>
+</div>
+
+<p>把位置编码加到词向量上，就是最终输入Self-Attention的向量。</p>
+
+<div class="img-block">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAF8CAIAAACi2P89AACCjklEQVR4nO3ddVgUWx8H8LO9S4ekNKIigg2IiF0Y2N2F3YF5DUxMbEHswm5BwcAAxAIVpEFBRHrZjnn/mPvO3bssy4gIXv19nvvcZ3f2zJmzyzrznXPOzFIwDEMAAAAAAFWh1nUDAAAAAPDfAKEBAAAAAKRAaAAAAAAAKRAaAAAAAEAKhAYAAAAAkAKhAQAAAACkQGgAAAAAACkQGgAAAABACoQGAAAAAJACoQEAAAAApEBoAGQdOnQoMDDw9evXigujo6MXLly4Y8eOWmhAfn7+8ePHCwoKKr60f//+wYMH5+Tk1EIzakReXt7SpUuvXr1aI7WJxeIhQ4Zs3br10qVLcrm8Rur8L+LxeHPnzv3y5YvS8ps3b65bty4+Pl796sXFxfv27fv06VPFl1avXn3y5Ek+n19jbQXgv4le1w0A/xn379/PyMj4/Plzs2bNqNS/42Z2dvajR4+YTObYsWPr1atX2brjxo3T0tJq3Lhx48aNzczMtLS0NDU1tbS0mEwmj8crLy/n8XhlZWVpaWlJSUkfP34cOHDgoEGDlCqJiIjYs2fPpUuXjh8/rq+vr/hSSUlJZmbmu3fv6tevX3HrQqGwsLBQX1+fzWZTqVQMw6RSKZ/P53K5FhYW3t7e+fn5FdfasWOHl5fXd39M5ISHh0dERERHR3t4eBgbG6ssI5fLRSIRj8fLy8t79+6dnZ2dq6urypL5+fkZGRkZGRlTpkwh/jRk+Pj4kElaWlpaDx8+JF9t9Rw+fPjw4cNVFrOysrp8+bLKly5duvT06dNx48adOXNG8dt469atFy9elJaWbtq0iclkVlYzn88/evRoaGjo5cuXDQ0NieXR0dG3b99GCOXk5Pj5+X3HWwLgtwOhAZCSm5ubkZHBZDKXLFmieFgaOHBgcHBwUVHR0aNHFy9eXNnqQqHw/fv3MTExJDfHYrEqLrx37x6FQvH391dKDAghZ2fny5cvJycn9+jRo+KKKSkpEyZMqLjcwsJCzbm+iYkJydYmJCRMmDBh9OjR8+bNI7nK6NGjw8PDk5KSNm/evGPHDi6X26lTJ/WrbNy4sbKX0tPTEUI2NjZTpkwh2QCcpqZmw4YNz5w5o6bMvHnz3r17913VVg+Hw0EIHTp0qFWrVpWVcXV11dTUVPmSSCQ6ffo0nU7ftWuXYmLIzs5++fKlra2t+sSAEMI7sXr27KmYGHg83pYtWxBC5ubmsbGxfD5fQ0NDTSVRUVHz58+vuNzPz2/w4MFqVgTgPwFCAyDl3r17CCEfH5969erl5uZqaWlxOBwajUan0319falUavfu3RFCcrkcP4kXi8WKJ9AYhhkYGISHh+NPPTw8xo8fP3XqVIRQbm5uv379Nm7ciNdw6dKlTZs2USgUpQZkZ2fHx8f7+Pi4uLjgSxYuXPjo0SPFMsePHz9+/Djx9OrVqxYWFlW+tYMHD2pqampoaLDZbHy7c+fOffr0aWUdADWCSqUuWLBg2rRphoaGEomEzCo0Go14/OrVqy9fvjg4OJiammppab18+RIhNG7cOMU8J5fLxWIxj8crLCxMTU01MDBwd3dXqpNOp3/48KF169bqN21gYED2jdWd0NDQwsLCqVOnNmnSRHF5cHCwXC7PyMjw8PBQXL58+fKBAwfij/l8PoVCwcc1OnTooFhszZo1nz598vb2njdv3qBBg5YtWxYQEKA+fKiUnZ393W8JgF8PhAZQNQzDbt26RaVSx4wZgxAaM2ZMaWmpUpkNGzYoPm3btu2ePXuIpyKRqKioSPHgpNQXvXz58uXLlxNPeTyeUv3nz5/X0tKaOXMmQighIcHZ2VlbW5vD4URFRVVs8Pbt28+ePaulpYU/bdCgwdWrV3V0dN68ebNgwYJx48ZNnTqVy+XiW6lfv35+fr6mpiaRVL59+8ZkMvX0[... 42691 chars omitted ...]
+</p>
+<p class="img-caption">图2：位置编码如何加到词向量上——x + p = 最终输入</p>
+</div>
+
+<div class="dialogue">
+<p class="teacher">老师：你看位置0的编码是[0,1,0,1]，位置1的编码是[0.84,0.54,0.01,1.00]。它们不一样，但也不是完全无关。</p>
+<p class="student">小明：就像我和我哥？长得像，但不是同一个人。</p>
+<p class="teacher">老师：这个比喻……很对。</p>
+</div>
+
+<h3><span class="icon">6</span><span class="title-text">用Python代码验证</span></h3>
+
+<p>光看公式不够直观，我们用代码生成位置编码，看看实际效果：</p>
+
+<section style="background:#272822;border-radius:8px;padding:16px 20px;margin:20px 0;font-family:Consolas,Monaco,Courier New,monospace;font-size:13px;color:#e2e8f0;line-height:1.6;word-break:break-all"><span style="display:block;min-height:1.6em"><span style="color:#ff79c6;font-weight:bold">import</span> numpy <span style="color:#ff79c6;font-weight:bold">as</span> np</span>
+<span style="display:block;min-height:1.6em"></span>
+<span style="display:block;min-height:1.6em"><span style="color:#ff79c6;font-weight:bold">def</span> <span style="color:#50fa7b">get_positional_encoding</span>(max_len, d_model)<span style="color:#ff79c6">:</span></span>
+<span style="display:block;min-height:1.6em">    pe = np.<span style="color:#50fa7b">zeros</span>((max_len, d_model))</span>
+<span style="display:block;min-height:1.6em">    position = np.<span style="color:#50fa7b">arange</span>(<span style="color:#bd93f9">0</span>, max_len)[:, np.<span style="color:#50fa7b">newaxis</span>]</span>
+<span style="display:block;min-height:1.6em">    div_term = np.<span style="color:#50fa7b">exp</span>(np.<span style="color:#50fa7b">arange</span>(<span style="color:#bd93f9">0</span>, d_model, <span style="color:#bd93f9">2</span>) * <span style="color:#ff79c6">-</span>(np.<span style="color:#50fa7b">log</span>(<span style="color:#bd93f9">10000.0</span>) <span style="color:#ff79c6">/</span> d_model))</span>
+<span style="display:block;min-height:1.6em">    pe[:, <span style="color:#bd93f9">0</span>::<span style="color:#bd93f9">2</span>] = np.<span style="color:#50fa7b">sin</span>(position * div_term)</span>
+<span style="display:block;min-height:1.6em">    pe[:, <span style="color:#bd93f9">1</span>::<span style="color:#bd93f9">2</span>] = np.<span style="color:#50fa7b">cos</span>(position * div_term)</span>
+<span style="display:block;min-height:1.6em">    <span style="color:#ff79c6;font-weight:bold">return</span> pe</span>
+<span style="display:block;min-height:1.6em"></span>
+<span style="display:block;min-height:1.6em">pe = <span style="color:#50fa7b">get_positional_encoding</span>(<span style="color:#bd93f9">10</span>, <span style="color:#bd93f9">512</span>)</span>
+<span style="display:block;min-height:1.6em"><span style="color:#8be9fd">print</span>(<span style="color:#f1fa8c">"位置0的编码（前8维）："</span>)</span>
+<span style="display:block;min-height:1.6em"><span style="color:#8be9fd">print</span>(pe[<span style="color:#bd93f9">0</span>, :<span style="color:#bd93f9">8</span>])</span>
+<span style="display:block;min-height:1.6em"><span style="color:#8be9fd">print</span>(<span style="color:#f1fa8c">"\n位置0和位置1的距离："</span>)</span>
+<span style="display:block;min-height:1.6em"><span style="color:#8be9fd">print</span>(np.<span style="color:#50fa7b">linalg</span>.<span style="color:#50fa7b">norm</span>(pe[<span style="color:#bd93f9">0</span>] <span style="color:#ff79c6">-</span> pe[<span style="color:#bd93f9">1</span>]))</span>
+</section>
+
+<p>输出：</p>
+
+<section style="background:#272822;border-radius:8px;padding:16px 20px;margin:20px 0;font-family:Consolas,Monaco,Courier New,monospace;font-size:13px;color:#e2e8f0;line-height:1.6;word-break:break-all"><span style="display:block;min-height:1.6em">位置0的编码（前8维）：</span>
+<span style="display:block;min-height:1.6em">[0.  1.  0.  1.  0.  1.  0.  1.]</span>
+<span style="display:block;min-height:1.6em"></span>
+<span style="display:block;min-height:1.6em">位置0和位置1的距离：</span>
+<span style="display:block;min-height:1.6em">14.14</span>
+</section>
+
+<h3><span class="icon">7</span><span class="title-text">为什么这个设计如此巧妙？</span></h3>
+
+<p>正弦位置编码有几个关键优势：</p>
+
+<table>
+<tr>
+<th>特性</th>
+<th>说明</th>
+<th>为什么重要</th>
+</tr>
+<tr>
+<td><strong>唯一性</strong></td>
+<td>每个位置都有独特的编码</td>
+<td>模型能区分"我爱你"和"你爱我"</td>
+</tr>
+<tr>
+<td><strong>相对位置可计算</strong></td>
+<td>PE(pos+k)可由PE(pos)线性变换得到</td>
+<td>模型能学会"距离"的概念</td>
+</tr>
+<tr>
+<td><strong>泛化性</strong></td>
+<td>正弦函数是连续的，可以无限延伸</td>
+<td>处理比训练时更长的句子也没问题</td>
+</tr>
+<tr>
+<td><strong>平滑性</strong></td>
+<td>相邻位置的编码向量相似</td>
+<td>符合语言的自然规律——近的词关系更近</td>
+</tr>
+</table>
+
+<blockquote class="opinion">
+<p><strong>我的判断：</strong>很多人觉得位置编码只是"一个技术细节"，不值得关注。但我的观点恰恰相反——位置编码是Transformer架构中最优雅的设计之一。它用一个简单的数学函数，解决了并行计算的最大痛点。没有它，Self-Attention再强大也无法处理有序文本。</p>
+</blockquote>
+
+<h3><span class="icon">8</span><span class="title-text">其他位置编码方案</span></h3>
+
+<p>除了正弦位置编码，后来还有很多替代方案：</p>
+
+<p>相对位置编码（Relative Positional Encoding）：直接编码两个词之间的距离，而不是绝对位置。这对某些任务（如机器翻译）效果更好。</p>
+
+<p>旋转位置编码（RoPE）：通过旋转操作编码位置信息，被LLaMA、GPT-J等开源大模型广泛采用。</p>
+
+<p>ALiBi（Attention with Linear Biases）：不用位置编码向量，而是在注意力分数上直接加上位置偏置。这个方案在长文本场景下表现优异。</p>
+
+<p>不同的位置编码方案各有优劣，但正弦位置编码仍然是理解位置编码原理的最佳起点。</p>
+
+<div class="fun-fact">
+<p class="fact-title">彩蛋：RoPE为什么火？</p>
+<p>旋转位置编码（RoPE）的核心思想是：把位置信息编码成"旋转角度"。位置0是0度，位置1是旋转30度，位置2是旋转60度……旋转操作有个天然的数学性质：旋转角度相加 = 相对位置可计算。这比原始的正弦编码更直观，所以在开源大模型里特别受欢迎。下次如果你用LLaMA，记得它里面的位置编码就是"转圈圈"。</p>
+</div>
+
+<h3><span class="icon">9</span><span class="title-text">总结</span></h3>
+
+<blockquote class="highlight">
+<p><strong>位置编码的核心思想：</strong>在Self-Attention之前，把每个词的位置信息编码成向量，加到词的embedding上。这样模型既知道"这个词是什么"，也知道"这个词在第几个位置"。</p>
+</blockquote>
+
+<p>下一篇，我们会讲多头注意力（Multi-Head Attention）——让模型从多个角度理解文本，而不是只从一个角度看。</p>
+
+<section class="fun-fact">
+<p class="fact-title">📖 下篇预告</p>
+<p>下期我们会讲：<strong>多头注意力</strong>——为什么AI需要"多个脑子"同时工作？一个角度看问题有什么局限？多头注意力是怎么解决这个问题的？</p>
+</section>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>系列三：大模型原理系列</strong><br>
+01 · Transformer架构原理<br>
+02 · Self-Attention数学原理<br>
+03 · 位置编码：让模型知道"谁在前面" ← 你在这里<br>
+04 · 多头注意力：让模型从多个角度理解<br>
+05 · Encoder-Decoder架构：大模型的"双脑"结构
+</p>
+
+</div>
+</body>
+</html>

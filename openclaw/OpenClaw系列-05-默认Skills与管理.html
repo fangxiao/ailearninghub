@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>默认 Skills 与管理 - 公众号预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.8; color: #333; background: #f5f5f5; padding: 20px 0; }
+        .container { max-width: 680px; margin: 0 auto; background: white; padding: 40px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        h1 { font-size: 26px; font-weight: bold; color: #000; margin-bottom: 30px; line-height: 1.4; }
+        h2 { font-size: 20px; font-weight: bold; color: #000; margin: 50px 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+        h3 { font-size: 18px; font-weight: bold; color: #000; margin: 40px 0 18px 0; }
+        h4 { font-size: 16px; font-weight: bold; color: #000; margin: 35px 0 15px 0; }
+        p { margin-bottom: 15px; text-align: justify; }
+        strong { color: #000; font-weight: bold; }
+        blockquote { border-left: 4px solid #42b983; padding: 15px 20px; margin: 20px 0; background: #f8f8f8; color: #555; font-style: normal; line-height: 2; }
+        blockquote p { margin-bottom: 10px; }
+        ul, ol { margin: 15px 0; padding-left: 25px; }
+        li { margin-bottom: 10px; }
+        hr { border: none; height: 1px; background: #e0e0e0; margin: 50px 0; }
+        pre, code { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; margin: 15px 0; line-height: 1.6; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        .highlight { color: #ff6b6b; font-weight: bold; }
+        .key { color: #4facfe; font-weight: bold; }
+        .number { color: #f5a623; font-weight: bold; }
+        .success { color: #42b983; font-weight: bold; }
+        .warning { color: #ff9500; font-weight: bold; }
+        .purple { color: #9b59b6; font-weight: bold; }
+        .blue { color: #3498db; font-weight: bold; }
+        .orange { color: #e67e22; font-weight: bold; }
+        .section-gap { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #f5f5f5; font-weight: bold; }
+        @media (max-width: 768px) { .container { padding: 30px 20px; } h1 { font-size: 22px; } h2 { font-size: 18px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>认识Skills系统：默认 Skills与Skills 管理</h1>
+
+<p>阅读时间：15分钟</p>
+<p>难度等级：⭐⭐ 新手进阶</p>
+<p>你将收获：掌握OpenClawSkills 系统，学会使用和管理Skill</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>什么是Skills 系统？</h2>
+
+<p>前面 <strong>4</strong> 篇你学会了安装、使用和配置 <strong>OpenClaw</strong>，但可能还有疑问：</p>
+
+<ul>
+<li>"OpenClaw能做什么？"</li>
+<li>"有哪些内置功能？"</li>
+<li>"能添加新功能吗？"</li>
+</ul>
+<p>答案是：<strong>Skills 系统</strong></p>
+
+<p><strong>Skill = 龙虾的超能力</strong></p>
+
+<p>就像手机有 <strong>App Store</strong>，<strong>OpenClaw</strong> 有 <strong>Skills 系统</strong>：</p>
+
+<ul>
+<li>📱 <strong>内置Skill</strong>：出厂自带，开箱即用</li>
+<li>🛒 <strong>Skills 市场</strong>：社区分享，海量选择</li>
+<li>🛠️ <strong>自定义 Skill</strong>：自己开发，无限可能</li>
+</ul>
+<p><strong>这一篇，带你全面了解Skills 系统！</strong></p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>一、OpenClaw内置Skill</h2>
+
+<h3>1.1 文件操作Skill</h3>
+
+<h4>📁 文件整理</h4>
+
+<p><strong>功能：</strong> 自动整理文件，按类型分类</p>
+
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：帮我把桌面整理一下</p>
+<p>> 输出：<span class="success">✅</span> 整理完成！已分类 <strong>15</strong> 个文件</p>
+<p>> • 图片 → Images/ (<strong>5</strong> 个)</p>
+<p>> • 文档 → Documents/ (<strong>8</strong> 个)</p>
+<p>> • 其他 → Others/ (<strong>2</strong> 个)</p>
+
+<p><strong>支持的操作：</strong></p>
+
+<ul>
+<li><span class="success">✅</span> 按类型分类</li>
+<li><span class="success">✅</span> 按日期分类</li>
+<li><span class="success">✅</span> 批量重命名</li>
+<li><span class="success">✅</span> 删除重复文件</li>
+</ul>
+<h4>📄 文档处理</h4>
+
+<p><strong>功能：</strong> 处理各种文档格式</p>
+
+<p><strong>支持格式：</strong></p>
+
+<ul>
+<li><strong>PDF</strong> 转 <strong>Word</strong> /图片</li>
+<li><strong>Word</strong> 转 <strong>PDF</strong></li>
+<li>图片压缩</li>
+<li>文字提取（<strong>OCR</strong>）</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：把这个PDF转换成Word</p>
+<p>> 输出：<span class="success">✅</span> 转换完成！已保存为：report.docx</p>
+
+<h4>🔍 文件搜索</h4>
+
+<p><strong>功能：</strong> 快速搜索文件</p>
+
+<p><strong>搜索能力：</strong></p>
+
+<ul>
+<li>按文件名搜索</li>
+<li>按内容搜索（支持 <strong>PDF</strong>、<strong>Word</strong>）</li>
+<li>按日期范围搜索</li>
+<li>按文件大小搜索</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：找到所有包含"财务"的文档</p>
+<p>> 输出：找到 <strong>7</strong> 个文件：</p>
+<p>> • 财务报表.docx</p>
+<p>> • 财务制度.pdf</p>
+<p>> • <strong>2026</strong> 年财务总结.xlsx</p>
+<p>> ...</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h3>1.2 网络Skill</h3>
+
+<h4>🌐 网页搜索</h4>
+
+<p><strong>功能：</strong> 搜索网络信息</p>
+
+<p><strong>搜索引擎：</strong></p>
+
+<ul>
+<li>Google（默认）</li>
+<li>百度</li>
+<li>Bing</li>
+<li>自定义引擎</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：搜索最近一周的AI新闻</p>
+<p>> 输出：找到 <strong>15</strong> 条相关新闻：</p>
+<p>> <strong>1.</strong> OpenAI发布GPT-5</p>
+<p>> <strong>2.</strong> 腾讯推出QClaw</p>
+<p>> <strong>3.</strong> 阿里成立Token事业群</p>
+<p>> ...</p>
+
+<h4>📥 网页收藏</h4>
+
+<p><strong>功能：</strong> 保存网页内容</p>
+
+<p><strong>支持格式：</strong></p>
+
+<ul>
+<li>保存为 <strong>Markdown</strong></li>
+<li>保存为 <strong>PDF</strong></li>
+<li>保存为纯文本</li>
+<li>提取正文（去除广告）</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：收藏这篇文章：https://example.com/article</p>
+<p>> 输出：<span class="success">✅</span> 已保存到：/Notes/article.md</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h3>1.3 信息处理Skill</h3>
+
+<h4>📝 文本处理</h4>
+
+<p><strong>功能：</strong> 各种文本操作</p>
+
+<p><strong>支持功能：</strong></p>
+
+<ul>
+<li>翻译（<strong>100+</strong> 种语言）</li>
+<li>摘要生成</li>
+<li>文章润色</li>
+<li>格式转换</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：翻译这段文字成英文</p>
+<p>> 输出：<span class="success">✅</span> 翻译完成！</p>
+<p>> 原文：人工智能正在改变世界</p>
+<p>> 译文：Artificial intelligence is changing the world</p>
+
+<h4>📊 数据分析</h4>
+
+<p><strong>功能：</strong> 分析数据，生成报告</p>
+
+<p><strong>支持格式：</strong></p>
+
+<ul>
+<li><strong>Excel</strong> 分析</li>
+<li><strong>CSV</strong> 处理</li>
+<li>数据可视化</li>
+<li>统计报告</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：分析这个Excel的销售数据</p>
+<p>> 输出：<span class="success">✅</span> 分析完成！</p>
+<p>> • 总销售额：¥<strong>1,234,567</strong></p>
+<p>> • 同比增长：<strong>+23%</strong></p>
+<p>> • Top3产品：A系列、B系列、C系列</p>
+<p>> • 已生成图表：sales-chart.png</p>
+
+<h4>🤖 AI对话</h4>
+
+<p><strong>功能：</strong> 智能对话，回答问题</p>
+
+<p><strong>能力范围：</strong></p>
+
+<ul>
+<li>问答咨询</li>
+<li>写作助手</li>
+<li>代码生成</li>
+<li>创意头脑风暴</li>
+</ul>
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h3>1.4 自动化Skill</h3>
+
+<h4>⏰ 定时任务</h4>
+
+<p><strong>功能：</strong> 定时执行任务</p>
+
+<p><strong>支持类型：</strong></p>
+
+<ul>
+<li>定时提醒</li>
+<li>定时备份</li>
+<li>定时报告</li>
+<li>定时清理</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+
+<p>> 输入：每天早上9点提醒我开会</p>
+<p>> 输出：<span class="success">✅</span> 设置完成！</p>
+<p>> 任务：会议提醒</p>
+<p>> 时间：每天 09:00</p>
+<p>> 状态：已启用</p>
+
+<h4>🔄 批量处理</h4>
+
+<p><strong>功能：</strong> 批量处理文件或任务</p>
+
+<p><strong>应用场景：</strong></p>
+
+<ul>
+<li>批量重命名</li>
+<li>批量格式转换</li>
+<li>批量压缩</li>
+<li>批量发送邮件</li>
+</ul>
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>二、如何查看内置Skill</h2>
+
+<h3>2.1 图形界面查看</h3>
+
+<h4>操作步骤：</h4>
+
+<p><strong>Step 1：打开 OpenClaw</strong></p>
+
+<p>双击桌面图标，进入主界面</p>
+
+<p><strong>Step 2：进入Skills 管理</strong></p>
+
+<p>点击右上角"Skill"按钮（拼图图标）</p>
+
+<p><strong>Step 3：查看Skill 列表</strong></p>
+
+<p>左侧显示所有已安装 Skill，右侧显示Skill 详情</p>
+
+<h4>Skill分类：</h4>
+
+<p>> <strong>文件操作（8个）：</strong></p>
+<p>> 文件整理、文档处理、文件搜索、压缩解压、批量重命名、重复检测、格式转换、备份恢复</p>
+<p>></p>
+<p>> <strong>网络工具（5个）：</strong></p>
+<p>> 网页搜索、网页收藏、下载管理、链接检测、网络测速</p>
+<p>></p>
+<p>> <strong>信息处理（6个）：</strong></p>
+<p>> 文本翻译、摘要生成、数据分析、AI对话、格式化、校对润色</p>
+<p>></p>
+<p>> <strong>自动化（4个）：</strong></p>
+<p>> 定时任务、批量处理、工作流、监控提醒</p>
+
+<h3>2.2 命令行查看</h3>
+
+<h4>查看所有Skill：</h4>
+
+<pre>openclaw skills list
+</pre>
+
+<h4>查看Skill 详情：</h4>
+
+<pre>openclaw skills info Skill名
+</pre>
+
+<h4>示例输出：</h4>
+
+<p>> Skill 名称：file-organizer</p>
+<p>> 版本：<strong>1.0.0</strong></p>
+<p>> 描述：自动整理文件，按类型分类</p>
+<p>> 作者：<strong>OpenClaw</strong> 官方</p>
+<p>> 状态：<span class="success">✅</span> 已启用</p>
+<p>> 使用次数：<strong>23</strong> 次</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>三、从Skills 市场添加Skill</h2>
+
+<h3>3.1 访问Skills 市场</h3>
+
+<h4>方法1：图形界面</h4>
+
+<p>Skills 管理 → 点击"Skills 市场"标签</p>
+
+<h4>方法2：命令行</h4>
+
+<pre>openclaw skills market
+</pre>
+
+<h4>方法3：网页访问</h4>
+
+<p>skills.openclaw.ai</p>
+
+<h3>3.2 浏览和搜索Skill</h3>
+
+<h4>Skill分类：</h4>
+
+<p>> <strong>热门Skill：</strong></p>
+<p>> 天气查询、汇率转换、二维码生成、股票查询</p>
+<p>></p>
+<p>> <strong>最新Skill：</strong></p>
+<p>> AI绘画、视频下载、音乐识别、图片识别</p>
+<p>></p>
+<p>> <strong>推荐Skill：</strong></p>
+<p>> 邮件助手、日程管理、笔记整理、翻译助手</p>
+
+<h4>搜索技巧：</h4>
+
+<ul>
+<li>按关键词搜索（如"天气"、"翻译"）</li>
+<li>按分类筛选</li>
+<li>按评分排序</li>
+<li>按下载量排序</li>
+</ul>
+<h3>3.3 安装 Skill</h3>
+
+<h4>操作步骤：</h4>
+
+<p><strong>Step 1：选择Skill</strong></p>
+
+<p>在Skills 市场找到想要的Skill，点击"查看详情"</p>
+
+<p><strong>Step 2：查看信息</strong></p>
+
+<ul>
+<li>Skill 描述</li>
+<li>使用示例</li>
+<li>用户评价</li>
+<li>更新日期</li>
+</ul>
+<p><strong>Step 3：安装 Skill</strong></p>
+
+<p>点击"安装"按钮，等待下载完成</p>
+
+<p><strong>Step 4：启用 Skill</strong></p>
+
+<p>安装后自动出现在Skill 列表，默认已启用</p>
+
+<h4>命令行安装：</h4>
+
+<pre>openclaw skills install Skill名
+</pre>
+
+<h3>3.4 推荐Skill（10个）</h3>
+
+<h4>实用类：</h4>
+
+<p>> <strong>1. 天气查询</strong>（免费）</p>
+<p>> 查询全球城市天气，支持 <strong>7</strong> 天预报</p>
+<p>></p>
+<p>> <strong>2. 汇率转换</strong>（免费）</p>
+<p>> 实时汇率查询，支持 <strong>150+</strong> 种货币</p>
+<p>></p>
+<p>> <strong>3. 二维码生成</strong>（免费）</p>
+<p>> 生成和识别二维码，支持自定义样式</p>
+<p>></p>
+<p>> <strong>4. 股票查询</strong>（免费）</p>
+<p>> 实时股票行情，支持A股/港股/美股</p>
+
+<h4>工具类：</h4>
+
+<p>> <strong>5. 邮件助手</strong>（免费）</p>
+<p>> 发送邮件，管理收件箱</p>
+<p>></p>
+<p>> <strong>6. 日程管理</strong>（免费）</p>
+<p>> 添加日程，设置提醒</p>
+<p>></p>
+<p>> <strong>7. 笔记整理</strong>（免费）</p>
+<p>> 整理笔记，生成目录</p>
+<p>></p>
+<p>> <strong>8. 翻译助手</strong>（免费）</p>
+<p>> 多语言翻译，支持文档翻译</p>
+
+<h4>娱乐类：</h4>
+
+<p>> <strong>9. AI绘画</strong>（付费，¥<strong>9.9</strong>/月）</p>
+<p>> 文字生成图片，支持多种风格</p>
+<p>></p>
+<p>> <strong>10. 视频下载</strong>（免费）</p>
+<p>> 下载网络视频，支持 <strong>100+</strong> 平台</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>四、Skills 管理</h2>
+
+<h3>4.1 启用/禁用 Skill</h3>
+
+<h4>为什么要禁用？</h4>
+
+<ul>
+<li>减少资源占用</li>
+<li>避免Skill冲突</li>
+<li>提高响应速度</li>
+</ul>
+<h4>操作方法：</h4>
+
+<p><strong>方法1：图形界面</strong></p>
+
+<p>Skills 管理 → 找到Skill → 切换开关</p>
+
+<p><strong>方法2：命令行</strong></p>
+
+<pre>openclaw skills enable Skill名    # 启用
+<p>openclaw skills disable Skill名   # 禁用</p>
+</pre>
+
+<h3>4.2 更新 Skill</h3>
+
+<h4>检查更新：</h4>
+
+<p>Skills 管理 → 点击"检查更新"按钮</p>
+
+<h4>更新单个Skill：</h4>
+
+<pre>openclaw skills update Skill名
+</pre>
+
+<h4>更新所有Skill：</h4>
+
+<pre>openclaw skills update --all
+</pre>
+
+<h4>自动更新：</h4>
+
+<p>设置 → Skill 设置 → 开启"自动更新"</p>
+
+<h3>4.3 删除Skill</h3>
+
+<h4>⚠️ 注意：</h4>
+
+<ul>
+<li>内置Skill无法删除</li>
+<li>删除后数据可能丢失</li>
+<li>建议先备份配置</li>
+</ul>
+<h4>操作方法：</h4>
+
+<p><strong>方法1：图形界面</strong></p>
+
+<p>Skills 管理 → 找到Skill → 点击"卸载"</p>
+
+<p><strong>方法2：命令行</strong></p>
+
+<pre>openclaw skills uninstall Skill名
+</pre>
+
+<h3>4.4 Skill 配置</h3>
+
+<h4>可配置项：</h4>
+
+<ul>
+<li>API密钥</li>
+<li>默认参数</li>
+<li>快捷方式</li>
+<li>权限设置</li>
+</ul>
+<h4>配置方法：</h4>
+
+<p>Skills 管理 → 找到Skill → 点击"配置"</p>
+
+<h4>示例（天气查询）：</h4>
+
+<p>> <strong>默认城市：</strong> 北京</p>
+<p>> <strong>温度单位：</strong> 摄氏度</p>
+<p>> <strong>语言：</strong> 中文</p>
+<p>> <strong>自动定位：</strong> 是</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>五、Skill 使用技巧</h2>
+
+<h3>5.1 快速调用Skill</h3>
+
+<h4>方法1：自然语言</h4>
+
+<p>直接说出需求，<strong>OpenClaw</strong> 自动识别：</p>
+
+<p>> "北京今天天气怎么样？"</p>
+<p>> → 自动调用天气查询Skill</p>
+<p>></p>
+<p>> "帮我把这个PDF转成Word"</p>
+<p>> → 自动调用文档处理Skill</p>
+
+<h4>方法2：Skill名+参数</h4>
+
+<p>明确指定Skill：</p>
+
+<p>> "天气 北京"</p>
+<p>> "翻译 Hello world"</p>
+<p>> "搜索 AI新闻"</p>
+
+<h4>方法3：快捷键</h4>
+
+<p>为常用Skill 设置快捷键：</p>
+
+<p>> Ctrl/Cmd + Shift + T → 天气查询</p>
+<p>> Ctrl/Cmd + Shift + S → 网页搜索</p>
+<p>> Ctrl/Cmd + Shift + N → 新建笔记</p>
+
+<h3>5.2 Skill组合使用</h3>
+
+<h4>场景1：收集资料</h4>
+
+<p>> <strong>步骤1：</strong> 搜索Skill → 查找相关文章</p>
+<p>> <strong>步骤2：</strong> 收藏Skill → 保存网页内容</p>
+<p>> <strong>步骤3：</strong> 摘要Skill → 生成文章摘要</p>
+<p>> <strong>步骤4：</strong> 整理Skill → 归类到笔记</p>
+
+<h4>场景2：制作报告</h4>
+
+<p>> <strong>步骤1：</strong> 数据Skill → 分析Excel数据</p>
+<p>> <strong>步骤2：</strong> 图表Skill → 生成可视化图表</p>
+<p>> <strong>步骤3：</strong> 写作Skill → 生成文字报告</p>
+<p>> <strong>步骤4：</strong> 排版Skill → 美化格式</p>
+
+<h3>5.3 常见问题</h3>
+
+<h4>问题1：Skill调用失败？</h4>
+
+<ul>
+<li>检查Skill是否已启用</li>
+<li>检查网络连接</li>
+<li>检查API Key配置</li>
+<li>查看错误日志</li>
+</ul>
+<h4>问题2：找不到想要的Skill？</h4>
+
+<ul>
+<li>搜索不同关键词</li>
+<li>浏览分类目录</li>
+<li>查看社区推荐</li>
+<li>自己开发Skill</li>
+</ul>
+<h4>问题3：Skill太多，响应慢？</h4>
+
+<ul>
+<li>禁用不常用Skill</li>
+<li>清理过期Skill</li>
+<li>优化Skill 配置</li>
+</ul>
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>六、小结</h2>
+
+<h3>Skills 系统全景</h3>
+
+<p>> <strong>内置Skill（23个）：</strong></p>
+<p>> 文件操作（<strong>8</strong>）+ 网络工具（<strong>5</strong>）+ 信息处理（<strong>6</strong>）+ 自动化（<strong>4</strong>）</p>
+<p>></p>
+<p>> <strong>Skills 市场（1000+个）：</strong></p>
+<p>> 社区贡献，持续更新，大部分免费</p>
+<p>></p>
+<p>> <strong>自定义 Skill（无限）：</strong></p>
+<p>> 自己开发，完全定制，可分享赚钱</p>
+
+<h3>你已经掌握：</h3>
+
+<ul>
+<li><span class="success">✅</span> 认识内置Skill（<strong>23</strong> 个）</li>
+<li><span class="success">✅</span> 学会查看和管理Skill</li>
+<li><span class="success">✅</span> 掌握从市场添加Skill</li>
+<li><span class="success">✅</span> 了解Skill 使用技巧</li>
+<li><span class="success">✅</span> 知道如何组合使用Skill</li>
+</ul>
+<h3>下一步</h3>
+
+<p><strong>想开发自己的Skill？</strong></p>
+
+<p>👉 看下一篇：《写给新手的：第一个自定义 Skill》</p>
+
+<p><strong>想学习更多用法？</strong></p>
+
+<p>👉 浏览Skills 市场，安装感兴趣的Skill</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>练习题</h2>
+
+<h3>🎯 Skill实践</h3>
+
+<p>完成以下任务：</p>
+
+<h4>挑战1：探索内置Skill</h4>
+
+<p>查看所有内置Skill，试用至少 <strong>5</strong> 个</p>
+
+<h4>挑战2：安装新Skill</h4>
+
+<p>从Skills 市场安装 <strong>3</strong> 个感兴趣的Skill</p>
+
+<h4>挑战3：Skill组合</h4>
+
+<p>用 <strong>2</strong> 个以上Skill完成一个任务</p>
+
+<h4>挑战4：Skills 管理</h4>
+
+<p>禁用 <strong>2</strong> 个不常用Skill，清理缓存</p>
+
+<p><strong>完成的同学，评论区分享你最喜欢的Skill！</strong> 💡</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<h2>下期预告</h2>
+
+<p><strong>下一篇：</strong>《写给新手的：第一个自定义 Skill》</p>
+
+<p><strong>你将学到：</strong></p>
+
+<ul>
+<li><span class="success">✅</span> 什么是Skill？</li>
+<li><span class="success">✅</span> 开发环境准备</li>
+<li><span class="success">✅</span> 实战开发"天气查询"Skill</li>
+<li><span class="success">✅</span> 测试与部署</li>
+</ul>
+<p><strong>准备好开发自己的Skill了吗？</strong> 🚀</p>
+
+<hr/>
+
+<hr/>
+
+<p><strong>系列导航</strong></p>
+
+<ul>
+<li>上一篇：让龙虾更懂你：基础配置指南</li>
+<li>下一篇：写给新手的：第一个自定义 Skill</li>
+</ul>
+<hr/>
+
+<hr/>
+
+<p>本文是《OpenClaw从入门到精通》系列第5篇</p>
+<p>作者：生活助理 | 发布时间：2026-03-20</p>
+
+    </div>
+</body>
+</html>

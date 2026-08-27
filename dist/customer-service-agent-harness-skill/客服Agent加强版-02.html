@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent进化论 ② | BaseSkill：给Agent发张身份证</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+<body>
+<div class="container">
+
+
+
+<h2><span class="title-text">客服Agent进化论 ②</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">BaseSkill：给Agent发张身份证</p>
+
+<blockquote class="opinion">
+<p>你见过多少插件系统？每个插件的接口都不一样——有的叫 <code>execute()</code>，有的叫 <code>handle()</code>，有的叫 <code>process()</code>。返回值也千奇百怪：有的返回字符串，有的返回 dict，有的直接返回 None。结果就是调度器变成了 <strong>if/else 地狱</strong>，每加一个插件就要改一遍主循环。<br><br>
+这就是V1版本的痛点。没有标准接口的系统，就像没有交通规则的马路——每个人都按自己的理解开车，迟早撞成一团。<br><br>
+本篇就来聊聊Harness+Skill架构的基石——<span class="key">BaseSkill</span> 抽象类和 <span class="key">SkillResult</span> 数据类。它们是所有Skill的<strong>身份证</strong>和<strong>劳动合同</strong>，定义了Skill能做什么、不能做什么、必须做什么。</p>
+</blockquote>
+
+<p style="color: #888; font-size: 14px; font-style: italic; margin: 16px 0 24px;">
+💡 如果你看过之前的《客服Agent实战系列》，应该熟悉V1插件架构。本篇是加强版第二篇，我们来聊聊Harness+Skill架构的基石——BaseSkill标准接口。
+</p>
+
+<h3><span class="icon">1</span><span class="title-text">为什么需要标准接口？</span></h3>
+
+<p>先看V1的问题。假设我们有三个插件，每个插件的写法都不一样：</p>
+
+<pre><code># V1：三个插件，三种风格
+class FAQPlugin:
+    def answer(self, question):
+        # 返回字符串
+        return "您的问题答案是..."
+
+class OrderPlugin:
+    def query(self, text, user_id):
+        # 返回 dict
+        return {"status": "success", "data": {...}}
+
+class SentimentPlugin:
+    def analyze(self, text):
+        # 直接修改全局变量，不返回值
+        global sentiment_score
+        sentiment_score = 0.8
+        return None</code></pre>
+
+<p>当Harness（当时叫Bot）要调用这些插件时，代码变成了：</p>
+
+<pre><code># V1调度器的灾难
+def process(self, user_input):
+    if intent == "faq":
+        result = self.faq_plugin.answer(user_input)
+        response = result  # 直接用字符串
+    elif intent == "order":
+        result = self.order_plugin.query(user_input, user_id)
+        if result["status"] == "success":
+            response = result["data"]  # 要取data字段
+    elif intent == "sentiment":
+        self.sentiment_plugin.analyze(user_input)
+        response = f"情感分：{sentiment_score}"  # 依赖全局变量
+    
+    # 每加一个插件，这里就要改！</code></pre>
+
+<blockquote class="highlight">
+<p><strong>没有标准接口的后果：</strong><br><br>
+1. <strong>调度器膨胀</strong> —— 每个插件的调用方式都不同，调度器里全是if/else<br>
+2. <strong>无法扩展</strong> —— 想加新插件？先看清楚现有插件的返回格式<br>
+3. <strong>难以测试</strong> —— 每个插件的测试方式都不一样，Mock困难<br>
+4. <strong>错误处理混乱</strong> —— 有的插件抛异常，有的返回None，有的返回空字符串</p>
+</blockquote>
+
+<p>所以我们需要一套<strong>标准接口</strong>，让所有Skill都遵守同一个"合同"：</p>
+
+<ul>
+<li>所有Skill都有相同的<strong>属性</strong>（name、description、triggers、priority）</li>
+<li>所有Skill都实现相同的<strong>方法</strong>（can_handle、execute、on_error）</li>
+<li>所有Skill都返回相同的<strong>数据结构</strong>（SkillResult）</li>
+</ul>
+
+<h3><span class="icon">2</span><span class="title-text">SkillResult：Skill的标准返回值</span></h3>
+
+<p>先看返回值。如果说Skill是员工，那SkillResult就是<strong>员工提交的工作报告</strong>。无论做什么工作，报告的格式是统一的。</p>
+
+<pre><code>from dataclasses import dataclass, field
+from typing import Dict, List, Any, Optional
+
+@dataclass
+class SkillResult:
+    success: bool = True
+    response: str = ""
+    data: Dict[str, Any] = field(default_factory=dict)
+    next_action: Optional[str] = None
+    confidence: float = 0.0
+    need_handoff: bool = False
+    error: Optional[str] = None</code></pre>
+
+<p>每个字段的含义：</p>
+
+<table>
+<tr><th>字段</th><th>类型</th><th>含义</th><th>示例</th></tr>
+<tr><td><strong>success</strong></td><td>bool</td><td>Skill是否成功执行</td><td>True / False</td></tr>
+<tr><td><strong>response</strong></td><td>str</td><td>返回给用户的文本</td><td>"您的订单已发货"</td></tr>
+<tr><td><strong>data</strong></td><td>Dict</td><td>附加数据，供其他Skill或Harness使用</td><td>{"order_id": "xxx"}</td></tr>
+<tr><td><strong>next_action</strong></td><td>str</td><td>建议的下一步动作</td><td>"ask_order_id"</td></tr>
+<tr><td><strong>confidence</strong></td><td>float</td><td>结果的置信度</td><td>0.9</td></tr>
+<tr><td><strong>need_handoff</strong></td><td>bool</td><td>是否需要转人工</td><td>True / False</td></tr>
+<tr><td><strong>error</strong></td><td>str</td><td>错误信息（失败时填写）</td><td>"API调用超时"</td></tr>
+</table>
+
+<p class="diagram-title">图1：SkillResult的数据流向</p>
+<div class="mermaid">
+graph LR
+    A[Skill.execute] -->|返回 SkillResult| B[Harness]
+    B -->|response| C[用户看到的文本]
+    B -->|data| D[上下文/其他Skill]
+    B -->|need_handoff| E[转人工流程]
+    B -->|success/error| F[熔断器/指标]
+    
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e9
+    style E fill:#ffcdd2
+</div>
+
+<blockquote class="opinion">
+<p>注意 <strong>data</strong> 字段的作用——它是Skill之间通过Harness传递数据的唯一渠道。比如FAQ Skill可以把检索到的FAQ ID放在data里，供后续的Memory Skill记录。<br><br>
+这就是为什么我说它是"劳动合同"——<strong>Skill之间不能直接通信，必须通过SkillResult.data这个公共通道</strong>。</p>
+</blockquote>
+
+<h3><span class="icon">3</span><span class="title-text">BaseSkill：所有Skill的抽象基类</span></h3>
+
+<p>有了统一的返回值，我们就能定义统一的接口了。来看 <code>base.py</code> 的完整代码：</p>
+
+<pre><code>from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Dict, List, Any, Optional
+
+@dataclass
+class SkillResult:
+    success: bool = True
+    response: str = ""
+    data: Dict[str, Any] = field(default_factory=dict)
+    next_action: Optional[str] = None
+    confidence: float = 0.0
+    need_handoff: bool = False
+    error: Optional[str] = None
+
+
+class BaseSkill(ABC):
+    """Skill标准接口 - 所有客服技能的抽象基类"""
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """技能名称"""
+        ...
+
+    @property
+    @abstractmethod
+    def description(self) -> str:
+        """技能描述"""
+        ...
+
+    @property
+    def triggers(self) -> List[str]:
+        """触发关键词/模式"""
+        return []
+
+    @property
+    def priority(self) -> int:
+        """优先级（数值越大越优先）"""
+        return 1
+
+    @property
+    def pre_skill(self) -> bool:
+        """是否为前置Skill（在主流程前执行）"""
+        return False
+
+    def can_handle(self, user_input: str,
+                   context: Dict[str, Any]) -> float:
+        """评估该技能处理用户输入的置信度"""
+        if not self.triggers:
+            return 0.0
+        score = 0.0
+        for trigger in self.triggers:
+            if trigger.lower() in user_input.lower():
+                score = max(score, 0.6)
+                if trigger == user_input:
+                    score = max(score, 0.9)
+        return score
+
+    @abstractmethod
+    def execute(self, user_input: str,
+                context: Dict[str, Any]) -> SkillResult:
+        """执行技能，返回SkillResult"""
+        ...
+
+    def on_error(self, error: Exception,
+                 context: Dict[str, Any]) -> SkillResult:
+        """降级处理 - 技能执行失败时调用"""
+        return SkillResult(
+            success=False,
+            response="抱歉，处理您的请求时出现了问题，请稍后再试。",
+            error=str(error)
+        )
+
+    def get_info(self) -> Dict[str, Any]:
+        """获取技能信息"""
+        return {
+            "name": self.name,
+            "description": self.description,
+            "triggers": self.triggers,
+            "priority": self.priority,
+            "pre_skill": self.pre_skill,
+        }</code></pre>
+
+<p>我们来拆解一下这个抽象类的设计。</p>
+
+<h3><span class="icon">4</span><span class="title-text">必填属性 vs 可选属性</span></h3>
+
+<p>BaseSkill把属性分成了两类：</p>
+
+<table>
+<tr><th>类型</th><th>属性</th><th>说明</th></tr>
+<tr><td rowspan="2"><strong>必须实现</strong></td><td>name</td><td>Skill唯一标识，如 "faq"、"order"</td></tr>
+<tr><td>description</td><td>Skill描述，用于日志和调试</td></tr>
+<tr><td rowspan="3"><strong>可选覆盖</strong></td><td>triggers</td><td>触发关键词列表，用于can_handle打分</td></tr>
+<tr><td>priority</td><td>优先级，数值越大越优先（默认1）</td></tr>
+<tr><td>pre_skill</td><td>是否为前置Skill（默认False）</td></tr>
+</table>
+
+<p>来看看FAQ Skill是怎么实现这些属性的：</p>
+
+<pre><code>class FAQSkill(BaseSkill):
+    @property
+    def name(self) -> str:
+        return "faq"
+
+    @property
+    def description(self) -> str:
+        return "FAQ Skill - 基于知识库回答用户常见问题"
+
+    @property
+    def triggers(self) -> List[str]:
+        return ["密码", "退款", "配送", "支付",
+                "发货", "怎么", "如何", "多久", "修改", "申请"]
+
+    @property
+    def priority(self) -> int:
+        return 7  # 比默认的1高很多
+
+    # pre_skill 保持默认 False
+
+    def can_handle(self, user_input, context):
+        # 覆盖基类方法，增加意图权重
+        score = super().can_handle(user_input, context)
+        if context.get("intent") == "faq_query":
+            score = max(score, 0.85)
+        return score
+
+    def execute(self, user_input, context):
+        # ... 业务逻辑
+        pass</code></pre>
+
+<p>注意FAQ Skill覆盖了 <strong>can_handle</strong> 方法——它在基类打分的基础上，增加了意图权重。这就是"模板方法模式"的好处：基类提供默认实现，子类可以按需覆盖。</p>
+
+<h3><span class="icon">5</span><span class="title-text">can_handle：Skill的自我评估机制</span></h3>
+
+<p><code>can_handle()</code> 是BaseSkill最精巧的设计之一。它回答一个问题：<strong>"这个Skill有多大把握处理当前请求？"</strong></p>
+
+<p class="diagram-title">图2：can_handle打分机制</p>
+<div class="mermaid">
+graph TD
+    A[用户输入] --> B{Skill有triggers吗?}
+    B -->|无| C[返回 0.0]
+    B -->|有| D[遍历每个trigger]
+    D --> E{trigger在用户输入中?}
+    E -->|否| F[保持当前分数]
+    E -->|是| G[基础分 0.6]
+    G --> H{trigger完全匹配?}
+    H -->|是| I[最高分 0.9]
+    H -->|否| J[取max，继续遍历]
+    F --> J
+    I --> K[返回最终分数]
+    J --> K
+    
+    style C fill:#f5f5f5
+    style K fill:#e8f5e9
+    style I fill:#fff3e0
+</div>
+
+<p>打分逻辑分三层：</p>
+
+<table>
+<tr><th>分数</th><th>含义</th><th>场景</th></tr>
+<tr><td><strong>0.0</strong></td><td>完全不匹配</td><td>Skill没有trigger，或trigger完全不匹配</td></tr>
+<tr><td><strong>0.6</strong></td><td>部分匹配</td><td>trigger在用户输入中出现</td></tr>
+<tr><td><strong>0.9</strong></td><td>高度匹配</td><td>用户输入完全等于某个trigger</td></tr>
+<tr><td><strong>自定义</strong></td><td>子类覆盖</td><td>FAQ Skill根据意图加到0.85</td></tr>
+</table>
+
+<p>Router会收集所有Skill的分数，选择得分最高的那个。如果最高分低于0.3，就走兜底逻辑。</p>
+
+<h3><span class="icon">6</span><span class="title-text">execute：Skill的核心执行流程</span></h3>
+
+<p><code>execute()</code> 是Skill的<strong>业务核心</strong>。基类只定义了接口签名，具体逻辑完全由子类实现。来看FAQ Skill的execute实现：</p>
+
+<pre><code>class FAQSkill(BaseSkill):
+    def execute(self, user_input: str,
+                context: Dict[str, Any]) -> SkillResult:
+        # 1. 混合检索（关键词 + 向量）
+        results = self._hybrid_search(user_input)
+
+        # 2. 有结果直接返回
+        if results:
+            return SkillResult(
+                success=True,
+                response=results[0]["answer"],
+                data={"faq_results": results},
+                confidence=results[0].get("score", 0.5)
+            )
+
+        # 3. 没结果，LLM兜底
+        if self.llm.is_available():
+            llm_response = self._llm_fallback(user_input)
+            if llm_response:
+                return SkillResult(
+                    success=True,
+                    response=llm_response,
+                    data={"source": "llm_fallback"},
+                    confidence=0.6
+                )
+
+        # 4. 彻底失败
+        return SkillResult(
+            success=False,
+            response="抱歉，暂时无法回答这个问题。"
+                     "您可以转人工客服咨询。",
+            confidence=0.2
+        )</code></pre>
+
+<p>注意execute的几个要点：</p>
+
+<ul>
+<li><strong>始终返回SkillResult</strong> —— 无论成功失败，永远返回SkillResult对象</li>
+<li><strong>用success字段表示结果</strong> —— 成功时success=True，失败时success=False</li>
+<li><strong>错误时也要有response</strong> —— 即便是失败，也要给用户一个友好的回复</li>
+<li><strong>confidence反映把握</strong> —— 检索命中时高，LLM兜底时中，彻底失败时低</li>
+</ul>
+
+<p class="diagram-title">图3：execute的标准执行流程</p>
+<div class="mermaid">
+graph TD
+    A[execute入口] --> B{有缓存?}
+    B -->|有| C[返回缓存结果]
+    B -->|无| D[执行业务逻辑]
+    D --> E{执行成功?}
+    E -->|是| F[构建SkillResult<br/>success=True]
+    E -->|否| G{有降级方案?}
+    G -->|是| H[执行降级]
+    H --> F
+    G -->|否| I[构建SkillResult<br/>success=False]
+    F --> J[返回]
+    I --> J
+    
+    style A fill:#e3f2fd
+    style J fill:#e8f5e9
+    style F fill:#c8e6c9
+    style I fill:#ffcdd2
+</div>
+
+<h3><span class="icon">7</span><span class="title-text">on_error：优雅的降级处理</span></h3>
+
+<p>即便有了标准接口，Skill还是可能出错。LLM API超时、数据库连接失败、依赖服务不可用……这些异常都不应该让整个Harness崩溃。</p>
+
+<p>这就是 <strong>on_error()</strong> 的作用——给Skill一个"兜底"的机会：</p>
+
+<pre><code># BaseSkill的默认on_error实现
+def on_error(self, error: Exception,
+             context: Dict[str, Any]) -> SkillResult:
+    return SkillResult(
+        success=False,
+        response="抱歉，处理您的请求时出现了问题，"
+                 "请稍后再试。",
+        error=str(error)
+    )</code></pre>
+
+<p>Harness在执行Skill时，会用try/except包裹：</p>
+
+<pre><code># harness.py 中的异常处理
+try:
+    result = skill.execute(user_input, context)
+except Exception as e:
+    # 调用Skill的on_error降级
+    result = skill.on_error(e, context)
+    # 记录熔断器
+    self.breaker.record_failure(skill.name)
+    # 尝试兜底
+    fallback = self.registry.get_skill("general")
+    if fallback and fallback.name != skill.name:
+        result = fallback.execute(user_input, context)</code></pre>
+
+<p>完整的错误处理链是这样的：</p>
+
+<p class="diagram-title">图4：三级错误处理链</p>
+<div class="mermaid">
+graph TD
+    A[Skill.execute] -->|抛异常| B[Harness捕获]
+    B --> C[Skill.on_error<br/>第一级降级]
+    C -->|返回结果| D{success?}
+    D -->|False| E[兜底Skill<br/>第二级降级]
+    E -->|也失败| F[硬编码兜底<br/>第三级降级]
+    F --> G["抱歉，系统暂时不可用"]
+    
+    style A fill:#e3f2fd
+    style G fill:#ffcdd2
+    style C fill:#fff3e0
+    style E fill:#fff3e0
+</div>
+
+<blockquote class="highlight">
+<p><strong>三级降级策略：</strong><br><br>
+1. <strong>第一级</strong>：Skill自己的on_error——返回一个友好的错误提示<br>
+2. <strong>第二级</strong>：Harness的兜底Skill（GeneralSkill）——用LLM做通用回复<br>
+3. <strong>第三级</strong>：硬编码的"系统繁忙"——确保至少有响应返回给用户</p>
+</blockquote>
+
+<h3><span class="icon">8</span><span class="title-text">Skill完整示例：一个问候Skill的诞生</span></h3>
+
+<p>把今天学的知识串起来，看一个完整的Skill是怎么写的：</p>
+
+<pre><code>class GreetingSkill(BaseSkill):
+    """问候Skill - 处理打招呼、再见等寒暄"""
+
+    def __init__(self, config, memory):
+        self.config = config
+        self.memory = memory
+
+    @property
+    def name(self) -> str:
+        return "greeting"
+
+    @property
+    def description(self) -> str:
+        return "问候Skill - 处理打招呼、再见等寒暄"
+
+    @property
+    def triggers(self) -> List[str]:
+        return ["你好", "您好", "hi", "hello",
+                "再见", "拜拜", "谢谢", "感谢"]
+
+    @property
+    def priority(self) -> int:
+        return 5
+
+    def can_handle(self, user_input, context):
+        score = super().can_handle(user_input, context)
+        # 问候类意图加分
+        if context.get("intent") in ("greeting", "thanks"):
+            score = max(score, 0.8)
+        return score
+
+    def execute(self, user_input, context):
+        user_id = context.get("user_id", "anonymous")
+        user_summary = self.memory.get_user_summary(user_id)
+
+        # 根据用户历史生成不同的问候
+        if user_summary.get("first_seen"):
+            response = f"欢迎回来！{user_summary.get('nickname', '')}"
+        else:
+            response = "您好！我是客服助手，" \
+                       "请问有什么可以帮您？"
+
+        if any(w in user_input for w in ["再见", "拜拜"]):
+            response = "再见，祝您生活愉快！"
+
+        return SkillResult(
+            success=True,
+            response=response,
+            data={"skill": "greeting", "user_id": user_id},
+            confidence=0.9
+        )
+
+    def on_error(self, error, context):
+        return SkillResult(
+            success=False,
+            response="您好，我是客服助手，请问有什么可以帮您？",
+            error=str(error)
+        )</code></pre>
+
+<p>一个完整的Skill就这样诞生了。没有if/else，没有硬编码，完全遵守BaseSkill的标准接口。</p>
+
+<h3><span class="icon">9</span><span class="title-text">本篇总结：BaseSkill的设计哲学</span></h3>
+
+<blockquote class="opinion">
+<p><strong>BaseSkill的三个设计哲学：</strong><br><br>
+<strong>1. 约定优于配置</strong><br>
+所有Skill必须实现name和description，其他属性有合理默认值。写一个新Skill的成本极低——通常只需实现2个属性 + 2个方法。<br><br>
+<strong>2. 数据优于控制</strong><br>
+Skill之间通过SkillResult.data传递信息，而不是直接调用。这种松耦合设计让Skill可以独立开发、独立测试。<br><br>
+<strong>3. 防御优于乐观</strong><br>
+on_error降级、success状态、兜底Skill——每一层都在为最坏情况做准备。一个Skill的失败不应该影响整个系统。</p>
+</blockquote>
+
+<p>下一篇，我们会聊 <strong>SkillRegistry</strong>——Skill的"人力资源部"是怎么管理所有Skill的注册、查找和生命周期的。</p>
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent加强版（Harness+Skill架构）</strong><br>
+01 · Harness+Skill架构革命<br>
+02 · BaseSkill标准接口 ← 你在这里<br>
+03 · 路由与编排：Registry+Router+Harness<br>
+04 · OrderSkill实战<br>
+05 · FAQ双引擎检索<br>
+06 · 情感Skill+Function Calling<br>
+07 · 槽位填充+用户记忆<br>
+08 · 生产级Harness：防护+监控+热插拔+部署<br>
+<br>
+<strong>前置系列：</strong><a href="../客服Agent实战系列-01.html" style="color: #00897B;">客服Agent实战系列</a>
+</p>
+
+</div>
+</body>
+</html>

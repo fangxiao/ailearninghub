@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 11-12</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+p { padding: 14px 0; color: #3f3f3f; }
+
+h2 {
+  margin: 50px 0 30px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+h3 {
+  margin: 40px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.num { color: #ff6b35; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+.hl { color: #e63946; font-weight: 600; }
+.success { color: #2a9d8f; }
+.tip { color: #7b68ee; }
+.warn { color: #f4a261; }
+
+strong { color: #2c2c2c; font-weight: 600; }
+em { font-style: italic; color: #5a5a5a; }
+
+.card {
+  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+
+.card h4 {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  color: #00897B;
+  font-weight: bold;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  padding: 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">向量数据库与RAG</span></h2>
+
+<p>上一期我们说了上下文窗口管理。滑动窗口、摘要压缩，这些方法能解决一部分问题。</p>
+
+<p>但对于大规模知识的存储和检索，这些方法还不够。想象一下：如果要让Agent读完一整本书再回答问题，滑动窗口肯定兜不住。</p>
+
+<p>这时候就需要向量数据库和RAG了。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>RAG = Retrieval Augmented Generation，即"检索增强生成"。让Agent先检索相关信息，再基于这些信息生成答案。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">Embedding是什么</span></h3>
+
+<p>在说向量数据库之前，先说说什么是Embedding。</p>
+
+<p>Embedding就是把你写的文字，变成一串数字（向量）。相似的文字，会变成相似的向量。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> openai</span>
+
+<span style="color: #a6e22e">response</span><span style="color: #f8f8f2"> = openai.Embedding.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    input=</span><span style="color: #e6db74">"今天天气真好"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    model=</span><span style="color: #e6db74">"text-embedding-ada-002"</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #a6e22e">vector</span><span style="color: #f8f8f2"> = response[</span><span style="color: #e6db74">'data'</span><span style="color: #f8f8f2">][</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">'embedding'</span><span style="color: #f8f8f2">]</span>
+<span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">len</span><span style="color: #f8f8f2">(vector))  </span><span style="color: #a8a8a8; font-style: italic;"># 1536 维向量</span></code></pre>
+
+<p>"今天天气真好"和"外面阳光灿烂"，虽然字不一样，但意思相近，所以它们的向量也会比较接近。</p>
+
+<h3><span class="icon">2</span><span class="title-text">向量数据库</span></h3>
+
+<p>向量数据库就是用来存储这些向量的。存储之后，可以根据"相似度"来检索。</p>
+
+<p>常见的向量数据库有：</p>
+
+<ul>
+<li>ChromaDB（轻量级，适合本地）</li>
+<li>Pinecone（云服务，适合生产）</li>
+<li>Milvus（开源，可私有部署）</li>
+<li>Weaviate（开源，功能丰富）</li>
+</ul>
+
+<p>用ChromaDB举个例子：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> chromadb</span>
+
+<span style="color: #a6e22e">client</span><span style="color: #f8f8f2"> = chromadb.</span><span style="color: #a6e22e">Client</span><span style="color: #f8f8f2">()</span>
+<span style="color: #a6e22e">collection</span><span style="color: #f8f8f2"> = client.</span><span style="color: #a6e22e">create_collection</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"knowledge_base"</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2"> </span>
+<span style="color: #a6e22e">documents</span><span style="color: #f8f8f2"> = [</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"Python是一门编程语言"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"JavaScript主要用于Web开发"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"机器学习是AI的一个分支"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">]</span>
+
+<span style="color: #a6e22e">collection.add</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    documents=documents,</span>
+<span style="color: #f8f8f2">    ids=[</span><span style="color: #e6db74">"doc1"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"doc2"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"doc3"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2"> </span>
+<span style="color: #a6e22e">results</span><span style="color: #f8f8f2"> = collection.</span><span style="color: #a6e22e">query</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    query_texts=[</span><span style="color: #e6db74">"什么是编程"</span><span style="color: #f8f8f2">],</span>
+<span style="color: #f8f8f2">    n_results=</span><span style="color: #ae81ff">2</span>
+<span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(results)</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">RAG实战</span></h3>
+
+<div style="text-align: center; margin: 30px 0;">
+<img src="data:image/png;base64,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" alt="Figure: RAG Flow - Query -> Vector Search -> Retrieve -> LLM -> Answer" style="max-width: 100%; border-radius: 8px;">
+<p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic;">Figure: RAG Flow - Query -> Vector Search -> Retrieve -> LLM -> Answer</p>
+</div>
+
+<p>RAG的流程是这样的：</p>
+
+<ol>
+<li>把知识文档切成小块，存入向量数据库</li>
+<li>用户提问时，先在向量数据库里检索相关的内容</li>
+<li>把检索到的内容和用户问题一起发给大模型</li>
+<li>大模型基于这些内容生成答案</li>
+</ol>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">RAGAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, vector_store):</span>
+<span style="color: #f8f8f2">        self.vector_store = vector_store</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">retrieve</span><span style="color: #f8f8f2">(self, query, top_k=</span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        results = self.vector_store.</span><span style="color: #a6e22e">query</span><span style="color: #f8f8f2">(query, top_k)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> results[</span><span style="color: #e6db74">'documents'</span><span style="color: #f8f8f2">]</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">answer</span><span style="color: #f8f8f2">(self, question):</span>
+<span style="color: #f8f8f2">        relevant_docs = self.</span><span style="color: #a6e22e">retrieve</span><span style="color: #f8f8f2">(question)</span>
+<span style="color: #f8f8f2">        context = </span><span style="color: #a6e22e">"\n"</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">join</span><span style="color: #f8f8f2">(relevant_docs)</span>
+
+<span style="color: #f8f8f2">        prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"""基于以下信息回答问题。如果信息不足，请说明你不知道。</span>
+
+<span style="color: #e6db74">信息：</span>
+<span style="color: #f8f8f2">{context}</span>
+
+<span style="color: #e6db74">问题：{question}</span>
+<span style="color: #e6db74">答案："""</span>
+
+<span style="color: #f8f8f2">        response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style style="color: #f8f8f2">: content, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: prompt}]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">]</span></code></pre>
+
+<blockquote><p>💡 <strong>RAG的优势：</strong>1) 可以处理超长文档 2) 答案有据可查 3) 可以实时更新知识库 4) 节省token</p></blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">RAG的局限</span></h3>
+
+<p>RAG虽好，但也不是万能的：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>问题</th>
+      <th>原因</th>
+      <th>解决方案</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>检索不到相关内容</td>
+      <td>Embedding模型不匹配</td>
+      <td>用更优质的Embedding服务</td>
+    </tr>
+    <tr>
+      <td>答案不连贯</td>
+      <td>检索到的片段太碎片化</td>
+      <td>增加上下文窗口大小</td>
+    </tr>
+    <tr>
+      <td>幻觉问题</td>
+      <td>模型过度发挥</td>
+      <td>在Prompt中强调"基于提供的信息"</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>说完向量数据库和RAG，接下来我们来做一个实战——让Agent记住你是谁。</p>
+
+<hr/>
+
+<h2><span class="title-text">实战：让Agent记住你是谁</span></h2>
+
+<p>学完了记忆系统的理论知识，这一期我们来做个实战——写一个能记住用户信息的Agent。</p>
+
+<blockquote><p>💡 <strong>目标：</strong>构建一个完整的记忆系统，能跨对话记住用户的基本信息和偏好。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">需求分析</span></h3>
+
+<p>我们要实现以下功能：</p>
+
+<ul>
+<li>记住用户的姓名、联系方式、偏好等基本信息</li>
+<li>跨对话保持记忆（重启程序后不丢失）</li>
+<li>能根据记忆提供个性化服务</li>
+</ul>
+
+<h3><span class="icon">2</span><span class="title-text">完整代码</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> os</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">PersistentMemoryAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, memory_file=</span><span style="color: #e6db74">"user_memory.json"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        self.memory_file = memory_file</span>
+<span style="color: #f8f8f2">        self.memory = self.</span><span style="color: #a6e22e">load_memory</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.messages = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">load_memory</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> os.path.exists(self.memory_file):</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">open</span><span style="color: #f8f8f2">(self.memory_file, </span><span style="color: #e6db74">'r'</span><span style="color: #f8f8f2">) as f:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.</span><span style="color: #a6e22e">load</span><span style="color: #f8f8f2">(f)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span><span style="color: #e6db74">"user_info"</span><span style="color: #f8f8f2">: {}, </span><span style="color: #e6db74">"preferences"</span><span style="color: #f8f8f2">: {}, </span><span style="color: #e6db74">"history"</span><span style="color: #f8f8f2">: []}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">save_memory</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">open</span><span style="color: #f8f8f2">(self.memory_file, </span><span style="color: #e6db74">'w'</span><span style="color: #f8f8f2">) as f:</span>
+<span style="color: #f8f8f2">            json.</span><span style="color: #a6e22e">dump</span><span style="color: #f8f8f2">(self.memory, f, ensure_ascii=</span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">, indent=</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">update_memory</span><span style="color: #f8f8f2">(self, key, value):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"user_info"</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> key:</span>
+<span style="color: #f8f8f2">            self.memory[</span><span style="color: #e6db74">"user_info"</span><span style="color: #f8f8f2">][key] = value</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            self.memory[</span><span style="color: #e6db74">"preferences"</span><span style="color: #f8f8f2">][key] = value</span>
+<span style="color: #f8f8f2">        self.</span><span style="color: #a6e22e">save_memory</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">build_context</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        context = []</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a6e22e">user_info</span><span style="color: #f8f8f2"> = self.memory.get(</span><span style="color: #e6db74">"user_info"</span><span style="color: #f8f8f2">, {})</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> user_info:</span>
+<span style="color: #f8f8f2">            info_text = </span><span style="color: #e6db74">"用户信息："</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> k, v </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> user_info.items():</span>
+<span style="color: #f8f8f2">                info_text += </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"\n- {k}：{v}"</span>
+<span style="color: #f8f8f2">            context.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"system"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: info_text})</span>
+
+<span style="color: #f8f8f2">        context.extend(self.messages[-</span><span style="color: #ae81ff">10</span><span style="color: #f8f8f2">:])</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> context</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(self, user_input):</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: user_input})</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            messages=self.</span><span style="color: #a6e22e">build_context</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        answer = response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"assistant"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: answer})</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> answer</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">使用示例</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">agent</span><span style="color: #f8f8f2"> = PersistentMemoryAgent()</span>
+
+<span style="color: #f8f8f2"> </span>
+<span style="color: #a6e22e">agent</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">update_memory</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user_info:name"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"张三"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #a6e22e">agent</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">update_memory</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user_info:city"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"北京"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #a6e22e">agent</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">update_memory</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"preferences:coffee"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"美式咖啡，不加糖"</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2"> </span>
+<span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(agent.</span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"附近有什么好咖啡店吗？"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #f8f8f2"># Agent会回答：我知道你在北京，喜欢美式咖啡不加糖...</span></code></pre>
+
+<blockquote><p>💡 <strong>关键点：</strong>1) 使用JSON文件持久化存储记忆 2) 每次构建上下文时注入用户信息 3) 对话历史限制在最近10条</p></blockquote>
+
+<p>到这里，记忆系统篇就全部讲完了。我们学了四层记忆架构、上下文窗口管理、向量数据库和RAG，最后还做了一个实战项目。</p>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>OpenClaw原理篇12：记忆系统 <span class="file-tag">{原文件:12-记忆系统-公众号版.md}</span></li>
+<li>AI Coding第28篇：Agent核心实现 <span class="file-tag">{原文件:AI-28-Agent核心实现-公众号版.md}</span></li>
+</ul>
+
+<p>下期预告：Agent开发系列 13-14 — Tool接口设计 + 内置工具实现</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

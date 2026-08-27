@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding 架构：技术实现揭秘</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">40</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐⭐⭐ 高级</p>
+<p data-tool="mdnice编辑器">你将收获：理解 AI Coding 工具的底层架构，学会性能优化技巧</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：你已经掌握了什么？</span></h2>
+<p data-tool="mdnice编辑器"><strong>前面学过的：</strong></p>
+<ul>
+<li><section>✅ 代码补全原理（AI 如何预测代码）</section></li>
+<li><section>✅ 注意力机制（AI 如何关注重点）</section></li>
+<li><section>✅ 上下文管理（AI 如何记住代码）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>但有一个问题：</strong></p>
+<p data-tool="mdnice编辑器">这些技术是如何整合成一个完整的 AI Coding 系统的？</p>
+<p data-tool="mdnice编辑器"><strong>这一篇将教你：</strong> AI Coding 工具的系统架构、模型选择策略和性能优化技巧</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：AI Coding 系统全景图</span></h2>
+<p data-tool="mdnice编辑器"><strong>一个完整的 AI Coding 系统：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户输入（代码/问题）<br/>    ↓<br/>前端处理（IDE 插件 / CLI）<br/>    ↓<br/>上下文收集（文件、项目信息）<br/>    ↓<br/>模型推理（补全 / 对话 / 搜索）<br/>    ↓<br/>结果生成（代码 / 建议 / 解释）<br/>    ↓<br/>后处理（格式化、验证）<br/>    ↓<br/>返回给用户</code></pre>
+<p data-tool="mdnice编辑器"><strong>这一篇，我们将拆解每一个环节</strong></p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、系统架构概览</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">三层架构</span></h3>
+<p data-tool="mdnice编辑器"><strong>典型的 AI Coding 系统架构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────────────┐<br/>│         前端层（Frontend）           │<br/>│  IDE插件 / CLI / Web界面 / API       │<br/>└─────────────┬───────────────────────┘<br/>              ↓<br/>┌─────────────────────────────────────┐<br/>│         中间层（Middleware）         │<br/>│  上下文管理、缓存、路由、监控         │<br/>└─────────────┬───────────────────────┘<br/>              ↓<br/>┌─────────────────────────────────────┐<br/>│         后端层（Backend）            │<br/>│  模型服务、向量数据库、文件系统       │<br/>└─────────────────────────────────────┘</code></pre>
+<p data-tool="mdnice编辑器"><strong>每一层的职责：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>层级</th>
+<th>职责</th>
+<th>示例组件</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>前端层</td>
+<td>用户交互、输入输出</td>
+<td><span class="key">VS Code</span> 插件、Claude Code CLI</td>
+</tr>
+<tr>
+<td>中间层</td>
+<td>数据处理、业务逻辑</td>
+<td>上下文管理器、缓存系统</td>
+</tr>
+<tr>
+<td>后端层</td>
+<td>模型推理、数据存储</td>
+<td><span class="key">LLM</span> <span class="key">API</span>、向量数据库</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">数据流示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：用户请求代码补全</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1步：用户输入<br/>    用户在 IDE 中输入："def calculate_"<br/>    ↓<br/>第2步：前端处理<br/>    VS Code 插件捕获输入，获取当前文件内容<br/>    ↓<br/>第3步：上下文收集<br/>    中间层收集：<br/>    - 当前文件（光标前后的代码）<br/>    - 相关文件（imports、依赖）<br/>    - 项目配置（风格、规范）<br/>    ↓<br/>第4步：模型推理<br/>    发送到 LLM API，生成补全建议<br/>    ↓<br/>第5步：结果生成<br/>    模型返回：<br/>    - "def calculate_discount(price, level):"<br/>    - "def calculate_total(items):"<br/>    ↓<br/>第6步：后处理<br/>    - 格式化（符合 PEP 8）<br/>    - 去重（移除重复建议）<br/>    - 排序（按相关性）<br/>    ↓<br/>第7步：返回给用户<br/>    在 IDE 中显示补全建议列表</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、前端层：用户交互</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">前端类型</span></h3>
+<p data-tool="mdnice编辑器"><strong>类型1：<span class="key">IDE</span> 插件</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># VS Code 插件示例</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">AICodingExtension</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">activate</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">context):</span><br/>        <span style="color: #e0e0e0"># 注册补全提供者</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">provider</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">AICompletionProvider()</span><br/>        <br/>        <span style="color: #e0e0e0"># 监听用户输入</span><br/>        <span style="color: #F8F8F2">vscode</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">commands</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">registerCommand(</span><br/>            <span style="color: #E6DB74">&#39;aiCoding.complete&#39;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">trigger_completion</span><br/>        <span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">trigger_completion</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #e0e0e0"># 获取当前文件和光标位置</span><br/>        <span style="color: #F8F8F2">editor</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vscode</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">window</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">activeTextEditor</span><br/>        <span style="color: #F8F8F2">document</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">document</span><br/>        <span style="color: #F8F8F2">position</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">selection</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">active</span><br/>        <br/>        <span style="color: #e0e0e0"># 调用中间层</span><br/>        <span style="color: #F8F8F2">context</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">build_context(document,</span> <span style="color: #F8F8F2">position)</span><br/>        <span style="color: #F8F8F2">suggestions</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">middleware</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">complete(context)</span><br/>        <br/>        <span style="color: #e0e0e0"># 显示补全建议</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">show_suggestions(suggestions)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>特点：</strong></p>
+<ul>
+<li><section>✅ 深度集成 <span class="key">IDE</span></section></li>
+<li><section>✅ 实时补全</section></li>
+<li><section>✅ 丰富的交互方式</section></li>
+<li><section>❌ 需要安装配置</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>类型2：<span class="key">CLI</span> 工具</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># Claude Code CLI 示例</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ClaudeCodeCLI</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">run</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #66D9EF">while</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #e0e0e0"># 获取用户输入</span><br/>            <span style="color: #F8F8F2">user_input</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">input(</span><span style="color: #E6DB74">&quot;你：&quot;</span><span style="color: #F8F8F2">)</span><br/>            <br/>            <span style="color: #e0e0e0"># 处理命令</span><br/>            <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">user_input</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">startswith(</span><span style="color: #E6DB74">&#39;/&#39;</span><span style="color: #F8F8F2">):</span><br/>                <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">handle_command(user_input)</span><br/>            <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span><br/>                <span style="color: #e0e0e0"># 调用 AI</span><br/>                <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">chat(user_input)</span><br/>                <span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">f&quot;AI：{</span><span style="color: #F8F8F2">response</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">handle_command</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">cmd):</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">cmd</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;/help&#39;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">show_help()</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">cmd</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;/read&#39;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">file_path</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">input(</span><span style="color: #E6DB74">&quot;文件路径：&quot;</span><span style="color: #F8F8F2">)</span><br/>            <span style="color: #F8F8F2">content</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">read_file(file_path)</span><br/>            <span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">f&quot;已读取 {</span><span style="color: #F8F8F2">len(content)</span><span style="color: #E6DB74">} 字符&quot;</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">cmd</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;/edit&#39;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">start_edit_session()</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>特点：</strong></p>
+<ul>
+<li><section>✅ 轻量级，快速启动</section></li>
+<li><section>✅ 适合命令行环境</section></li>
+<li><section>✅ 灵活可脚本化</section></li>
+<li><section>❌ 交互不如 <span class="key">IDE</span> 友好</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>类型3：Web 界面</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">javascript</span></span><code><span style="color: #e0e0e0">// Web 前端示例</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">AIChatInterface</span><span style="color: #F8F8F2"> {</span><br/><span style="color: #F8F8F2">    </span><span style="color: #66D9EF">constructor</span><span style="color: #F8F8F2">() {</span><br/><span style="color: #F8F8F2">        </span><span style="color: #66D9EF">this</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">messages</span><span style="color: #F8F8F2"> </span><span style="color: #FF4689">=</span><span style="color: #F8F8F2"> [];</span><br/><span style="color: #F8F8F2">        </span><span style="color: #66D9EF">this</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">editor</span><span style="color: #F8F8F2"> </span><span style="color: #FF4689">=</span><span style="color: #F8F8F2"> </span><span style="color: #FF4689">new</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">CodeEditor</span><span style="color: #F8F8F2">();</span><br/><span style="color: #F8F8F2">    }</span><br/><span style="color: #F8F8F2">    </span><br/><span style="color: #F8F8F2">    </span><span style="color: #66D9EF">async</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">sendMessage</span><span style="color: #F8F8F2">(</span><span style="color: #A6E22E">userMessage</span><span style="color: #F8F8F2">) {</span><br/><span style="color: #F8F8F2">        </span><span style="color: #e0e0e0">// 添加用户消息</span><br/><span style="color: #F8F8F2">        </span><span style="color: #66D9EF">this</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">messages</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">push</span><span style="color: #F8F8F2">({</span><br/><span style="color: #F8F8F2">            </span><span style="color: #A6E22E">role</span><span style="color: #FF4689">:</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">&#39;user&#39;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">            </span><span style="color: #A6E22E">content</span><span style="color: #FF4689">:</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">userMessage</span><br/><span style="color: #F8F8F2">        });</span><br/><span style="color: #F8F8F2">        </span><br/><span style="color: #F8F8F2">        </span><span style="color: #e0e0e0">// 调用 API</span><br/><span style="color: #F8F8F2">        </span><span style="color: #66D9EF">const</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">response</span><span style="color: #F8F8F2"> </span><span style="color: #FF4689">=</span><span style="color: #F8F8F2"> </span><span style="color: #66D9EF">await</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">fetch</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;/api/chat&#39;</span><span style="color: #F8F8F2">, {</span><br/><span style="color: #F8F8F2">            </span><span style="color: #A6E22E">method</span><span style="color: #FF4689">:</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">&#39;POST&#39;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">            </span><span style="color: #A6E22E">body</span><span style="color: #FF4689">:</span><span style="color: #F8F8F2"> JSON.</span><span style="color: #A6E22E">stringify</span><span style="color: #F8F8F2">({</span><br/><span style="color: #F8F8F2">                </span><span style="color: #A6E22E">messages</span><span style="color: #FF4689">:</span><span style="color: #F8F8F2"> </span><span style="color: #66D9EF">this</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">messages</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">                </span><span style="color: #A6E22E">context</span><span style="color: #FF4689">:</span><span style="color: #F8F8F2"> </span><span style="color: #66D9EF">this</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">editor</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">getContent</span><span style="color: #F8F8F2">()</span><br/><span style="color: #F8F8F2">            })</span><br/><span style="color: #F8F8F2">        });</span><br/><span style="color: #F8F8F2">        </span><br/><span style="color: #F8F8F2">        </span><span style="color: #e0e0e0">// 显示 AI 回复</span><br/><span style="color: #F8F8F2">        </span><span style="color: #66D9EF">const</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">data</span><span style="color: #F8F8F2"> </span><span style="color: #FF4689">=</span><span style="color: #F8F8F2"> </span><span style="color: #66D9EF">await</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">response</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">json</span><span style="color: #F8F8F2">();</span><br/><span style="color: #F8F8F2">        </span><span style="color: #66D9EF">this</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">displayMessage</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;assistant&#39;</span><span style="color: #F8F8F2">, </span><span style="color: #A6E22E">data</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">reply</span><span style="color: #F8F8F2">);</span><br/><span style="color: #F8F8F2">    }</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>特点：</strong></p>
+<ul>
+<li><section>✅ 无需安装</section></li>
+<li><section>✅ 跨平台</section></li>
+<li><section>✅ 易于分享</section></li>
+<li><section>❌ 受网络限制</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">上下文收集</span></h3>
+<p data-tool="mdnice编辑器"><strong>前端需要收集的上下文：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ContextCollector</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">collect</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">editor,</span> <span style="color: #F8F8F2">position):</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #e0e0e0"># 当前文件</span><br/>            <span style="color: #E6DB74">&#39;current_file&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">{</span><br/>                <span style="color: #E6DB74">&#39;path&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">document</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">uri</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">path,</span><br/>                <span style="color: #E6DB74">&#39;content&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">document</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">getText(),</span><br/>                <span style="color: #E6DB74">&#39;language&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">document</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">languageId,</span><br/>            <span style="color: #F8F8F2">},</span><br/>            <br/>            <span style="color: #e0e0e0"># 光标上下文</span><br/>            <span style="color: #E6DB74">&#39;cursor&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">{</span><br/>                <span style="color: #E6DB74">&#39;position&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">position,</span><br/>                <span style="color: #E6DB74">&#39;before&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_text_before_cursor(editor,</span> <span style="color: #F8F8F2">position),</span><br/>                <span style="color: #E6DB74">&#39;after&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_text_after_cursor(editor,</span> <span style="color: #F8F8F2">position),</span><br/>            <span style="color: #F8F8F2">},</span><br/>            <br/>            <span style="color: #e0e0e0"># 相关文件</span><br/>            <span style="color: #E6DB74">&#39;related_files&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_related_files(editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">document),</span><br/>            <br/>            <span style="color: #e0e0e0"># 项目信息</span><br/>            <span style="color: #E6DB74">&#39;project&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">{</span><br/>                <span style="color: #E6DB74">&#39;root&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_project_root(editor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">document</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">uri),</span><br/>                <span style="color: #E6DB74">&#39;git_info&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_git_info(),</span><br/>                <span style="color: #E6DB74">&#39;dependencies&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_dependencies(),</span><br/>            <span style="color: #F8F8F2">}</span><br/>        <span style="color: #F8F8F2">}</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、中间层：数据处理</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">上下文管理器</span></h3>
+<p data-tool="mdnice编辑器"><strong>职责：决定哪些代码进入上下文窗口</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ContextManager</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">max_tokens</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">4000</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_tokens</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">max_tokens</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">tokenizer</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Tokenizer()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">build_context</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query,</span> <span style="color: #F8F8F2">files):</span><br/>        <span style="color: #e0e0e0"># 第1步：计算查询的 token 数</span><br/>        <span style="color: #F8F8F2">query_tokens</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">tokenizer</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">count(query)</span><br/>        <span style="color: #F8F8F2">remaining</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_tokens</span> <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">query_tokens</span><br/>        <br/>        <span style="color: #e0e0e0"># 第2步：计算每个文件的 token 数</span><br/>        <span style="color: #F8F8F2">file_tokens</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #F8F8F2">file:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">tokenizer</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">count(content)</span><br/>            <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">file,</span> <span style="color: #F8F8F2">content</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">files</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">items()</span><br/>        <span style="color: #F8F8F2">}</span><br/>        <br/>        <span style="color: #e0e0e0"># 第3步：选择文件（贪心算法）</span><br/>        <span style="color: #F8F8F2">selected</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">file,</span> <span style="color: #F8F8F2">tokens</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">sorted(file_tokens</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">items(),</span> <br/>                                    <span style="color: #F8F8F2">key</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">lambda</span> <span style="color: #F8F8F2">x:</span> <span style="color: #F8F8F2">x[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">],</span> <br/>                                    <span style="color: #F8F8F2">reverse</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">tokens</span> <span style="color: #FF4689">&lt;=</span> <span style="color: #F8F8F2">remaining:</span><br/>                <span style="color: #F8F8F2">selected</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(file)</span><br/>                <span style="color: #F8F8F2">remaining</span> <span style="color: #FF4689">-=</span> <span style="color: #F8F8F2">tokens</span><br/>        <br/>        <span style="color: #e0e0e0"># 第4步：组装上下文</span><br/>        <span style="color: #F8F8F2">context</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">query</span> <span style="color: #FF4689">+</span> <span style="color: #E6DB74">&quot;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&quot;</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">file</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">selected:</span><br/>            <span style="color: #F8F8F2">context</span> <span style="color: #FF4689">+=</span> <span style="color: #E6DB74">f&quot;--- {</span><span style="color: #F8F8F2">file</span><span style="color: #E6DB74">} ---</span><span style="color: #AE81FF">\n</span><span style="color: #E6DB74">&quot;</span><br/>            <span style="color: #F8F8F2">context</span> <span style="color: #FF4689">+=</span> <span style="color: #F8F8F2">files[file]</span> <span style="color: #FF4689">+</span> <span style="color: #E6DB74">&quot;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&quot;</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">context</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">缓存系统</span></h3>
+<p data-tool="mdnice编辑器"><strong>为什么需要缓存？</strong></p>
+<ul>
+<li><section>相同的代码片段多次请求</section></li>
+<li><section>减少模型 <span class="key">API</span> 调用</section></li>
+<li><section>降低成本和延迟</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>缓存策略：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">SemanticCache</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">threshold</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">0.95</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{}</span>  <span style="color: #e0e0e0"># {vector: response}</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">threshold</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">threshold</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">load_embedding_model()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query):</span><br/>        <span style="color: #e0e0e0"># 向量化查询</span><br/>        <span style="color: #F8F8F2">query_vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(query)</span><br/>        <br/>        <span style="color: #e0e0e0"># 查找相似查询</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">cached_vector,</span> <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">items():</span><br/>            <span style="color: #F8F8F2">similarity</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">cosine_similarity(query_vector,</span> <span style="color: #F8F8F2">cached_vector)</span><br/>            <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">similarity</span> <span style="color: #FF4689">&gt;</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">threshold:</span><br/>                <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">response</span>  <span style="color: #e0e0e0"># 命中缓存</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">None</span>  <span style="color: #e0e0e0"># 未命中</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">set</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query,</span> <span style="color: #F8F8F2">response):</span><br/>        <span style="color: #F8F8F2">query_vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(query)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache[query_vector]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">response</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>效果：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>无缓存：<br/>- 每次请求都调用模型<br/>- 成本：$0.02 / 1K tokens<br/>- 延迟：500-2000ms<br/><br/>有缓存：<br/>- 70% 请求命中缓存<br/>- 成本：降低 70%<br/>- 延迟：10-50ms（缓存命中）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">请求路由</span></h3>
+<p data-tool="mdnice编辑器"><strong>智能路由：根据任务选择模型</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ModelRouter</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;fast&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;gpt-3.5-turbo&#39;</span><span style="color: #F8F8F2">,</span>     <span style="color: #e0e0e0"># 快速、便宜</span><br/>            <span style="color: #E6DB74">&#39;smart&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;gpt-4&#39;</span><span style="color: #F8F8F2">,</span>             <span style="color: #e0e0e0"># 智能、昂贵</span><br/>            <span style="color: #E6DB74">&#39;code&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;codex&#39;</span><span style="color: #F8F8F2">,</span>              <span style="color: #e0e0e0"># 代码专用</span><br/>            <span style="color: #E6DB74">&#39;local&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;codellama-local&#39;</span><span style="color: #F8F8F2">,</span>   <span style="color: #e0e0e0"># 本地模型</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">route</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">task):</span><br/>        <span style="color: #e0e0e0"># 简单任务 → 快速模型</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">task</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">type</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;completion&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;formatting&#39;</span><span style="color: #F8F8F2">]:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;fast&#39;</span><span style="color: #F8F8F2">]</span><br/>        <br/>        <span style="color: #e0e0e0"># 复杂任务 → 智能模型</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">task</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">type</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;refactoring&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;debugging&#39;</span><span style="color: #F8F8F2">]:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;smart&#39;</span><span style="color: #F8F8F2">]</span><br/>        <br/>        <span style="color: #e0e0e0"># 代码任务 → 代码模型</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">task</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;code_generation&#39;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;code&#39;</span><span style="color: #F8F8F2">]</span><br/>        <br/>        <span style="color: #e0e0e0"># 隐私敏感 → 本地模型</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">task</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sensitive:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;local&#39;</span><span style="color: #F8F8F2">]</span><br/>        <br/>        <span style="color: #e0e0e0"># 默认</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;smart&#39;</span><span style="color: #F8F8F2">]</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>成本对比：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>任务类型</th>
+<th>模型</th>
+<th>成本/1K tokens</th>
+<th>质量</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>代码补全</td>
+<td><span class="key">GPT</span>-3.5</td>
+<td>$0.002</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>代码重构</td>
+<td><span class="key">GPT</span>-4</td>
+<td>$0.03</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>代码生成</td>
+<td>Codex</td>
+<td>$0.02</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>隐私数据</td>
+<td>本地模型</td>
+<td>$0</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、后端层：模型服务</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">模型服务架构</span></h3>
+<p data-tool="mdnice编辑器"><strong>单模型架构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>前端 → 中间层 → 模型API → 返回结果</code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong> 简单直接</p>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong> 依赖单一模型，无法优化</p>
+<p data-tool="mdnice编辑器"><strong>多模型架构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>                ┌─→ 模型A（快速）<br/>前端 → 中间层 ──┼─→ 模型B（智能）<br/>                └─→ 模型C（本地）</code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong> 灵活选择、成本优化</p>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong> 架构复杂</p>
+<p data-tool="mdnice编辑器"><strong>模型服务示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ModelService</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;gpt4&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">GPT4Client(),</span><br/>            <span style="color: #E6DB74">&#39;gpt35&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">GPT35Client(),</span><br/>            <span style="color: #E6DB74">&#39;claude&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">ClaudeClient(),</span><br/>            <span style="color: #E6DB74">&#39;glm4&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">GLM4Client(),</span><br/>        <span style="color: #F8F8F2">}</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">router</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">ModelRouter()</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">generate</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 第1步：选择模型</span><br/>        <span style="color: #F8F8F2">model_name</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">router</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">route(request)</span><br/>        <span style="color: #F8F8F2">model</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[model_name]</span><br/>        <br/>        <span style="color: #e0e0e0"># 第2步：调用模型</span><br/>        <span style="color: #66D9EF">try</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(</span><br/>                <span style="color: #F8F8F2">prompt</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">prompt,</span><br/>                <span style="color: #F8F8F2">temperature</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">temperature,</span><br/>                <span style="color: #F8F8F2">max_tokens</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_tokens</span><br/>            <span style="color: #F8F8F2">)</span><br/>            <br/>            <span style="color: #e0e0e0"># 第3步：记录日志</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">log_request(model_name,</span> <span style="color: #F8F8F2">request,</span> <span style="color: #F8F8F2">response)</span><br/>            <br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">response</span><br/>        <br/>        <span style="color: #66D9EF">except</span> <span style="color: #A6E22E">Exception</span> <span style="color: #66D9EF">as</span> <span style="color: #F8F8F2">e:</span><br/>            <span style="color: #e0e0e0"># 降级策略：切换到备用模型</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">fallback(request,</span> <span style="color: #F8F8F2">model_name)</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">向量数据库服务</span></h3>
+<p data-tool="mdnice编辑器"><strong>架构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">VectorDatabaseService</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">FAISS()</span>  <span style="color: #e0e0e0"># 或 Pinecone / Milvus</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">SentenceTransformer(</span><span style="color: #E6DB74">&#39;all-MiniLM-L6-v2&#39;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">index_codebase</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">files):</span><br/>        <span style="color: #e0e0e0"># 第1步：分块</span><br/>        <span style="color: #F8F8F2">chunks</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">file_path,</span> <span style="color: #F8F8F2">content</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">files</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">items():</span><br/>            <span style="color: #F8F8F2">file_chunks</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">split_into_chunks(content,</span> <span style="color: #F8F8F2">chunk_size</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">500</span><span style="color: #F8F8F2">)</span><br/>            <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">i,</span> <span style="color: #F8F8F2">chunk</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">enumerate(file_chunks):</span><br/>                <span style="color: #F8F8F2">chunks</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append({</span><br/>                    <span style="color: #E6DB74">&#39;id&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">f&quot;{</span><span style="color: #F8F8F2">file_path</span><span style="color: #E6DB74">}:{</span><span style="color: #F8F8F2">i</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">,</span><br/>                    <span style="color: #E6DB74">&#39;content&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">chunk,</span><br/>                    <span style="color: #E6DB74">&#39;metadata&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">{</span><br/>                        <span style="color: #E6DB74">&#39;file&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">file_path,</span><br/>                        <span style="color: #E6DB74">&#39;chunk_index&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">i</span><br/>                    <span style="color: #F8F8F2">}</span><br/>                <span style="color: #F8F8F2">})</span><br/>        <br/>        <span style="color: #e0e0e0"># 第2步：向量化</span><br/>        <span style="color: #F8F8F2">vectors</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(chunk[</span><span style="color: #E6DB74">&#39;content&#39;</span><span style="color: #F8F8F2">])</span><br/>            <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">chunk</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">chunks</span><br/>        <span style="color: #F8F8F2">]</span><br/>        <br/>        <span style="color: #e0e0e0"># 第3步：存储</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(vectors,</span> <span style="color: #F8F8F2">metadata</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[c[</span><span style="color: #E6DB74">&#39;metadata&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">c</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">chunks])</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">search</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query,</span> <span style="color: #F8F8F2">top_k</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #e0e0e0"># 向量化查询</span><br/>        <span style="color: #F8F8F2">query_vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(query)</span><br/>        <br/>        <span style="color: #e0e0e0"># 搜索</span><br/>        <span style="color: #F8F8F2">distances,</span> <span style="color: #F8F8F2">indices</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(query_vector,</span> <span style="color: #F8F8F2">k</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">top_k)</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">distances,</span> <span style="color: #F8F8F2">indices</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、模型选择策略</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">模型对比</span></h3>
+<p data-tool="mdnice编辑器"><strong>主流 <span class="key">LLM</span> 对比：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>模型</th>
+<th>上下文</th>
+<th>代码能力</th>
+<th>速度</th>
+<th>成本</th>
+<th>适用场景</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong><span class="key">GPT</span>-4</strong></td>
+<td>128K</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>中等</td>
+<td>高</td>
+<td>复杂推理、架构设计</td>
+</tr>
+<tr>
+<td><strong><span class="key">GPT</span>-3.5</strong></td>
+<td>16K</td>
+<td>⭐⭐⭐⭐</td>
+<td>快</td>
+<td>低</td>
+<td>快速补全、简单任务</td>
+</tr>
+<tr>
+<td><strong><span class="key">Claude</span> 3</strong></td>
+<td>200K</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>中等</td>
+<td>高</td>
+<td>大型项目、长文档</td>
+</tr>
+<tr>
+<td><strong><span class="key">GLM</span>-4</strong></td>
+<td>128K</td>
+<td>⭐⭐⭐⭐</td>
+<td>快</td>
+<td>中</td>
+<td>国内部署、中文优化</td>
+</tr>
+<tr>
+<td><strong>CodeLlama</strong></td>
+<td>16K</td>
+<td>⭐⭐⭐⭐</td>
+<td>快</td>
+<td>低（本地）</td>
+<td>本地部署、隐私保护</td>
+</tr>
+<tr>
+<td><strong>DeepSeek Coder</strong></td>
+<td>16K</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>快</td>
+<td>低（本地）</td>
+<td>代码专用、开源</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">选择策略</span></h3>
+<p data-tool="mdnice编辑器"><strong>策略1：按任务类型</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">select_model_by_task</span><span style="color: #F8F8F2">(task_type):</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">task_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;quick_completion&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;gpt-3.5&#39;</span>  <span style="color: #e0e0e0"># 快速、便宜</span><br/>    <br/>    <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">task_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;complex_refactoring&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;gpt-4&#39;</span>  <span style="color: #e0e0e0"># 智能、准确</span><br/>    <br/>    <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">task_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;code_review&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;claude-3&#39;</span>  <span style="color: #e0e0e0"># 长上下文、细节分析</span><br/>    <br/>    <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">task_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;private_data&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;codellama-local&#39;</span>  <span style="color: #e0e0e0"># 隐私保护</span><br/>    <br/>    <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;glm-4&#39;</span>  <span style="color: #e0e0e0"># 平衡选择</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>策略2：按成本预算</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">select_model_by_budget</span><span style="color: #F8F8F2">(budget_tier):</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">budget_tier</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;free&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #e0e0e0"># 完全免费方案</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;main&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;glm-4-free&#39;</span><span style="color: #F8F8F2">,</span>      <span style="color: #e0e0e0"># 智谱免费额度</span><br/>            <span style="color: #E6DB74">&#39;fallback&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;codellama-local&#39;</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">budget_tier</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;low&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #e0e0e0"># 低成本方案</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;main&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;gpt-3.5&#39;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #E6DB74">&#39;fallback&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;glm-4&#39;</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">budget_tier</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;medium&#39;</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #e0e0e0"># 中等预算</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;main&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;glm-4&#39;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #E6DB74">&#39;complex&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;gpt-4&#39;</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span>  <span style="color: #e0e0e0"># high</span><br/>        <span style="color: #e0e0e0"># 高预算</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;main&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;gpt-4&#39;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #E6DB74">&#39;fallback&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;claude-3&#39;</span><br/>        <span style="color: #F8F8F2">}</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>策略3：混合使用</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">HybridModelStrategy</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;fast&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">GLM4Client(),</span>      <span style="color: #e0e0e0"># 快速响应</span><br/>            <span style="color: #E6DB74">&#39;smart&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">GPT4Client(),</span>     <span style="color: #e0e0e0"># 复杂任务</span><br/>            <span style="color: #E6DB74">&#39;local&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">CodeLlamaLocal()</span>  <span style="color: #e0e0e0"># 隐私保护</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">generate</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 第1步：快速模型生成初稿</span><br/>        <span style="color: #F8F8F2">draft</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;fast&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(request)</span><br/>        <br/>        <span style="color: #e0e0e0"># 第2步：评估质量</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">is_good_enough(draft,</span> <span style="color: #F8F8F2">request):</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">draft</span>  <span style="color: #e0e0e0"># 直接返回</span><br/>        <br/>        <span style="color: #e0e0e0"># 第3步：智能模型优化</span><br/>        <span style="color: #F8F8F2">enhanced</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">models[</span><span style="color: #E6DB74">&#39;smart&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">refine(draft,</span> <span style="color: #F8F8F2">request)</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">enhanced</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">is_good_enough</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">response,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 检查是否包含错误</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #E6DB74">&#39;error&#39;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lower():</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>        <br/>        <span style="color: #e0e0e0"># 检查长度是否合理</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(response)</span> <span style="color: #FF4689">&lt;</span> <span style="color: #AE81FF">10</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>        <br/>        <span style="color: #e0e0e0"># 检查是否有代码</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">requires_code</span> <span style="color: #FF4689">and</span> <span style="color: #E6DB74">&#39;```&#39;</span> <span style="color: #FF4689">not</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">response:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">True</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、性能优化</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">延迟优化</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 将响应时间从 2-5 秒降低到 500ms 以内</p>
+<p data-tool="mdnice编辑器"><strong>优化1：流式输出</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">stream_generate</span><span style="color: #F8F8F2">(request):</span><br/>    <span style="color: #e0e0e0"># 传统方式：等待完整响应</span><br/>    <span style="color: #e0e0e0"># response = await model.generate(request)</span><br/>    <span style="color: #e0e0e0"># return response  # 2-5秒后才返回</span><br/>    <br/>    <span style="color: #e0e0e0"># 流式输出：逐块返回</span><br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">chunk</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">stream_generate(request):</span><br/>        <span style="color: #66D9EF">yield</span> <span style="color: #F8F8F2">chunk</span>  <span style="color: #e0e0e0"># 立即开始输出</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>效果：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>传统方式：<br/>[等待 2-5秒] → [显示完整结果]<br/><br/>流式输出：<br/>[等待 100ms] → [显示第1块] → [第2块] → ... → [完成]</code></pre>
+<p data-tool="mdnice编辑器"><strong>优化2：并行请求</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">parallel_generate</span><span style="color: #F8F8F2">(request):</span><br/>    <span style="color: #e0e0e0"># 传统方式：串行请求</span><br/>    <span style="color: #e0e0e0"># result1 = await model1.generate(request)</span><br/>    <span style="color: #e0e0e0"># result2 = await model2.generate(request)</span><br/>    <span style="color: #e0e0e0"># 总时间：2-5秒 + 2-5秒 = 4-10秒</span><br/>    <br/>    <span style="color: #e0e0e0"># 并行请求</span><br/>    <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">asyncio</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">gather(</span><br/>        <span style="color: #F8F8F2">model1</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(request),</span><br/>        <span style="color: #F8F8F2">model2</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(request),</span><br/>        <span style="color: #F8F8F2">model3</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(request)</span><br/>    <span style="color: #F8F8F2">)</span><br/>    <span style="color: #e0e0e0"># 总时间：2-5秒（取最慢的）</span><br/>    <br/>    <span style="color: #e0e0e0"># 选择最佳结果</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">select_best(results)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>优化3：预测性预加载</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">PredictivePreloader</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{}</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">on_user_typing</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">current_input):</span><br/>        <span style="color: #e0e0e0"># 预测用户可能要输入的内容</span><br/>        <span style="color: #F8F8F2">predictions</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict_completions(current_input)</span><br/>        <br/>        <span style="color: #e0e0e0"># 后台预加载</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">pred</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">predictions[:</span><span style="color: #AE81FF">3</span><span style="color: #F8F8F2">]:</span>  <span style="color: #e0e0e0"># 预加载前3个</span><br/>            <span style="color: #F8F8F2">asyncio</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_task(</span><br/>                <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">preload_completion(pred)</span><br/>            <span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">preload_completion</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">prediction):</span><br/>        <span style="color: #e0e0e0"># 提前调用模型</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(prediction)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache[prediction]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">result</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_completion</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">actual_input):</span><br/>        <span style="color: #e0e0e0"># 用户确认输入后，从缓存获取</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">actual_input</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache[actual_input]</span>  <span style="color: #e0e0e0"># 立即返回</span><br/>        <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #e0e0e0"># 缓存未命中，正常生成</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(actual_input)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>效果：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>无预加载：<br/>[用户输入完成] → [等待 500-2000ms] → [显示结果]<br/><br/>有预加载：<br/>[用户输入中] → [后台预加载]<br/>[用户输入完成] → [立即显示结果（10-50ms）]</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">吞吐量优化</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 支持更多并发用户</p>
+<p data-tool="mdnice编辑器"><strong>优化1：批处理</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">BatchProcessor</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">batch_size</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">max_wait_ms</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">batch_size</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">batch_size</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_wait_ms</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">max_wait_ms</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">queue</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">add_request</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 添加到队列</span><br/>        <span style="color: #F8F8F2">future</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">asyncio</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">Future()</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">queue</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append((request,</span> <span style="color: #F8F8F2">future))</span><br/>        <br/>        <span style="color: #e0e0e0"># 队列满或超时时触发批处理</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">queue)</span> <span style="color: #FF4689">&gt;=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">batch_size:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">process_batch()</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">future</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">process_batch</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #e0e0e0"># 取出当前批次</span><br/>        <span style="color: #F8F8F2">batch</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">queue[:self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">batch_size]</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">queue</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">queue[self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">batch_size:]</span><br/>        <br/>        <span style="color: #e0e0e0"># 批量调用模型</span><br/>        <span style="color: #F8F8F2">requests</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[r</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">r,</span> <span style="color: #F8F8F2">f</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">batch]</span><br/>        <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">batch_generate(requests)</span><br/>        <br/>        <span style="color: #e0e0e0"># 分发结果</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">(_,</span> <span style="color: #F8F8F2">future),</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">zip(batch,</span> <span style="color: #F8F8F2">results):</span><br/>            <span style="color: #F8F8F2">future</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">set_result(result)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>效果：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>无批处理（10个并发请求）：<br/>- 10次 API 调用<br/>- 总成本：10 × $0.02 = $0.20<br/>- 总时间：10 × 1秒 = 10秒<br/><br/>有批处理：<br/>- 1次批量 API 调用<br/>- 总成本：$0.15（批量折扣）<br/>- 总时间：1.5秒</code></pre>
+<p data-tool="mdnice编辑器"><strong>优化2：负载均衡</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">LoadBalancer</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">providers</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;openai&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;weight&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.5</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;healthy&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">},</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;anthropic&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;weight&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.3</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;healthy&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">},</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;zhipu&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;weight&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.2</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;healthy&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">},</span><br/>        <span style="color: #F8F8F2">]</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">health_checker</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">HealthChecker()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">select_provider</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #e0e0e0"># 只选择健康的 provider</span><br/>        <span style="color: #F8F8F2">healthy</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[p</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">p</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">providers</span> <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">p[</span><span style="color: #E6DB74">&#39;healthy&#39;</span><span style="color: #F8F8F2">]]</span><br/>        <br/>        <span style="color: #e0e0e0"># 按权重随机选择</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">weighted_random_select(healthy)</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">health_check_loop</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #66D9EF">while</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">provider</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">providers:</span><br/>                <span style="color: #F8F8F2">is_healthy</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">health_checker</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">check(provider)</span><br/>                <span style="color: #F8F8F2">provider[</span><span style="color: #E6DB74">&#39;healthy&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">is_healthy</span><br/>            <br/>            <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">asyncio</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sleep(</span><span style="color: #AE81FF">60</span><span style="color: #F8F8F2">)</span>  <span style="color: #e0e0e0"># 每分钟检查一次</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">成本优化</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 降低 <span class="key">API</span> 调用成本</p>
+<p data-tool="mdnice编辑器"><strong>优化1：Token 优化</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TokenOptimizer</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">optimize_prompt</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">prompt):</span><br/>        <span style="color: #e0e0e0"># 第1步：移除冗余空白</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sub(</span><span style="color: #E6DB74">r&#39;\n\s*\n&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">prompt)</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">prompt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">strip()</span><br/>        <br/>        <span style="color: #e0e0e0"># 第2步：压缩重复内容</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">compress_repeated_patterns(prompt)</span><br/>        <br/>        <span style="color: #e0e0e0"># 第3步：移除无用注释</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">remove_unused_comments(prompt)</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">prompt</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">compress_repeated_patterns</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">text):</span><br/>        <span style="color: #e0e0e0"># 将重复的 import 合并</span><br/>        <span style="color: #e0e0e0"># import os</span><br/>        <span style="color: #e0e0e0"># import os  →  import os</span><br/>        <br/>        <span style="color: #e0e0e0"># 将重复的注释移除</span><br/>        <span style="color: #e0e0e0"># # TODO: xxx</span><br/>        <span style="color: #e0e0e0"># # TODO: xxx  →  # TODO: xxx</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">text</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>效果：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优化前：<br/>- Prompt: 2000 tokens<br/>- 成本：2000 × $0.03/1K = $0.06<br/><br/>优化后：<br/>- Prompt: 1400 tokens（减少30%）<br/>- 成本：1400 × $0.03/1K = $0.042</code></pre>
+<p data-tool="mdnice编辑器"><strong>优化2：智能缓存</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">SmartCache</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">LRUCache(max_size</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1000</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">load_embedding_model()</span><br/>    <br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_or_generate</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 第1步：生成语义缓存键</span><br/>        <span style="color: #F8F8F2">cache_key</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_semantic_key(request)</span><br/>        <br/>        <span style="color: #e0e0e0"># 第2步：尝试从缓存获取</span><br/>        <span style="color: #F8F8F2">cached</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(cache_key)</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">cached:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">cached</span><br/>        <br/>        <span style="color: #e0e0e0"># 第3步：调用模型</span><br/>        <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(request)</span><br/>        <br/>        <span style="color: #e0e0e0"># 第4步：存入缓存</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">set(cache_key,</span> <span style="color: #F8F8F2">response)</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">response</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_semantic_key</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 对 prompt 进行语义向量化</span><br/>        <span style="color: #F8F8F2">vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">prompt)</span><br/>        <br/>        <span style="color: #e0e0e0"># 转换为可哈希的键</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">tuple(vector[:</span><span style="color: #AE81FF">50</span><span style="color: #F8F8F2">])</span>  <span style="color: #e0e0e0"># 取前50维</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>成本节省：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>无缓存（100次相同请求）：<br/>- 100 × $0.02 = $2.00<br/><br/>有缓存（70% 命中率）：<br/>- 30 × $0.02 = $0.60<br/>- 节省：70%</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、安全与监控</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">安全措施</span></h3>
+<p data-tool="mdnice编辑器"><strong>数据安全：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">SecurityManager</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sensitive_patterns</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><br/>            <span style="color: #E6DB74">r&#39;password\s*=\s*[&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">][^&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">]+[&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">]&#39;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #E6DB74">r&#39;api_key\s*=\s*[&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">][^&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">]+[&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">]&#39;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #E6DB74">r&#39;secret\s*=\s*[&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">][^&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">]+[&quot;</span><span style="color: #AE81FF">\&#39;</span><span style="color: #E6DB74">]&#39;</span><span style="color: #F8F8F2">,</span><br/>        <span style="color: #F8F8F2">]</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">sanitize_code</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">code):</span><br/>        <span style="color: #e0e0e0"># 检测敏感信息</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">pattern</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sensitive_patterns:</span><br/>            <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(pattern,</span> <span style="color: #F8F8F2">code):</span><br/>                <span style="color: #e0e0e0"># 警告用户</span><br/>                <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">warn_user(</span><span style="color: #E6DB74">&quot;检测到敏感信息，已自动脱敏&quot;</span><span style="color: #F8F8F2">)</span><br/>                <span style="color: #e0e0e0"># 脱敏处理</span><br/>                <span style="color: #F8F8F2">code</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sub(pattern,</span> <span style="color: #E6DB74">&#39;***REDACTED***&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">code)</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">code</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">check_privacy</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request):</span><br/>        <span style="color: #e0e0e0"># 检查是否包含隐私数据</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">contains_pii(request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">code):</span><br/>            <span style="color: #e0e0e0"># 强制使用本地模型</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;local_model&#39;</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;cloud_model&#39;</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">监控指标</span></h3>
+<p data-tool="mdnice编辑器"><strong>关键指标：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">MetricsCollector</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;latency&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">[],</span><br/>            <span style="color: #E6DB74">&#39;token_usage&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">[],</span><br/>            <span style="color: #E6DB74">&#39;cache_hit_rate&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #E6DB74">&#39;error_rate&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">record_request</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">request,</span> <span style="color: #F8F8F2">response,</span> <span style="color: #F8F8F2">latency):</span><br/>        <span style="color: #e0e0e0"># 记录延迟</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;latency&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(latency)</span><br/>        <br/>        <span style="color: #e0e0e0"># 记录 token 使用</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;token_usage&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append({</span><br/>            <span style="color: #E6DB74">&#39;input&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">input_tokens,</span><br/>            <span style="color: #E6DB74">&#39;output&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">output_tokens,</span><br/>        <span style="color: #F8F8F2">})</span><br/>        <br/>        <span style="color: #e0e0e0"># 计算缓存命中率</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">from_cache:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;cache_hit_rate&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">+=</span> <span style="color: #AE81FF">1</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_report</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;avg_latency&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">mean(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;latency&#39;</span><span style="color: #F8F8F2">]),</span><br/>            <span style="color: #E6DB74">&#39;p95_latency&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">percentile(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;latency&#39;</span><span style="color: #F8F8F2">],</span> <span style="color: #AE81FF">95</span><span style="color: #F8F8F2">),</span><br/>            <span style="color: #E6DB74">&#39;total_tokens&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">sum(t[</span><span style="color: #E6DB74">&#39;input&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">t[</span><span style="color: #E6DB74">&#39;output&#39;</span><span style="color: #F8F8F2">]</span> <br/>                               <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">t</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;token_usage&#39;</span><span style="color: #F8F8F2">]),</span><br/>            <span style="color: #E6DB74">&#39;cache_hit_rate&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;cache_hit_rate&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">/</span> <span style="color: #F8F8F2">len(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metrics[</span><span style="color: #E6DB74">&#39;latency&#39;</span><span style="color: #F8F8F2">]),</span><br/>        <span style="color: #F8F8F2">}</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、实战：搭建简单的 AI Coding 服务</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.1</span><span class="title-text">最小可行架构</span></h3>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 用最少的组件搭建一个可用的 AI Coding 服务</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌──────────────┐<br/>│  CLI 前端     │<br/>└──────┬───────┘<br/>       ↓<br/>┌──────────────┐<br/>│  Flask API   │<br/>└──────┬───────┘<br/>       ↓<br/>┌──────────────┐<br/>│  GLM-4 API   │<br/>└──────────────┘</code></pre>
+<p data-tool="mdnice编辑器"><strong>实现：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app.py - Flask 后端</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> flask </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Flask,</span> <span style="color: #F8F8F2">request,</span> <span style="color: #F8F8F2">jsonify</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> zhipuai </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">ZhipuAI</span><br/><br/><span style="color: #F8F8F2">app</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Flask(__name__)</span><br/><span style="color: #F8F8F2">client</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">ZhipuAI(api_key</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;your_api_key&quot;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #A6E22E">@app</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">route(</span><span style="color: #E6DB74">&#39;/api/complete&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">methods</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;POST&#39;</span><span style="color: #F8F8F2">])</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">complete</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">json</span><br/>    <br/>    <span style="color: #e0e0e0"># 调用 GLM-4</span><br/>    <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">client</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">chat</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">completions</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create(</span><br/>        <span style="color: #F8F8F2">model</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;glm-4&quot;</span><span style="color: #F8F8F2">,</span><br/>        <span style="color: #F8F8F2">messages</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;system&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;你是一个专业的编程助手。&quot;</span><span style="color: #F8F8F2">},</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;user&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">data[</span><span style="color: #E6DB74">&#39;prompt&#39;</span><span style="color: #F8F8F2">]}</span><br/>        <span style="color: #F8F8F2">]</span><br/>    <span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">jsonify({</span><br/>        <span style="color: #E6DB74">&#39;completion&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">choices[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">message</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">content</span><br/>    <span style="color: #F8F8F2">})</span><br/><br/><span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">__name__</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;__main__&#39;</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #F8F8F2">app</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">run(port</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">5000</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># cli.py - CLI 前端</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> requests</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">main</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #66D9EF">while</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #F8F8F2">user_input</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">input(</span><span style="color: #E6DB74">&quot;你：&quot;</span><span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 调用后端 API</span><br/>        <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">requests</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><span style="color: #E6DB74">&#39;http://localhost:5000/api/complete&#39;</span><span style="color: #F8F8F2">,</span> <br/>                                <span style="color: #F8F8F2">json</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;prompt&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">user_input})</span><br/>        <br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">json()</span><br/>        <span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">f&quot;AI：{</span><span style="color: #F8F8F2">result[</span><span style="color: #E6DB74">&#39;completion&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">__name__</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;__main__&#39;</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #F8F8F2">main()</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>运行：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 启动后端</span><br/>python<span style="color: #F8F8F2"> </span>app.py<br/><br/><span style="color: #e0e0e0"># 启动前端（另一个终端）</span><br/>python<span style="color: #F8F8F2"> </span>cli.py<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.2</span><span class="title-text">添加缓存</span></h3>
+<p data-tool="mdnice编辑器"><strong>优化版本：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> flask_caching </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Cache</span><br/><br/><span style="color: #F8F8F2">app</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Flask(__name__)</span><br/><span style="color: #F8F8F2">cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Cache(app,</span> <span style="color: #F8F8F2">config</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;CACHE_TYPE&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;simple&#39;</span><span style="color: #F8F8F2">})</span><br/><br/><span style="color: #A6E22E">@app</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">route(</span><span style="color: #E6DB74">&#39;/api/complete&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">methods</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;POST&#39;</span><span style="color: #F8F8F2">])</span><br/><span style="color: #A6E22E">@cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">cached(timeout</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">3600</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">key_prefix</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">lambda</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">json[</span><span style="color: #E6DB74">&#39;prompt&#39;</span><span style="color: #F8F8F2">])</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">complete</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">json</span><br/>    <br/>    <span style="color: #e0e0e0"># 检查缓存</span><br/>    <span style="color: #F8F8F2">cached</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(data[</span><span style="color: #E6DB74">&#39;prompt&#39;</span><span style="color: #F8F8F2">])</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">cached:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">jsonify({</span><span style="color: #E6DB74">&#39;completion&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">cached,</span> <span style="color: #E6DB74">&#39;from_cache&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #66D9EF">True</span><span style="color: #F8F8F2">})</span><br/>    <br/>    <span style="color: #e0e0e0"># 调用模型</span><br/>    <span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">client</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">chat</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">completions</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create(</span><br/>        <span style="color: #F8F8F2">model</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;glm-4&quot;</span><span style="color: #F8F8F2">,</span><br/>        <span style="color: #F8F8F2">messages</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;system&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;你是一个专业的编程助手。&quot;</span><span style="color: #F8F8F2">},</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;user&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">data[</span><span style="color: #E6DB74">&#39;prompt&#39;</span><span style="color: #F8F8F2">]}</span><br/>        <span style="color: #F8F8F2">]</span><br/>    <span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">choices[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">message</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">content</span><br/>    <br/>    <span style="color: #e0e0e0"># 存入缓存</span><br/>    <span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">set(data[</span><span style="color: #E6DB74">&#39;prompt&#39;</span><span style="color: #F8F8F2">],</span> <span style="color: #F8F8F2">result)</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">jsonify({</span><span style="color: #E6DB74">&#39;completion&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">result,</span> <span style="color: #E6DB74">&#39;from_cache&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #66D9EF">False</span><span style="color: #F8F8F2">})</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">九、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 系统架构</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>前端层（用户交互）<br/>    ↓<br/>中间层（数据处理）<br/>    ↓<br/>后端层（模型服务）</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. 模型选择</strong></p>
+<ul>
+<li><section>按任务类型选择（快速 vs 智能）</section></li>
+<li><section>按成本预算选择（云端 vs 本地）</section></li>
+<li><section>混合使用（快速初稿 + 智能优化）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>3. 性能优化</strong></p>
+<ul>
+<li><section><strong>延迟优化：</strong> 流式输出、并行请求、预加载</section></li>
+<li><section><strong>吞吐量优化：</strong> 批处理、负载均衡</section></li>
+<li><section><strong>成本优化：</strong> Token 优化、智能缓存</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>4. 安全与监控</strong></p>
+<ul>
+<li><section>数据脱敏、隐私保护</section></li>
+<li><section>监控延迟、成本、错误率</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="title-text">架构演进路径</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1阶段：最小可行<br/>┌──────┐   ┌──────┐   ┌──────┐<br/>│ 前端 │ → │ API  │ → │ 模型 │<br/>└──────┘   └──────┘   └──────┘<br/><br/>第2阶段：添加缓存<br/>┌──────┐   ┌──────┐   ┌──────┐<br/>│ 前端 │ → │ API  │ → │ 模型 │<br/>└──────┘   └──┬───┘   └──────┘<br/>              ↓<br/>         ┌────────┐<br/>         │ 缓存   │<br/>         └────────┘<br/><br/>第3阶段：多模型<br/>┌──────┐   ┌──────┐   ┌─→ 模型A<br/>│ 前端 │ → │ API  │ ──┼─→ 模型B<br/>└──────┘   └──┬───┘   └─→ 模型C<br/>              ↓<br/>         ┌────────┐<br/>         │ 缓存   │<br/>         └────────┘<br/><br/>第4阶段：完整架构<br/>┌──────┐   ┌──────┐   ┌──────┐   ┌─→ 模型A<br/>│ 前端 │ → │ 中间 │ → │ 后端 │ ──┼─→ 模型B<br/>└──────┘   └──────┘   └──────┘   └─→ 模型C<br/>              ↓           ↓<br/>         ┌────────┐  ┌────────┐<br/>         │ 缓存   │  │ 向量DB │<br/>         └────────┘  └────────┘</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：上下文管理：AI 如何记住你的代码</section></li>
+<li><section>下一篇：安全与隐私：代码安全吗？</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">14</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-05</p>
+<p data-tool="mdnice编辑器"><strong>理解架构，才能更好地使用和优化 AI Coding 工具！</strong> 🏗️</p>
+</article>
+</div>
+</body>
+</html>

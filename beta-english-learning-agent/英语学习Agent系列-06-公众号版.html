@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>写作辅助模块——AI写作教练</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 30px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  📖 <strong>系列导航：</strong><br>
+  【本地大模型知识库系列】01-12篇（已完成）| 
+  【英语学习Agent系列】当前第06篇（共8篇）
+</p>
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  写作辅助模块
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  AI写作教练
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  英语学习Agent系列第06篇 | 写作辅助
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  写作是英语学习中最考验综合能力的部分。从构思到表达，从语法到用词，每一步都需要精心打磨。我们将构建一个AI写作教练，帮助学习者完成从选题、大纲、草稿到润色的全流程写作指导。
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">写作主题生成与大纲</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Ollama生成写作主题和大纲：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> TopicGenerator</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_topics</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">category</span><span class="code-operator">, </span><span class="code-name">level</span><span class="code-operator">=</span><span class="code-string">"B1"</span><span class="code-operator">, </span><span class="code-name">count</span><span class="code-operator">=</span><span class="code-number">5</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请为英语学习者生成{count}个{category}主题的写作题目，难度级别为{level}。
+
+要求：
+1. 题目要有明确的写作方向
+2. 适合{level}级别的词汇和语法要求
+3. 每个题目附带简短的写作建议
+
+请以JSON格式输出：
+{{
+  "topics": [
+    {{
+      "title": "题目名称",
+      "description": "题目描述",
+      "suggestion": "写作建议"
+    }}
+  ]
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_outline</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">, </span><span class="code-name">level</span><span class="code-operator">=</span><span class="code-string">"B1"</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请为写作题目"{topic}"生成一个详细的大纲，难度级别为{level}。
+
+大纲结构：
+1. 引言（介绍主题）
+2. 主体段落（分点论述）
+3. 结论（总结观点）
+
+要求：
+1. 每个部分要有明确的要点
+2. 提供关键句型和词汇建议
+3. 适合{level}级别的写作要求
+
+请以JSON格式输出：
+{{
+  "topic": "{topic}",
+  "outline": [
+    {{
+      "section": "章节名称",
+      "points": ["要点1", "要点2", "要点3"],
+      "key_sentences": ["句型1", "句型2"],
+      "key_vocabulary": ["词汇1", "词汇2", "词汇3"]
+    }}
+  ],
+  "tips": ["写作提示1", "写作提示2"]
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">None</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">作文评估与润色</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  对用户的作文进行全面评估，并提供润色建议：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> WritingEvaluator</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> evaluate_essay</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">essay</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">=None</span><span class="code-operator">):</span>
+        <span class="code-name">topic_text</span><span class="code-operator"> = </span><span class="code-name">topic</span> <span class="code-keyword">if</span><span class="code-name"> topic </span><span class="keyword">else</span><span class="code-string">"未指定"</span>
+        
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请评估以下英语作文：
+
+题目：{topic_text}
+
+作文内容：
+{essay}
+
+评估维度（每项0-20分）：
+1. 内容完整性
+2. 组织结构
+3. 语法准确性
+4. 词汇多样性
+5. 表达流畅性
+
+请提供：
+1. 各维度得分和总分（0-100分）
+2. 具体的语法错误和纠正
+3. 词汇替换建议（提升表达丰富度）
+4. 结构优化建议
+5. 整篇作文的修改版本
+
+请以JSON格式输出：
+{{
+  "total_score": 总分,
+  "scores": {{
+    "content": 内容得分,
+    "structure": 结构得分,
+    "grammar": 语法得分,
+    "vocabulary": 词汇得分,
+    "fluency": 流畅性得分
+  }},
+  "grammar_errors": [{{"original": "原句", "corrected": "修改后", "explanation": "解释"}}],
+  "vocabulary_suggestions": [{{"original": "原词", "suggestion": "建议词", "context": "使用场景"}}],
+  "structure_suggestions": ["建议1", "建议2"],
+  "revised_essay": "修改后的作文",
+  "comments": "综合评价"
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"评估失败，请重试"</span><span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_paragraph_feedback</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">paragraph</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请对以下段落进行分析，并提供改进建议：
+
+段落内容：
+{paragraph}
+
+请分析：
+1. 语法问题
+2. 用词是否恰当
+3. 句子结构是否清晰
+4. 连贯性如何
+
+请提供具体的修改建议和优化后的版本。
+
+请以JSON格式输出：
+{{
+  "issues": ["问题1", "问题2"],
+  "suggestions": ["建议1", "建议2"],
+  "improved_version": "优化后的段落",
+  "explanation": "修改说明"
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"分析失败，请重试"</span><span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">写作辅助流程</span>
+  </p>
+</section>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="writing_coach_flow.png" alt="写作辅助流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">class</span><span class="code-function"> WritingCoach</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">topic_generator</span><span class="code-operator"> = </span><span class="code-function">TopicGenerator</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator"> = </span><span class="code-function">WritingEvaluator</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_topic</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_outline</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> suggest_topics</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">category</span><span class="code-operator">, </span><span class="code-name">level</span><span class="code-operator">=</span><span class="code-string">"B1"</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">topic_generator</span><span class="code-operator">.</span><span class="code-function">generate_topics</span><span class="code-operator">(</span><span class="code-name">category</span><span class="code-operator">, </span><span class="code-name">level</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_outline</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">, </span><span class="code-name">level</span><span class="code-operator">=</span><span class="code-string">"B1"</span><span class="code-operator">):</span>
+        <span class="code-name">outline</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">topic_generator</span><span class="code-operator">.</span><span class="code-function">generate_outline</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">, </span><span class="code-name">level</span><span class="code-operator">)</span>
+        
+        <span class="keyword">if</span><span class="code-name"> outline</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_topic</span><span class="code-operator"> = </span><span class="code-name">topic</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_outline</span><span class="code-operator"> = </span><span class="code-name">outline</span>
+        
+        <span class="keyword">return</span><span class="code-name"> outline</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> evaluate_essay</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">essay</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator">.</span><span class="code-function">evaluate_essay</span><span class="code-operator">(</span><span class="code-name">essay</span><span class="code-operator">, </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_topic</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_paragraph_feedback</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">paragraph</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator">.</span><span class="code-function">get_paragraph_feedback</span><span class="code-operator">(</span><span class="code-name">paragraph</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> improve_sentence</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">sentence</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请优化以下英语句子，使其更地道、更流畅：
+
+原句：{sentence}
+
+请提供：
+1. 优化后的句子（保持原意）
+2. 优化说明
+
+请以JSON格式输出：
+{{
+  "original": "{sentence}",
+  "improved": "优化后的句子",
+  "explanation": "优化说明"
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"优化失败，请重试"</span><span class="code-operator">}</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 生成的题目太难或太简单：调整level参数或优化prompt中的难度描述</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 作文评估不准确：增加评估维度或使用更强大的模型</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 修改版本偏离原意：在prompt中强调"保持原意不变"</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 长文评估速度慢：限制作文长度或启用流式输出（参考【本地大模型知识库系列】第08篇）</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  📖 <strong>系列导航：</strong><br>
+  • 本地大模型知识库系列（12篇，已完成）<br>
+  • 英语学习Agent系列（8篇，当前第06篇）<br>
+  <br>
+  英语学习Agent系列第06篇<br>
+  下一篇：Web界面集成——统一学习平台
+</p>
+
+</section>
+</body>
+</html>

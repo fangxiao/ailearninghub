@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>解决 AI 健忘症——用文件当持久工作记忆</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    解决 AI 健忘症——用文件当持久工作记忆
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    Manus 20 亿收购的技术，人人可用
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code 增强实战
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 做项目，你一定遇到过这些"AI 健忘症"场景：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 对话开太长，AI 忘了两周前讨论的架构决策，写出来的代码风格全乱了
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 上下文窗口压缩，AI 丢失了中间的关键信息，需要反复重复同样的背景
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 手滑输了 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/clear</code>，所有进度归零，不得不从零开始重建上下文
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 项目做到一半，换个新对话接着干，AI 像第一次见这个项目一样
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这跟你操作无关，AI 模型也够强。问题出在<strong style="color: #00897B;">上下文记忆机制</strong>。AI 的记忆仅限于当前对话窗口，一旦对话丢失或过长，一切归零。有没有办法让 AI 拥有"持久记忆"？
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">Planning with Files</strong> 就是解决方案。它的思路很直接：<strong style="color: #00897B;">把 AI 的工作记忆存成文件</strong>，每个项目有 3 个核心文件记录进度，无论对话开多久、重开多少次，AI 只要读一下文件就能"想起"所有事。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这个思路并不新鲜。Manus 被 Meta 以 20 亿美元收购，核心技术之一就是文件式记忆。区别是，Manus 把它做进了自家 Agent，而 Planning with Files 把它做成了一个通用 Skill，任何人都能用。
+  </p>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Planning with Files 是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Planning with Files 是一个开源 Skill，作者是 OthmanAdi。它的核心理念是：<strong style="color: #00897B;">AI 要把关键信息存到文件里，不能只靠对话上下文</strong>，就像人类工程师会用 Notion、Jira、设计文档来管理项目一样。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧠 持久记忆</strong>：所有进度、决策、研究记录都存在项目文件中，不随对话结束而丢失
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔄 会话恢复</strong>：新开对话时，AI 自动读取文件，5 秒内恢复上下文
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📋 进度可视</strong>：3 个文件清晰展示"计划 → 过程 → 产出"，一目了然
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">💾 版本可控</strong>：文件就在项目目录里，跟着 Git 走，随时随地回溯
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你可以把它理解成"给 AI 装了一个硬盘"，之前 AI 的记忆是内存，断电就没了；现在 AI 的记忆是硬盘，关掉再开还在。
+  </p>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 文件模式详解</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Planning with Files 的核心是 3 个 Markdown 文件，每个各司其职，共同构成 AI 的持久工作记忆：
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">📋 task_plan.md——任务计划表</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      这是 AI 的"todo list"，记录当前任务的完整规划：需求拆解、子任务分解、优先级排序、依赖关系。AI 每完成一个子任务就更新状态，确保不遗漏、不重复。
+    </p>
+  </section>
+
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">📝 notes.md——研究笔记</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      这是 AI 的"笔记本"，记录开发过程中的关键信息：架构决策、API 文档、踩过的坑、解决方案。任何 AI 认为有价值的信息都会写进这里，下次对话直接查阅。
+    </p>
+  </section>
+
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">✅ deliverable.md——交付清单</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      这是 AI 的"交付物"，列出所有产出文件、完成标准、验收 checklist。项目结束时，这个文件就是交付证明：哪些做了、哪些没做、质量如何，一目了然。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    三个文件的关系是：<strong style="color: #00897B;">task_plan.md</strong> 负责"做什么"，<strong style="color: #00897B;">notes.md</strong> 负责"学到了什么"，<strong style="color: #00897B;">deliverable.md</strong> 负责"交付了什么"。三者配合，AI 的工作过程完全可追溯。
+  </p>
+
+  <section style="margin: 25px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 文件存放位置：</strong>默认放在项目根目录的 <code style="background: #fff3e0; padding: 2px 6px; border-radius: 4px; font-size: 13px;">.planning-with-files/</code> 文件夹下，不会污染项目结构。
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    两种安装方式，任选一种。推荐插件市场方式，最方便：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      插件市场安装（推荐）
+    </p>
+    <p style="margin: 12px 0 5px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      第一步：添加 OthmanAdi 的插件市场
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/plugin marketplace add OthmanAdi/planning-with-files</p>
+    </section>
+    <p style="margin: 12px 0 5px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      第二步：安装插件
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/plugin install planning-with-files</p>
+    </section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      手动安装（备选）
+    </p>
+    <p style="margin: 12px 0 5px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      克隆仓库到 Claude Code 的 skills 目录：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">git clone https://github.com/OthmanAdi/planning-with-files.git ~/.claude/skills/</p>
+    </section>
+    <p style="margin: 12px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      克隆完成后，在 Claude Code 中重新加载技能即可生效。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 8px; border-left: 4px solid #00897B;">
+    <p style="margin: 0; font-size: 14px; color: #00695C; line-height: 1.8;">
+      <strong>✅ 验证安装：</strong>输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/plan</code> 或 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/planning-with-files:plan</code>，如果出现规划流程，说明装好了。
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心循环：4 步工作流</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Planning with Files 的核心是一个 4 步循环，每个循环都围绕文件读写展开：
+  </p>
+
+  <section style="background: #F1F8E9; border-left: 4px solid #558B2F; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; color: #33691E; font-weight: bold; font-size: 16px;">① 创建计划（Plan）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 读取需求，拆解成可执行的子任务，写入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">task_plan.md</code>。每个子任务有明确的验收标准。
+    </p>
+  </section>
+
+  <section style="background: #FFF3E0; border-left: 4px solid #EF6C00; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; color: #E65100; font-weight: bold; font-size: 16px;">② 研究记录（Research & Notes）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 在开发过程中把关键信息写入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">notes.md</code>：技术选型理由、API 对接细节、遇到的问题和解决方案。
+    </p>
+  </section>
+
+  <section style="background: #E1F5FE; border-left: 4px solid #0277BD; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; color: #01579B; font-weight: bold; font-size: 16px;">③ 阅读产出（Review Deliverable）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 完成子任务后，检查 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">deliverable.md</code> 中的验收标准，确保每个产出都符合要求。
+    </p>
+  </section>
+
+  <section style="background: #FCE4EC; border-left: 4px solid #C2185B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; color: #880E4F; font-weight: bold; font-size: 16px;">④ 交付（Deliver）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      所有子任务完成后，AI 更新 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">deliverable.md</code>，列出最终交付物清单，标记完成状态。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这个循环的关键是<strong style="color: #00897B;">文件即状态</strong>，任何中断后重启，AI 读一下 3 个文件就知道"做到哪了、下一步干啥"，完全不需要你重新解释。
+  </p>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">斜杠命令详解</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Planning with Files 提供 4 个核心斜杠命令，覆盖从规划到交付的全流程：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <code style="background: #E0F2F1; color: #00695C; padding: 4px 10px; border-radius: 4px; font-size: 15px;">/planning-with-files:plan</code>
+      <span style="font-size: 14px; color: #666; margin-left: 10px;">（快捷：<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/plan</code>）</span>
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">功能：</strong>启动规划流程。AI 分析需求、拆解任务、生成 <code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">task_plan.md</code>。
+    </p>
+    <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.8;">
+      <strong>场景：</strong>新项目开始、新功能规划、或重新梳理当前任务时。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <code style="background: #E0F2F1; color: #00695C; padding: 4px 10px; border-radius: 4px; font-size: 15px;">/planning-with-files:start</code>
+      <span style="font-size: 14px; color: #666; margin-left: 10px;">（快捷：<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/planning</code>）</span>
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">功能：</strong>启动执行流程。AI 读取 <code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">task_plan.md</code>，逐个执行子任务，持续更新 3 个文件。
+    </p>
+    <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.8;">
+      <strong>场景：</strong>规划完成后开始编码、或新对话中恢复之前的工作进度。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <code style="background: #E0F2F1; color: #00695C; padding: 4px 10px; border-radius: 4px; font-size: 15px;">/planning-with-files</code>
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">功能：</strong>查看当前状态。AI 读取 3 个文件并展示进度摘要：哪些任务完成了、哪些进行中、下一步做什么。
+    </p>
+    <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.8;">
+      <strong>场景：</strong>想了解项目进度、或新开对话快速回顾状态。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <code style="background: #E0F2F1; color: #00695C; padding: 4px 10px; border-radius: 4px; font-size: 15px;">/plan</code>
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">功能：</strong>快捷版的 <code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/planning-with-files:plan</code>，一键启动规划。
+    </p>
+    <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.8;">
+      <strong>场景：</strong>日常最常用的命令，基本等同于"开始干活"。
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：3 天项目，每天重开对话都能接上</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说再多不如看一次实战。假设你要开发一个"个人博客系统"，需要 3 天完成。看看 Planning with Files 怎么让 AI 每天都能无缝衔接：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">Day 1</span>
+      第一天：规划 + 基础搭建
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      打开新对话，输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/plan 开发一个个人博客系统</code>
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 自动拆解任务：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>需求分析：Markdown 文章、标签分类、评论系统</li>
+      <li>技术选型：Next.js + MDX + SQLite（写入 notes.md）</li>
+      <li>子任务拆解：项目搭建 → 文章模块 → 评论模块 → 部署</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 完成基础搭建，代码和 3 个文件全部写入项目目录。关电脑，下班。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">Day 2</span>
+      第二天：新对话，无缝接上
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      打开<strong style="color: #00897B;">全新对话</strong>，输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/planning</code>
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 自动读取 3 个文件，告诉你：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>项目框架 Next.js + MDX + SQLite，已完成搭建</li>
+      <li>当前进度：文章模块 60%，评论模块和部署未开始</li>
+      <li>下一步：开发文章列表和详情页</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 继续写文章模块的代码，遇到技术问题时查 notes.md 里的选型记录，不会重蹈覆辙。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">Day 3</span>
+      第三天：完成交付
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      再次新对话，输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/planning</code>。AI 读取文件后继续：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>完成评论模块开发</li>
+      <li>配置 Vercel 部署（写入 notes.md：部署步骤 + 环境变量）</li>
+      <li>更新 deliverable.md，标记所有任务完成</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">全程没有重复解释。</strong>3 天里 AI 开了 3 个对话，但每个对话都能无缝衔接。
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">与 Superpowers 的区别与搭配</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    看到这里你可能会问：Superpowers 也在管 AI 的工作流程，两者有什么区别？
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 25%;">维度</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 37.5%;">Superpowers</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 37.5%;">Planning with Files</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">核心定位</td>
+          <td style="padding: 10px 8px;">工程流程管理</td>
+          <td style="padding: 10px 8px;">持久工作记忆</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">解决的问题</td>
+          <td style="padding: 10px 8px;">AI 跳步、不写测试、不审查</td>
+          <td style="padding: 10px 8px;">AI 健忘、上下文丢失、/clear 归零</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">核心机制</td>
+          <td style="padding: 10px 8px;">强制 5 步流程（Plan → Architect → Implement → Verify → Ship）</td>
+          <td style="padding: 10px 8px;">3 文件循环（plan → notes → deliverable）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">记忆方式</td>
+          <td style="padding: 10px 8px;">依赖当前对话上下文</td>
+          <td style="padding: 10px 8px;">文件持久化，跨会话恢复</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px; font-weight: bold;">适用场景</td>
+          <td style="padding: 10px 8px;">保证代码质量、流程规范</td>
+          <td style="padding: 10px 8px;">长周期项目、多会话协作</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">两者可以搭配使用：</strong>Superpowers 强制 AI 走工程流程，Planning with Files 让 AI 不忘事，一个管"怎么做"，一个管"记什么"。装了 Superpowers 再装 Planning with Files，AI 既能按流程干活，又能跨会话不忘事。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    之前我们介绍过 Superpowers 的工作流（<strong style="color: #00897B;">Superpowers 强制 AI 走工程流程，Planning with Files 让 AI 不忘事，两者可以搭配使用</strong>），现在加上 Planning with Files，AI 同时拥有了"流程纪律"和"持久记忆"，相当于给 AI 配了一个资深 Tech Lead + 一本永不丢失的工作笔记。
+  </p>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">08</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">常见问题</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：文件会不会被误提交到 Git？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      默认放在 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">.planning-with-files/</code> 目录下，建议在 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">.gitignore</code> 中添加该路径。如果希望团队共享进度，也可以提交到 Git，3 个文件本身就是很好的项目文档。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：小项目用得着吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      如果只是写个小脚本、改个 bug，确实没必要。但只要是跨天的项目（哪怕只有 2 天），文件式记忆就能帮你省掉大量"重新解释"的时间。项目越长，收益越大。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：文件会不会越来越多、越来越乱？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      不会。3 个文件是固定的，不会无限增长。项目结束后，把 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">.planning-with-files/</code> 目录归档或删除即可。不会污染项目结构。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q4：和 ECC 的记忆系统有什么区别？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ECC 的记忆系统是自动的、后台的，存储在 ECC 自己的数据库中，你看不到也改不了。Planning with Files 的记忆是<strong style="color: #00897B;">透明的、可控的</strong>，3 个 Markdown 文件就在项目目录里，你可以随时查看、编辑、提交到 Git。两者互补，可以同时使用。
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">09</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">这些场景最值</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">① 跨天/跨周项目</strong>：当天做不完，第二天接着干，不用重新解释背景</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">② 复杂架构决策</strong>：把技术选型和决策理由写进 notes.md，避免后续反复讨论</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">③ 团队协作</strong>：同事接手项目时，读一下 3 个文件就能快速上手</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">④ 需求多变</strong>：计划随时可调整，历史决策可追溯</p>
+    <p style="margin: 0;"><strong style="color: #00897B;">⑤ 交接与复盘</strong>：项目结束时，3 个文件就是完整的交接文档和复盘材料</p>
+  </section>
+
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">最后的话</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">AI 健忘症不是小问题。它让我们反复解释背景、重复同样的决策、在长项目中丢三落四。Planning with Files 用最简单的思路解决了这个问题：<strong style="color: #00897B;">把记忆从 AI 的上下文窗口搬到文件系统</strong>。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">Manus 靠这个思路卖了 20 亿美元，现在你花几分钟装个插件就能体验同样的事。装好后按固定的 3 个文件、4 个命令走，AI 的记忆能隔天续上，至少不用再去动脑子补背景。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/OthmanAdi/planning-with-files</span><br>
+      安装命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin marketplace add OthmanAdi/planning-with-files</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin install planning-with-files</p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      搭配 Superpowers 效果更佳：Superpowers 管流程，Planning with Files 管记忆
+    </p>
+  </section>
+
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">你遇到过 AI 健忘症吗？装了 Planning with Files 之后效果怎么样？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

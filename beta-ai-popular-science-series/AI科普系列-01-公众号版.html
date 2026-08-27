@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI科普系列 01</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif; 
+            font-size: 18px; 
+            color: #333; 
+            line-height: 1.6; 
+            background: #fafafa; 
+            padding: 20px; 
+            letter-spacing: 1px;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #fff; 
+            padding: 40px 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06); 
+        }
+        .series-title {
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin: 40px 0 20px;
+            padding-left: 15px;
+            border-left: 4px solid #e53935;
+        }
+        p {
+            padding: 12px 0;
+            font-size: 18px;
+            color: #444;
+            line-height: 1.8;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 16px 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 17px;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        .quote {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 19px;
+            color: #1565c0;
+            text-align: center;
+            font-weight: bold;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy {
+            background: #fce4ec;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #e91e63;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #c2185b;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .analogy-content {
+            font-size: 17px;
+            color: #444;
+        }
+        .svg-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .svg-caption {
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .keyword {
+            color: #e53935;
+            font-weight: bold;
+        }
+        ul {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        li {
+            padding: 8px 0;
+            font-size: 17px;
+            color: #444;
+        }
+        .bottom-nav {
+            border-top: 1px dashed #ddd;
+            margin-top: 50px;
+            padding-top: 30px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+        .next-article {
+            color: #e53935;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .summary {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .summary-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .summary-content {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+        .series-nav {
+            text-align: center;
+            padding-top: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="series-title">AI科普系列</div>
+        <h1>AI到底是什么？<br>其实就是个"超级实习生"</h1>
+        
+        <div class="svg-container">
+            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                <rect x="100" y="180" width="200" height="100" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+                <text x="150" y="220" font-family="sans-serif" font-size="14" fill="#999">办公桌</text>
+                <circle cx="200" cy="80" r="45" fill="#fff" stroke="#333" stroke-width="3"/>
+                <rect x="165" y="65" width="70" height="12" fill="#333" opacity="0.1"/>
+                <circle cx="180" cy="75" r="4" fill="#333"/>
+                <circle cx="220" cy="75" r="4" fill="#333"/>
+                <path d="M185 95 Q200 105 215 95" stroke="#333" stroke-width="2" fill="none"/>
+                <rect x="155" y="125" width="90" height="80" fill="#fff" stroke="#333" stroke-width="2"/>
+                <line x1="165" y1="125" x2="165" y2="205" stroke="#333" stroke-width="2"/>
+                <line x1="245" y1="125" x2="245" y2="205" stroke="#333" stroke-width="2"/>
+                <line x1="155" y1="160" x2="245" y2="160" stroke="#333" stroke-width="2"/>
+                <rect x="120" y="200" width="60" height="40" fill="#fff" stroke="#333" stroke-width="2"/>
+                <text x="130" y="225" font-family="sans-serif" font-size="10" fill="#333">电脑</text>
+                <path d="M110 160 L80 140 L80 180 Z" fill="#fff" stroke="#333" stroke-width="2"/>
+                <circle cx="75" cy="155" r="8" fill="#fff" stroke="#333" stroke-width="2"/>
+                <rect x="180" y="205" width="40" height="35" fill="#fff" stroke="#333" stroke-width="2"/>
+                <text x="185" y="228" font-family="sans-serif" font-size="8" fill="#333">报告</text>
+                <circle cx="320" cy="60" r="25" fill="#e53935" opacity="0.1"/>
+                <text x="310" y="68" font-family="sans-serif" font-size="24" fill="#e53935">🤖</text>
+                <text x="305" y="95" font-family="sans-serif" font-size="12" fill="#e53935">超级实习生</text>
+                <path d="M250 90 Q280 70 300 60" stroke="#e53935" stroke-width="2" stroke-dasharray="5,3" fill="none"/>
+                <circle cx="60" cy="200" r="15" fill="#2196f3" opacity="0.1"/>
+                <text x="55" y="208" font-family="sans-serif" font-size="12" fill="#2196f3">AI</text>
+            </svg>
+        </div>
+        <div class="svg-caption">图：AI就像一个无所不能的实习生，坐在办公桌前待命</div>
+        
+        <p>最近AI火得一塌糊涂。</p>
+        
+        <p>朋友圈里有人用它写文章，有人用它画画，还有人用它写代码。</p>
+        
+        <p>但很多人其实搞不懂：AI到底是什么？</p>
+        
+        <div class="analogy">
+            <div class="analogy-title">🤔 打个比方</div>
+            <div class="analogy-content">咱们把AI想象成一个<strong>超级实习生</strong>。<br><br>你给它分配任务，它帮你完成。<br><br>但这个实习生有点特别——它没有情绪，不会累，学东西还特别快。</div>
+        </div>
+        
+        <h2>一、AI其实很"笨"</h2>
+        
+        <p>你可能觉得AI很聪明，其实它的"聪明"是有条件的。</p>
+        
+        <p>它只会做一件事：<strong>根据你给的信息，预测下一个最可能出现的答案</strong>。</p>
+        
+        <div class="quote">💡 一句话搞懂：AI就是个"猜词大师"</div>
+        
+        <p>比如你让它写一篇关于"春天"的文章，它就会在脑子里搜索：</p>
+        
+        <ul>
+            <li>"春天"后面通常跟什么词？</li>
+            <li>"花开了"之后该接什么？</li>
+            <li>人们描写春天都用哪些句子？</li>
+        </ul>
+        
+        <p>然后把这些词组合起来，就成了一篇文章。</p>
+        
+        <h2>二、AI的"学历"分三种</h2>
+        
+        <p>不是所有AI都一样厉害，它们的"学历"分三种：</p>
+        
+        <div class="highlight">
+            <strong>1. 机器学习（小学水平）</strong><br>
+            只能处理简单任务，比如分类垃圾邮件、识别图片里的猫。
+        </div>
+        
+        <div class="highlight">
+            <strong>2. 深度学习（中学水平）</strong><br>
+            能处理复杂任务，比如人脸识别、自动驾驶。它像人脑一样有"神经网络"。
+        </div>
+        
+        <div class="highlight">
+            <strong>3. 大模型（大学水平）</strong><br>
+            就是现在最火的ChatGPT、文心一言这些。它们读了海量数据，能聊天、写文章、画画，样样都行。
+        </div>
+        
+        <h2>三、AI不是"终结者"</h2>
+        
+        <p>很多人担心AI会取代人类，其实大可不必。</p>
+        
+        <p>AI更像是你的<strong>"超级外挂"</strong>——它帮你提高效率，但做决策的还是你。</p>
+        
+        <p>就像计算器没有取代数学家，AI也不会取代你。</p>
+        
+        <div class="summary">
+            <div class="summary-title">📝 一句话总结</div>
+            <div class="summary-content">AI就是一个无所不能的"超级实习生"，<br>它不会思考，但会根据数据猜答案。<br>用好它，你就是效率之王！</div>
+        </div>
+        
+        <div class="highlight">
+            <strong>📚 深入学习</strong><br>
+            想了解大模型的底层原理？推荐阅读《大模型原理系列 · 开篇》
+        </div>
+        
+        <div class="bottom-nav">
+            <p class="next-article">下期预告：大模型为什么能"说话"？—— 猜字游戏玩到极致</p>
+        </div>
+        
+        <div class="series-nav">
+            <p>🎯 AI学习三层楼</p>
+            <p style="font-size: 12px; margin-top: 10px;">
+                第一层 · AI科普系列（入门）← 你在这里<br>
+                第二层 · 大模型原理系列（深入）<br>
+                第三层 · 客服Agent实战系列（应用）
+            </p>
+        </div>
+    </div>
+</body>
+</html>

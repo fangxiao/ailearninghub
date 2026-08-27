@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 09</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">插件架构设计</span></h2>
+
+<p>进入插件系统篇。<strong>插件系统是myAgent最强大的能力之一——让Bot可以像人一样"学会"各种新技能。</strong></p>
+
+<p>很多人用过OpenClaw的插件，觉得很强大。但它背后是怎么实现的？这一篇，我们来实现一个灵活的插件框架。<a href="Agent开发系列-13.html" class="key">(参考Agent开发系列13：Tool接口设计)</a></p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>插件系统的核心是"接口抽象"——只要符合接口，任何人都能开发插件。好的插件系统，应该是"你只管写插件逻辑，剩下的交给框架"。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">插件接口：标准化是解耦的关键</span></h3>
+
+<p>先定义插件接口。<a href="Agent开发系列-13.html" class="key">(Tool接口设计详见Agent开发系列13)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># backend/plugins/base.py</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> abc </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> ABC, abstractmethod</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Any, Dict</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> pydantic </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> BaseModel</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> ToolParameter(BaseModel):</span>
+<span style="color: f8f8f2">    name: str</span>
+<span style="color: f8f8f2">    type: str</span>
+<span style="color: #f8f8f2">    description: str</span>
+<span style="color: #f8f8f2">    required: bool = </span><span style="color: #66d9ef">True</span>
+<span style="color: #f8f8f2">    default: Any = </span><span style="color: #66d9ef">None</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> ToolDefinition(BaseModel):</span>
+<span style="color: f8f8f2">    name: str</span>
+<span style="color: #f8f8f2">    description: str</span>
+<span style="color: #f8f8f2">    parameters: list[ToolParameter] = []</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> ToolResult(BaseModel):</span>
+<span style="color: #f8f8f2">    success: bool</span>
+<span style="color: #f8f8f2">    result: Any = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">    error: str = </span><span style="color: #66d9ef">None</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BaseTool(ABC):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 插件基类，所有插件必须继承这个类</span>
+
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    @abstractmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">definition</span><span style="color: #f8f8f2">(self) -> ToolDefinition:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 返回插件定义，供LLM理解插件能力</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">pass</span>
+
+<span style="color: #f8f8f2">    @abstractmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, **kwargs) -> ToolResult:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 执行插件逻辑</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">pass</span></code></pre>
+
+<p><strong>核心设计：definition告诉LLM这个插件有什么用，execute才是真正的逻辑。</strong></p>
+
+<h3><span class="icon">2</span><span class="title-text">插件注册：动态发现与加载</span></h3>
+
+<p>插件写好了，怎么让系统知道？用插件注册表。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># backend/plugins/registry.py</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> ToolRegistry:</span>
+<span style="color: #f8f8f2">    _tools: Dict[str, BaseTool] = {}</span>
+
+<span style="color: #f8f8f2">    @classmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">register</span><span style="color: #f8f8f2">(cls, tool: BaseTool):</span>
+<span style="color: #f8f8f2">        definition = tool.definition</span>
+<span style="color: #f8f8f2">        cls._tools[definition.name] = tool</span>
+
+<span style="color: #f8f8f2">    @classmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(cls, name: str) -> BaseTool | </span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> cls._tools.get(name)</span>
+
+<span style="color: #f8f8f2">    @classmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">list_all</span><span style="color: #f8f8f2">(cls) -> List[ToolDefinition]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> [tool.definition </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> tool </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> cls._tools.values()]</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 用装饰器注册插件</span>
+<span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">register_tool</span><span style="color: #f8f8f2">(tool_class):</span>
+<span style="color: #f8f8f2">    ToolRegistry.</span><span style="color: #a6e22e">register</span><span style="color: #f8f8f2">(tool_class())</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> tool_class</span></code></pre>
+
+<p>使用装饰器，插件开发者只需要一行代码就能注册：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># backend/plugins/search.py</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> .base </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> BaseTool, ToolDefinition, ToolResult</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 一行装饰器，自动注册</span>
+<span style="color: #a6e22e">@register_tool</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> SearchTool(BaseTool):</span>
+
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">definition</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolDefinition(</span>
+<span style="color: #f8f8f2">            name=</span><span style="color: #e6db74">"search"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            description=</span><span style="color: #e6db74">"搜索互联网获取信息"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            parameters=[{</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"搜索关键词"</span>
+<span style="color: #f8f8f2">            }]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, query: str) -> ToolResult:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            results = await search_api.</span><span style="color: #a6e22e">search</span><span style="color: #f8f8f2">(query)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">, result=results)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ToolResult(success=</span><span color="66d9ef">False</span><span style="color: #f8f8f2">, error=</span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(e))</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">插件生命周期</span></h3>
+
+<p>每个插件都有自己的生命周期：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BaseTool(ABC):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 可选：插件初始化</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">on_load</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"插件加载时调用，可以做初始化操作"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">pass</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 可选：插件卸载前调用</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">on_unload</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"插件卸载时调用，可以做清理操作"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">pass</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 可选：每次执行前调用</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">before_execute</span><span style="color: #f8f8f2">(self, **kwargs):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"执行前校验，比如检查API配额"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">pass</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 可选：每次执行后调用</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">after_execute</span><span style="color: #f8f8f2">(self, result: ToolResult):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"执行后处理，比如记录日志"</span>
+<span style="color: #f8f8f2">        </span><span style="color=" #66d9ef">pass</span></code></pre>
+
+<p><strong>生命周期钩子让插件可以做一些横切关注点</strong>——比如日志、性能监控、错误追踪。</p>
+
+<h3><span class="icon">4</span><span class="title-text">Bot与插件的绑定</span></h3>
+
+<p>Bot启用哪些插件？在Bot模型里定义。<a href="myAgent开发系列-05.html" class="key">(详见myAgent开发系列05：Bot数据模型)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># Bot启用哪些插件，由plugin_ids决定</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BotExecutor:</span>
+
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">available_tools</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        bot = self.bot</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> [</span>
+<span style="color: #f8f8f2">            ToolRegistry.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(plugin_id)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> plugin_id </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> bot.plugin_ids</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> ToolRegistry.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(plugin_id)</span>
+<span style="color: #f8f8f2">        ]</span></code></pre>
+
+<p>这就是解耦的好处：<strong>Bot只存储插件ID，具体插件实现在运行时才绑定</strong>。改插件实现不需要改Bot配置。</p>
+
+<blockquote><p>💡 <strong>总结：</strong>插件系统的核心是接口抽象和动态注册。BaseTool定义接口规范，ToolRegistry负责插件注册，Bot通过plugin_ids引用插件。生命周期钩子让插件可以处理横切关注点。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="Agent开发系列-13.html" class="key">Agent开发系列 13：Tool接口设计</a></li>
+<li><a href="Agent开发系列-15.html" class="key">Agent开发系列 15：Function Calling + 工具安全</a></li>
+<li><a href="myAgent开发系列-05.html" class="key">myAgent开发系列 05：Bot数据模型</a></li>
+</ul>
+
+<p>下期预告：第10篇《内置插件实现》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

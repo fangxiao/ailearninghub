@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10分钟安装配置，开始你的 AI 编程之旅</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">10</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐ 零基础</p>
+<p data-tool="mdnice编辑器">你将收获：完成 <span class="key">Claude</span> Code 安装配置，运行第一个示例</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：AI Coding 的核心概念</span></h2>
+<p data-tool="mdnice编辑器"><strong>上一篇我们讲到了：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. AI Coding 是什么？<br/>   └─ 从"写代码"变成"描述需求"<br/><br/>2. AI Coding Agent 有哪些？<br/>   ├─ 国际：Claude Code、Copilot、Cursor<br/>   └─ 国内：通义灵码、CodeGeeX、MarsCode<br/><br/>3. 为什么本系列用 Claude Code？<br/>   ├─ 模型灵活（最重要）<br/>   ├─ 国内友好<br/>   └─ 功能全面</code></pre>
+<p data-tool="mdnice编辑器"><strong>但是，光知道概念还不够：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>问题1：有了工具，用哪个模型？<br/>├─ Claude 官方模型？需要代理，价格高<br/>├─ 国内模型？不知道选哪个<br/>└─ 如何配置？一脸茫然<br/><br/>问题2：会不会很贵？<br/>├─ 按 Token 计费？怕用超了<br/>├─ 订阅套餐？不知道哪个合适<br/>└─ 免费方案？够不够用？<br/><br/>问题3：怎么开始？<br/>├─ 注册什么账号？<br/>├─ 获取什么密钥？<br/>└─ 怎么配置到工具里？</code></pre>
+<p data-tool="mdnice编辑器"><strong>本篇回答这些问题，带你完成第一步实践：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>本篇内容：<br/>1. 什么是 Coding Plan（订阅套餐）<br/>2. Coding Plan 支持哪些工具<br/>3. 为什么继续用 Claude Code 讲解<br/>4. 选择适合你的 Coding Plan<br/>5. 注册并获取 API Key<br/>6. 安装配置 Claude Code<br/>7. 运行第一个示例</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、什么是 Coding Plan？</span></h2>
+<p data-tool="mdnice编辑器"><strong>Coding Plan = AI 编程订阅套餐</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>传统方式：<br/>按 Token 计费，用多少付多少<br/>⚠️ 价格不透明，容易超支<br/>⚠️ 需要持续监控用量<br/><br/>Coding Plan（推荐）：<br/>固定月费 + 额度/请求数<br/>✅ 预算可控，不用担心超支<br/>✅ 额度充足，正常使用无忧<br/>✅ 功能完整，支持高级特性</code></pre>
+<p data-tool="mdnice编辑器"><strong>为什么 2026 年推荐 Coding Plan？</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 成本可控<br/>   - 固定月费，预算明确<br/>   - 新客特惠（3.9-9.9元首月）<br/>   <br/>2. 额度充足<br/>   - 轻度用户：1-9万次请求/月<br/>   - 重度用户：无限次或超大额度<br/>   <br/>3. 国内友好<br/>   - 无需代理<br/>   - 支付方便（支付宝/微信）<br/>   - 中文支持完善<br/>   <br/>4. 功能完整<br/>   - 多模型切换<br/>   - API 访问<br/>   - 高级特性支持</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、Coding Plan 支持哪些 Coding 工具？</span></h2>
+<p data-tool="mdnice编辑器"><strong>主流 AI 编程工具对比（2026年3月）：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>工具</th>
+<th>公司</th>
+<th>定位</th>
+<th>特点</th>
+<th>模型支持</th>
+<th>价格</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong><span class="key">Claude</span> Code</strong></td>
+<td>Anthropic</td>
+<td><span class="key">CLI</span> <span class="key">Agent</span></td>
+<td>模型灵活、深度理解</td>
+<td>可配置多模型</td>
+<td>免费软件</td>
+</tr>
+<tr>
+<td><strong><span class="key">GitHub</span> Copilot</strong></td>
+<td>微软</td>
+<td><span class="key">IDE</span> 补全</td>
+<td>生态成熟、<span class="key">VS Code</span> 集成</td>
+<td>固定模型</td>
+<td>$10/月</td>
+</tr>
+<tr>
+<td><strong>Cursor</strong></td>
+<td>独立</td>
+<td>AI <span class="key">IDE</span></td>
+<td><span class="key">IDE</span> 体验好、功能强</td>
+<td>可配置多模型</td>
+<td>$20/月</td>
+</tr>
+<tr>
+<td><strong>通义灵码</strong></td>
+<td>阿里</td>
+<td><span class="key">IDE</span> 补全</td>
+<td>开箱即用、阿里云集成</td>
+<td>固定（通义）</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>CodeGeeX</strong></td>
+<td>智谱</td>
+<td><span class="key">IDE</span> 补全</td>
+<td>完全免费、简单易用</td>
+<td>固定（CodeGeeX）</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>MarsCode</strong></td>
+<td>字节</td>
+<td><span class="key">IDE</span> 补全</td>
+<td>新产品、功能全</td>
+<td>固定（豆包）</td>
+<td>免费</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>这些工具如何与 Coding Plan 配合？</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>情况1：IDE 补全类（Copilot、通义灵码、CodeGeeX）<br/>- 通常有自己的模型服务<br/>- 不需要额外购买 Coding Plan<br/>- 但功能相对单一（主要是补全）<br/><br/>情况2：CLI Agent 类（Claude Code、Cursor）<br/>- 需要配置大模型 API<br/>- 可以使用 Coding Plan 的 API Key<br/>- 功能更强大（对话、理解、多文件编辑）<br/><br/>情况3：组合使用<br/>- 快速补全：通义灵码/CodeGeeX（免费）<br/>- 复杂任务：Claude Code + Coding Plan</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、开始配置：选择 Coding Plan</span></h2>
+<p data-tool="mdnice编辑器"><strong>国内主流 AI 编程平台在 2026 年已形成成熟的 Coding Plan 套餐模式：</strong></p>
+<ul>
+<li><section>&lt;span class="key"&gt;固定月费&lt;/span&gt; + 额度/请求数</section></li>
+<li><section>覆盖&lt;span class="key"&gt;个人、团队、重度开发&lt;/span&gt;等场景</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">阿里云百炼（性价比之王）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Pro 版：200元/月（9万次请求/月，周上限4.5万次，5小时滑动窗口6000次）<br/>新客特惠：首月39.9元，次月100元，第三月起200元<br/><br/>核心优势：<br/>✅ 聚合 Qwen、GLM、Kimi、MiniMax 等多模型<br/>✅ 兼容 OpenAI 协议，国内访问快<br/>✅ 一个账号，多种模型切换<br/><br/>适合：<br/>- 预算有限、需要多模型切换<br/>- 日常开发的个人/小团队</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">火山方舟（Claude Code 原生支持）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Lite 版：40元/月<br/>Pro 版：200元/月<br/>新客活动：首月约8.91元<br/><br/>核心优势：<br/>✅ 原生支持 Anthropic 协议（Claude Code 无需代理）<br/>✅ Auto 智能选模型<br/>✅ 支持豆包编程模型 + DeepSeek<br/><br/>适合：<br/>- Claude Code 重度用户<br/>- 追求开箱即用的开发者</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">智谱 GLM（功能最全）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Lite：49元/月（每5小时80 prompts，周约400）<br/>Pro：149元/月<br/>Max：469元/月<br/><br/>核心优势：<br/>✅ GLM-5.1 模型，支持 MCP（AI 接管电脑）<br/>✅ 20+ IDE 兼容<br/>✅ 代码仓库检索<br/><br/>适合：<br/>- 职业开发者<br/>- 追求工具兼容性与全功能的团队</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.4</span><span class="title-text">其他平台对比</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>平台</th>
+<th>入门价</th>
+<th>首月特惠</th>
+<th>核心亮点</th>
+<th>适合人群</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>MiniMax</td>
+<td>29元/月</td>
+<td>9.9元</td>
+<td>入门价低、M2.7 编程强</td>
+<td>轻度个人、新手</td>
+</tr>
+<tr>
+<td>百度千帆</td>
+<td>40元/月</td>
+<td>9.9元</td>
+<td>新客低价、文心生态</td>
+<td>学生、新手</td>
+</tr>
+<tr>
+<td>Kimi</td>
+<td>79元/月</td>
+<td>无</td>
+<td>代码能力顶尖、长文本</td>
+<td>重度代码开发</td>
+</tr>
+<tr>
+<td>科大讯飞</td>
+<td>3.9元/月</td>
+<td>3.9元</td>
+<td>Token 额度超大</td>
+<td>批量/高频编程</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>快速推荐：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手/学生：MiniMax 或 百度千帆（首月9.9元试水）<br/>Claude Code 用户：火山方舟（原生支持，8.91元首月）<br/>多模型需求：阿里云百炼（39.9元首月）<br/>专业开发：智谱 GLM（49元/月）或 Kimi（79元/月）<br/>高频编程：科大讯飞星辰（Token 额度最大）</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、注册并获取 API Key</span></h2>
+<p data-tool="mdnice编辑器"><strong>注册流程大同小异，这里以阿里云百炼为例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 访问平台<br/>   https://bailian.console.aliyun.com/<br/><br/>2. 登录/注册<br/>   - 阿里云账号或支付宝扫码<br/><br/>3. 开通服务<br/>   - 选择 Pro 版 ¥200/月<br/>   - 新客首月39.9元<br/><br/>4. 获取 API Key<br/>   - 进入"API-KEY管理"<br/>   - 点击"创建新密钥"<br/>   - 复制保存（只显示一次！）</code></pre>
+<p data-tool="mdnice编辑器"><strong>其他平台快速入口：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>平台</th>
+<th>地址</th>
+<th>价格</th>
+<th>特点</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>火山方舟</td>
+<td>volcengine.com/product/ark</td>
+<td>8.91元首月</td>
+<td><span class="key">Claude</span> Code 原生支持</td>
+</tr>
+<tr>
+<td>智谱 AI</td>
+<td>open.bigmodel.cn</td>
+<td>49元/月起</td>
+<td>功能最全</td>
+</tr>
+<tr>
+<td>百度千帆</td>
+<td>console.bce.baidu.com/qianfan</td>
+<td>9.9元首月</td>
+<td>新客超低价</td>
+</tr>
+<tr>
+<td>MiniMax</td>
+<td>minimaxi.com</td>
+<td>9.9元首月</td>
+<td>入门价最低</td>
+</tr>
+<tr>
+<td>Kimi</td>
+<td>platform.moonshot.cn</td>
+<td>79元/月</td>
+<td>代码能力强</td>
+</tr>
+<tr>
+<td>科大讯飞</td>
+<td>xingchen.xfyun.cn</td>
+<td>3.9元起</td>
+<td>Token 额度大</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>⚠️ <span class="key">API</span> Key 安全提示：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 妥善保管，不要泄露<br/>✅ 不要提交到 Git 仓库<br/>✅ 可以随时重新生成<br/>❌ 不要在代码中硬编码</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、安装 Claude Code</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">通过 npm 安装（推荐）</span></h3>
+<p data-tool="mdnice编辑器"><strong>前提条件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 检查 Node.js 版本</span><br/>node<span style="color: #F8F8F2"> </span>--version<br/><br/><span style="color: #e0e0e0"># 需要 Node.js 18+</span><br/><span style="color: #e0e0e0"># 如果没有，先安装 Node.js</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>安装命令：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 全局安装</span><br/>npm<span style="color: #F8F8F2"> </span>install<span style="color: #F8F8F2"> </span>-g<span style="color: #F8F8F2"> </span>@anthropic-ai/claude-code<br/><br/><span style="color: #e0e0e0"># 或使用 yarn</span><br/>yarn<span style="color: #F8F8F2"> </span>global<span style="color: #F8F8F2"> </span>add<span style="color: #F8F8F2"> </span>@anthropic-ai/claude-code<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>验证安装：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 检查版本</span><br/>claude<span style="color: #F8F8F2"> </span>--version<br/><br/><span style="color: #e0e0e0"># 应该输出类似：</span><br/><span style="color: #e0e0e0"># claude-code v1.x.x</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">其他安装方式</span></h3>
+<p data-tool="mdnice编辑器"><strong><span class="key">macOS</span> (Homebrew):</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>brew<span style="color: #F8F8F2"> </span>tap<span style="color: #F8F8F2"> </span>anthropic-ai/claude-code<br/>brew<span style="color: #F8F8F2"> </span>install<span style="color: #F8F8F2"> </span>claude-code<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Windows</span> (Scoop):</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>scoop<span style="color: #F8F8F2"> </span>bucket<span style="color: #F8F8F2"> </span>add<span style="color: #F8F8F2"> </span>anthropic-ai<span style="color: #F8F8F2"> </span>https://github.com/anthropic-ai/scoop-bucket<br/>scoop<span style="color: #F8F8F2"> </span>install<span style="color: #F8F8F2"> </span>claude-code<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Linux</span>:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 使用 npm</span><br/>npm<span style="color: #F8F8F2"> </span>install<span style="color: #F8F8F2"> </span>-g<span style="color: #F8F8F2"> </span>@anthropic-ai/claude-code<br/><br/><span style="color: #e0e0e0"># 或下载二进制</span><br/>curl<span style="color: #F8F8F2"> </span>-fsSL<span style="color: #F8F8F2"> </span>https://claude.ai/install.sh<span style="color: #F8F8F2"> | </span>sh<br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、配置模型</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">配置智谱 GLM（推荐）</span></h3>
+<p data-tool="mdnice编辑器"><strong>创建配置文件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 创建配置目录</span><br/>mkdir<span style="color: #F8F8F2"> </span>-p<span style="color: #F8F8F2"> </span>~/.config/claude-code<br/><br/><span style="color: #e0e0e0"># 创建配置文件</span><br/>nano<span style="color: #F8F8F2"> </span>~/.config/claude-code/config.json<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>配置内容：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;model&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;glm-4-plus&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;api_key&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;zhipu-api-key-你的密钥&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;base_url&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;https://open.bigmodel.cn/api/paas/v4&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;max_tokens&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">4096</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;temperature&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">0.7</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>或使用环境变量（更安全）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 编辑 shell 配置文件</span><br/>nano<span style="color: #F8F8F2"> </span>~/.zshrc<span style="color: #F8F8F2">  </span><span style="color: #e0e0e0"># 或 ~/.bashrc</span><br/><br/><span style="color: #e0e0e0"># 添加环境变量</span><br/><span style="color: #F8F8F2">export ZHIPU_API_KEY</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;zhipu-api-key-你的密钥&quot;</span><br/><span style="color: #F8F8F2">export CLAUDE_MODEL</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;glm-4-plus&quot;</span><br/><span style="color: #F8F8F2">export CLAUDE_BASE_URL</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;https://open.bigmodel.cn/api/paas/v4&quot;</span><br/><br/><span style="color: #e0e0e0"># 使配置生效</span><br/><span style="color: #F8F8F2">source </span>~/.zshrc<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">配置通义千问</span></h3>
+<p data-tool="mdnice编辑器"><strong>配置文件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;model&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;qwen-max&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;api_key&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;sk-你的密钥&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;base_url&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;https://dashscope.aliyuncs.com/api/v1&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;max_tokens&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">4096</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;temperature&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">0.7</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>环境变量：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #F8F8F2">export DASHSCOPE_API_KEY</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;sk-你的密钥&quot;</span><br/><span style="color: #F8F8F2">export CLAUDE_MODEL</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;qwen-max&quot;</span><br/><span style="color: #F8F8F2">export CLAUDE_BASE_URL</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;https://dashscope.aliyuncs.com/api/v1&quot;</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">配置验证</span></h3>
+<p data-tool="mdnice编辑器"><strong>测试命令：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 运行 Claude Code</span><br/>claude<br/><br/><span style="color: #e0e0e0"># 应该看到欢迎界面</span><br/><span style="color: #e0e0e0"># ╭─────────────────────────────────────╮</span><br/><span style="color: #e0e0e0"># │ Welcome to Claude Code!            │</span><br/><span style="color: #e0e0e0"># │ Model: glm-4-plus                  │</span><br/><span style="color: #e0e0e0"># │ Ready to help you code! 🚀         │</span><br/><span style="color: #e0e0e0"># ╰─────────────────────────────────────╯</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、运行第一个示例</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">启动 Claude Code</span></h3>
+<p data-tool="mdnice编辑器"><strong>在终端中运行：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 进入项目目录</span><br/><span style="color: #F8F8F2">cd </span>~/projects<br/><br/><span style="color: #e0e0e0"># 启动 Claude Code</span><br/>claude<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">第一个代码生成</span></h3>
+<p data-tool="mdnice编辑器"><strong>输入提示词：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：写一个 Python 函数，计算斐波那契数列的第 n 项</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 的回复：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">fibonacci</span><span style="color: #F8F8F2">(n:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">int:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">    计算斐波那契数列的第 n 项</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        n: 项数（从 0 开始）</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        斐波那契数列的第 n 项</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Examples:</span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; fibonacci(0)</span><br/><span style="color: #E6DB74">        0</span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; fibonacci(10)</span><br/><span style="color: #E6DB74">        55</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">n</span> <span style="color: #FF4689">&lt;</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;n 必须是非负整数&quot;</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">n</span> <span style="color: #FF4689">&lt;=</span> <span style="color: #AE81FF">1</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">n</span><br/>    <br/>    <span style="color: #e0e0e0"># 使用迭代方式，效率更高</span><br/>    <span style="color: #F8F8F2">a,</span> <span style="color: #F8F8F2">b</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">1</span><br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">_</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">range(</span><span style="color: #AE81FF">2</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">n</span> <span style="color: #FF4689">+</span> <span style="color: #AE81FF">1</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #F8F8F2">a,</span> <span style="color: #F8F8F2">b</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">b,</span> <span style="color: #F8F8F2">a</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">b</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">b</span><br/><br/><br/><span style="color: #e0e0e0"># 测试</span><br/><span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">__name__</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&quot;__main__&quot;</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">f&quot;第 10 项: {</span><span style="color: #F8F8F2">fibonacci(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">)</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">)</span>  <span style="color: #e0e0e0"># 输出: 55</span><br/>    <span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">f&quot;第 20 项: {</span><span style="color: #F8F8F2">fibonacci(</span><span style="color: #AE81FF">20</span><span style="color: #F8F8F2">)</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">)</span>  <span style="color: #e0e0e0"># 输出: 6765</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>解释代码：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：解释一下这段代码的原理<br/><br/>Claude：<br/>这段代码使用迭代方式计算斐波那契数列：<br/><br/>1. 边界处理<br/>   - n &lt; 0：抛出异常<br/>   - n &lt;= 1：直接返回 n（0 或 1）<br/><br/>2. 迭代计算<br/>   - 初始化 a=0, b=1<br/>   - 循环计算下一个值<br/>   - 时间复杂度 O(n)<br/>   - 空间复杂度 O(1)<br/><br/>3. 优点<br/>   - 比递归效率高<br/>   - 不会栈溢出<br/>   - 空间占用小</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.3</span><span class="title-text">保存代码</span></h3>
+<p data-tool="mdnice编辑器"><strong>创建文件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 在 Claude Code 中</span><br/>你：把这个函数保存到<span style="color: #F8F8F2"> </span>fib.py<span style="color: #F8F8F2"> </span>文件<br/><br/>Claude：<br/>已创建<span style="color: #F8F8F2"> </span>fib.py<span style="color: #F8F8F2"> </span>文件，代码如下：<br/><span style="color: #FF4689">[</span>显示代码<span style="color: #FF4689">]</span><br/><br/>你可以运行测试：<br/>python<span style="color: #F8F8F2"> </span>fib.py<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>验证运行：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 在另一个终端</span><br/>python<span style="color: #F8F8F2"> </span>fib.py<br/><br/><span style="color: #e0e0e0"># 输出：</span><br/><span style="color: #e0e0e0"># 第 10 项: 55</span><br/><span style="color: #e0e0e0"># 第 20 项: 6765</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">常见问题</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q1：配置文件在哪？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>位置：<br/>~/.config/claude-code/config.json<br/><br/>或使用环境变量：<br/>~/.zshrc 或 ~/.bashrc</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q2：如何切换模型？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 临时切换</span><br/><span style="color: #F8F8F2">export CLAUDE_MODEL</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;glm-4&quot;</span><br/><br/><span style="color: #e0e0e0"># 永久切换</span><br/><span style="color: #e0e0e0"># 编辑配置文件，修改 model 字段</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q3：Coding Plan 和 Token 计费的区别？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Coding Plan（推荐）：<br/>✅ 固定费用（¥99/月）<br/>✅ 无限次请求<br/>✅ 不用担心用超<br/>✅ 预算可控<br/><br/>Token 计费：<br/>⚠️ 按使用量计费<br/>⚠️ 可能产生高额费用<br/>⚠️ 需要监控用量<br/>✅ 适合轻度使用</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q4：API Key 泄露了怎么办？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 立即在平台上重新生成<br/>2. 删除旧的 Key<br/>3. 更新配置文件<br/>4. 检查账单是否有异常</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q5：能否同时配置多个模型？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>可以！使用不同的环境变量：<br/><br/># GLM-5<br/>export GLM_API_KEY="xxx"<br/><br/># 通义千问<br/>export QWEN_API_KEY="xxx"<br/><br/># 在配置中动态选择</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.1</span><span class="title-text">安全建议</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 使用环境变量存储 API Key<br/>✅ 不要把 API Key 提交到 Git<br/>✅ 定期更换 API Key<br/>✅ 使用 .gitignore 排除配置文件<br/>❌ 不要在代码中硬编码 API Key</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.2</span><span class="title-text">性能优化</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 选择合适的模型<br/>   - 简单任务：glm-4-flash（快）<br/>   - 复杂任务：glm-4-plus（强）<br/><br/>2. 调整参数<br/>   - max_tokens：控制输出长度<br/>   - temperature：控制创造性（0.7 适中）<br/><br/>3. 使用缓存<br/>   - 相同问题不重复请求<br/>   - 节省请求次数</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.3</span><span class="title-text">成本控制</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Coding Plan 用户：<br/>✅ 不用担心成本<br/>✅ 随意使用<br/>✅ 固定预算<br/><br/>Token 计费用户：<br/>⚠️ 监控使用量<br/>⚠️ 设置预算提醒<br/>⚠️ 优化提示词减少 token</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">安装流程回顾</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 选择 Coding Plan<br/>   └─ 新手：百度千帆/MiniMax（9.9元首月）<br/>   └─ Claude Code 用户：火山方舟（8.91元首月）<br/>   └─ 专业开发：智谱 GLM/Kimi（49-79元/月）<br/><br/>2. 注册并获取 API Key<br/>   └─ 根据选择的平台完成注册 → 开通套餐 → 获取 Key<br/><br/>3. 安装 Claude Code<br/>   └─ npm install -g @anthropic-ai/claude-code<br/><br/>4. 配置模型<br/>   └─ 编辑 config.json 或设置环境变量<br/><br/>5. 运行第一个示例<br/>   └─ claude → 输入提示词 → 查看结果</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">推荐配置（按人群）</span></h3>
+<p data-tool="mdnice编辑器"><strong>新手/学生：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>平台：百度千帆 Lite 或 MiniMax Starter<br/>价格：9.9元首月<br/>特点：低成本试水，门槛极低</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 用户：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>平台：火山方舟 Lite<br/>价格：8.91元首月 → 40元/月<br/>特点：原生支持，无需代理，开箱即用</code></pre>
+<p data-tool="mdnice编辑器"><strong>日常开发者：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>平台：阿里云百炼 Pro<br/>价格：39.9元首月 → 200元/月<br/>特点：多模型聚合，性价比最高</code></pre>
+<p data-tool="mdnice编辑器"><strong>专业开发者：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>平台：智谱 GLM Lite 或 Kimi Moderato<br/>价格：49-79元/月<br/>特点：功能全、能力强，支持高级特性</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：AI Coding 是什么？从手动编程到 AI 辅助</section></li>
+<li><section>下一篇：基础操作：<span class="num">5</span>个必会命令</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">2</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-03-31</p>
+<p data-tool="mdnice编辑器"><strong>配置完成！开始你的 AI 编程之旅！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

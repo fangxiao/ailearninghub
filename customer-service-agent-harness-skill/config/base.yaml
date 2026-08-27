@@ -1,0 +1,24 @@
+# 基础配置 - 所有Harness和Skill共享
+
+llm:
+  enabled: false
+  provider: zhipu
+  model: glm-5.1-flash
+  api_key: ${ZHIPU_API_KEY}
+  # provider: ollama
+  # model: qwen3:8b
+  # base_url: http://localhost:11434
+
+harness:
+  rate_limit:
+    max_requests: 100
+    window_seconds: 60
+  circuit_breaker:
+    failure_threshold: 5
+    recovery_timeout: 30
+
+memory:
+  storage_file: data/user_memory.json
+
+metrics:
+  log_file: data/metrics_log.json

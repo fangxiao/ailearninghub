@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw 从入门到精通 - 系列导航</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<blockquote data-tool="mdnice编辑器"><p>🎯 <strong>一句话说清</strong>：这是最系统的 <span class="key">OpenClaw</span> 教程，从会用到会开发，再到懂原理</p></blockquote>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">📚 系列概览</span></h2>
+<p data-tool="mdnice编辑器"><strong>全系列：</strong> <span class="num">15</span>篇 + <span class="num">3</span>篇总结</p>
+<p data-tool="mdnice编辑器"><strong>学习周期：</strong> 2-4周</p>
+<p data-tool="mdnice编辑器"><strong>难度曲线：</strong> 新手 → 进阶 → 原理</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手篇（1-5）    进阶篇（6-10）    原理篇（11-15）<br/>    ↓                ↓                ↓<br/>  会使用           会开发           懂原理</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、新手篇：快速上手</span></h2>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> <span class="num">2</span>小时掌握 <span class="key">OpenClaw</span> 基本使用，解决80%日常问题</p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>序号</th>
+<th>标题</th>
+<th>阅读时间</th>
+<th>你将学会</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>[OpenClaw是什么](01-OpenClaw是什么-公众号版.md)</td>
+<td><span class="num">10</span>分钟</td>
+<td>理解AI Agent概念，知道OpenClaw能做什么</td>
+</tr>
+<tr>
+<td>02</td>
+<td>[<span class="num">10</span>分钟部署](02-<span class="num">10</span>分钟部署-公众号版.md)</td>
+<td><span class="num">15</span>分钟</td>
+<td>三种安装方式，完成第一个任务</td>
+</tr>
+<tr>
+<td>03</td>
+<td>[<span class="num">10</span>个实用任务](03-<span class="num">10</span>个实用任务-公众号版.md)</td>
+<td><span class="num">20</span>分钟</td>
+<td>文件整理、文档处理、信息整理等<span class="num">10</span>个场景</td>
+</tr>
+<tr>
+<td>04</td>
+<td>[基础配置指南](04-基础配置指南-公众号版.md)</td>
+<td><span class="num">15</span>分钟</td>
+<td>模型选择、语言配置、快捷键、主题</td>
+</tr>
+<tr>
+<td>05</td>
+<td>[默认Skills与管理](05-默认Skills与管理-公众号版.md)</td>
+<td><span class="num">15</span>分钟</td>
+<td>内置Skill使用、发现新Skill、管理方法</td>
+</tr>
+<tr>
+<td>总结</td>
+<td>[新手篇总结](00-新手篇总结.md)</td>
+<td><span class="num">10</span>分钟</td>
+<td>知识回顾、能力自测、下一步规划</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>完成标志：</strong></p>
+<ul>
+<li><section>✅ 能独立安装和启动 <span class="key">OpenClaw</span></section></li>
+<li><section>✅ 能完成基本的对话任务</section></li>
+<li><section>✅ 能处理文件整理、文档转换类任务</section></li>
+<li><section>✅ 能配置个性化设置</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、进阶篇：能力扩展</span></h2>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 1周掌握高级功能，开发自己的Skill，效率提升3-5倍</p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>序号</th>
+<th>标题</th>
+<th>阅读时间</th>
+<th>你将学会</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>06</td>
+<td>[第一个自定义Skill](06-第一个自定义Skill-公众号版.md)</td>
+<td><span class="num">25</span>分钟</td>
+<td>Skill开发全流程：设计→开发→测试→部署</td>
+</tr>
+<tr>
+<td>07</td>
+<td>[Agent工作流](07-Agent工作流-公众号版.md)</td>
+<td><span class="num">25</span>分钟</td>
+<td>工作流设计、条件分支、定时任务</td>
+</tr>
+<tr>
+<td>08</td>
+<td>[多Agent协作](08-多Agent协作-公众号版.md)</td>
+<td><span class="num">25</span>分钟</td>
+<td>协作模式、通信机制、团队编排</td>
+</tr>
+<tr>
+<td>09</td>
+<td>[工具与API集成](09-工具与API集成-公众号版.md)</td>
+<td><span class="num">25</span>分钟</td>
+<td><span class="key">Function Calling</span>、API接入、安全实践</td>
+</tr>
+<tr>
+<td>10</td>
+<td>[进阶篇总结](10-进阶篇总结-公众号版.md)</td>
+<td><span class="num">15</span>分钟</td>
+<td>能力回顾、进阶自测、架构思维入门</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>完成标志：</strong></p>
+<ul>
+<li><section>✅ 能独立开发一个Skill</section></li>
+<li><section>✅ 能设计和配置工作流</section></li>
+<li><section>✅ 能理解多Agent协作模式</section></li>
+<li><section>✅ 能集成至少<span class="num">1</span>个外部API</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、原理篇：深入理解</span></h2>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 2周理解底层原理，具备架构设计能力</p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>序号</th>
+<th>标题</th>
+<th>阅读时间</th>
+<th>你将学会</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>11</td>
+<td>[核心循环：感知-思考-行动-反思](11-核心循环-公众号版.md)</td>
+<td><span class="num">30</span>分钟</td>
+<td>Agent的四阶段循环、优化方向</td>
+</tr>
+<tr>
+<td>12</td>
+<td>[记忆系统：Agent如何"记住"](12-记忆系统-公众号版.md)</td>
+<td><span class="num">35</span>分钟</td>
+<td>四层记忆架构、Token管理、RAG原理</td>
+</tr>
+<tr>
+<td>13</td>
+<td>[架构解析：设计哲学](13-架构解析-公众号版.md)</td>
+<td><span class="num">35</span>分钟</td>
+<td>整体架构、设计原则、框架对比</td>
+</tr>
+<tr>
+<td>14</td>
+<td>[企业级部署：从开发到生产](14-企业级部署-公众号版.md)</td>
+<td><span class="num">35</span>分钟</td>
+<td>高可用、安全、监控、性能优化</td>
+</tr>
+<tr>
+<td>15</td>
+<td>[原理篇总结](15-原理篇总结-公众号版.md)</td>
+<td><span class="num">15</span>分钟</td>
+<td>原理回顾、架构思维、后续方向</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>完成标志：</strong></p>
+<ul>
+<li><section>✅ 能说出Agent核心循环的四个阶段</section></li>
+<li><section>✅ 能解释记忆系统的四层架构</section></li>
+<li><section>✅ 能画出OpenClaw的整体架构</section></li>
+<li><section>✅ 能设计生产环境部署方案</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">🎯 学习路径推荐</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">路径1：快速上手（适合上班族）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手篇（01-05）→ 直接实践</code></pre>
+<p data-tool="mdnice编辑器"><strong>时间：</strong> <span class="num">2</span>小时</p>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 解决日常工作问题</p>
+<h3 data-tool="mdnice编辑器"><span class="title-text">路径2：能力提升（适合想要自动化的）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手篇 → 进阶篇（06-07）→ 实践</code></pre>
+<p data-tool="mdnice编辑器"><strong>时间：</strong> 1周</p>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 开发自己的Skill和工作流</p>
+<h3 data-tool="mdnice编辑器"><span class="title-text">路径3：深入掌握（适合开发者）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手篇 → 进阶篇 → 原理篇</code></pre>
+<p data-tool="mdnice编辑器"><strong>时间：</strong> 2-4周</p>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 全面理解，具备架构能力</p>
+<h3 data-tool="mdnice编辑器"><span class="title-text">路径4：企业应用（适合技术Leader）</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>快速浏览新手篇 → 重点学习进阶篇 → 深入原理篇（13-14）</code></pre>
+<p data-tool="mdnice编辑器"><strong>时间：</strong> 2周</p>
+<p data-tool="mdnice编辑器"><strong>目标：</strong> 评估技术选型、规划企业部署</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">📊 能力对照表</span></h2>
+<p data-tool="mdnice编辑器">学完整个系列，你将获得：</p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>能力维度</th>
+<th>新手篇</th>
+<th>进阶篇</th>
+<th>原理篇</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>基础使用</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>个性化配置</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Skill开发</td>
+<td>-</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>工作流设计</td>
+<td>-</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>多Agent协作</td>
+<td>-</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>API集成</td>
+<td>-</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>理解原理</td>
+<td>-</td>
+<td>-</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>架构设计</td>
+<td>-</td>
+<td>-</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>企业部署</td>
+<td>-</td>
+<td>-</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>技术选型</td>
+<td>-</td>
+<td>-</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">🔗 相关系列</span></h2>
+<p data-tool="mdnice编辑器">完成 <span class="key">OpenClaw</span> 系列后，可以继续学习：</p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>系列</th>
+<th>定位</th>
+<th>状态</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="key">Claude</span> Code 系列</td>
+<td>AI编程助手教程</td>
+<td>🔄 进行中</td>
+</tr>
+<tr>
+<td>Agent开发系列</td>
+<td>Agent系统开发</td>
+<td>📋 规划中</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">📝 阅读建议</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">如果你是第一次接触</span></h3>
+<ol>
+<li><section>从 <strong><span class="num">01</span>篇</strong> 开始，按顺序阅读</section></li>
+<li><section>每篇动手实践，不要只看不练</section></li>
+<li><section>遇到问题，随时问你的 <span class="key">Agent</span></section></li>
+</ol>
+<h3 data-tool="mdnice编辑器"><span class="title-text">如果你有一定基础</span></h3>
+<ol>
+<li><section>快速浏览 <strong>新手篇</strong></section></li>
+<li><section>重点学习 <strong>进阶篇</strong></section></li>
+<li><section>深入理解 <strong>原理篇</strong></section></li>
+</ol>
+<h3 data-tool="mdnice编辑器"><span class="title-text">如果你是技术决策者</span></h3>
+<ol>
+<li><section>阅读 <strong><span class="num">01</span>篇</strong> 了解产品</section></li>
+<li><section>阅读 <strong><span class="num">13</span>篇</strong> 了解架构</section></li>
+<li><section>阅读 <strong><span class="num">14</span>篇</strong> 了解企业部署</section></li>
+</ol>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">🎉 开始学习</span></h2>
+<p data-tool="mdnice编辑器"><strong>准备好了吗？</strong></p>
+<p data-tool="mdnice编辑器">→ [开始第一篇：OpenClaw是什么](01-OpenClaw是什么-公众号版.md)</p>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列信息</strong></p>
+<ul>
+<li><section><strong>系列名称：</strong> OpenClaw从入门到精通</section></li>
+<li><section><strong>总篇数：</strong> <span class="num">15</span>篇 + <span class="num">3</span>篇总结</section></li>
+<li><section><strong>作者：</strong> 生活助理</section></li>
+<li><section><strong>更新时间：</strong> 2026-03-31</section></li>
+<li><section><strong>系列状态：</strong> ✅ 已完成</section></li>
+</ul>
+<hr/>
+<blockquote data-tool="mdnice编辑器"><p>💡 <strong>提示：</strong> 本系列有配套的公众号版本，格式更适合阅读。文件名带 <code class="inline">-公众号版</code> 的是优化版。</p></blockquote>
+</article>
+</div>
+</body>
+</html>

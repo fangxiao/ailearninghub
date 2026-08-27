@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>词汇学习模块——构建智能单词本</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 30px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  📖 <strong>系列导航：</strong><br>
+  【本地大模型知识库系列】01-12篇（已完成）| 
+  【英语学习Agent系列】当前第02篇（共8篇）
+</p>
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  词汇学习模块
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  构建智能单词本
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  英语学习Agent系列第02篇 | 词汇学习
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  词汇是英语学习的基础。一个好的单词本不仅要展示单词的释义，还要根据记忆曲线算法合理安排复习时间，让学习事半功倍。
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">记忆曲线算法</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  艾宾浩斯记忆曲线告诉我们，人的记忆会随着时间逐渐遗忘。通过在遗忘临界点进行复习，可以有效强化记忆。我们实现一个简化的间隔重复算法：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> datetime</span>
+<span class="code-keyword">from</span><span class="code-name"> enum </span><span class="code-keyword">import</span><span class="code-name"> Enum</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ReviewInterval</span><span class="code-operator">(</span><span class="code-name">Enum</span><span class="code-operator">):</span>
+    <span class="code-name">NEW</span><span class="code-operator"> = </span><span class="code-number">0</span>
+    <span class="code-name">ONE_DAY</span><span class="code-operator"> = </span><span class="code-number">1</span>
+    <span class="code-name">THREE_DAYS</span><span class="code-operator"> = </span><span class="code-number">3</span>
+    <span class="code-name">ONE_WEEK</span><span class="code-operator"> = </span><span class="code-number">7</span>
+    <span class="code-name">TWO_WEEKS</span><span class="code-operator"> = </span><span class="code-number">14</span>
+    <span class="code-name">ONE_MONTH</span><span class="code-operator"> = </span><span class="code-number">30</span>
+    <span class="code-name">THREE_MONTHS</span><span class="code-operator"> = </span><span class="code-number">90</span>
+
+<span class="code-keyword">class</span><span class="code-function"> WordCard</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">word</span><span class="code-operator">, </span><span class="code-name">definition</span><span class="code-operator">, </span><span class="code-name">example</span><span class="code-operator">=</span><span class="code-string">""</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">word</span><span class="code-operator"> = </span><span class="code-name">word</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">definition</span><span class="code-operator"> = </span><span class="code-name">definition</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">example</span><span class="code-operator"> = </span><span class="code-name">example</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">NEW</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">last_review</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">next_review</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">correct_count</span><span class="code-operator"> = </span><span class="code-number">0</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">wrong_count</span><span class="code-operator"> = </span><span class="code-number">0</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> review</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">is_correct</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">last_review</span><span class="code-operator"> = </span><span class="code-name">datetime</span><span class="code-operator">.</span><span class="code-name">datetime</span><span class="code-operator">.</span><span class="code-function">now</span><span class="code-operator">()</span>
+        
+        <span class="code-keyword">if</span><span class="code-name"> is_correct</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">correct_count</span><span class="code-operator"> += </span><span class="code-number">1</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_level_up</span><span class="code-operator">()</span>
+        <span class="code-keyword">else</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">wrong_count</span><span class="code-operator"> += </span><span class="code-number">1</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_level_down</span><span class="code-operator">()</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_update_next_review</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _level_up</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">levels</span><span class="code-operator"> = </span><span class="code-operator">[</span><span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">NEW</span><span class="code-operator">, </span><span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">ONE_DAY</span><span class="code-operator">, </span>
+                          <span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">THREE_DAYS</span><span class="code-operator">, </span><span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">ONE_WEEK</span><span class="code-operator">, </span>
+                          <span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">TWO_WEEKS</span><span class="code-operator">, </span><span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">ONE_MONTH</span><span class="code-operator">, </span>
+                          <span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">THREE_MONTHS</span><span class="code-operator">]</span>
+        <span class="code-name">current_idx</span><span class="code-operator"> = </span><span class="code-name">levels</span><span class="code-operator">.</span><span class="code-function">index</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">levels</span><span class="code-operator">[</span><span class="code-name">min</span><span class="code-operator">(</span><span class="code-name">current_idx</span><span class="code-operator"> + </span><span class="code-number">1</span><span class="code-operator">, </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">levels</span><span class="code-operator">)</span><span class="code-operator">-</span><span class="code-number">1</span><span class="code-operator">)</span><span class="code-operator">]</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _level_down</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">ReviewInterval</span><span class="code-operator">.</span><span class="code-name">NEW</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _update_next_review</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">next_review</span><span class="code-operator"> = </span><span class="code-name">datetime</span><span class="code-operator">.</span><span class="code-name">datetime</span><span class="code-operator">.</span><span class="code-function">now</span><span class="code-operator">() \</span>
+            <span class="code-operator">+ </span><span class="code-name">datetime</span><span class="code-operator">.</span><span class="code-name">timedelta</span><span class="code-operator">(</span><span class="code-name">days</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator">.</span><span class="code-name">value</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> is_due_for_review</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-keyword">if</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">next_review</span><span class="code-operator"> </span><span class="code-keyword">is</span><span class="code-name"> None</span><span class="code-operator">:</span>
+            <span class="code-keyword">return</span><span class="code-keyword">True</span>
+        <span class="code-keyword">return</span><span class="code-name"> datetime</span><span class="code-operator">.</span><span class="code-name">datetime</span><span class="code-operator">.</span><span class="code-function">now</span><span class="code-operator">()</span> <span class="code-operator">>= </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">next_review</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">使用Ollama生成单词卡</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  利用大模型生成单词的详细解释和例句（关于Ollama的安装和使用，请参考【本地大模型知识库系列】第02篇）：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> WordCardGenerator</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_word_card</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">word</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+你是一个英语词汇专家。请为单词 "{word}" 生成详细的学习卡片，包括：
+1. 音标（英音和美音）
+2. 词性
+3. 中文释义（多个含义用分号分隔）
+4. 常用搭配（至少3个）
+5. 例句（至少2个，中英文对照）
+6. 记忆技巧
+
+请以JSON格式输出，不要包含其他内容。格式如下：
+{{
+  "word": "单词",
+  "phonetic": "音标",
+  "part_of_speech": "词性",
+  "definitions": ["释义1", "释义2"],
+  "collocations": ["搭配1", "搭配2", "搭配3"],
+  "examples": [{{"english": "英文例句", "chinese": "中文翻译"}}],
+  "memory_tip": "记忆技巧"
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-keyword">try</span><span class="code-operator">:</span>
+            <span class="code-name">data</span><span class="code-operator"> = </span><span class="code-name">json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+            <span class="code-keyword">return</span><span class="code-name"> data</span>
+        <span class="code-keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="code-keyword">return</span><span class="code-operator">None</span>
+
+<span class="code-comment"># 使用示例</span>
+<span class="code-name">generator</span><span class="code-operator"> = </span><span class="code-function">WordCardGenerator</span><span class="code-operator">()</span>
+<span class="code-name">card</span><span class="code-operator"> = </span><span class="code-name">generator</span><span class="code-operator">.</span><span class="code-function">generate_word_card</span><span class="code-operator">(</span><span class="code-string">"ubiquitous"</span><span class="code-operator">)</span>
+<span class="code-keyword">if</span><span class="code-name"> card</span><span class="code-operator">:</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-name">json</span><span class="code-operator">.</span><span class="code-function">dumps</span><span class="code-operator">(</span><span class="code-name">card</span><span class="code-operator">, </span><span class="code-name">ensure_ascii</span><span class="code-operator">=</span><span class="code-keyword">False</span><span class="code-operator">, </span><span class="code-name">indent</span><span class="code-operator">=</span><span class="code-number">2</span><span class="code-operator">)</span><span class="code-operator">)</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">单词本管理</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  创建一个单词本管理器，支持添加单词、获取待复习单词、记录复习结果：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> json</span>
+<span class="code-keyword">import</span><span class="code-name"> os</span>
+
+<span class="code-keyword">class</span><span class="code-function"> WordBook</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">file_path</span><span class="code-operator">=</span><span class="code-string">"word_book.json"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator"> = </span><span class="code-name">file_path</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator"> = </span><span class="code-operator">{}</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_load</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _load</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-keyword">if</span><span class="code-name"> os</span><span class="code-operator">.</span><span class="code-function">path</span><span class="code-operator">.</span><span class="code-function">exists</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator">):</span>
+            <span class="code-keyword">with</span><span class="code-name"> open</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator">, </span><span class="code-string">'r'</span><span class="code-operator">, </span><span class="code-name">encoding</span><span class="code-operator">=</span><span class="code-string">'utf-8'</span><span class="code-operator">)</span> <span class="code-keyword">as</span><span class="code-name"> f</span><span class="code-operator">:</span>
+                <span class="code-name">data</span><span class="code-operator"> = </span><span class="code-name">json</span><span class="code-operator">.</span><span class="code-function">load</span><span class="code-operator">(</span><span class="code-name">f</span><span class="code-operator">)</span>
+                <span class="code-keyword">for</span><span class="code-name"> word</span><span class="code-keyword">, </span><span class="code-name">card_data </span><span class="code-keyword">in</span><span class="code-name"> data</span><span class="code-operator">.</span><span class="code-function">items</span><span class="code-operator">():</span>
+                    <span class="code-name">card</span><span class="code-operator"> = </span><span class="code-function">WordCard</span><span class="code-operator">(</span><span class="code-name">word</span><span class="code-operator">, </span><span class="code-name">card_data</span><span class="code-operator">[</span><span class="code-string">"definition"</span><span class="code-operator">], </span><span class="code-name">card_data</span><span class="code-operator">[</span><span class="code-string">"example"</span><span class="code-operator">])</span>
+                    <span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">ReviewInterval</span><span class="code-operator">[</span><span class="code-name">card_data</span><span class="code-operator">[</span><span class="code-string">"level"</span><span class="code-operator">]</span><span class="code-operator">]</span>
+                    <span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">correct_count</span><span class="code-operator"> = </span><span class="code-name">card_data</span><span class="code-operator">[</span><span class="code-string">"correct_count"</span><span class="code-operator">]</span>
+                    <span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">wrong_count</span><span class="code-operator"> = </span><span class="code-name">card_data</span><span class="code-operator">[</span><span class="code-string">"wrong_count"</span><span class="code-operator">]</span>
+                    <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">[</span><span class="code-name">word</span><span class="code-operator">] = </span><span class="code-name">card</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _save</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">data</span><span class="code-operator"> = </span><span class="code-operator">{}</span>
+        <span class="code-keyword">for</span><span class="code-name"> word</span><span class="code-keyword">, </span><span class="code-name"> card </span><span class="code-keyword">in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">.</span><span class="code-function">items</span><span class="code-operator">():</span>
+            <span class="code-name">data</span><span class="code-operator">[</span><span class="code-name">word</span><span class="code-operator">] = </span><span class="code-operator">{</span>
+                <span class="code-string">"definition"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">definition</span><span class="code-operator">,</span>
+                <span class="code-string">"example"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">example</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator">.</span><span class="code-name">name</span><span class="code-operator">,</span>
+                <span class="code-string">"correct_count"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">correct_count</span><span class="code-operator">,</span>
+                <span class="code-string">"wrong_count"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">wrong_count</span>
+            <span class="code-operator">}</span>
+        <span class="code-keyword">with</span><span class="code-name"> open</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator">, </span><span class="code-string">'w'</span><span class="code-operator">, </span><span class="code-name">encoding</span><span class="code-operator">=</span><span class="code-string">'utf-8'</span><span class="code-operator">)</span> <span class="code-keyword">as</span><span class="code-name"> f</span><span class="code-operator">:</span>
+            <span class="code-name">json</span><span class="code-operator">.</span><span class="code-function">dump</span><span class="code-operator">(</span><span class="code-name">data</span><span class="code-operator">, </span><span class="code-name">f</span><span class="code-operator">, </span><span class="code-name">ensure_ascii</span><span class="code-operator">=</span><span class="code-keyword">False</span><span class="code-operator">, </span><span class="code-name">indent</span><span class="code-operator">=</span><span class="code-number">2</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> add_word</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">word</span><span class="code-operator">, </span><span class="code-name">definition</span><span class="code-operator">, </span><span class="code-name">example</span><span class="code-operator">=</span><span class="code-string">""</span><span class="code-operator">):</span>
+        <span class="code-keyword">if</span><span class="code-name"> word </span><span class="code-keyword">not</span><span class="code-name"> in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">[</span><span class="code-name">word</span><span class="code-operator">] = </span><span class="code-function">WordCard</span><span class="code-operator">(</span><span class="code-name">word</span><span class="code-operator">, </span><span class="code-name">definition</span><span class="code-operator">, </span><span class="code-name">example</span><span class="code-operator">)</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_save</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_due_cards</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">limit</span><span class="code-operator">=</span><span class="code-number">10</span><span class="code-operator">):</span>
+        <span class="code-name">due_cards</span><span class="code-operator"> = </span><span class="code-operator">[</span><span class="code-name">card</span> <span class="code-keyword">for</span><span class="code-name"> card </span><span class="code-keyword">in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">.</span><span class="code-function">values</span><span class="code-operator">()</span> <span class="code-keyword">if</span><span class="code-name"> card</span><span class="code-operator">.</span><span class="code-function">is_due_for_review</span><span class="code-operator">()</span><span class="code-operator">]</span>
+        <span class="code-keyword">return</span><span class="code-name"> due_cards</span><span class="code-operator">[:</span><span class="code-name">limit</span><span class="code-operator">]</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> record_review</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">word</span><span class="code-operator">, </span><span class="code-name">is_correct</span><span class="code-operator">):</span>
+        <span class="code-keyword">if</span><span class="code-name"> word </span><span class="code-keyword">in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cards</span><span class="code-operator">[</span><span class="code-name">word</span><span class="code-operator">]</span><span class="code-operator">.</span><span class="code-function">review</span><span class="code-operator">(</span><span class="code-name">is_correct</span><span class="code-operator">)</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_save</span><span class="code-operator">()</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">复习流程</span>
+  </p>
+</section>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="vocabulary_review_flow.png" alt="词汇复习流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">class</span><span class="code-function"> VocabularyReviewer</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">word_book</span><span class="code-operator"> = </span><span class="code-function">WordBook</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">generator</span><span class="code-operator"> = </span><span class="code-function">WordCardGenerator</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> start_review</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">count</span><span class="code-operator">=</span><span class="code-number">10</span><span class="code-operator">):</span>
+        <span class="code-name">due_cards</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">word_book</span><span class="code-operator">.</span><span class="code-function">get_due_cards</span><span class="code-operator">(</span><span class="code-name">count</span><span class="code-operator">)</span>
+        
+        <span class="code-keyword">if</span><span class="code-name"> not</span><span class="code-name"> due_cards</span><span class="code-operator">:</span>
+            <span class="code-keyword">return</span><span class="code-operator">{</span><span class="code-string">"message"</span><span class="code-operator">: </span><span class="code-string">"没有需要复习的单词！"</span><span class="code-operator">}</span>
+        
+        <span class="code-keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"message"</span><span class="code-operator">: </span><span class="code-operator">f"今日需要复习{len(due_cards)}个单词"</span><span class="code-operator">,</span>
+            <span class="code-string">"cards"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-operator">{</span>
+                <span class="code-string">"word"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">word</span><span class="code-operator">,</span>
+                <span class="code-string">"definition"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">definition</span><span class="code-operator">,</span>
+                <span class="code-string">"example"</span><span class="code-operator">: </span><span class="code-name">card</span><span class="code-operator">.</span><span class="code-name">example</span>
+            <span class="code-operator">}</span> <span class="code-keyword">for</span><span class="code-name"> card </span><span class="code-keyword">in</span><span class="code-name"> due_cards</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> add_new_word</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">word</span><span class="code-operator">):</span>
+        <span class="code-name">card_data</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">generator</span><span class="code-operator">.</span><span class="code-function">generate_word_card</span><span class="code-operator">(</span><span class="code-name">word</span><span class="code-operator">)</span>
+        
+        <span class="code-keyword">if</span><span class="code-name"> card_data</span><span class="code-operator">:</span>
+            <span class="code-name">definition</span><span class="code-operator"> = </span><span class="code-string">"; ".join</span><span class="code-operator">(</span><span class="code-name">card_data</span><span class="code-operator">[</span><span class="code-string">"definitions"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+            <span class="code-name">example</span><span class="code-operator"> = </span><span class="code-string">"\n".join</span><span class="code-operator">(</span>
+                <span class="code-operator">[</span><span class="code-operator">f</span><span class="code-string">"{e['english']} - {e['chinese']}"</span> <span class="code-keyword">for</span><span class="code-name"> e </span><span class="code-keyword">in</span><span class="code-name"> card_data</span><span class="code-operator">[</span><span class="code-string">"examples"</span><span class="code-operator">]</span><span class="code-operator">]</span>
+            <span class="code-operator">)</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">word_book</span><span class="code-operator">.</span><span class="code-function">add_word</span><span class="code-operator">(</span><span class="code-name">word</span><span class="code-operator">, </span><span class="code-name">definition</span><span class="code-operator">, </span><span class="code-name">example</span><span class="code-operator">)</span>
+            <span class="code-keyword">return</span><span class="code-name"> card_data</span>
+        <span class="code-keyword">else</span><span class="code-operator">:</span>
+            <span class="code-keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"生成单词卡失败"</span><span class="code-operator">}</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 生成的单词卡格式错误：检查Ollama是否正常运行（参考【本地大模型知识库系列】第02篇）</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 复习间隔不合理：调整ReviewInterval的时间间隔</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 单词本数据丢失：确保文件保存路径有写入权限</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 生成速度慢：使用更小的模型或添加缓存机制（参考【本地大模型知识库系列】第10篇）</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  📖 <strong>系列导航：</strong><br>
+  • 本地大模型知识库系列（12篇，已完成）<br>
+  • 英语学习Agent系列（8篇，当前第02篇）<br>
+  <br>
+  英语学习Agent系列第02篇<br>
+  下一篇：语法学习模块——知识图谱驱动的语法教学
+</p>
+
+</section>
+</body>
+</html>

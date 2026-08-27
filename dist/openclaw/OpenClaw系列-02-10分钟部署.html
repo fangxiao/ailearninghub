@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10分钟部署你的第一只"龙虾" - 公众号预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px 0;
+        }
+        
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        
+        h1 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        
+        h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            margin: 50px 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            margin: 35px 0 15px 0;
+        }
+        
+        h4 {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            margin: 30px 0 12px 0;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        strong {
+            color: #000;
+            font-weight: bold;
+        }
+        
+        blockquote {
+            border-left: 4px solid #42b983;
+            padding: 10px 15px;
+            margin: 15px 0;
+            background: #f8f8f8;
+            color: #555;
+            font-style: normal;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        hr {
+            border: none;
+            height: 1px;
+            background: #e0e0e0;
+            margin: 50px 0;
+        }
+        
+        /* 公众号代码样式 - 圆角灰色背景块 */
+        .code {
+            background: #f5f2f0;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: 14px;
+            color: #333;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+        
+        a {
+            color: #42b983;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .highlight { color: #ff6b6b; font-weight: bold; }
+        .key { color: #4facfe; font-weight: bold; }
+        .number { color: #f5a623; font-weight: bold; }
+        .success { color: #42b983; font-weight: bold; }
+        .warning { color: #ff9500; font-weight: bold; }
+        .purple { color: #9b59b6; font-weight: bold; }
+        .blue { color: #3498db; font-weight: bold; }
+        .green { color: #27ae60; font-weight: bold; }
+        .red { color: #e74c3c; font-weight: bold; }
+        .orange { color: #e67e22; font-weight: bold; }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 { font-size: 22px; }
+            h2 { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="number">10分钟</span>部署你的第一只"<span class="orange">龙虾</span>"</h1>
+        
+        <p><strong>阅读时间：</strong><span class="number">10分钟</span><br/>
+        <strong>难度等级：</strong>⭐ 零基础<br/>
+        <strong>你将收获：</strong>完成<span class="key">OpenClaw</span>安装，执行第一个任务，获得<span class="success">成就感</span></p>
+        
+        <hr/>
+        
+        <h2>准备工作</h2>
+        
+        <h3>电脑要求（很低）</h3>
+        
+        <p><strong><span class="blue">最低配置</span>：</strong></p>
+        
+        <ul>
+            <li>操作系统：<span class="key">Windows 10+</span> / <span class="key">macOS 10.14+</span> / <span class="key">Linux</span></li>
+            <li>内存：<span class="number">4GB+</span></li>
+            <li>硬盘：<span class="number">2GB</span>可用空间</li>
+            <li>网络：需要联网（首次下载）</li>
+        </ul>
+        
+        <p><strong><span class="success">推荐配置</span>：</strong></p>
+        
+        <ul>
+            <li>内存：<span class="number">8GB+</span></li>
+            <li>CPU：<span class="number">4</span>核+</li>
+        </ul>
+        
+        <h3>账号准备</h3>
+        
+        <p>根据你的选择，准备：</p>
+        
+        <ul>
+            <li><strong><span class="blue">微信账号</span></strong>（小程序方式）</li>
+            <li><strong><span class="key">GitHub</span>账号</strong>（开源版）</li>
+            <li><strong>邮箱</strong>（注册用）</li>
+        </ul>
+        
+        <hr/>
+        
+        <h2><span class="number">3种</span>安装方式</h2>
+        
+        <h3>🚀 方式一：<span class="blue">微信小程序</span>（最快，<span class="number">0</span>门槛）</h3>
+        
+        <p><strong>适合人群：</strong>完全新手，想最快体验</p>
+        
+        <p><strong><span class="success">优点：</span></strong></p>
+        
+        <ul>
+            <li>✅ <span class="number">0</span>门槛，不用安装</li>
+            <li>✅ 随时随地使用</li>
+            <li>✅ 免费体验</li>
+        </ul>
+        
+        <p><strong><span class="red">缺点：</span></strong></p>
+        
+        <ul>
+            <li>❌ 功能相对简单</li>
+            <li>❌ 不能操作本地文件</li>
+            <li>❌ 需要联网</li>
+        </ul>
+        
+        <h4>安装步骤（<span class="number">2分钟</span>）</h4>
+        
+        <p><strong><span class="number">Step 1</span>：打开微信</strong></p>
+        <p>在手机或电脑上打开微信</p>
+        
+        <p><strong><span class="number">Step 2</span>：搜索小程序</strong></p>
+        <p>在搜索框输入：<strong><span class="key">QClaw</span></strong></p>
+        
+        <p><strong><span class="number">Step 3</span>：点击进入</strong></p>
+        <p>找到"<span class="key">QClaw</span>智能助手"，点击进入</p>
+        
+        <p><strong><span class="number">Step 4</span>：授权登录</strong></p>
+        <p>点击"微信授权登录"，确认授权</p>
+        
+        <p><strong><span class="number">Step 5</span>：开始使用</strong></p>
+        <p>进入主界面，看到输入框，可以开始用了！</p>
+        
+        <p><strong>✅ 安装完成！</strong></p>
+        
+        <h3>💻 方式二：<span class="blue">桌面应用</span>（推荐）</h3>
+        
+        <p><strong>适合人群：</strong>日常使用，需要处理本地文件</p>
+        
+        <p><strong><span class="success">优点：</span></strong></p>
+        
+        <ul>
+            <li>✅ 功能完整</li>
+            <li>✅ 可操作本地文件</li>
+            <li>✅ 响应更快</li>
+            <li>✅ 界面友好</li>
+        </ul>
+        
+        <p><strong><span class="red">缺点：</span></strong></p>
+        
+        <ul>
+            <li>❌ 需要下载安装</li>
+            <li>❌ 占用一定硬盘空间</li>
+        </ul>
+        
+        <h4><span class="key">Windows</span>安装（<span class="number">5分钟</span>）</h4>
+        
+        <p><strong><span class="number">Step 1</span>：下载安装包</strong></p>
+        <p>访问官网：<span class="key">openclaw.ai/download</span></p>
+        <p>点击"<span class="blue">Windows下载</span>"，选择：</p>
+        
+        <ul>
+            <li><strong>标准版</strong>（推荐）：<span class="number">500MB</span>，功能完整</li>
+            <li><strong>精简版</strong>：<span class="number">200MB</span>，基础功能</li>
+        </ul>
+        
+        <p><strong><span class="number">Step 2</span>：运行安装程序</strong></p>
+        <p>找到下载的 <span class="key">OpenClaw-Setup.exe</span>，双击运行</p>
+        
+        <p><strong><span class="number">Step 3</span>：选择安装位置</strong></p>
+        <p class="code">默认：C:\Program Files\OpenClaw
+建议：D:\OpenClaw（如果C盘空间不足）</p>
+        
+        <p><strong><span class="number">Step 4</span>：选择组件</strong></p>
+        <p class="code">✅ OpenClaw核心（必须）
+✅ Python运行时（必须）
+✅ 常用工具包（推荐）
+⬜ 开发工具（按需）</p>
+        
+        <p><strong><span class="number">Step 5</span>：等待安装</strong></p>
+        <p>安装进度条，大约<span class="number">2-3分钟</span></p>
+        
+        <p><strong><span class="number">Step 6</span>：首次配置</strong></p>
+        <p>安装完成后，自动打开配置向导：</p>
+        
+        <p><span class="number">1.</span> <strong>选择语言</strong>：中文</p>
+        
+        <p><span class="number">2.</span> <strong>选择模型</strong>：</p>
+        
+        <p><strong><span class="blue">国际模型</span>：</strong></p>
+        <ul>
+            <li><span class="key">GPT-5</span>（最新，最强，需要API Key）</li>
+            <li><span class="key">GPT-4o</span>（推荐，性价比高）</li>
+            <li><span class="key">Claude 3.5</span>（推理能力强）</li>
+        </ul>
+        
+        <p><strong><span class="blue">国内模型</span>：</strong></p>
+        <ul>
+            <li><span class="key">智谱GLM-4</span>（国产最强，推荐）</li>
+            <li><span class="key">文心一言4.0</span>（百度出品）</li>
+            <li><span class="key">通义千问</span>（阿里出品）</li>
+            <li><span class="key">DeepSeek</span>（性价比高）</li>
+        </ul>
+        
+        <p><strong><span class="blue">本地模型</span>：</strong></p>
+        <ul>
+            <li><span class="key">Llama 3</span>（免费，需配置）</li>
+            <li><span class="key">Qwen</span>（免费，中文友好）</li>
+        </ul>
+        
+        <p><span class="number">3.</span> <strong>输入API Key</strong>：</p>
+        <ul>
+            <li>如果有<span class="key">OpenAI API Key</span>，输入</li>
+            <li>如果有<span class="key">智谱/百度/阿里</span>账号，输入</li>
+            <li>如果没有，选择"稍后配置"</li>
+        </ul>
+        
+        <p><span class="number">4.</span> <strong>完成</strong>：点击"开始使用"</p>
+        
+        <p><strong>✅ 安装完成！</strong></p>
+        
+        <h4><span class="key">macOS</span>安装（<span class="number">5分钟</span>）</h4>
+        
+        <p><strong><span class="number">Step 1</span>：下载DMG</strong></p>
+        <p>访问官网：<span class="key">openclaw.ai/download</span></p>
+        <p>点击"<span class="blue">macOS下载</span>"</p>
+        
+        <p><strong><span class="number">Step 2</span>：打开DMG文件</strong></p>
+        <p>找到 <span class="key">OpenClaw.dmg</span>，双击打开</p>
+        
+        <p><strong><span class="number">Step 3</span>：拖拽安装</strong></p>
+        <p>将OpenClaw图标拖到"Applications"文件夹</p>
+        
+        <p><strong><span class="number">Step 4</span>：首次打开</strong></p>
+        <p>打开"应用程序"文件夹，找到OpenClaw，双击打开</p>
+        
+        <p><strong>⚠️ 注意：</strong></p>
+        <p>首次打开可能提示"无法验证开发者"，解决方法：</p>
+        <p><span class="number">1.</span> 右键点击OpenClaw</p>
+        <p><span class="number">2.</span> 选择"打开"</p>
+        <p><span class="number">3.</span> 点击"打开"确认</p>
+        
+        <p><strong><span class="number">Step 5</span>：配置（同Windows）</strong></p>
+        
+        <p><strong>✅ 安装完成！</strong></p>
+        
+        <h3>⌨️ 方式三：<span class="blue">命令行</span>（极客）</h3>
+        
+        <p><strong>适合人群：</strong>开发者，喜欢折腾</p>
+        
+        <p><strong><span class="success">优点：</span></strong></p>
+        
+        <ul>
+            <li>✅ 完全自定义</li>
+            <li>✅ 可编程控制</li>
+            <li>✅ 最新版本</li>
+        </ul>
+        
+        <p><strong><span class="red">缺点：</span></strong></p>
+        
+        <ul>
+            <li>❌ 有学习曲线</li>
+            <li>❌ 需要技术背景</li>
+        </ul>
+        
+        <h4><span class="key">macOS/Linux</span>安装（<span class="number">5分钟</span>）</h4>
+        
+        <p><strong><span class="number">Step 1</span>：安装依赖</strong></p>
+        <p class="code"># macOS
+brew install python3 git
+
+# Ubuntu/Debian
+sudo apt install python3 python3-pip git
+
+# CentOS/RHEL
+sudo yum install python3 python3-pip git</p>
+        
+        <p><strong><span class="number">Step 2</span>：安装<span class="key">OpenClaw</span></strong></p>
+        <p class="code"># 方式A：Homebrew（推荐）
+brew install openclaw
+
+# 方式B：pip安装
+pip3 install openclaw
+
+# 方式C：源码安装
+git clone https://github.com/openclaw/openclaw.git
+cd openclaw
+pip3 install -r requirements.txt
+python3 setup.py install</p>
+        
+        <p><strong><span class="number">Step 3</span>：初始化</strong></p>
+        <p class="code"># 初始化配置
+openclaw init
+
+会提示：
+? 请选择默认模型
+  - GPT-5（需要OpenAI API Key）
+  - GPT-4o（推荐，性价比高）
+  - GLM-4（智谱，国内推荐）
+  - 文心4.0（百度）
+  - 通义千问（阿里）
+  - 本地模型（免费）
+? 请输入API Key (可选)
+? 请选择数据存储位置 [默认: ~/.openclaw]</p>
+        
+        <p><strong><span class="number">Step 4</span>：启动服务</strong></p>
+        <p class="code"># 启动后台服务
+openclaw start
+
+# 查看状态
+openclaw status
+
+输出：
+✅ OpenClaw运行中
+- 版本: 1.0.0
+- 模型: GLM-4
+- 端口: 8080</p>
+        
+        <p><strong><span class="number">Step 5</span>：测试</strong></p>
+        <p class="code"># 命令行交互
+openclaw chat
+
+# 或者直接执行任务
+openclaw run "列出当前目录的所有PDF文件"</p>
+        
+        <p><strong>✅ 安装完成！</strong></p>
+        
+        <h4><span class="key">Windows</span>命令行安装</h4>
+        
+        <p><strong><span class="number">Step 1</span>：安装<span class="key">Python</span></strong></p>
+        <p>访问 <span class="key">python.org/downloads/</span>，下载<span class="key">Python 3.9+</span></p>
+        <p>安装时勾选"<span class="red">Add Python to PATH</span>"</p>
+        
+        <p><strong><span class="number">Step 2</span>：安装<span class="key">OpenClaw</span></strong></p>
+        <p class="code"># 使用pip
+pip install openclaw
+
+# 或使用scoop
+scoop install openclaw</p>
+        
+        <p><strong><span class="number">Step 3</span>：初始化</strong></p>
+        <p class="code">openclaw init</p>
+        
+        <p><strong><span class="number">Step 4</span>：启动</strong></p>
+        <p class="code">openclaw start</p>
+        
+        <p><strong>✅ 安装完成！</strong></p>
+        
+        <hr/>
+        
+        <h2>第一个任务：<span class="blue">整理桌面</span></h2>
+        
+        <h3>任务描述</h3>
+        
+        <p><strong>场景：</strong>桌面乱糟糟，有各种文件，想按类型整理</p>
+        <p><strong>目标：</strong>让<span class="key">OpenClaw</span>自动整理桌面文件</p>
+        
+        <h3>方式一：<span class="blue">图形界面</span>操作</h3>
+        
+        <p><strong><span class="number">Step 1</span>：打开<span class="key">OpenClaw</span></strong></p>
+        <p>双击桌面图标，或从开始菜单打开</p>
+        
+        <p><strong><span class="number">Step 2</span>：进入对话界面</strong></p>
+        <p>看到主界面，有一个输入框</p>
+        
+        <p><strong><span class="number">Step 3</span>：输入任务</strong></p>
+        <p>在输入框输入：</p>
+        <p class="code">帮我把桌面上的文件按类型整理到不同文件夹。
+图片放Images文件夹，文档放Documents文件夹，
+代码放Code文件夹，其他放Others文件夹</p>
+        
+        <p><strong><span class="number">Step 4</span>：点击"执行"</strong></p>
+        <p>点击"发送"或按回车</p>
+        
+        <p><strong><span class="number">Step 5</span>：观察执行过程</strong></p>
+        <p><span class="key">OpenClaw</span>会显示执行过程：</p>
+        <p class="code">🤔 正在分析任务...
+📋 发现桌面文件：15个
+
+执行步骤：
+1. 扫描桌面文件
+2. 创建分类文件夹
+3. 移动文件
+
+正在执行...
+✅ 创建文件夹: Images
+✅ 创建文件夹: Documents
+✅ 创建文件夹: Code
+✅ 创建文件夹: Others
+✅ 移动文件: screenshot.png → Images/
+✅ 移动文件: report.docx → Documents/
+...</p>
+        
+        <p><strong><span class="number">Step 6</span>：查看结果</strong></p>
+        <p>大约<span class="number">10秒</span>后，显示：</p>
+        <p class="code">✅ 整理完成！
+
+📊 统计：
+• 图片文件：5个 → Images/
+• 文档文件：6个 → Documents/
+• 代码文件：2个 → Code/
+• 其他文件：2个 → Others/
+
+总计处理：15个文件
+用时：10.3秒</p>
+        
+        <p><strong><span class="number">Step 7</span>：检查桌面</strong></p>
+        <p>最小化<span class="key">OpenClaw</span>，看看桌面...</p>
+        <p><strong><span class="success" style="font-size: 18px;">哇！桌面清爽了！</span></strong> ✨</p>
+        
+        <h3>方式二：<span class="blue">命令行</span>操作</h3>
+        
+        <p><strong><span class="number">Step 1</span>：打开终端</strong></p>
+        <p>Windows: <span class="key">PowerShell</span></p>
+        <p>macOS: <span class="key">Terminal</span></p>
+        
+        <p><strong><span class="number">Step 2</span>：输入命令</strong></p>
+        <p class="code">openclaw run "整理桌面文件，按类型分类"</p>
+        
+        <p><strong><span class="number">Step 3</span>：等待执行</strong></p>
+        <p class="code">🤖 执行任务：整理桌面文件...
+
+步骤1：扫描桌面
+找到 15 个文件
+
+步骤2：创建文件夹
+✓ Images
+✓ Documents
+✓ Code
+✓ Others
+
+步骤3：移动文件
+✓ screenshot.png → Images/
+✓ report.docx → Documents/
+...
+
+✅ 完成！
+处理文件：15个
+用时：9.8秒</p>
+        
+        <p><strong>✅ 任务完成！</strong></p>
+        
+        <h3>方式三：<span class="blue">小程序</span>操作</h3>
+        
+        <p><strong><span class="number">Step 1</span>：打开<span class="key">QClaw</span>小程序</strong></p>
+        <p>微信 → 搜索"<span class="key">QClaw</span>" → 进入</p>
+        
+        <p><strong><span class="number">Step 2</span>：输入任务</strong></p>
+        <p class="code">生成一个Python脚本，用于整理桌面文件</p>
+        
+        <p><strong><span class="number">Step 3</span>：获得脚本</strong></p>
+        <p><span class="key">OpenClaw</span>会生成代码（此处省略，实际会显示完整代码）</p>
+        
+        <p><strong><span class="number">Step 4</span>：复制保存</strong></p>
+        <p>复制代码，保存为 <span class="key">organize_desktop.py</span></p>
+        
+        <p><strong><span class="number">Step 5</span>：运行脚本</strong></p>
+        <p class="code">python organize_desktop.py</p>
+        
+        <p><strong>✅ 桌面整理完成！</strong></p>
+        
+        <hr/>
+        
+        <h2>常见问题解决</h2>
+        
+        <h3>问题<span class="number">1</span>：安装失败</h3>
+        
+        <p><strong>症状：</strong></p>
+        <ul>
+            <li>安装进度卡住</li>
+            <li>提示"安装失败"</li>
+            <li>打不开应用</li>
+        </ul>
+        
+        <p><strong><span class="success">解决方案：</span></strong></p>
+        
+        <p><strong><span class="key">Windows</span>：</strong></p>
+        <p class="code">1. 右键安装包 → 属性 → 解除锁定
+2. 以管理员身份运行
+3. 关闭杀毒软件后重试</p>
+        
+        <p><strong><span class="key">macOS</span>：</strong></p>
+        <p class="code">1. 系统偏好设置 → 安全性与隐私 → 允许OpenClaw
+2. 右键点击 → 打开 → 打开</p>
+        
+        <p><strong><span class="key">Linux</span>：</strong></p>
+        <p class="code"># 检查依赖
+python3 --version
+pip3 --version
+
+# 重新安装
+pip3 uninstall openclaw
+pip3 install openclaw</p>
+        
+        <h3>问题<span class="number">2</span>：需要付费吗？</h3>
+        
+        <p><strong>A：<span class="success">不需要！</span></strong></p>
+        
+        <p><strong><span class="success">免费方案：</span></strong></p>
+        <ul>
+            <li>✅ 开源版：<span class="key">GitHub</span>下载，完全免费</li>
+            <li>✅ 小程序：基础功能免费</li>
+            <li>✅ 本地部署：无任何费用</li>
+        </ul>
+        
+        <p><strong><span class="warning">收费情况：</span></strong></p>
+        <ul>
+            <li>💰 大厂产品的高级功能可能收费</li>
+            <li>💰 云端<span class="key">API</span>调用可能收费（很便宜）</li>
+            <li>💰 企业版有收费版本</li>
+        </ul>
+        
+        <p><strong>新手建议：</strong></p>
+        <blockquote>
+        先用<span class="success">免费版</span>体验<br/>
+        需要时再考虑付费版
+        </blockquote>
+        
+        <h3>问题<span class="number">3</span>：安全吗？</h3>
+        
+        <p><strong>A：<span class="success">相对安全</span></strong></p>
+        
+        <p><strong><span class="key">开源版</span>：</strong></p>
+        <ul>
+            <li>✅ 代码公开，可审计</li>
+            <li>✅ 本地运行，<span class="success">数据不上传</span></li>
+            <li>✅ 完全控制权限</li>
+        </ul>
+        
+        <p><strong><span class="blue">大厂产品</span>：</strong></p>
+        <ul>
+            <li>✅ 有安全合规</li>
+            <li>✅ 数据加密传输</li>
+            <li>⚠️ 数据会上传云端</li>
+        </ul>
+        
+        <p><strong>安全建议：</strong></p>
+        <ol>
+            <li><span class="red">敏感数据</span>用本地部署</li>
+            <li>不要在对话中输入密码</li>
+            <li>定期清理历史记录</li>
+            <li>使用官方渠道下载</li>
+        </ol>
+        
+        <h3>问题<span class="number">4</span>：<span class="key">API Key</span>是什么？一定要有吗？</h3>
+        
+        <p><strong>A：<span class="warning">不一定！</span></strong></p>
+        
+        <p><strong><span class="key">API Key</span>是什么：</strong></p>
+        <ul>
+            <li>调用<span class="key">GPT-5</span>、<span class="key">GLM-4</span>等模型的密钥</li>
+            <li>类似"身份证"</li>
+        </ul>
+        
+        <p><strong>什么情况需要：</strong></p>
+        <ul>
+            <li>使用<span class="key">GPT-5</span>、<span class="key">Claude</span>等国际模型</li>
+            <li>使用<span class="key">GLM-4</span>、<span class="key">文心4.0</span>等国内模型</li>
+            <li>需要更强大的能力</li>
+        </ul>
+        
+        <p><strong>什么情况不需要：</strong></p>
+        <ul>
+            <li>使用本地模型（完全免费）</li>
+            <li>使用小程序（基础功能免费）</li>
+            <li>使用国内模型的免费额度（<span class="key">GLM</span>、<span class="key">文心</span>都有）</li>
+            <li>大厂产品的免费版</li>
+        </ul>
+        
+        <p><strong>如何获取：</strong></p>
+        
+        <p><strong><span class="blue">国际模型</span>：</strong></p>
+        <ul>
+            <li><span class="key">OpenAI</span>：<span class="key">platform.openai.com</span></li>
+            <li><span class="key">Anthropic</span>（Claude）：<span class="key">console.anthropic.com</span></li>
+            <li>价格：<span class="key">GPT-5</span>约<span class="number">$0.05</span>/<span class="number">1K</span> tokens</li>
+        </ul>
+        
+        <p><strong><span class="blue">国内模型</span>：</strong></p>
+        <ul>
+            <li><span class="key">智谱AI</span>：<span class="key">open.bigmodel.cn</span>（推荐，性价比高）</li>
+            <li><span class="key">百度智能云</span>：<span class="key">console.bce.baidu.com</span></li>
+            <li><span class="key">阿里云</span>：<span class="key">dashscope.aliyun.com</span></li>
+            <li>价格：<span class="key">GLM-4</span>约<span class="number">¥0.1</span>/<span class="number">1K</span> tokens（便宜！）</li>
+        </ul>
+        
+        <p><strong>新手建议：</strong></p>
+        <blockquote>
+        先用<span class="success">免费模型</span>体验<br/>
+        或使用国内模型的免费额度<br/>
+        熟悉后再购买<span class="key">API Key</span>
+        </blockquote>
+        
+        <h3>问题<span class="number">5</span>：占多少内存/硬盘？</h3>
+        
+        <p><strong><span class="blue">内存占用：</span></strong></p>
+        <ul>
+            <li>空闲：<span class="number">200-500MB</span></li>
+            <li>执行任务：<span class="number">500MB-2GB</span></li>
+            <li>推荐：<span class="number">4GB+</span>内存</li>
+        </ul>
+        
+        <p><strong><span class="blue">硬盘占用：</span></strong></p>
+        <ul>
+            <li>应用：<span class="number">500MB-1GB</span></li>
+            <li>数据：根据使用情况</li>
+            <li>推荐：<span class="number">5GB+</span>可用空间</li>
+        </ul>
+        
+        <p><strong>性能优化：</strong></p>
+        <p>在配置文件 <span class="key">~/.openclaw/config.yaml</span> 中设置：</p>
+        <p class="code">performance:
+  max_memory: 2GB
+  cache_size: 500MB</p>
+        
+        <hr/>
+        
+        <h2>下一步建议</h2>
+        
+        <h3>完成安装后</h3>
+        
+        <p><strong><span class="number">1.</span> 完成新手任务</strong></p>
+        <p>尝试以下任务，巩固学习：</p>
+        <ul>
+            <li>✅ 整理下载文件夹</li>
+            <li>✅ 批量重命名文件</li>
+            <li>✅ 生成文件清单</li>
+        </ul>
+        
+        <p><strong><span class="number">2.</span> 学习常用功能</strong></p>
+        <p>看下一篇：《<span class="number">10</span>个实用任务》</p>
+        
+        <p><strong><span class="number">3.</span> 加入社区</strong></p>
+        <ul>
+            <li>官方<span class="key">Discord</span>：<span class="key">discord.gg/clawd</span></li>
+            <li>微信群：扫码加入</li>
+            <li><span class="key">GitHub</span>：<span class="key">github.com/openclaw</span></li>
+        </ul>
+        
+        <hr/>
+        
+        <h2>小结</h2>
+        
+        <h3>安装方式对比</h3>
+        
+        <blockquote>
+<strong>方式 | 时间 | 难度 | 功能 | 推荐度</strong>
+<span class="blue">微信小程序</span> | <span class="number">2分钟</span> | ⭐ | 基础 | ⭐⭐⭐
+<span class="blue">桌面应用</span> | <span class="number">5分钟</span> | ⭐⭐ | 完整 | ⭐⭐⭐⭐⭐
+<span class="blue">命令行</span> | <span class="number">5分钟</span> | ⭐⭐⭐ | 完整 | ⭐⭐⭐⭐
+        </blockquote>
+        
+        <h3>核心步骤回顾</h3>
+        
+        <p><strong><span class="blue">图形界面</span>：</strong></p>
+        <ol>
+            <li>下载安装包</li>
+            <li>双击安装</li>
+            <li>首次配置</li>
+            <li>开始使用</li>
+        </ol>
+        
+        <p><strong><span class="blue">命令行</span>：</strong></p>
+        <p class="code">brew install openclaw
+openclaw init
+openclaw start</p>
+        
+        <p><strong><span class="blue">小程序</span>：</strong></p>
+        <ol>
+            <li>微信搜索<span class="key">QClaw</span></li>
+            <li>授权登录</li>
+            <li>开始使用</li>
+        </ol>
+        
+        <h3><span class="success">成就达成！</span></h3>
+        
+        <p><strong>你已经：</strong></p>
+        <ul>
+            <li>✅ 成功安装<span class="key">OpenClaw</span></li>
+            <li>✅ 完成第一个任务</li>
+            <li>✅ 看到实际效果</li>
+            <li>✅ 建立初步信心</li>
+        </ul>
+        
+        <hr/>
+        
+        <h2>练习题</h2>
+        
+        <p><strong>任务：</strong></p>
+        <p>选择一个你常用的文件夹（比如下载文件夹），让<span class="key">OpenClaw</span>帮你整理一下。</p>
+        
+        <p><strong>要求：</strong></p>
+        <ol>
+            <li>按文件类型分类</li>
+            <li>删除重复文件</li>
+            <li>生成整理报告</li>
+        </ol>
+        
+        <p><strong>提示：</strong></p>
+        <p class="code">帮我整理Downloads文件夹：
+1. 按类型分类文件
+2. 删除重复文件
+3. 生成整理报告</p>
+        
+        <p><strong>完成的同学，评论区分享你的成果！</strong> 📸</p>
+        
+        <hr/>
+        
+        <h2>下期预告</h2>
+        
+        <p><strong>下一篇：</strong>《新手必学的<span class="number">10</span>个实用任务》</p>
+        
+        <p><strong>你将学到：</strong></p>
+        <ul>
+            <li>✅ 文件整理类任务（<span class="number">3</span>个）</li>
+            <li>✅ 文档处理类任务（<span class="number">3</span>个）</li>
+            <li>✅ 信息整理类任务（<span class="number">3</span>个）</li>
+            <li>✅ 自动化类任务（<span class="number">1</span>个）</li>
+        </ul>
+        
+        <p><strong>准备好解锁更多技能吗？</strong> 🚀</p>
+        
+        <hr/>
+        
+        <p><strong>系列导航</strong></p>
+        <ul>
+            <li>上一篇：<span class="key">OpenClaw</span>是什么？<span class="number">5分钟</span>看懂<span class="highlight">AI Agent</span></li>
+            <li>下一篇：新手必学的<span class="number">10</span>个实用任务</li>
+        </ul>
+        
+        <hr/>
+        
+        <p style="text-align: center; color: #999; font-size: 14px;">
+        本文是《<span class="key">OpenClaw</span>从入门到精通》系列第<span class="number">2</span>篇<br/>
+        作者：<span class="purple">生活助理</span> | 发布时间：<span class="number">2026-03-20</span>
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 AI 写完代码自动扫漏洞——Snyk Security Skills 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=futuristic%20cyber%20security%20shield%20blocking%20code%20vulnerabilities%20cyberpunk%20neon%20style%20dark%20background%20teal%20and%20red%20accents%20digital%20art%20no%20text&image_size=landscape_16_9" alt="snyk-security-skills 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    让 AI 写完代码自动扫漏洞——Snyk Security Skills 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    Secure at Inception，AI 代码安全从源头管起
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 安全工具推荐 | Claude Code 漏洞修复 Skill
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 AI 写代码快是真快，但安全这件事越来越让人头大：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ AI 一晚上生成几千行代码，SQL 注入、硬编码密钥、依赖漏洞全埋在里面
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 代码已经合进主分支，安全扫描在 CI 里跑完才发现漏洞，修复成本翻倍
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ npm install 一个新包，AI 不管有没有 CVE 直接用，依赖雪球越滚越大
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ SAST 扫描报告几百条，人工分类 + 改代码 + 写 PR，一个漏洞耗半天
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题的根子是：<strong style="color: #00897B;">安全检查跑在 AI 写代码之后</strong>。传统 SAST/SCA 工具都在 PR 或 CI 阶段才介入，等扫描报告出来，代码已经写完、测过、合进了。<strong style="color: #00897B;">Snyk Studio Recipes</strong> 提出的解法叫 <strong style="color: #00897B;">Secure at Inception</strong>：把扫描塞进 AI 写代码的循环里，漏洞在生成的瞬间就被拦下来。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>Snyk 官方开源的 AI 编程安全 Recipes，一个命令装好，支持 Claude Code / Cursor / Copilot 等 6 个助手，自动扫描 + 自动修复 + 自动建 PR。
+    </p>
+  </section>
+
+  <!-- 章节01：Secure at Inception -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">什么是 Secure at Inception？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    AI 编程助手以机器速度生成代码，传统安全工具在 PR、CI、部署阶段才扫描，那时候代码已经定型，漏洞已经影响了设计、测试和开发者的判断，再回头改成本极高。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Secure at Inception</strong> 把这个流程翻转：扫描在<strong style="color: #00897B;">代码生成的那一刻</strong>就跑，直接嵌在助手的循环里。AI 写完一段代码，Snyk 立刻扫，发现漏洞当场修，根本不让它进 commit。这是 Snyk 对"AI 时代安全怎么做"的回答，也是 studio-recipes 这个仓库的主要思路。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    跟之前介绍过的 <strong style="color: #00897B;">ECC</strong> 自带的 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/security-scan</code> 和 <strong style="color: #00897B;">wshobson/agents</strong> 里的 security-audit agent 不同，那些是通用扫描器，而 Snyk Studio Recipes 是<strong style="color: #00897B;">把 Snyk 平台的 SAST + SCA 能力直接接进 AI 助手</strong>，扫描精度、漏洞库覆盖、修复建议都是企业级的。
+  </p>
+
+  <!-- 章节02：四大 Recipe 类型 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">四大 Recipe 类型：从拦截到修复</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    studio-recipes 不是单一 Skill，而是按"什么时候触发"分成的四类 Recipe：
+  </p>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 580px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">Recipe 类型</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">作用</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">触发时机</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">Secure at Inception 护栏</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">AI 写代码时实时扫描漏洞</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">助手写代码的每一刻</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">Secure at Commit 护栏</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">拦截带漏洞的 git commit</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">git commit 时</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">包强制护栏</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">拦截有风险的依赖安装</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">添加依赖时</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">修复命令与 Skill</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">/snyk-fix 一键修漏洞</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">开发者主动调用</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    前三类是<strong style="color: #00897B;">自动护栏</strong>，装上就一直在跑，开发者无感；第四类是<strong style="color: #00897B;">按需修复</strong>，遇到历史漏洞债时主动喊 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/snyk-fix</code>，AI 走一遍"扫描 → 分析 → 修复 → 验证 → 建 PR"的完整流程。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    所有 Recipe 都通过 <strong style="color: #00897B;">Snyk MCP Server</strong> 接入底层能力：SAST 走 Snyk Code 扫代码漏洞（SQL 注入、XSS、硬编码密钥），SCA 走 Snyk Open Source 扫依赖漏洞（npm/pip/maven 包的 CVE）。两层覆盖，AI 写出来的代码和引的包都被管住。
+  </p>
+
+  <!-- 章节03：安装 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装：一条命令搞定六大助手</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    studio-recipes 最大的设计亮点是<strong style="color: #00897B;">一个自解压安装器覆盖所有助手</strong>。它会自动检测你装了哪些 AI 编程工具（Claude Code、Cursor、Copilot、Gemini、Windsurf、Kiro），把对应的 Recipe 合并进去。前置要求只有一条：<strong style="color: #00897B;">有 Snyk 账号</strong>（免费版也行）。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">① 安装 Recipe（macOS / Linux）</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 下载安装脚本
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      curl -fsSL 'https://raw.githubusercontent.com/snyk/studio-recipes/main/installer/dist/snyk-studio-install.sh' -o snyk-studio-install.sh
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 执行安装
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      bash ./snyk-studio-install.sh
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">① 安装 Recipe（Windows）</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      powershell -ExecutionPolicy Bypass -File .\snyk-studio-install.ps1
+    </p>
+  </section>
+
+  <p style="margin: 15px 0; font-size: 15px; color: #666; line-height: 1.8;">
+    安装器会自动引导 bootstrap <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">uv</code>（Python）、Node.js、npm、Snyk CLI，每步都会先问过你再装。想先看会装什么，加 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">--dry-run</code> 预览；只想装某一个助手，加 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">--ade claude-code</code> 指定。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">② 认证 Snyk</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 交互式登录
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      snyk auth
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 或者非交互式（CI / 容器）
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      export SNYK_TOKEN=your_token_from_app.snyk.io/account
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    装完打开 Claude Code，让它写一段碰数据库或网络的代码，你应该能立刻看到 Snyk 自动跑起来。然后试试 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/snyk-fix</code> 在已有项目上跑修复流程。
+  </p>
+
+  <!-- 章节04：实战七步流程 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">/snyk-fix 实战：七步修一个漏洞</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    主动调用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/snyk-fix</code> 或直接说"fix security issues"，AI 会按下面这七步走完整修复流程：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>① 解析请求</strong> — 理解你想修什么（自动判断 SAST 还是 SCA，默认先修优先级最高的）
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>② Snyk 扫描</strong> — 调 Snyk Code 扫代码漏洞，或 Snyk Open Source 扫依赖 CVE
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>③ 分析结果</strong> — 按严重程度（Critical / High / Medium / Low）排序，挑出最该修的
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>④ 修复漏洞</strong> — AI 改代码或升依赖版本
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>⑤ 验证修复</strong> — 重新跑一遍 Snyk 扫描，确认漏洞真没了（这步呼应 <strong style="color: #00897B;">TDD-skills</strong> 的 RED-GREEN-REFACTOR 循环，验证是流程的硬性一环，参见《TDD-skills 强制 AI 先写测试》）
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>⑥ 汇总报告</strong> — 列出修了什么、改了哪些文件、剩余风险
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>⑦ 建 PR</strong> — 可选步骤，自动创建 Pull Request 把修复提交进代码库
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">常用调用方式</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 自动判断扫描类型，修最高优先级漏洞
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /snyk-fix
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 批量修所有 Critical 和 High
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /snyk-batch-fix --severity critical,high
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 自然语言触发
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      fix security issues in src/auth/
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    第 ⑤ 步的"验证修复"是关键。这跟 <strong style="color: #00897B;">Superpowers</strong> 工程化流程里"先写测试 → 跑测试 → 验证通过才能进下一步"是同一个思路（参见《Superpowers 把 AI 编程从凭感觉变按流程》），也跟 <strong style="color: #00897B;">anthropics/skills</strong> 官方 Skill 强调的"输出可验证"对齐（参见《anthropics/skills 官方技能库》）。Secure at Inception 是闭环：扫完就验。
+  </p>
+
+  <!-- 章节05：进阶用法 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">进阶：Snyk Security Expert Agent</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    studio-recipes 是 Snyk 官方作品，开箱即用。如果想要更深度的威胁建模和企业级评估，社区还有个 <strong style="color: #00897B;">claude-snyk-security-expert</strong>（markusweldon 维护），它把 Snyk 能力包装成一个独立 subagent，主打 25+ 年安全专家视角的应用安全审查。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">前置依赖</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 装 Snyk CLI
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      npm install -g snyk
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 认证
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      snyk auth
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">装 subagent</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 拉仓库
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      git clone https://github.com/markusweldon/claude-snyk-security-expert.git
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 装到用户级（所有项目可用）
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      mkdir -p ~/.claude/agents
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      cp claude-snyk-security-expert/.claude/agents/snyk-security-expert.md ~/.claude/agents/
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">挂 Snyk MCP Server</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 启动 Snyk MCP（STDIO 模式）
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      snyk mcp -t stdio --experimental
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 在 Claude Code 里挂载
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      claude mcp add snyk -- snyk mcp -t stdio --experimental
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    装完后，在 Claude Code 里说"用 snyk-security-expert 做一次应用安全审查"，subagent 会以安全专家视角通读你的代码，输出威胁建模报告 + 修复建议 + 优先级排序。这跟 <strong style="color: #00897B;">wshobson/agents</strong> 的 security-audit 是同类型工具，但 Snyk 版本因为接了真实漏洞库，扫描结果更准（参见《wshobson/agents 生产级 subagent 集合》）。
+  </p>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：4 个常见问题</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; border-left: 4px solid #ffb300;">
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 1：扫不出来任何漏洞</strong><br>
+      99% 是没认证。装完一定要跑 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">snyk auth</code>，或设 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">SNYK_TOKEN</code>。免费账号每周有扫描次数限制，团队规模大需要 Team 或 Enterprise 版。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 2：MCP Server 启动失败</strong><br>
+      <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">snyk mcp</code> 还是 experimental 阶段，要求 Snyk CLI ≥ 1.1294.0。先 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npm update -g snyk</code> 升到最新。Windows 下 STDIO 模式偶尔有编码问题，建议用 SSE 模式替代。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 3：/snyk-fix 改完代码测试挂了</strong><br>
+      Snyk 的修复偏保守，升依赖版本可能引入 Breaking Change。建议修复前先确认项目有测试覆盖（没有的话先用 <strong style="color: #00897B;">TDD-skills</strong> 补测试），修复后立刻跑回归。Superpowers 流程里"验证"那一步就是干这个的。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 4：Secure at Commit 拦不住</strong><br>
+      这类 Recipe 是 experimental 状态，依赖 git hook 注入。如果用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">--no-verify</code> 提交会绕过，团队协作时要约束不能用这个 flag。Husky 用户需要把 Snyk 的 pre-commit hook 手动挂进 husky 配置。
+    </p>
+  </section>
+
+  <!-- 对比表 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">横向对比：和同类安全工具差在哪</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">工具</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">扫描能力</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">自动修复</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">实时拦截</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">Snyk Studio Recipes</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">SAST + SCA，企业级漏洞库</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">/snyk-fix 全自动 + 建 PR</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">✅ 写代码时实时</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">ECC /security-scan</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">规则匹配，覆盖 OWASP Top 10</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">只给建议，不自动改</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">按需触发</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">wshobson security-audit</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">通用安全审查，无漏洞库</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">输出报告，不自动改</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">按需触发</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">GitHub Dependabot</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">仅 SCA（依赖 CVE）</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">升版本 PR</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">PR 阶段才介入</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单总结：<strong style="color: #00897B;">Dependabot</strong> 只管依赖、且只在 PR 阶段；<strong style="color: #00897B;">ECC 和 wshobson</strong> 是通用扫描、给建议不修代码；<strong style="color: #00897B;">Snyk Studio Recipes</strong> 是唯一做到"写代码时实时扫 + 自动改 + 自动建 PR"的完整方案，而且 SAST + SCA 双覆盖。预算够的话，Snyk 配合 ECC 的 /security-scan 一起用，企业级项目安全基本能闭环。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    顺带一提：装完 Snyk 后，AI 输出的安全报告默认是英文长段落，<strong style="color: #00897B;">i-have-adhd</strong> Skill 能把它转成"答案先行 + 分步骤"的格式，扫一眼就能抓重点（参见《i-have-adhd 让 AI 输出对 ADHD 友好》）。安全报告可读性和安全本身一样重要。
+  </p>
+
+  <!-- 收尾 -->
+  <section style="margin: 40px 0 30px 0; padding: 25px 20px; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); border-radius: 12px;">
+    <p style="margin: 0; color: #fff; font-size: 17px; line-height: 1.8; text-align: center; font-weight: bold;">
+      Secure at Inception：<br>
+      安全从代码写出的那一刻就管住，比事后返工省心得多。
+    </p>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="margin: 30px 0; padding: 20px; background: #E0F2F1; border: 2px solid #00897B; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; font-size: 17px; font-weight: bold; color: #00897B; text-align: center;">
+      官方仓库
+    </p>
+    <p style="margin: 0 0 5px 0; font-size: 14px; color: #555; text-align: center;">
+      Snyk Studio Recipes: github.com/snyk/studio-recipes
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 14px; color: #555; text-align: center;">
+      社区 subagent: github.com/markusweldon/claude-snyk-security-expert
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #1a1a1a; text-align: center;">
+      一键安装命令（macOS / Linux）
+    </p>
+    <section style="margin: 10px 0; padding: 12px; background: #1e1e1e; border-radius: 8px;">
+      <p style="margin: 0 0 4px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; text-align: center;">
+        curl -fsSL https://raw.githubusercontent.com/snyk/studio-recipes/main/installer/dist/snyk-studio-install.sh -o snyk-studio-install.sh
+      </p>
+      <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; text-align: center;">
+        bash ./snyk-studio-install.sh
+      </p>
+    </section>
+  </section>
+
+  <!-- 评论区互动引导 -->
+  <p style="margin: 25px 0; font-size: 15px; color: #666; text-align: center; line-height: 1.8;">
+    你在 AI 编程里踩过最大的安全坑是什么？<br>
+    评论区聊聊，看看大家怎么防，咱们下一篇见。
+  </p>
+
+  <!-- Ending 渐变卡 -->
+  <section style="margin: 30px 0 0 0; padding: 20px; background: linear-gradient(135deg, #00897B 0%, #4DB6AC 100%); border-radius: 12px;">
+    <p style="margin: 0; color: #fff; font-size: 14px; text-align: center; letter-spacing: 2px;">
+      aitools 系列 · 第 22 篇
+    </p>
+    <p style="margin: 5px 0 0 0; color: #fff; font-size: 13px; text-align: center; opacity: 0.85;">
+      关注获取更多 AI 编程工具实战
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

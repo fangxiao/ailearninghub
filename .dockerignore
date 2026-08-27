@@ -1,0 +1,5 @@
+.git
+.gitignore
+beta-*
+node_modules
+*.log

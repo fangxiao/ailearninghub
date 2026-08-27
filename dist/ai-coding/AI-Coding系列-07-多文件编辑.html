@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多文件编辑：复杂重构不求人</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">30</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：掌握跨文件重构技巧，轻松处理复杂修改</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">快速回顾</span></h2>
+<p data-tool="mdnice编辑器"><strong>✅ 已完成：</strong> 新手篇 + 代码库理解</p>
+<p data-tool="mdnice编辑器"><strong>🎯 当前能力：</strong> 理解大型项目，但修改多文件时容易遗漏</p>
+<p data-tool="mdnice编辑器"><strong>❓ 新挑战：</strong> 重构涉及多个文件，手动修改慢且容易出错</p>
+<p data-tool="mdnice编辑器"><strong>📚 本篇目标：</strong> 批量修改、保持一致性、自动验证，效率提升 10 倍+</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：重构的噩梦</span></h2>
+<p data-tool="mdnice编辑器"><strong>场景1：修改一个函数名</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：把 get_user_info 改成 get_user_profile<br/>AI：好的，我改了...<br/><br/>问题：<br/>- ❌ 改了 1 个文件，漏了 3 个文件<br/>- ❌ 测试文件没改<br/>- ❌ 配置文件没改<br/>- ❌ 文档没改</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景2：重构一个模块</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：把用户模块拆分成认证和资料两个模块<br/>AI：好的...<br/><br/>问题：<br/>- ❌ 改了这个文件，忘了那个文件<br/>- ❌ 导入路径全乱了<br/>- ❌ 依赖关系搞错了<br/>- ❌ 改了3小时还在改</code></pre>
+<p data-tool="mdnice编辑器"><strong>问题根源：</strong> 手动改多文件，容易遗漏、容易出错。</p>
+<p data-tool="mdnice编辑器"><strong>解决方法：</strong> 让 AI 帮你批量修改，准确、快速、不遗漏。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、多文件编辑的价值</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">为什么需要多文件编辑？</span></h3>
+<p data-tool="mdnice编辑器"><strong>代码修改的三个层次：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>层次1：单文件修改<br/>- 改一个函数<br/>- 改一个类<br/>- 改一段逻辑<br/>难度：⭐<br/><br/>层次2：多文件修改<br/>- 重命名（变量、函数、类）<br/>- 提取函数/类到新文件<br/>- 修改接口/签名<br/>难度：⭐⭐⭐<br/><br/>层次3：架构级重构<br/>- 拆分模块<br/>- 合并模块<br/>- 改变架构模式<br/>难度：⭐⭐⭐⭐⭐</code></pre>
+<p data-tool="mdnice编辑器"><strong>多文件编辑的痛点：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>痛点</th>
+<th>手动改</th>
+<th>AI 改</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>找到所有引用</td>
+<td><span class="num">10</span>分钟</td>
+<td>10秒</td>
+</tr>
+<tr>
+<td>避免遗漏</td>
+<td>经常漏</td>
+<td>不会漏</td>
+</tr>
+<tr>
+<td>保持一致性</td>
+<td>容易错</td>
+<td>自动一致</td>
+</tr>
+<tr>
+<td>测试验证</td>
+<td>手动跑</td>
+<td>自动生成</td>
+</tr>
+<tr>
+<td>效率</td>
+<td>⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">Claude Code 的多文件能力</span></h3>
+<p data-tool="mdnice编辑器"><strong>核心能力：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 跨文件搜索<br/>   - 找到所有引用<br/>   - 识别依赖关系<br/>   <br/>✅ 批量修改<br/>   - 同时修改多个文件<br/>   - 保持一致性<br/>   <br/>✅ 依赖处理<br/>   - 更新导入语句<br/>   - 处理循环依赖<br/>   <br/>✅ 测试生成<br/>   - 自动生成测试<br/>   - 验证修改正确性</code></pre>
+<p data-tool="mdnice编辑器"><strong>对比其他工具：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>工具</th>
+<th>多文件支持</th>
+<th>依赖处理</th>
+<th>测试生成</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="key">Claude</span> Code</td>
+<td>✅ 强</td>
+<td>✅ 自动</td>
+<td>✅ 自动</td>
+</tr>
+<tr>
+<td>Cursor</td>
+<td>⚠️ 有限</td>
+<td>⚠️ 手动</td>
+<td>❌ 无</td>
+</tr>
+<tr>
+<td><span class="key">GitHub</span> Copilot</td>
+<td>❌ 单文件</td>
+<td>❌ 无</td>
+<td>❌ 无</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、基础操作：重命名</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">函数重命名</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">get_user_info</code> 重命名为 <code class="inline">get_user_profile</code></p>
+<p data-tool="mdnice编辑器"><strong>手动操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 1. 搜索所有引用（10分钟）</span><br/>grep<span style="color: #F8F8F2"> </span>-r<span style="color: #F8F8F2"> </span><span style="color: #E6DB74">&quot;get_user_info&quot;</span><span style="color: #F8F8F2"> </span>.<br/><br/><span style="color: #e0e0e0"># 2. 逐个文件修改（30分钟）</span><br/><span style="color: #e0e0e0"># 3. 遗漏了3个文件（返工）</span><br/><span style="color: #e0e0e0"># 4. 测试失败（发现遗漏）</span><br/><span style="color: #e0e0e0"># 5. 继续修改...</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将 get_user_info 重命名为 get_user_profile<br/><br/>AI：好的，我找到了 15 个引用：<br/><br/>    修改文件：<br/>    ✅ app/services/user_service.py（定义）<br/>    ✅ app/views/user.py（3处调用）<br/>    ✅ app/api/user.py（2处调用）<br/>    ✅ tests/test_user.py（5处测试）<br/>    ✅ docs/api.md（4处文档）<br/>    <br/>    是否执行修改？<br/><br/>你：执行<br/><br/>AI：已完成修改，是否运行测试验证？<br/><br/>你：运行<br/><br/>AI：✅ 所有测试通过（15/15）</code></pre>
+<p data-tool="mdnice编辑器"><strong>时间对比：</strong></p>
+<ul>
+<li><section>手动：1-<span class="num">2</span>小时</section></li>
+<li><section>AI：2-<span class="num">3</span>分钟</section></li>
+<li><section>提升：20-60倍</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">变量重命名</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">user_id</code> 重命名为 <code class="inline">uid</code></p>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：在用户模块中，将 user_id 重命名为 uid<br/><br/>AI：找到 42 处引用，涉及 8 个文件：<br/><br/>    app/models/user.py（12处）<br/>    app/services/auth_service.py（15处）<br/>    app/views/auth.py（10处）<br/>    tests/test_auth.py（5处）<br/>    <br/>    注意：<br/>    ⚠️ 数据库字段名 user_id 也要改吗？<br/>    ⚠️ API 参数名 user_id 也要改吗？<br/><br/>你：只改变量名，不改数据库字段和API参数<br/><br/>AI：好的，已修改 28 处（排除了数据库和API）</code></pre>
+<p data-tool="mdnice编辑器"><strong>智能识别：</strong></p>
+<ul>
+<li><section>✅ 区分变量、字段、参数</section></li>
+<li><section>✅ 区分不同作用域</section></li>
+<li><section>✅ 识别字符串中的引用</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">类重命名</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">UserService</code> 重命名为 <code class="inline">UserManager</code></p>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将 UserService 重命名为 UserManager<br/><br/>AI：找到 23 处引用：<br/><br/>    1. 类定义<br/>       app/services/user_service.py<br/>    <br/>    2. 导入语句（15处）<br/>       app/views/user.py<br/>       app/views/auth.py<br/>       app/api/user.py<br/>       ...<br/>    <br/>    3. 实例化（5处）<br/>       user_service = UserService()<br/>    <br/>    4. 类型注解（3处）<br/>       def get_service() -&gt; UserService:<br/>    <br/>    是否同时：<br/>    - 重命名文件 user_service.py → user_manager.py？<br/>    - 更新所有导入路径？<br/><br/>你：都改<br/><br/>AI：已完成：<br/>    ✅ 重命名类名（23处）<br/>    ✅ 重命名文件<br/>    ✅ 更新导入路径（15处）<br/>    ✅ 运行测试（✅ 通过）</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、进阶操作：提取与移动</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">提取函数到新文件</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">UserValidator</code> 类从 <code class="inline">user_service.py</code> 提取到独立文件</p>
+<p data-tool="mdnice编辑器"><strong>原始文件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/services/user_service.py</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">UserValidator</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">validate_email</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">email:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;验证邮箱格式&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&#39;@&#39;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">email</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">validate_password</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;验证密码强度&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">len(password)</span> <span style="color: #FF4689">&gt;=</span> <span style="color: #AE81FF">8</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">UserService</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">validator</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">UserValidator()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">register</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">email:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">User:</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">validator</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">validate_email(email):</span><br/>            <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;邮箱格式错误&quot;</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">validator</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">validate_password(password):</span><br/>            <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;密码太弱&quot;</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #e0e0e0"># ... 创建用户</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将 UserValidator 提取到 app/validators/user_validator.py<br/><br/>AI：好的，我将执行以下操作：<br/><br/>    1. 创建新文件 app/validators/user_validator.py<br/>       - 移动 UserValidator 类<br/>       - 添加必要的导入<br/>    <br/>    2. 修改 app/services/user_service.py<br/>       - 删除 UserValidator 类<br/>       - 添加导入：from app.validators.user_validator import UserValidator<br/>    <br/>    3. 更新其他引用（如果有）<br/>    <br/>    预览修改？<br/><br/>你：预览<br/><br/>AI：[显示修改差异]<br/><br/>    app/validators/user_validator.py（新建）<br/>    + class UserValidator:<br/>    +     def validate_email(self, email: str) -&gt; bool:<br/>    +         return '@' in email<br/>    +     <br/>    +     def validate_password(self, password: str) -&gt; bool:<br/>    +         return len(password) &gt;= 8<br/>    <br/>    app/services/user_service.py<br/>    - class UserValidator:<br/>    -     ...<br/>    + from app.validators.user_validator import UserValidator<br/>    <br/>    是否执行？<br/><br/>你：执行<br/><br/>AI：✅ 完成，运行测试？✅ 通过</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">移动整个模块</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">app/validators/</code> 移动到 <code class="inline">app/utils/validators/</code></p>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将 app/validators/ 移动到 app/utils/validators/<br/><br/>AI：检测到影响：<br/><br/>    1. 移动文件（3个文件）<br/>       app/validators/user_validator.py<br/>       app/validators/order_validator.py<br/>       app/validators/product_validator.py<br/>       → app/utils/validators/<br/>    <br/>    2. 更新导入（15个文件）<br/>       app/services/user_service.py<br/>       app/services/order_service.py<br/>       app/services/product_service.py<br/>       ...<br/>       <br/>       修改前：from app.validators.user_validator import ...<br/>       修改后：from app.utils.validators.user_validator import ...<br/>    <br/>    3. 更新配置（2个文件）<br/>       config/imports.py<br/>       tests/conftest.py<br/>    <br/>    总共影响 20 个文件，是否继续？<br/><br/>你：继续<br/><br/>AI：✅ 完成，已修改 20 个文件，测试通过</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">合并多个文件</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">user_validator.py</code> 和 <code class="inline">order_validator.py</code> 合并到 <code class="inline">validators.py</code></p>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将 user_validator.py 和 order_validator.py 合并到 validators.py<br/><br/>AI：我将执行：<br/><br/>    1. 创建 app/validators/validators.py<br/>       - 合并 UserValidator 类<br/>       - 合并 OrderValidator 类<br/>       - 处理重复的导入<br/>    <br/>    2. 更新引用（8个文件）<br/>       修改前：from app.validators.user_validator import UserValidator<br/>       修改后：from app.validators.validators import UserValidator<br/>    <br/>    3. 删除旧文件<br/>       - app/validators/user_validator.py<br/>       - app/validators/order_validator.py<br/>    <br/>    注意：<br/>    ⚠️ 有 2 个同名函数 validate_id，需要重命名<br/>    ⚠️ 导入语句有重复，已去重<br/><br/>你：执行<br/><br/>AI：✅ 完成</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、高级操作：架构重构</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">拆分模块</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 将 <code class="inline">user_service.py</code> 拆分成 <code class="inline">auth_service.py</code> 和 <code class="inline">profile_service.py</code></p>
+<p data-tool="mdnice编辑器"><strong>原始结构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/services/user_service.py</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">UserService</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #e0e0e0"># 认证相关</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">login</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">email:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">Token:</span><br/>        <span style="color: #66D9EF">pass</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">logout</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">token:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/>        <span style="color: #66D9EF">pass</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">register</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">email:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">User:</span><br/>        <span style="color: #66D9EF">pass</span><br/>    <br/>    <span style="color: #e0e0e0"># 资料相关</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_profile</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">user_id:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">Profile:</span><br/>        <span style="color: #66D9EF">pass</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">update_profile</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">user_id:</span> <span style="color: #F8F8F2">int,</span> <span style="color: #F8F8F2">data:</span> <span style="color: #F8F8F2">dict)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">Profile:</span><br/>        <span style="color: #66D9EF">pass</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">delete_account</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">user_id:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/>        <span style="color: #66D9EF">pass</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将 UserService 拆分成 AuthService 和 ProfileService<br/><br/>AI：我将执行以下操作：<br/><br/>    1. 创建 app/services/auth_service.py<br/>       - 提取 login, logout, register 方法<br/>       - 创建 AuthService 类<br/>    <br/>    2. 创建 app/services/profile_service.py<br/>       - 提取 get_profile, update_profile, delete_account 方法<br/>       - 创建 ProfileService 类<br/>    <br/>    3. 更新 app/services/user_service.py<br/>       - 删除已提取的方法<br/>       - 保留其他方法（如果有）<br/>    <br/>    4. 更新调用方（12个文件）<br/>       app/views/auth.py<br/>       app/views/user.py<br/>       app/api/auth.py<br/>       ...<br/>    <br/>    5. 生成测试文件<br/>       tests/test_auth_service.py<br/>       tests/test_profile_service.py<br/>    <br/>    预览拆分方案？<br/><br/>你：预览<br/><br/>AI：[显示详细方案]<br/><br/>    AuthService:<br/>    - login(email, password) → Token<br/>    - logout(token) → bool<br/>    - register(email, password) → User<br/>    <br/>    ProfileService:<br/>    - get_profile(user_id) → Profile<br/>    - update_profile(user_id, data) → Profile<br/>    - delete_account(user_id) → bool<br/><br/>你：执行<br/><br/>AI：✅ 完成，已修改 15 个文件，生成 2 个测试文件</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">改变分层架构</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 从 MVC 改成 MVC + Service 层</p>
+<p data-tool="mdnice编辑器"><strong>原始架构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>app/<br/>├── models/      # 数据模型<br/>└── views/       # 视图层（包含业务逻辑）</code></pre>
+<p data-tool="mdnice编辑器"><strong>目标架构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>app/<br/>├── models/      # 数据模型<br/>├── services/    # 业务逻辑层（新增）<br/>└── views/       # 视图层（只负责请求处理）</code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将视图层的业务逻辑提取到 service 层<br/><br/>AI：我将执行架构重构：<br/><br/>    1. 创建 app/services/ 目录<br/>    <br/>    2. 为每个视图创建对应的 service<br/>       app/views/user.py → app/services/user_service.py<br/>       app/views/order.py → app/services/order_service.py<br/>       app/views/product.py → app/services/product_service.py<br/>    <br/>    3. 提取业务逻辑<br/>       - 数据处理逻辑 → service<br/>       - 业务规则验证 → service<br/>       - 数据库操作 → service<br/>       - 请求解析/响应 → 保留在 view<br/>    <br/>    4. 更新视图层<br/>       - 调用 service 方法<br/>       - 处理异常<br/>       - 返回响应<br/>    <br/>    5. 添加依赖注入（可选）<br/>       - 使用 Flask 的依赖注入<br/>       - 或使用 factory 模式<br/><br/>    这个重构会影响 30+ 个文件，建议分批进行<br/><br/>你：先处理 user 模块<br/><br/>AI：好的，处理 user 模块：<br/><br/>    1. 创建 app/services/user_service.py<br/>    2. 从 app/views/user.py 提取业务逻辑<br/>    3. 更新 app/views/user.py 调用 service<br/>    4. 生成测试<br/><br/>    预览？<br/><br/>你：预览<br/><br/>AI：[显示详细差异]<br/><br/>你：执行<br/><br/>AI：✅ user 模块重构完成，是否继续处理其他模块？</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、实战技巧</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">批量修改技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1：正则表达式搜索</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：找到所有使用 datetime.now() 的地方<br/><br/>AI：找到 28 处引用：<br/><br/>    app/models/user.py:15<br/>    app/services/order_service.py:23<br/>    tests/test_user.py:8<br/>    ...<br/><br/>你：替换成 datetime.utcnow()<br/><br/>AI：已替换 28 处</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2：按类型修改</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将所有 print() 改成 logger.info()<br/><br/>AI：找到 42 处 print 语句：<br/><br/>    分类：<br/>    - 调试信息：25 处<br/>    - 错误信息：10 处<br/>    - 警告信息：7 处<br/><br/>    建议：<br/>    - 调试信息 → logger.debug()<br/>    - 错误信息 → logger.error()<br/>    - 警告信息 → logger.warning()<br/><br/>你：按建议修改<br/><br/>AI：✅ 已修改 42 处，添加了必要的 logger 导入</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧3：条件修改</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：将测试文件中的 assert 改成 pytest 风格<br/><br/>AI：找到 156 个 assert 语句<br/><br/>    是否只修改 tests/ 目录下的文件？<br/><br/>你：是的<br/><br/>AI：✅ 已修改 156 处（只限 tests/ 目录）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">依赖处理技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1：处理循环依赖</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>AI：检测到循环依赖：<br/><br/>    user_service.py → order_service.py → user_service.py<br/><br/>    解决方案：<br/>    1. 提取公共接口到 interfaces.py<br/>    2. 使用依赖注入<br/>    3. 延迟导入<br/><br/>    推荐方案 1，是否执行？<br/><br/>你：执行<br/><br/>AI：✅ 已创建 interfaces.py，解决了循环依赖</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2：更新导入路径</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：重构后的导入路径太长，优化一下<br/><br/>AI：建议：<br/><br/>    方案1：使用 __init__.py 导出<br/>    方案2：使用相对导入<br/>    方案3：创建别名<br/><br/>    当前：<br/>    from app.services.user.auth_service import AuthService<br/>    <br/>    优化后（方案1）：<br/>    from app.services import AuthService<br/><br/>你：使用方案1<br/><br/>AI：✅ 已更新所有导入路径</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.3</span><span class="title-text">测试验证技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1：生成测试</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：为这个重构生成测试<br/><br/>AI：我将生成以下测试：<br/><br/>    1. 单元测试<br/>       tests/test_user_service.py<br/>       - test_login<br/>       - test_logout<br/>       - test_register<br/>    <br/>    2. 集成测试<br/>       tests/integration/test_user_api.py<br/>       - test_login_api<br/>       - test_register_api<br/>    <br/>    3. 回归测试<br/>       - 对比重构前后的输出<br/>       - 确保行为一致<br/><br/>    是否生成？<br/><br/>你：生成<br/><br/>AI：✅ 已生成 15 个测试用例，覆盖率 85%</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2：运行测试</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：运行测试验证重构<br/><br/>AI：运行结果：<br/><br/>    ✅ 单元测试：45/45 通过<br/>    ✅ 集成测试：12/12 通过<br/>    ✅ 回归测试：8/8 通过<br/>    <br/>    覆盖率：<br/>    - user_service.py: 92%<br/>    - auth_service.py: 88%<br/>    - profile_service.py: 85%<br/><br/>    发现问题：<br/>    ⚠️ test_delete_account 失败<br/>    原因：缺少权限检查<br/><br/>    是否修复？<br/><br/>你：修复<br/><br/>AI：✅ 已修复，重新测试通过</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、常见问题</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q1：重构会影响功能吗？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> AI 会保证功能一致性</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>方法1：生成测试验证<br/>方法2：对比重构前后输出<br/>方法3：使用类型检查<br/>方法4：代码审查</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q2：重构后性能会变差吗？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> 通常不会，可能更好</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 拆分模块 → 更清晰的依赖<br/>✅ 提取函数 → 更容易优化<br/>✅ 减少重复 → 更少冗余</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q3：如何回滚重构？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> 使用版本控制</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 方法1：Git</span><br/>git<span style="color: #F8F8F2"> </span>checkout<span style="color: #F8F8F2"> </span>.<br/><br/><span style="color: #e0e0e0"># 方法2：AI 记录</span><br/>你：撤销刚才的重构<br/><br/>AI：已恢复到重构前的状态<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q4：大项目重构很慢怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> 分批重构</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1批：核心模块（1-2天）<br/>第2批：重要模块（2-3天）<br/>第3批：次要模块（1-2天）<br/>第4批：测试和文档（1天）</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">重构前准备</span></h3>
+<p data-tool="mdnice编辑器"><strong>检查清单：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 代码有版本控制<br/>✅ 有测试覆盖<br/>✅ 理解现有代码<br/>✅ 明确重构目标<br/>✅ 评估影响范围</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">重构步骤</span></h3>
+<p data-tool="mdnice编辑器"><strong>推荐流程：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 规划重构方案<br/>   - 让 AI 分析代码<br/>   - 确认重构目标<br/>   - 评估影响范围<br/><br/>2. 小步重构<br/>   - 一次改一小部分<br/>   - 频繁测试验证<br/>   - 及时提交代码<br/><br/>3. 持续验证<br/>   - 运行测试<br/>   - 检查功能<br/>   - 性能测试<br/><br/>4. 更新文档<br/>   - 更新 README<br/>   - 更新 API 文档<br/>   - 更新架构图</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.3</span><span class="title-text">团队协作</span></h3>
+<p data-tool="mdnice编辑器"><strong>团队规范：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 统一重构流程<br/>2. 代码审查重构<br/>3. 测试覆盖要求<br/>4. 文档同步更新<br/>5. 及时沟通变更</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 多文件编辑的价值</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 准确：不遗漏<br/>- 快速：批量处理<br/>- 安全：自动测试<br/>- 效率提升：20-60倍</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. 基础操作</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 重命名（变量、函数、类）<br/>- 提取（函数、类到新文件）<br/>- 移动（文件、目录）</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 高级操作</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 拆分模块<br/>- 合并模块<br/>- 改变架构</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 实战技巧</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 批量修改<br/>- 依赖处理<br/>- 测试验证</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">效率对比</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>操作</th>
+<th>手动</th>
+<th>AI 辅助</th>
+<th>提升</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>函数重命名</td>
+<td><span class="num">30</span>分钟</td>
+<td><span class="num">2</span>分钟</td>
+<td>15倍</td>
+</tr>
+<tr>
+<td>提取类</td>
+<td><span class="num">1</span>小时</td>
+<td><span class="num">5</span>分钟</td>
+<td>12倍</td>
+</tr>
+<tr>
+<td>拆分模块</td>
+<td><span class="num">1</span>天</td>
+<td><span class="num">2</span>小时</td>
+<td>4倍</td>
+</tr>
+<tr>
+<td>架构重构</td>
+<td>1周</td>
+<td><span class="num">1</span>天</td>
+<td>7倍</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：代码库理解：让 AI 认识你的项目</section></li>
+<li><section>下一篇：测试驱动：AI 帮你写测试</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">7</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-03</p>
+<p data-tool="mdnice编辑器"><strong>多文件重构，从噩梦变享受，效率提升 10 倍以上！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

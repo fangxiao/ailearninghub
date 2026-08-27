@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web界面集成——统一学习平台</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 30px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  📖 <strong>系列导航：</strong><br>
+  【本地大模型知识库系列】01-12篇（已完成）| 
+  【英语学习Agent系列】当前第07篇（共8篇）
+</p>
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  Web界面集成
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  统一学习平台
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  英语学习Agent系列第07篇 | Web界面
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  之前我们已经完成了词汇、语法、阅读、口语、写作五个核心模块的开发。现在需要将这些模块整合到一个统一的Web平台上，让用户可以一站式使用所有功能。我们将使用Gradio来构建这个界面（关于Gradio的使用，请参考【本地大模型知识库系列】第04篇）。
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">平台架构设计</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  设计统一平台的模块结构和界面布局：
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="platform_architecture.png" alt="平台架构" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">Gradio界面实现</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Gradio构建统一学习平台的主界面：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> gradio </span><span class="code-keyword">as</span><span class="code-name"> gr</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> EnglishLearningPlatform</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">vocabulary_reviewer</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">grammar_learner</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">reading_learner</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">speaking_practice</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">writing_coach</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_init_learners</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _init_learners</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-keyword">try</span><span class="code-operator">:</span>
+            <span class="code-keyword">from</span><span class="code-name"> vocabulary_reviewer </span><span class="code-keyword">import</span><span class="code-name"> VocabularyReviewer</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">vocabulary_reviewer</span><span class="code-operator"> = </span><span class="code-function">VocabularyReviewer</span><span class="code-operator">()</span>
+        <span class="keyword">except</span><span class="code-name"> ImportError</span><span class="code-operator">:</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">"Vocabulary module not available"</span><span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="code-keyword">from</span><span class="code-name"> grammar_learner </span><span class="code-keyword">import</span><span class="code-name"> GrammarLearner</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">grammar_learner</span><span class="code-operator"> = </span><span class="code-function">GrammarLearner</span><span class="code-operator">()</span>
+        <span class="keyword">except</span><span class="code-name"> ImportError</span><span class="code-operator">:</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">"Grammar module not available"</span><span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="code-keyword">from</span><span class="code-name"> reading_learner </span><span class="code-keyword">import</span><span class="code-name"> ReadingComprehensionLearner</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">reading_learner</span><span class="code-operator"> = </span><span class="code-function">ReadingComprehensionLearner</span><span class="code-operator">()</span>
+        <span class="keyword">except</span><span class="code-name"> ImportError</span><span class="code-operator">:</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">"Reading module not available"</span><span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="code-keyword">from</span><span class="code-name"> speaking_practice </span><span class="code-keyword">import</span><span class="code-name"> SpeakingPractice</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">speaking_practice</span><span class="code-operator"> = </span><span class="code-function">SpeakingPractice</span><span class="code-operator">()</span>
+        <span class="keyword">except</span><span class="code-name"> ImportError</span><span class="code-operator">:</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">"Speaking module not available"</span><span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">from</span><span class="code-name"> writing_coach </span><span class="code-keyword">import</span><span class="code-name"> WritingCoach</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">writing_coach</span><span class="code-operator"> = </span><span class="code-function">WritingCoach</span><span class="code-operator">()</span>
+        <span class="keyword">except</span><span class="code-name"> ImportError</span><span class="code-operator">:</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">"Writing module not available"</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> build_interface</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">with</span><span class="code-name"> gr.Blocks</span><span class="code-operator">(</span><span class="code-name">title</span><span class="code-operator">=</span><span class="code-string">"英语学习Agent"</span><span class="code-operator">, </span><span class="code-name">theme</span><span class="code-operator">=</span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-name">themes</span><span class="code-operator">.</span><span class="code-function">Soft</span><span class="code-operator">())</span> <span class="code-keyword">as</span><span class="code-name"> demo</span>:
+            <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span>
+                <span class="code-string">"""
+# 🎓 英语学习Agent
+
+一个基于本地大模型的智能英语学习平台，支持词汇、语法、阅读、口语、写作全方位训练。
+"""</span>
+            <span class="code-operator">)</span>
+            
+            <span class="code-keyword">with</span><span class="code-name"> gr.Tabs</span><span class="code-operator">():</span>
+                <span class="code-keyword">with</span><span class="code-name"> gr.TabItem</span><span class="code-operator">(</span><span class="code-string">"📚 词汇学习"</span><span class="code-operator">):</span>
+                    <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_build_vocabulary_tab</span><span class="code-operator">()</span>
+                
+                <span class="code-keyword">with</span><span class="code-name"> gr.TabItem</span><span class="code-operator">(</span><span class="code-string">"📖 语法学习"</span><span class="code-operator">):</span>
+                    <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_build_grammar_tab</span><span class="code-operator">()</span>
+                
+                <span class="code-keyword">with</span><span class="code-name"> gr.TabItem</span><span class="code-operator">(</span><span class="code-string">"📝 阅读理解"</span><span class="code-operator">):</span>
+                    <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_build_reading_tab</span><span class="code-operator">()</span>
+                
+                <span class="code-keyword">with</span><span class="code-name"> gr.TabItem</span><span class="code-operator">(</span><span class="code-string">"🗣️ 口语练习"</span><span class="code-operator">):</span>
+                    <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_build_speaking_tab</span><span class="code-operator">()</span>
+                
+                <span class="code-keyword">with</span><span class="code-name"> gr.TabItem</span><span class="code-operator">(</span><span class="code-string">"✍️ 写作辅助"</span><span class="code-operator">):</span>
+                    <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_build_writing_tab</span><span class="code-operator">()</span>
+        
+        <span class="keyword">return</span><span class="code-name"> demo</span></code></section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code>    <span class="code-keyword">def</span><span class="code-function"> _build_vocabulary_tab</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">vocabulary_reviewer</span><span class="code-operator">:</span>
+            <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-string">"词汇模块未加载"</span><span class="code-operator">)</span>
+            <span class="keyword">return</span>
+        
+        <span class="code-name">word_input</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"输入单词"</span><span class="code-operator">)</span>
+        <span class="code-name">add_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"添加单词"</span><span class="code-operator">)</span>
+        <span class="code-name">result_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"单词卡"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">start_review_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"开始复习"</span><span class="code-operator">)</span>
+        <span class="code-name">review_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"复习内容"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">add_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">vocabulary_reviewer</span><span class="code-operator">.</span><span class="code-function">add_new_word</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">word_input</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">result_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">start_review_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">vocabulary_reviewer</span><span class="code-operator">.</span><span class="code-function">start_review</span><span class="code-operator">,</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">review_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _build_grammar_tab</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">grammar_learner</span><span class="code-operator">:</span>
+            <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-string">"语法模块未加载"</span><span class="code-operator">)</span>
+            <span class="keyword">return</span>
+        
+        <span class="code-name">topic_dropdown</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Dropdown</span><span class="code-operator">(
+            <span class="code-name">choices</span><span class="code-operator">=[</span><span class="code-string">"基础句型"</span><span class="code-operator">, </span><span class="code-string">"名词"</span><span class="code-operator">, </span><span class="code-string">"冠词"</span><span class="code-operator">, </span><span class="code-string">"动词"</span><span class="code-operator">, </span>
+                   <span class="code-string">"一般现在时"</span><span class="code-operator">, </span><span class="code-string">"一般过去时"</span><span class="code-operator">, </span><span class="code-string">"情态动词"</span><span class="code-operator">],
+            <span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"选择语法点"</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">start_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"开始学习"</span><span class="code-operator">)</span>
+        <span class="code-name">explanation_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"讲解"</span><span class="code-operator">)</span>
+        <span class="code-name">exercises_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"练习题"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">start_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_format_grammar_result</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">topic_dropdown</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">explanation_output</span><span class="code-operator">, </span><span class="code-name">exercises_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _format_grammar_result</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">topic</span><span class="code-operator">):</span>
+        <span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">grammar_learner</span><span class="code-operator">.</span><span class="code-function">start_topic</span><span class="code-operator">(</span><span class="code-name">topic</span><span class="code-operator">)</span>
+        
+        <span class="keyword">if</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"status"</span><span class="code-operator">] == </span><span class="code-string">"error"</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">], </span><span class="code-operator">[]</span>
+        
+        <span class="code-name">explanation</span><span class="code-operator"> = </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"explanation"</span><span class="code-operator">]</span>
+        <span class="code-name">md_text</span><span class="code-operator"> = </span><span class="code-string">f"## {explanation.get('topic', '')}\n\n"</span>
+        <span class="code-name">md_text</span><span class="code-operator"> += </span><span class="code-string">f"**定义**：{explanation.get('definition', '')}\n\n"</span>
+        <span class="code-name">md_text</span><span class="code-operator"> += </span><span class="code-string">f"**规则**：\n"</span>
+        <span class="keyword">for</span><span class="code-name"> rule </span><span class="keyword">in</span><span class="code-name"> explanation</span><span class="code-operator">.</span><span class="code-function">get</span><span class="code-operator">(</span><span class="code-string">"rules"</span><span class="code-operator">, </span><span class="code-operator">[]</span><span class="code-operator">):</span>
+            <span class="code-name">md_text</span><span class="code-operator"> += </span><span class="code-string">f"- {rule}\n"</span>
+        
+        <span class="keyword">return</span><span class="code-name"> md_text</span><span class="code-operator">, </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"exercises"</span><span class="code-operator">]</span></code></section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code>    <span class="code-keyword">def</span><span class="code-function"> _build_reading_tab</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">reading_learner</span><span class="code-operator">:</span>
+            <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-string">"阅读模块未加载"</span><span class="code-operator">)</span>
+            <span class="keyword">return</span>
+        
+        <span class="code-name">get_article_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"获取推荐文章"</span><span class="code-operator">)</span>
+        <span class="code-name">article_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"文章内容"</span><span class="code-operator">)</span>
+        <span class="code-name">summary_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"摘要"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">start_quiz_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"开始测验"</span><span class="code-operator">)</span>
+        <span class="code-name">quiz_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"题目"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">get_article_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_format_article_result</span><span class="code-operator">,</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">article_output</span><span class="code-operator">, </span><span class="code-name">summary_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">start_quiz_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">reading_learner</span><span class="code-operator">.</span><span class="code-function">start_quiz</span><span class="code-operator">,</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">quiz_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _format_article_result</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">reading_learner</span><span class="code-operator">.</span><span class="code-function">get_recommended_article</span><span class="code-operator">()</span>
+        
+        <span class="keyword">if</span><span class="code-string">"error"</span><span class="code-keyword"> in</span><span class="code-name"> result</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"error"</span><span class="code-operator">], </span><span class="code-operator">[]</span>
+        
+        <span class="code-name">article</span><span class="code-operator"> = </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"article"</span><span class="code-operator">]</span>
+        <span class="code-name">md_text</span><span class="code-operator"> = </span><span class="code-string">f"## {article.get('title', '')}\n\n"</span>
+        <span class="code-name">md_text</span><span class="code-operator"> += </span><span class="code-string">f"**难度**：{article.get('cefr_level', '')}\n\n"</span>
+        <span class="code-name">md_text</span><span class="code-operator"> += </span><span class="code-name">article</span><span class="code-operator">.</span><span class="code-function">get</span><span class="code-operator">(</span><span class="code-string">"content"</span><span class="code-operator">, </span><span class="code-string">""</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-name"> md_text</span><span class="code-operator">, </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"summary"</span><span class="code-operator">]</span></code></section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code>    <span class="code-keyword">def</span><span class="code-function"> _build_speaking_tab</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">speaking_practice</span><span class="code-operator">:</span>
+            <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-string">"口语模块未加载"</span><span class="code-operator">)</span>
+            <span class="keyword">return</span>
+        
+        <span class="code-name">scenario_dropdown</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Dropdown</span><span class="code-operator">(
+            <span class="code-name">choices</span><span class="code-operator">=[</span><span class="code-string">"GREETING"</span><span class="code-operator">, </span><span class="code-string">"ORDERING_FOOD"</span><span class="code-operator">, </span><span class="code-string">"SHOPPING"</span><span class="code-operator">, </span><span class="code-string">"TRAVEL"</span><span class="code-operator">, </span><span class="code-string">"JOB_INTERVIEW"</span><span class="code-operator">],
+            <span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"选择场景"</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">start_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"开始对话"</span><span class="code-operator">)</span>
+        <span class="code-name">opening_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"对话开始"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">user_input</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"你的回答"</span><span class="code-operator">)</span>
+        <span class="code-name">send_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"发送"</span><span class="code-operator">)</span>
+        <span class="code-name">reply_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"回复"</span><span class="code-operator">)</span>
+        <span class="code-name">evaluation_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"评估"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">start_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_format_speaking_start</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">scenario_dropdown</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">opening_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">send_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_format_speaking_reply</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">user_input</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">reply_output</span><span class="code-operator">, </span><span class="code-name">evaluation_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _format_speaking_start</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">scenario</span><span class="code-operator">):</span>
+        <span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">speaking_practice</span><span class="code-operator">.</span><span class="code-function">start_practice</span><span class="code-operator">(</span><span class="code-name">scenario</span><span class="code-operator">)</span>
+        <span class="keyword">return</span><span class="code-string">f"## {result.get('scenario', '')}\n\n**AI**: {result.get('opening', '')}"</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _format_speaking_reply</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">input_text</span><span class="code-operator">):</span>
+        <span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">speaking_practice</span><span class="code-operator">.</span><span class="code-function">speak</span><span class="code-operator">(</span><span class="code-name">input_text</span><span class="code-operator">)</span>
+        <span class="keyword">return</span><span class="code-string">f"**AI**: {result.get('reply', '')}"</span><span class="code-operator">, </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"evaluation"</span><span class="code-operator">]</span></code></section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code>    <span class="code-keyword">def</span><span class="code-function"> _build_writing_tab</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">writing_coach</span><span class="code-operator">:</span>
+            <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-string">"写作模块未加载"</span><span class="code-operator">)</span>
+            <span class="keyword">return</span>
+        
+        <span class="code-name">category_input</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"主题类别（如：教育、科技、生活）"</span><span class="code-operator">)</span>
+        <span class="code-name">suggest_topics_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"推荐题目"</span><span class="code-operator">)</span>
+        <span class="code-name">topics_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"题目列表"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">topic_input</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"输入写作题目"</span><span class="code-operator">)</span>
+        <span class="code-name">get_outline_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"获取大纲"</span><span class="code-operator">)</span>
+        <span class="code-name">outline_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"大纲"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">essay_input</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"输入作文"</span><span class="code-name">, </span><span class="code-name">lines</span><span class="code-operator">=10</span><span class="code-operator">)</span>
+        <span class="code-name">evaluate_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"评估作文"</span><span class="code-operator">)</span>
+        <span class="code-name">evaluation_output</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">JSON</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"评估结果"</span><span class="code-operator">)</span>
+        
+        <span class="code-name">suggest_topics_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">writing_coach</span><span class="code-operator">.</span><span class="code-function">suggest_topics</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">category_input</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">topics_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">get_outline_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">writing_coach</span><span class="code-operator">.</span><span class="code-function">get_outline</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">topic_input</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">outline_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">evaluate_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span>
+            <span class="code-name">fn</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">writing_coach</span><span class="code-operator">.</span><span class="code-function">evaluate_essay</span><span class="code-operator">,</span>
+            <span class="code-name">inputs</span><span class="code-operator">=[</span><span class="code-name">essay_input</span><span class="code-operator">],</span>
+            <span class="code-name">outputs</span><span class="code-operator">=[</span><span class="code-name">evaluation_output</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+
+<span class="code-comment"># 运行平台</span>
+<span class="code-keyword">if</span><span class="code-name"> __name__ </span><span class="code-keyword">== </span><span class="code-string">"__main__"</span><span class="code-operator">:</span>
+    <span class="code-name">platform</span><span class="code-operator"> = </span><span class="code-function">EnglishLearningPlatform</span><span class="code-operator">()</span>
+    <span class="code-name">demo</span><span class="code-operator"> = </span><span class="code-name">platform</span><span class="code-operator">.</span><span class="code-function">build_interface</span><span class="code-operator">()</span>
+    <span class="code-name">demo</span><span class="code-operator">.</span><span class="code-function">launch</span><span class="code-operator">(</span><span class="code-name">server_name</span><span class="code-operator">=</span><span class="code-string">"0.0.0.0"</span><span class="code-operator">, </span><span class="code-name">server_port</span><span class="code-operator">=</span><span class="code-number">7860</span><span class="code-operator">)</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 模块导入失败：确保所有模块文件在同一目录下</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. Gradio界面样式问题：尝试更换theme参数</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 界面响应慢：优化Ollama调用速度（参考【本地大模型知识库系列】第10篇）</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 端口被占用：修改server_port参数</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  📖 <strong>系列导航：</strong><br>
+  • 本地大模型知识库系列（12篇，已完成）<br>
+  • 英语学习Agent系列（8篇，当前第07篇）<br>
+  <br>
+  英语学习Agent系列第07篇<br>
+  下一篇：项目部署与总结——打造你的专属英语学习助手
+</p>
+
+</section>
+</body>
+</html>

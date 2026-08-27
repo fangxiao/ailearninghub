@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上下文管理：AI 如何记住你的代码</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">30</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：理解 AI 的记忆机制，掌握上下文管理技巧</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：你已经掌握了什么？</span></h2>
+<p data-tool="mdnice编辑器"><strong>前面学过的：</strong></p>
+<ul>
+<li><section>✅ 代码补全原理（AI 如何预测）</section></li>
+<li><section>✅ 注意力机制（AI 如何关注重点）</section></li>
+<li><section>✅ 上下文窗口（AI 能看到多远）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>但有一个问题：</strong></p>
+<p data-tool="mdnice编辑器">AI 的记忆有限，如何记住你的整个项目？</p>
+<p data-tool="mdnice编辑器"><strong>这一篇将教你：</strong> AI 如何管理上下文，以及如何让它"记住"更多</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：AI 的记忆困境</span></h2>
+<p data-tool="mdnice编辑器"><strong>场景：大型项目开发</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 文件1：models/user.py（第1-100行）</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">User</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">name,</span> <span style="color: #F8F8F2">email):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">name</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">name</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">email</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">email</span><br/><br/><span style="color: #e0e0e0"># 文件2：services/order.py（第200-300行）</span><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">OrderService</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">create_order</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">user_id,</span> <span style="color: #F8F8F2">items):</span><br/>        <span style="color: #e0e0e0"># AI 能看到 User 类吗？</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>问题：</strong></p>
+<ul>
+<li><section>文件1 在第<span class="num">1</span>-100行</section></li>
+<li><section>文件2 在第<span class="num">200</span>-300行</section></li>
+<li><section>AI 的上下文窗口有限，可能看不到文件1</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>如何解决？</strong> 这就是上下文管理要解决的问题</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、上下文管理的挑战</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">上下文窗口限制</span></h3>
+<p data-tool="mdnice编辑器"><strong>每个模型的窗口大小：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>模型</th>
+<th>上下文窗口</th>
+<th>实际容量</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="key">GPT</span>-3.5</td>
+<td>4K tokens</td>
+<td>~3000字（1-<span class="num">2</span>个文件）</td>
+</tr>
+<tr>
+<td><span class="key">GPT</span>-4</td>
+<td>8K-32K</td>
+<td>~6000-24000字（3-<span class="num">8</span>个文件）</td>
+</tr>
+<tr>
+<td><span class="key">Claude</span> 3</td>
+<td>200K</td>
+<td>~150000字（50-<span class="num">100</span>个文件）</td>
+</tr>
+<tr>
+<td><span class="key">GLM</span>-4</td>
+<td>128K</td>
+<td>~96000字（30-<span class="num">60</span>个文件）</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>实际情况：</strong></p>
+<p data-tool="mdnice编辑器">一个中等项目：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>my_project/<br/>├── models/       (5个文件，2000行)<br/>├── services/     (8个文件，3000行)<br/>├── controllers/  (6个文件，2000行)<br/>├── utils/        (10个文件，1500行)<br/>└── tests/        (15个文件，3000行)<br/><br/>总计：44个文件，11500行代码</code></pre>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 上下文窗口装不下所有代码</p>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">相关性选择问题</span></h3>
+<p data-tool="mdnice编辑器"><strong>核心挑战：</strong> 哪些代码是相关的？</p>
+<p data-tool="mdnice编辑器"><strong>示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 当前编辑：services/order.py</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">create_order</span><span style="color: #F8F8F2">(user_id,</span> <span style="color: #F8F8F2">items):</span><br/>    <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(user_id)</span>  <span style="color: #e0e0e0"># 需要 User 类</span><br/>    <span style="color: #F8F8F2">total</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_total(items)</span>  <span style="color: #e0e0e0"># 需要 calculate_total 函数</span><br/>    <span style="color: #F8F8F2">order</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Order(user</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">user,</span> <span style="color: #F8F8F2">items</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">items)</span>  <span style="color: #e0e0e0"># 需要 Order 类</span><br/>    <span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(order)</span>  <span style="color: #e0e0e0"># 需要 db 对象</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">order</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>需要的上下文：</strong></p>
+<ul>
+<li><section>models/user.py（User 类）</section></li>
+<li><section>utils/calculations.py（calculate_total 函数）</section></li>
+<li><section>models/order.py（Order 类）</section></li>
+<li><section>db.py（数据库实例）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>AI 如何找到这些文件？</strong></p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、向量数据库：AI 的"图书馆"</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">什么是向量数据库？</span></h3>
+<p data-tool="mdnice编辑器"><strong>核心概念：</strong></p>
+<p data-tool="mdnice编辑器">将代码转换为向量（数字列表），然后通过向量相似度找到相关代码。</p>
+<p data-tool="mdnice编辑器"><strong>示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 代码片段</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_discount</span><span style="color: #F8F8F2">(price,</span> <span style="color: #F8F8F2">level):</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">price</span> <span style="color: #FF4689">*</span> <span style="color: #AE81FF">0.9</span><br/><br/><span style="color: #e0e0e0"># 转换为向量（简化示例）</span><br/><span style="color: #F8F8F2">vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><span style="color: #AE81FF">0.2</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.8</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.3</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.9</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.1</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">...</span><span style="color: #F8F8F2">]</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>相似度计算：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 片段1</span><br/><span style="color: #E6DB74">&quot;计算折扣&quot;</span> <span style="color: #ED007E; background-color: #1E0010">→</span> <span style="color: #F8F8F2">[</span><span style="color: #AE81FF">0.8</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.2</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.9</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">...</span><span style="color: #F8F8F2">]</span><br/><br/><span style="color: #e0e0e0"># 片段2</span><br/><span style="color: #E6DB74">&quot;计算价格优惠&quot;</span> <span style="color: #ED007E; background-color: #1E0010">→</span> <span style="color: #F8F8F2">[</span><span style="color: #AE81FF">0.7</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.3</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.85</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">...</span><span style="color: #F8F8F2">]</span><br/><br/><span style="color: #e0e0e0"># 相似度：0.92（很相似）</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">向量化的过程</span></h3>
+<p data-tool="mdnice编辑器"><strong>完整流程：</strong></p>
+<p data-tool="mdnice编辑器">第<span class="num">1</span>步：代码分块</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 原始文件：utils.py（500行）</span><br/><br/><span style="color: #e0e0e0"># 分块后：</span><br/><span style="color: #F8F8F2">chunk_1</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;def calculate_discount(price, level):</span><span style="color: #AE81FF">\n</span><span style="color: #E6DB74">    ...&quot;</span>  <span style="color: #e0e0e0"># 1-50行</span><br/><span style="color: #F8F8F2">chunk_2</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;def calculate_total(items):</span><span style="color: #AE81FF">\n</span><span style="color: #E6DB74">    ...&quot;</span>  <span style="color: #e0e0e0"># 51-100行</span><br/><span style="color: #F8F8F2">chunk_3</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;class OrderProcessor:</span><span style="color: #AE81FF">\n</span><span style="color: #E6DB74">    ...&quot;</span>  <span style="color: #e0e0e0"># 101-200行</span><br/></code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">2</span>步：生成向量</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> sentence_transformers </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">SentenceTransformer</span><br/><br/><span style="color: #F8F8F2">model</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">SentenceTransformer(</span><span style="color: #E6DB74">&#39;all-MiniLM-L6-v2&#39;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 每个代码块生成一个向量</span><br/><span style="color: #F8F8F2">vector_1</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(chunk_1)</span>  <span style="color: #e0e0e0"># [0.2, 0.8, 0.3, ...]</span><br/><span style="color: #F8F8F2">vector_2</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(chunk_2)</span>  <span style="color: #e0e0e0"># [0.1, 0.9, 0.4, ...]</span><br/><span style="color: #F8F8F2">vector_3</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(chunk_3)</span>  <span style="color: #e0e0e0"># [0.3, 0.7, 0.2, ...]</span><br/></code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">3</span>步：存储到向量数据库</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> faiss</span><br/><br/><span style="color: #e0e0e0"># 创建索引</span><br/><span style="color: #F8F8F2">index</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">faiss</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">IndexFlatL2(</span><span style="color: #AE81FF">384</span><span style="color: #F8F8F2">)</span>  <span style="color: #e0e0e0"># 384维向量</span><br/><br/><span style="color: #e0e0e0"># 添加向量</span><br/><span style="color: #F8F8F2">index</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">array([vector_1,</span> <span style="color: #F8F8F2">vector_2,</span> <span style="color: #F8F8F2">vector_3]))</span><br/></code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">4</span>步：查询相关代码</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 当前查询：&quot;创建订单需要什么？&quot;</span><br/><span style="color: #F8F8F2">query</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;create order user items&quot;</span><br/><span style="color: #F8F8F2">query_vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(query)</span><br/><br/><span style="color: #e0e0e0"># 搜索最相似的代码块</span><br/><span style="color: #F8F8F2">distances,</span> <span style="color: #F8F8F2">indices</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">index</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">array([query_vector]),</span> <span style="color: #F8F8F2">k</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 结果：返回最相关的5个代码块</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">主流向量数据库</span></h3>
+<p data-tool="mdnice编辑器"><strong>对比表格：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>数据库</th>
+<th>特点</th>
+<th>适用场景</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>FAISS</strong></td>
+<td>Facebook开源，快速</td>
+<td>本地开发、中小项目</td>
+</tr>
+<tr>
+<td><strong>Pinecone</strong></td>
+<td>云服务，易用</td>
+<td>生产环境、团队协作</td>
+</tr>
+<tr>
+<td><strong>Weaviate</strong></td>
+<td>开源，功能丰富</td>
+<td>企业级应用</td>
+</tr>
+<tr>
+<td><strong>Chroma</strong></td>
+<td>轻量级，Python友好</td>
+<td>快速原型、小项目</td>
+</tr>
+<tr>
+<td><strong>Milvus</strong></td>
+<td>高性能，分布式</td>
+<td>大规模应用</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、RAG：检索增强生成</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">什么是 RAG？</span></h3>
+<p data-tool="mdnice编辑器"><strong>RAG（Retrieval-Augmented Generation）：</strong></p>
+<p data-tool="mdnice编辑器">结合检索和生成，让 AI 在回答前先查找相关信息。</p>
+<p data-tool="mdnice编辑器"><strong>传统方式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户问题 → AI 直接回答（可能不知道背景）</code></pre>
+<p data-tool="mdnice编辑器"><strong>RAG 方式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户问题 → 检索相关代码 → AI 结合上下文回答</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">RAG 工作流程</span></h3>
+<p data-tool="mdnice编辑器"><strong>完整流程图：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1步：用户输入<br/>    ↓<br/>第2步：向量化查询<br/>    ↓<br/>第3步：检索相关代码（向量数据库）<br/>    ↓<br/>第4步：组装上下文（查询 + 相关代码）<br/>    ↓<br/>第5步：AI 生成回答<br/>    ↓<br/>第6步：返回结果</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">实战示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：查询如何使用某个函数</strong></p>
+<p data-tool="mdnice编辑器">第<span class="num">1</span>步：用户输入</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户：如何在订单中使用优惠券？</code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">2</span>步：向量化查询</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #F8F8F2">query</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;订单使用优惠券&quot;</span><br/><span style="color: #F8F8F2">query_vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(query)</span><br/><span style="color: #e0e0e0"># 结果：[0.7, 0.3, 0.8, 0.5, ...]</span><br/></code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">3</span>步：检索相关代码</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 从向量数据库检索</span><br/><span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vector_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(query_vector,</span> <span style="color: #F8F8F2">top_k</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">3</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 返回结果：</span><br/><span style="color: #e0e0e0"># 1. services/coupon.py:apply_coupon()  (相似度: 0.89)</span><br/><span style="color: #e0e0e0"># 2. models/order.py:calculate_total()  (相似度: 0.82)</span><br/><span style="color: #e0e0e0"># 3. services/order.py:create_order()   (相似度: 0.78)</span><br/></code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">4</span>步：组装上下文</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #F8F8F2">context</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">f&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">用户问题：{</span><span style="color: #F8F8F2">query</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">相关代码1：</span><br/><span style="color: #E6DB74">{</span><span style="color: #F8F8F2">results[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">code</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">相关代码2：</span><br/><span style="color: #E6DB74">{</span><span style="color: #F8F8F2">results[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">code</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">相关代码3：</span><br/><span style="color: #E6DB74">{</span><span style="color: #F8F8F2">results[</span><span style="color: #AE81FF">2</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">code</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">请回答用户的问题：</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/></code></pre>
+<p data-tool="mdnice编辑器">第<span class="num">5</span>步：AI 生成回答</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">llm</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(context)</span><br/><br/><span style="color: #e0e0e0"># AI 回答：</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">在订单中使用优惠券，你需要：</span><br/><br/><span style="color: #E6DB74">1. 在 create_order 时传入 coupon_code：</span><br/><span style="color: #E6DB74">   order = create_order(user_id, items, coupon_code=&#39;SAVE10&#39;)</span><br/><br/><span style="color: #E6DB74">2. 系统会调用 apply_coupon() 函数：</span><br/><span style="color: #E6DB74">   discount = apply_coupon(coupon_code, total)</span><br/><br/><span style="color: #E6DB74">3. 最终价格会减去折扣：</span><br/><span style="color: #E6DB74">   final_price = total - discount</span><br/><br/><span style="color: #E6DB74">示例代码：</span><br/><span style="color: #E6DB74">order = OrderService().create_order(</span><br/><span style="color: #E6DB74">    user_id=123,</span><br/><span style="color: #E6DB74">    items=[{&#39;price&#39;: 100, &#39;quantity&#39;: 2}],</span><br/><span style="color: #E6DB74">    coupon_code=&#39;SAVE10&#39;</span><br/><span style="color: #E6DB74">)</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、长期记忆：超越上下文窗口</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">为什么需要长期记忆？</span></h3>
+<p data-tool="mdnice编辑器"><strong>短期记忆限制：</strong></p>
+<ul>
+<li><section>上下文窗口有限（200K tokens）</section></li>
+<li><section>每次对话都从头开始</section></li>
+<li><section>无法记住项目历史</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>长期记忆需求：</strong></p>
+<ul>
+<li><section>记住项目架构决策</section></li>
+<li><section>记住代码风格偏好</section></li>
+<li><section>记住之前解决过的问题</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">实现长期记忆</span></h3>
+<p data-tool="mdnice编辑器"><strong>方案1：项目配置文件</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># .ai/memory.yaml</span><br/><br/><span style="color: #FF4689">project</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;电商系统&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">framework</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;Flask&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">database</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;PostgreSQL&quot;</span><br/><br/><span style="color: #FF4689">conventions</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">naming</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;snake_case&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">testing</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;pytest&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">style</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;Google</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">Python</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">Style</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">Guide&quot;</span><br/><br/><span style="color: #FF4689">decisions</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  - </span><span style="color: #FF4689">date</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;2026-03-15&quot;</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">decision</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;使用</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">JWT</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">做认证&quot;</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">reason</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;无状态，易扩展&quot;</span><br/><br/><span style="color: #F8F8F2">  - </span><span style="color: #FF4689">date</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;2026-03-20&quot;</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">decision</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;使用</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">Celery</span><span style="color: #F8F8F2"> </span><span style="color: #E6DB74">处理异步任务&quot;</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">reason</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;需要发送邮件、生成报表&quot;</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 读取记忆：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 每次 AI 启动时加载</span><br/><span style="color: #F8F8F2">memory</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">load_memory(</span><span style="color: #E6DB74">&#39;.ai/memory.yaml&#39;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># AI 知道：</span><br/><span style="color: #e0e0e0"># - 项目使用 Flask</span><br/><span style="color: #e0e0e0"># - 命名用 snake_case</span><br/><span style="color: #e0e0e0"># - 测试用 pytest</span><br/><span style="color: #e0e0e0"># - 之前的技术决策</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>方案2：向量数据库持久化</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 存储对话历史</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">save_conversation</span><span style="color: #F8F8F2">(question,</span> <span style="color: #F8F8F2">answer,</span> <span style="color: #F8F8F2">code_context):</span><br/>    <span style="color: #e0e0e0"># 向量化</span><br/>    <span style="color: #F8F8F2">vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(question)</span><br/>    <br/>    <span style="color: #e0e0e0"># 存储到向量数据库</span><br/>    <span style="color: #F8F8F2">vector_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(</span><br/>        <span style="color: #F8F8F2">vector</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">vector,</span><br/>        <span style="color: #F8F8F2">metadata</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&#39;question&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">question,</span><br/>            <span style="color: #E6DB74">&#39;answer&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">answer,</span><br/>            <span style="color: #E6DB74">&#39;code&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">code_context,</span><br/>            <span style="color: #E6DB74">&#39;timestamp&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">datetime</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">now()</span><br/>        <span style="color: #F8F8F2">}</span><br/>    <span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 查询历史对话</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">find_similar_questions</span><span style="color: #F8F8F2">(query):</span><br/>    <span style="color: #F8F8F2">query_vector</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">embedding_model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">encode(query)</span><br/>    <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vector_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(query_vector,</span> <span style="color: #F8F8F2">top_k</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">results</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>使用示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 用户之前问过类似问题</span><br/><span style="color: #F8F8F2">user_query</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;如何处理支付超时？&quot;</span><br/><br/><span style="color: #e0e0e0"># 检索历史</span><br/><span style="color: #F8F8F2">history</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">find_similar_questions(user_query)</span><br/><br/><span style="color: #e0e0e0"># AI 发现：</span><br/><span style="color: #e0e0e0"># - 2026-03-10 用户问过：&quot;支付接口超时怎么办？&quot;</span><br/><span style="color: #e0e0e0"># - 当时的解决方案：重试3次，失败后记录日志</span><br/><br/><span style="color: #e0e0e0"># AI 参考历史回答</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">记忆管理策略</span></h3>
+<p data-tool="mdnice编辑器"><strong>记忆分层：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1层：即时记忆（上下文窗口）<br/>    ↓ 当前对话、正在编辑的文件<br/><br/>第2层：短期记忆（会话级）<br/>    ↓ 本次会话的对话历史<br/><br/>第3层：长期记忆（项目级）<br/>    ↓ 向量数据库、配置文件<br/><br/>第4层：元记忆（知识库）<br/>    ↓ 最佳实践、常见问题</code></pre>
+<p data-tool="mdnice编辑器"><strong>记忆更新：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 定期更新向量数据库</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">update_codebase_index</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #e0e0e0"># 扫描代码变化</span><br/>    <span style="color: #F8F8F2">changed_files</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">git</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">diff(</span><span style="color: #E6DB74">&#39;--name-only&#39;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #e0e0e0"># 重新索引变化的文件</span><br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">file</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">changed_files:</span><br/>        <span style="color: #F8F8F2">chunks</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">split_code(file)</span><br/>        <span style="color: #F8F8F2">vectors</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">embed(chunks)</span><br/>        <span style="color: #F8F8F2">vector_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">update(file,</span> <span style="color: #F8F8F2">vectors)</span><br/>    <br/>    <span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">&quot;代码库索引已更新&quot;</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、实战：构建项目的上下文系统</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">项目结构</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>my_project/<br/>├── .ai/<br/>│   ├── config.yaml        # AI 配置<br/>│   ├── memory.yaml        # 项目记忆<br/>│   └── codebase.index     # 代码库索引<br/>├── src/<br/>│   ├── models/<br/>│   ├── services/<br/>│   └── utils/<br/>└── tests/</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">配置示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI 配置文件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># .ai/config.yaml</span><br/><br/><span style="color: #FF4689">model</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;gpt-4&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">temperature</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">0.7</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">max_tokens</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">2000</span><br/><br/><span style="color: #FF4689">context</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">max_files</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">20</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">max_tokens_per_file</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">5000</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">include_tests</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">false</span><br/><br/><span style="color: #FF4689">indexing</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">vector_db</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;faiss&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">chunk_size</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">500</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">overlap</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">50</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">update_on_save</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><br/><span style="color: #FF4689">memory</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">persist_conversations</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">max_history</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">100</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">similarity_threshold</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">0.75</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.3</span><span class="title-text">使用流程</span></h3>
+<p data-tool="mdnice编辑器"><strong>初始化项目：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 第1步：初始化 AI 配置</span><br/>ai-coding<span style="color: #F8F8F2"> </span>init<br/><br/><span style="color: #e0e0e0"># 第2步：索引代码库</span><br/>ai-coding<span style="color: #F8F8F2"> </span>index<br/><br/><span style="color: #e0e0e0"># 第3步：开始使用</span><br/>ai-coding<span style="color: #F8F8F2"> </span>chat<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>日常使用：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 更新索引</span><br/>ai-coding<span style="color: #F8F8F2"> </span>update<br/><br/><span style="color: #e0e0e0"># 查看记忆</span><br/>ai-coding<span style="color: #F8F8F2"> </span>memory<span style="color: #F8F8F2"> </span>list<br/><br/><span style="color: #e0e0e0"># 清除记忆</span><br/>ai-coding<span style="color: #F8F8F2"> </span>memory<span style="color: #F8F8F2"> </span>clear<br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">代码组织技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>好的组织：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 每个文件职责单一</span><br/><span style="color: #e0e0e0"># models/user.py - 只定义 User 模型</span><br/><span style="color: #e0e0e0"># services/user_service.py - 只处理用户业务逻辑</span><br/><br/><span style="color: #e0e0e0"># AI 更容易找到相关代码</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>不好的组织：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># utils.py - 包含所有工具函数（1000行）</span><br/><span style="color: #e0e0e0"># AI 很难定位具体功能</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">注释和文档</span></h3>
+<p data-tool="mdnice编辑器"><strong>添加清晰的注释：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_discount</span><span style="color: #F8F8F2">(price:</span> <span style="color: #F8F8F2">float,</span> <span style="color: #F8F8F2">level:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">float:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">    根据用户等级计算折扣价格</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        price: 原价（必须大于0）</span><br/><span style="color: #E6DB74">        level: 用户等级（gold/silver/bronze）</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        折扣后的价格</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Example:</span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; calculate_discount(100, &#39;gold&#39;)</span><br/><span style="color: #E6DB74">        90.0</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">discounts</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.9</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.95</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;bronze&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">}</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">price</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">discounts</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(level,</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>为什么有效：</strong></p>
+<ul>
+<li><section>注释会被向量化</section></li>
+<li><section>搜索"折扣"时能找到这个函数</section></li>
+<li><section>AI 理解函数用途</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">定期更新索引</span></h3>
+<p data-tool="mdnice编辑器"><strong>建议频率：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 每次提交代码后</span><br/>git<span style="color: #F8F8F2"> </span>commit<span style="color: #F8F8F2"> </span>-m<span style="color: #F8F8F2"> </span><span style="color: #E6DB74">&quot;xxx&quot;</span><br/>ai-coding<span style="color: #F8F8F2"> </span>update<br/><br/><span style="color: #e0e0e0"># 或者设置钩子</span><br/><span style="color: #e0e0e0"># .git/hooks/post-commit</span><br/><span style="color: #e0e0e0">#!/bin/bash</span><br/>ai-coding<span style="color: #F8F8F2"> </span>update<span style="color: #F8F8F2"> </span>--quiet<br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 上下文管理挑战</strong></p>
+<ul>
+<li><section>窗口限制（装不下所有代码）</section></li>
+<li><section>相关性选择（找到需要的代码）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>2. 向量数据库</strong></p>
+<ul>
+<li><section>将代码向量化</section></li>
+<li><section>通过相似度搜索</section></li>
+<li><section>找到相关代码</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>3. RAG 技术</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>查询 → 检索 → 组装上下文 → AI 回答</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 长期记忆</strong></p>
+<ul>
+<li><section>项目配置</section></li>
+<li><section>对话历史</section></li>
+<li><section>知识库</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>5. 实战技巧</strong></p>
+<ul>
+<li><section>良好的代码组织</section></li>
+<li><section>清晰的注释</section></li>
+<li><section>定期更新索引</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="title-text">效率提升</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>无上下文管理 → AI 只能看到当前文件<br/>    ↓<br/>有向量数据库 → AI 能搜索整个项目<br/>    ↓<br/>有长期记忆 → AI 记住项目历史<br/>    ↓<br/>效率提升：2-5倍</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：代码补全原理：AI 如何"读懂"代码</section></li>
+<li><section>下一篇：AI Coding 架构：技术实现揭秘</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">13</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-04</p>
+<p data-tool="mdnice编辑器"><strong>掌握上下文管理，让 AI 成为真正的项目助手！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

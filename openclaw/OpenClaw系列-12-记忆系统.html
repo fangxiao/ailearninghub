@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>记忆系统：Agent如何"记住"</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">28</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐⭐⭐ 原理篇</p>
+<p data-tool="mdnice编辑器">你将收获：理解Agent的记忆机制，掌握上下文管理</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">为什么Agent需要记忆？</span></h2>
+<p data-tool="mdnice编辑器">上一篇你学会了核心循环：感知-思考-行动-反思。</p>
+<p data-tool="mdnice编辑器"><strong>但有个问题：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：我叫张三<br/>龙虾：好的，张三！<br/><br/>你：我叫什么？<br/>龙虾：抱歉，我不知道...</code></pre>
+<p data-tool="mdnice编辑器"><strong>为什么？因为Agent没有"记住"！</strong></p>
+<p data-tool="mdnice编辑器">记忆系统，就是让Agent能记住：</p>
+<ul>
+<li><section>✅ 用户是谁</section></li>
+<li><section>✅ 之前聊过什么</section></li>
+<li><section>✅ 学到了什么知识</section></li>
+<li><section>✅ 积累了什么经验</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、记忆的类型</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">人类记忆 vs Agent记忆</span></h3>
+<p data-tool="mdnice编辑器"><strong>人类记忆：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>短期记忆：刚才说的话、当前的想法（几秒到几分钟）<br/>长期记忆：童年回忆、学过的知识（永久）<br/>肌肉记忆：骑车、打字（技能）</code></pre>
+<p data-tool="mdnice编辑器"><strong>Agent记忆类似：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>短期记忆：当前对话上下文<br/>长期记忆：历史对话、知识库<br/>程序性记忆：技能、工作流</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">Agent记忆分类</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>类型</th>
+<th>作用</th>
+<th>存储</th>
+<th>容量</th>
+<th>持久性</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>工作记忆</td>
+<td>当前对话</td>
+<td>内存</td>
+<td>4K-8K tokens</td>
+<td>会话级</td>
+</tr>
+<tr>
+<td>对话记忆</td>
+<td>历史对话</td>
+<td>数据库</td>
+<td>无限</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>知识记忆</td>
+<td>知识库</td>
+<td>向量库</td>
+<td>无限</td>
+<td>永久</td>
+</tr>
+<tr>
+<td>技能记忆</td>
+<td>技能定义</td>
+<td>文件</td>
+<td>无限</td>
+<td>永久</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、工作记忆（短期记忆）</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">什么是工作记忆？</span></h3>
+<p data-tool="mdnice编辑器"><strong>定义：当前对话的上下文窗口</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌────────────────────────────────────┐<br/>│         工作记忆窗口               │<br/>│  （容量限制：4K-128K tokens）      │<br/>├────────────────────────────────────┤<br/>│ [用户] 我叫张三                    │<br/>│ [Agent] 好的，张三！               │<br/>│ [用户] 今天天气怎么样？            │<br/>│ [Agent] 北京今天晴天，25度...      │<br/>│ [用户] 我叫什么？← 当前问题        │<br/>└────────────────────────────────────┘</code></pre>
+<p data-tool="mdnice编辑器"><strong>特点：</strong></p>
+<ul>
+<li><section>✅ 速度快（内存读写）</section></li>
+<li><section>✅ 上下文连贯</section></li>
+<li><section>❌ 容量有限</section></li>
+<li><section>❌ 会话结束就消失</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">Token限制问题</span></h3>
+<p data-tool="mdnice编辑器"><strong>什么是Token？</strong></p>
+<blockquote data-tool="mdnice编辑器"><p>Token = 文本的最小单位<br/>中文：<span class="num">1</span>个汉字 ≈ <span class="num">2</span>个token<br/>英文：<span class="num">1</span>个单词 ≈ <span class="num">1</span>个token</p></blockquote>
+<p data-tool="mdnice编辑器"><strong>不同模型的Token限制：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>模型</th>
+<th>上下文窗口</th>
+<th>大约等于</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="key">GPT</span>-3.5</td>
+<td>4K tokens</td>
+<td>3000字中文</td>
+</tr>
+<tr>
+<td><span class="key">GPT</span>-4</td>
+<td>8K tokens</td>
+<td>6000字中文</td>
+</tr>
+<tr>
+<td><span class="key">GPT</span>-4-Turbo</td>
+<td>128K tokens</td>
+<td>10万字中文</td>
+</tr>
+<tr>
+<td><span class="key">Claude</span>-3</td>
+<td>200K tokens</td>
+<td>15万字中文</td>
+</tr>
+<tr>
+<td><span class="key">GLM</span>-4</td>
+<td>128K tokens</td>
+<td>10万字中文</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">上下文管理策略</span></h3>
+<p data-tool="mdnice编辑器"><strong>问题：对话太长，超过Token限制怎么办？</strong></p>
+<p data-tool="mdnice编辑器"><strong>策略1：滑动窗口</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">SlidingWindow</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;滑动窗口：只保留最近的N条消息&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">max_messages:</span> <span style="color: #F8F8F2">int</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">20</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_messages</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">max_messages</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">messages</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">add</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">role:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">content:</span> <span style="color: #F8F8F2">str):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">messages</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append({</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">role,</span> <span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">content})</span><br/>        <span style="color: #e0e0e0"># 超过限制，删除最早的</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">messages)</span> <span style="color: #FF4689">&gt;</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_messages:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">messages</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">messages[</span><span style="color: #FF4689">-</span><span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">max_messages:]</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong> 简单高效</p>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong> 丢失早期信息</p>
+<p data-tool="mdnice编辑器"><strong>策略2：摘要压缩</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">SummaryCompressor</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;摘要压缩：把旧对话压缩成摘要&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">compress</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">messages:</span> <span style="color: #F8F8F2">list)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;将多条消息压缩成一段摘要&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">f&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">        请将以下对话压缩成简洁的摘要：</span><br/><span style="color: #E6DB74">        {</span><span style="color: #F8F8F2">messages</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        要求：</span><br/><span style="color: #E6DB74">        1. 保留关键信息</span><br/><span style="color: #E6DB74">        2. 不超过200字</span><br/><span style="color: #E6DB74">        &quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">llm</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(prompt)</span><br/><br/><span style="color: #e0e0e0"># 使用示例</span><br/><span style="color: #F8F8F2">window</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">SummaryCompressor()</span><br/><span style="color: #F8F8F2">window</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(</span><span style="color: #E6DB74">&quot;user&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;我叫张三&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">window</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(</span><span style="color: #E6DB74">&quot;agent&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;好的张三&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #e0e0e0"># ... 很多对话后 ...</span><br/><span style="color: #F8F8F2">summary</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">window</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">compress(old_messages)</span><br/><span style="color: #e0e0e0"># 摘要：&quot;用户名叫张三，讨论了天气和文件整理&quot;</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong> 保留关键信息</p>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong> 细节丢失</p>
+<p data-tool="mdnice编辑器"><strong>策略3：分层记忆</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">LayeredMemory</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;分层记忆：重要信息永久保留，次要信息压缩&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">permanent</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span>  <span style="color: #e0e0e0"># 永久记忆（用户偏好等）</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">recent</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span>     <span style="color: #e0e0e0"># 最近对话（完整保留）</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">summary</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;&quot;</span>    <span style="color: #e0e0e0"># 历史摘要（压缩）</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">add</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">message:</span> <span style="color: #F8F8F2">dict):</span><br/>        <span style="color: #e0e0e0"># 判断是否重要</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">is_important(message):</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">permanent</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(message)</span><br/>        <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">recent</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(message)</span><br/>        <br/>        <span style="color: #e0e0e0"># 定期压缩</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">recent)</span> <span style="color: #FF4689">&gt;</span> <span style="color: #AE81FF">50</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">summary</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">compress(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">recent[:</span><span style="color: #FF4689">-</span><span style="color: #AE81FF">20</span><span style="color: #F8F8F2">])</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">recent</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">recent[</span><span style="color: #FF4689">-</span><span style="color: #AE81FF">20</span><span style="color: #F8F8F2">:]</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">is_important</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">message:</span> <span style="color: #F8F8F2">dict)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;判断消息是否重要&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">keywords</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&quot;我叫&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;我的&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;记住&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;偏好&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;设置&quot;</span><span style="color: #F8F8F2">]</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">any(kw</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">message[</span><span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">kw</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">keywords)</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、对话记忆（长期记忆）</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">什么是对话记忆？</span></h3>
+<p data-tool="mdnice编辑器"><strong>定义：持久化存储的历史对话</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>会话1（2026-03-20）：<br/>- 用户：我叫张三<br/>- Agent：好的，张三！<br/><br/>会话2（2026-03-26）：<br/>- 用户：我叫什么？<br/>- Agent：你叫张三（从对话记忆中检索）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">对话存储</span></h3>
+<p data-tool="mdnice编辑器"><strong>存储结构：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ConversationStore</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;对话存储&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">save</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">session_id:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">messages:</span> <span style="color: #F8F8F2">list):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;保存对话&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">record</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>            <span style="color: #E6DB74">&quot;session_id&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">session_id,</span><br/>            <span style="color: #E6DB74">&quot;user_id&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">user_id,</span><br/>            <span style="color: #E6DB74">&quot;messages&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">messages,</span><br/>            <span style="color: #E6DB74">&quot;timestamp&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">datetime</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">now(),</span><br/>            <span style="color: #E6DB74">&quot;summary&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">summarize(messages)</span><br/>        <span style="color: #F8F8F2">}</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">insert(</span><span style="color: #E6DB74">&quot;conversations&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">record)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">load</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">session_id:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;加载对话&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find(</span><span style="color: #E6DB74">&quot;conversations&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;session_id&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">session_id})</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">search</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;搜索历史对话&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 根据摘要或关键词搜索</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(</span><span style="color: #E6DB74">&quot;conversations&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;summary&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;$regex&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">query}})</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">对话检索</span></h3>
+<p data-tool="mdnice编辑器"><strong>如何从海量对话中找到相关信息？</strong></p>
+<p data-tool="mdnice编辑器"><strong>方法1：关键词搜索</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">keyword_search</span><span style="color: #F8F8F2">(query:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">conversations:</span> <span style="color: #F8F8F2">list)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;关键词搜索&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">keywords</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">extract_keywords(query)</span><br/>    <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>    <br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">conv</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">conversations:</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">any(kw</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">conv[</span><span style="color: #E6DB74">&quot;summary&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">kw</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">keywords):</span><br/>            <span style="color: #F8F8F2">results</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(conv)</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">results</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>方法2：语义搜索</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">semantic_search</span><span style="color: #F8F8F2">(query:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">conversations:</span> <span style="color: #F8F8F2">list)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;语义搜索：理解含义，不只是匹配关键词&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #e0e0e0"># 1. 将query转为向量</span><br/>    <span style="color: #F8F8F2">query_embedding</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">embed(query)</span><br/>    <br/>    <span style="color: #e0e0e0"># 2. 计算相似度</span><br/>    <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">conv</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">conversations:</span><br/>        <span style="color: #F8F8F2">similarity</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">cosine_similarity(query_embedding,</span> <span style="color: #F8F8F2">conv[</span><span style="color: #E6DB74">&quot;embedding&quot;</span><span style="color: #F8F8F2">])</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">similarity</span> <span style="color: #FF4689">&gt;</span> <span style="color: #AE81FF">0.7</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">results</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append((conv,</span> <span style="color: #F8F8F2">similarity))</span><br/>    <br/>    <span style="color: #e0e0e0"># 3. 按相似度排序</span><br/>    <span style="color: #F8F8F2">results</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sort(key</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">lambda</span> <span style="color: #F8F8F2">x:</span> <span style="color: #F8F8F2">x[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">],</span> <span style="color: #F8F8F2">reverse</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">[r[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">r</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">results[:</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">]]</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、知识记忆（向量记忆）</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">什么是知识记忆？</span></h3>
+<p data-tool="mdnice编辑器"><strong>定义：存储和检索知识的向量数据库</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>传统搜索：<br/>关键词匹配 → 找到包含关键词的文档<br/><br/>向量搜索：<br/>理解语义 → 找到含义相似的文档</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">向量化原理</span></h3>
+<p data-tool="mdnice编辑器"><strong>什么是向量？</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>文本 → Embedding模型 → 向量（数字数组）<br/><br/>示例：<br/>"苹果" → [0.23, -0.15, 0.89, ...]（1536维）<br/>"水果" → [0.21, -0.12, 0.85, ...]（相似！）<br/>"汽车" → [-0.45, 0.78, -0.23, ...]（不相似）</code></pre>
+<p data-tool="mdnice编辑器"><strong>相似度计算：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> numpy </span><span style="color: #66D9EF">as</span><span style="color: #F8F8F2"> np</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">cosine_similarity</span><span style="color: #F8F8F2">(vec1:</span> <span style="color: #F8F8F2">list,</span> <span style="color: #F8F8F2">vec2:</span> <span style="color: #F8F8F2">list)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">float:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;余弦相似度：衡量两个向量的相似程度&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">vec1</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">array(vec1)</span><br/>    <span style="color: #F8F8F2">vec2</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">array(vec2)</span><br/>    <br/>    <span style="color: #F8F8F2">dot_product</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">dot(vec1,</span> <span style="color: #F8F8F2">vec2)</span><br/>    <span style="color: #F8F8F2">norm</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">linalg</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">norm(vec1)</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">linalg</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">norm(vec2)</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">dot_product</span> <span style="color: #FF4689">/</span> <span style="color: #F8F8F2">norm</span><br/><br/><span style="color: #e0e0e0"># 示例</span><br/><span style="color: #F8F8F2">similarity</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">cosine_similarity(</span><br/>    <span style="color: #F8F8F2">embed(</span><span style="color: #E6DB74">&quot;苹果&quot;</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">embed(</span><span style="color: #E6DB74">&quot;水果&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">)</span><br/><span style="color: #e0e0e0"># 结果：0.85（很相似）</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">向量数据库</span></h3>
+<p data-tool="mdnice编辑器"><strong>常用向量数据库：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>数据库</th>
+<th>特点</th>
+<th>适用场景</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Pinecone</td>
+<td>云服务，简单</td>
+<td>快速原型</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>开源，高性能</td>
+<td>大规模生产</td>
+</tr>
+<tr>
+<td>Chroma</td>
+<td>轻量级</td>
+<td>本地开发</td>
+</tr>
+<tr>
+<td>Qdrant</td>
+<td>Rust实现，快</td>
+<td>高性能需求</td>
+</tr>
+<tr>
+<td>FAISS</td>
+<td>Meta开源</td>
+<td>本地向量搜索</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>Chroma示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> chromadb</span><br/><br/><span style="color: #e0e0e0"># 初始化客户端</span><br/><span style="color: #F8F8F2">client</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">chromadb</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">Client()</span><br/><br/><span style="color: #e0e0e0"># 创建集合</span><br/><span style="color: #F8F8F2">collection</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">client</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_collection(</span><span style="color: #E6DB74">&quot;knowledge&quot;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 添加文档</span><br/><span style="color: #F8F8F2">collection</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(</span><br/>    <span style="color: #F8F8F2">documents</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&quot;OpenClaw是AI Agent平台&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;Agent能自动执行任务&quot;</span><span style="color: #F8F8F2">],</span><br/>    <span style="color: #F8F8F2">metadatas</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[{</span><span style="color: #E6DB74">&quot;source&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;doc1&quot;</span><span style="color: #F8F8F2">},</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;source&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&quot;doc2&quot;</span><span style="color: #F8F8F2">}],</span><br/>    <span style="color: #F8F8F2">ids</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&quot;doc1&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;doc2&quot;</span><span style="color: #F8F8F2">]</span><br/><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 查询</span><br/><span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">collection</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(</span><br/>    <span style="color: #F8F8F2">query_texts</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&quot;什么是OpenClaw&quot;</span><span style="color: #F8F8F2">],</span><br/>    <span style="color: #F8F8F2">n_results</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">2</span><br/><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #F8F8F2">print(results[</span><span style="color: #E6DB74">&quot;documents&quot;</span><span style="color: #F8F8F2">])</span><br/><span style="color: #e0e0e0"># [&quot;OpenClaw是AI Agent平台&quot;, &quot;Agent能自动执行任务&quot;]</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、RAG：检索增强生成</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">什么是RAG？</span></h3>
+<p data-tool="mdnice编辑器"><strong>RAG = Retrieval-Augmented Generation</strong></p>
+<blockquote data-tool="mdnice编辑器"><p>先检索相关知识，再生成回答</p></blockquote>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>传统LLM：<br/>问题 → LLM → 回答（可能编造）<br/><br/>RAG：<br/>问题 → 检索知识 → 知识+问题 → LLM → 回答（有依据）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">RAG工作流程</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────────────────┐<br/>│  1. 用户提问：OpenClaw支持哪些模型？     │<br/>└─────────────────┬───────────────────────┘<br/>                  ↓<br/>┌─────────────────────────────────────────┐<br/>│  2. 向量化问题                           │<br/>│     embed("OpenClaw支持哪些模型")        │<br/>└─────────────────┬───────────────────────┘<br/>                  ↓<br/>┌─────────────────────────────────────────┐<br/>│  3. 向量检索                             │<br/>│     在知识库中找相似文档                  │<br/>│     找到：OpenClaw支持GPT/Claude/GLM...  │<br/>└─────────────────┬───────────────────────┘<br/>                  ↓<br/>┌─────────────────────────────────────────┐<br/>│  4. 构造提示词                           │<br/>│     上下文：检索到的知识                  │<br/>│     问题：用户原始问题                    │<br/>└─────────────────┬───────────────────────┘<br/>                  ↓<br/>┌─────────────────────────────────────────┐<br/>│  5. LLM生成回答                          │<br/>│     基于检索到的知识生成                  │<br/>│     "OpenClaw支持GPT-5、Claude、GLM..."  │<br/>└─────────────────────────────────────────┘</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.3</span><span class="title-text">RAG实现</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">RAGSystem</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;RAG检索增强生成系统&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">vector_db,</span> <span style="color: #F8F8F2">llm):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vector_db</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">llm</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">llm</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">query</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">question:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">top_k:</span> <span style="color: #F8F8F2">int</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">3</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;查询并生成回答&quot;&quot;&quot;</span><br/>        <br/>        <span style="color: #e0e0e0"># 1. 检索相关知识</span><br/>        <span style="color: #F8F8F2">context</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">retrieve(question,</span> <span style="color: #F8F8F2">top_k)</span><br/>        <br/>        <span style="color: #e0e0e0"># 2. 构造提示词</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">f&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">        请根据以下知识回答问题。</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        【知识】</span><br/><span style="color: #E6DB74">        {</span><span style="color: #F8F8F2">context</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        【问题】</span><br/><span style="color: #E6DB74">        {</span><span style="color: #F8F8F2">question</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        【要求】</span><br/><span style="color: #E6DB74">        - 只基于知识回答，不要编造</span><br/><span style="color: #E6DB74">        - 如果知识中没有答案，请诚实说明</span><br/><span style="color: #E6DB74">        &quot;&quot;&quot;</span><br/>        <br/>        <span style="color: #e0e0e0"># 3. 生成回答</span><br/>        <span style="color: #F8F8F2">answer</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">llm</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(prompt)</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">answer</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">retrieve</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">top_k:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;检索相关文档&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(</span><br/>            <span style="color: #F8F8F2">query_texts</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[query],</span><br/>            <span style="color: #F8F8F2">n_results</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">top_k</span><br/>        <span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #E6DB74">&quot;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&quot;</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">join(results[</span><span style="color: #E6DB74">&quot;documents&quot;</span><span style="color: #F8F8F2">][</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">])</span><br/><br/><span style="color: #e0e0e0"># 使用示例</span><br/><span style="color: #F8F8F2">rag</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">RAGSystem(chroma_collection,</span> <span style="color: #F8F8F2">llm)</span><br/><span style="color: #F8F8F2">answer</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">rag</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(</span><span style="color: #E6DB74">&quot;OpenClaw如何配置模型？&quot;</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.4</span><span class="title-text">RAG优化技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1：分块策略</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">chunk_documents</span><span style="color: #F8F8F2">(docs:</span> <span style="color: #F8F8F2">list,</span> <span style="color: #F8F8F2">chunk_size:</span> <span style="color: #F8F8F2">int</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">500</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;将长文档分块&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">chunks</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">doc</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">docs:</span><br/>        <span style="color: #e0e0e0"># 按段落分割</span><br/>        <span style="color: #F8F8F2">paragraphs</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">doc</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">split(</span><span style="color: #E6DB74">&quot;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&quot;</span><span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 合并小块，拆分大块</span><br/>        <span style="color: #F8F8F2">current_chunk</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&quot;&quot;</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">para</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">paragraphs:</span><br/>            <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(current_chunk)</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">len(para)</span> <span style="color: #FF4689">&lt;</span> <span style="color: #F8F8F2">chunk_size:</span><br/>                <span style="color: #F8F8F2">current_chunk</span> <span style="color: #FF4689">+=</span> <span style="color: #F8F8F2">para</span> <span style="color: #FF4689">+</span> <span style="color: #E6DB74">&quot;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&quot;</span><br/>            <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span><br/>                <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">current_chunk:</span><br/>                    <span style="color: #F8F8F2">chunks</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(current_chunk)</span><br/>                <span style="color: #F8F8F2">current_chunk</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">para</span> <span style="color: #FF4689">+</span> <span style="color: #E6DB74">&quot;</span><span style="color: #AE81FF">\n\n</span><span style="color: #E6DB74">&quot;</span><br/>        <br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">current_chunk:</span><br/>            <span style="color: #F8F8F2">chunks</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(current_chunk)</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">chunks</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2：重排序</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">rerank</span><span style="color: #F8F8F2">(query:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">candidates:</span> <span style="color: #F8F8F2">list,</span> <span style="color: #F8F8F2">top_k:</span> <span style="color: #F8F8F2">int</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;重排序：用更强的模型对结果重新排序&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #e0e0e0"># 1. 向量检索得到候选（快速但粗糙）</span><br/>    <span style="color: #F8F8F2">initial_results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vector_search(query,</span> <span style="color: #F8F8F2">candidates,</span> <span style="color: #F8F8F2">top_k</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">20</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #e0e0e0"># 2. 用Cross-Encoder重排序（慢但精准）</span><br/>    <span style="color: #F8F8F2">reranker</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">CrossEncoder(</span><span style="color: #E6DB74">&quot;model-name&quot;</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #F8F8F2">scores</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">reranker</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict([(query,</span> <span style="color: #F8F8F2">doc)</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">doc</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">initial_results])</span><br/>    <br/>    <span style="color: #e0e0e0"># 3. 按分数排序，返回top_k</span><br/>    <span style="color: #F8F8F2">ranked</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">sorted(zip(initial_results,</span> <span style="color: #F8F8F2">scores),</span> <span style="color: #F8F8F2">key</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">lambda</span> <span style="color: #F8F8F2">x:</span> <span style="color: #F8F8F2">x[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">],</span> <span style="color: #F8F8F2">reverse</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">[doc</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">doc,</span> <span style="color: #F8F8F2">score</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">ranked[:top_k]]</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧3：混合检索</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">hybrid_search</span><span style="color: #F8F8F2">(query:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">alpha:</span> <span style="color: #F8F8F2">float</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">0.5</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">list:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;混合检索：关键词 + 向量&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #e0e0e0"># 关键词检索</span><br/>    <span style="color: #F8F8F2">keyword_results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">keyword_search(query)</span><br/>    <span style="color: #F8F8F2">keyword_scores</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{r[</span><span style="color: #E6DB74">&quot;id&quot;</span><span style="color: #F8F8F2">]:</span> <span style="color: #F8F8F2">r[</span><span style="color: #E6DB74">&quot;score&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">r</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">keyword_results}</span><br/>    <br/>    <span style="color: #e0e0e0"># 向量检索</span><br/>    <span style="color: #F8F8F2">vector_results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vector_search(query)</span><br/>    <span style="color: #F8F8F2">vector_scores</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{r[</span><span style="color: #E6DB74">&quot;id&quot;</span><span style="color: #F8F8F2">]:</span> <span style="color: #F8F8F2">r[</span><span style="color: #E6DB74">&quot;score&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">r</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">vector_results}</span><br/>    <br/>    <span style="color: #e0e0e0"># 融合分数</span><br/>    <span style="color: #F8F8F2">all_ids</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">set(keyword_scores</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">keys())</span> <span style="color: #FF4689">|</span> <span style="color: #F8F8F2">set(vector_scores</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">keys())</span><br/>    <span style="color: #F8F8F2">final_scores</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{}</span><br/>    <br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">doc_id</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">all_ids:</span><br/>        <span style="color: #F8F8F2">kw_score</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">keyword_scores</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(doc_id,</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">vec_score</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">vector_scores</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(doc_id,</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">final_scores[doc_id]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">alpha</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">kw_score</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">(</span><span style="color: #AE81FF">1</span> <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">alpha)</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">vec_score</span><br/>    <br/>    <span style="color: #e0e0e0"># 排序返回</span><br/>    <span style="color: #F8F8F2">ranked</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">sorted(final_scores</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">items(),</span> <span style="color: #F8F8F2">key</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">lambda</span> <span style="color: #F8F8F2">x:</span> <span style="color: #F8F8F2">x[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">],</span> <span style="color: #F8F8F2">reverse</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">ranked[:</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">]</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、程序性记忆（技能记忆）</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">什么是程序性记忆？</span></h3>
+<p data-tool="mdnice编辑器"><strong>定义：存储技能和流程定义</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>陈述性记忆：知道"是什么"<br/>- OpenClaw是什么<br/>- 天气API怎么用<br/><br/>程序性记忆：知道"怎么做"<br/>- 如何查询天气<br/>- 如何生成日报</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">技能存储</span></h3>
+<p data-tool="mdnice编辑器"><strong>技能定义格式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># skill.yaml</span><br/><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">weather_query</span><br/><span style="color: #FF4689">description</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">查询城市天气</span><br/><span style="color: #FF4689">version</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">1.0.0</span><br/><br/><span style="color: #e0e0e0"># 参数定义</span><br/><span style="color: #FF4689">parameters</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">city</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">type</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">string</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">description</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">城市名称</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">required</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">true</span><br/><br/><span style="color: #e0e0e0"># 工作流定义</span><br/><span style="color: #FF4689">workflow</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  - </span><span style="color: #FF4689">step</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">search</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">action</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">web_search</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">input</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;${city}天气&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #F8F8F2">  - </span><span style="color: #FF4689">step</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">extract</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">action</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">extract_info</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">fields</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #AE81FF">温度</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #AE81FF">天气状况</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #AE81FF">湿度</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #F8F8F2">  - </span><span style="color: #FF4689">step</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">format</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">action</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">format_response</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">template</span><span style="color: #F8F8F2">: |</span><br/><span style="color: #F8F8F2">      </span><span style="color: #66D9EF">${city}今天天气：</span><br/><span style="color: #F8F8F2">      </span><span style="color: #66D9EF">- 温度：${temp}</span><br/><span style="color: #F8F8F2">      </span><span style="color: #66D9EF">- 天气：${weather}</span><br/><span style="color: #F8F8F2">      </span><span style="color: #66D9EF">- 湿度：${humidity}%</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">技能检索</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">SkillRetriever</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;技能检索器&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">find_skill</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">task_description:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;根据任务描述找到合适的技能&quot;&quot;&quot;</span><br/>        <br/>        <span style="color: #e0e0e0"># 向量化任务描述</span><br/>        <span style="color: #F8F8F2">task_embedding</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">embed(task_description)</span><br/>        <br/>        <span style="color: #e0e0e0"># 在技能库中搜索</span><br/>        <span style="color: #F8F8F2">skills</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(</span><br/>            <span style="color: #F8F8F2">query_embeddings</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[task_embedding],</span><br/>            <span style="color: #F8F8F2">n_results</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">3</span><br/>        <span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 返回最匹配的技能</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">skills[</span><span style="color: #E6DB74">&quot;metadatas&quot;</span><span style="color: #F8F8F2">][</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">][</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&quot;skill_name&quot;</span><span style="color: #F8F8F2">]</span><br/><br/><span style="color: #e0e0e0"># 示例</span><br/><span style="color: #F8F8F2">retriever</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">SkillRetriever()</span><br/><span style="color: #F8F8F2">skill</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">retriever</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_skill(</span><span style="color: #E6DB74">&quot;我想查北京的天气&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #e0e0e0"># 返回：weather_query</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、完整记忆系统</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">架构设计</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────────────────────┐<br/>│              记忆系统架构                    │<br/>├─────────────────────────────────────────────┤<br/>│                                             │<br/>│  ┌─────────────────────────────────────┐   │<br/>│  │  工作记忆（内存）                    │   │<br/>│  │  - 当前对话上下文                    │   │<br/>│  │  - 临时变量                         │   │<br/>│  └─────────────────────────────────────┘   │<br/>│                                             │<br/>│  ┌─────────────────────────────────────┐   │<br/>│  │  对话记忆（数据库）                  │   │<br/>│  │  - 历史会话                         │   │<br/>│  │  - 用户偏好                         │   │<br/>│  └─────────────────────────────────────┘   │<br/>│                                             │<br/>│  ┌─────────────────────────────────────┐   │<br/>│  │  知识记忆（向量库）                  │   │<br/>│  │  - 文档知识                         │   │<br/>│  │  - FAQ知识                          │   │<br/>│  └─────────────────────────────────────┘   │<br/>│                                             │<br/>│  ┌─────────────────────────────────────┐   │<br/>│  │  技能记忆（文件系统）                │   │<br/>│  │  - Skill定义                        │   │<br/>│  │  - 工作流定义                       │   │<br/>│  └─────────────────────────────────────┘   │<br/>│                                             │<br/>└─────────────────────────────────────────────┘</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">统一接口</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">MemorySystem</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;统一记忆系统&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">working</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">WorkingMemory()</span>      <span style="color: #e0e0e0"># 工作记忆</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">conversation</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">ConversationDB()</span> <span style="color: #e0e0e0"># 对话记忆</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">knowledge</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">VectorDB()</span>          <span style="color: #e0e0e0"># 知识记忆</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">skills</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">SkillStore()</span>           <span style="color: #e0e0e0"># 技能记忆</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">remember</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">info:</span> <span style="color: #F8F8F2">dict,</span> <span style="color: #F8F8F2">memory_type:</span> <span style="color: #F8F8F2">str):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;记住信息&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">memory_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&quot;working&quot;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">working</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(info)</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">memory_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&quot;conversation&quot;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">conversation</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save(info)</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">memory_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&quot;knowledge&quot;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">knowledge</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(info)</span><br/>        <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">memory_type</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&quot;skill&quot;</span><span style="color: #F8F8F2">:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">skills</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save(info)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">recall</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">query:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">memory_types:</span> <span style="color: #F8F8F2">list)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">dict:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;回忆信息&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">results</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{}</span><br/>        <br/>        <span style="color: #66D9EF">if</span> <span style="color: #E6DB74">&quot;working&quot;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">memory_types:</span><br/>            <span style="color: #F8F8F2">results[</span><span style="color: #E6DB74">&quot;working&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">working</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_recent()</span><br/>        <br/>        <span style="color: #66D9EF">if</span> <span style="color: #E6DB74">&quot;conversation&quot;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">memory_types:</span><br/>            <span style="color: #F8F8F2">results[</span><span style="color: #E6DB74">&quot;conversation&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">conversation</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(query)</span><br/>        <br/>        <span style="color: #66D9EF">if</span> <span style="color: #E6DB74">&quot;knowledge&quot;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">memory_types:</span><br/>            <span style="color: #F8F8F2">results[</span><span style="color: #E6DB74">&quot;knowledge&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">knowledge</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(query)</span><br/>        <br/>        <span style="color: #66D9EF">if</span> <span style="color: #E6DB74">&quot;skill&quot;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">memory_types:</span><br/>            <span style="color: #F8F8F2">results[</span><span style="color: #E6DB74">&quot;skill&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">skills</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find(query)</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">results</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.3</span><span class="title-text">记忆管理</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">MemoryManager</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;记忆管理器&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">cleanup</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;清理过期记忆&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 1. 清理工作记忆</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">working</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">clear_old()</span><br/>        <br/>        <span style="color: #e0e0e0"># 2. 归档旧对话</span><br/>        <span style="color: #F8F8F2">old_conversations</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">conversation</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_older_than(days</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">30</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">conv</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">old_conversations:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">archive(conv)</span><br/>        <br/>        <span style="color: #e0e0e0"># 3. 优化向量索引</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">knowledge</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">optimize_index()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">compress</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;压缩记忆&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 1. 压缩对话摘要</span><br/>        <span style="color: #F8F8F2">conversations</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">conversation</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_all()</span><br/>        <span style="color: #F8F8F2">summary</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">summarize(conversations)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save_summary(summary)</span><br/>        <br/>        <span style="color: #e0e0e0"># 2. 删除原始对话（保留摘要）</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">conversation</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">clear()</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、实战：为Agent添加记忆</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.1</span><span class="title-text">场景：记住用户偏好</span></h3>
+<p data-tool="mdnice编辑器"><strong>需求：Agent记住用户的偏好设置</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">UserPreferenceMemory</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;用户偏好记忆&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">user_id:</span> <span style="color: #F8F8F2">str):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">user_id</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">user_id</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">SQLiteDB(</span><span style="color: #E6DB74">&quot;preferences.db&quot;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">set_preference</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">key:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">value:</span> <span style="color: #F8F8F2">any):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;设置偏好&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">upsert(</span><br/>            <span style="color: #F8F8F2">table</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;preferences&quot;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #F8F8F2">data</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><br/>                <span style="color: #E6DB74">&quot;user_id&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">user_id,</span><br/>                <span style="color: #E6DB74">&quot;key&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">key,</span><br/>                <span style="color: #E6DB74">&quot;value&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">json</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">dumps(value),</span><br/>                <span style="color: #E6DB74">&quot;updated_at&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">datetime</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">now()</span><br/>            <span style="color: #F8F8F2">},</span><br/>            <span style="color: #F8F8F2">keys</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&quot;user_id&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;key&quot;</span><span style="color: #F8F8F2">]</span><br/>        <span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_preference</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">key:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">default</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">None</span><span style="color: #F8F8F2">):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;获取偏好&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_one(</span><br/>            <span style="color: #F8F8F2">table</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;preferences&quot;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #F8F8F2">where</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;user_id&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">user_id,</span> <span style="color: #E6DB74">&quot;key&quot;</span><span style="color: #F8F8F2">:</span> <span style="color: #F8F8F2">key}</span><br/>        <span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">result:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">json</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">loads(result[</span><span style="color: #E6DB74">&quot;value&quot;</span><span style="color: #F8F8F2">])</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">default</span><br/><br/><span style="color: #e0e0e0"># 使用示例</span><br/><span style="color: #F8F8F2">pref</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">UserPreferenceMemory(</span><span style="color: #E6DB74">&quot;user_123&quot;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 用户说：&quot;以后都用中文回复&quot;</span><br/><span style="color: #F8F8F2">pref</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">set_preference(</span><span style="color: #E6DB74">&quot;language&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;中文&quot;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 下次对话时</span><br/><span style="color: #F8F8F2">language</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">pref</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_preference(</span><span style="color: #E6DB74">&quot;language&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;英文&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #e0e0e0"># Agent用中文回复</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.2</span><span class="title-text">场景：知识问答</span></h3>
+<p data-tool="mdnice编辑器"><strong>需求：基于文档回答问题</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">KnowledgeQA</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;知识问答系统&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">vector_db</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">ChromaDB()</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">llm</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">LLM()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">add_knowledge</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">documents:</span> <span style="color: #F8F8F2">list):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;添加知识&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 分块</span><br/>        <span style="color: #F8F8F2">chunks</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">chunk(documents)</span><br/>        <br/>        <span style="color: #e0e0e0"># 向量化存储</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">vector_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(</span><br/>            <span style="color: #F8F8F2">documents</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[c[</span><span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">c</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">chunks],</span><br/>            <span style="color: #F8F8F2">metadatas</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[c[</span><span style="color: #E6DB74">&quot;metadata&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">c</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">chunks],</span><br/>            <span style="color: #F8F8F2">ids</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[c[</span><span style="color: #E6DB74">&quot;id&quot;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">c</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">chunks]</span><br/>        <span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">answer</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">question:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;回答问题&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># RAG检索增强</span><br/>        <span style="color: #F8F8F2">context</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">vector_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(</span><br/>            <span style="color: #F8F8F2">query_texts</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[question],</span><br/>            <span style="color: #F8F8F2">n_results</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">3</span><br/>        <span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 生成回答</span><br/>        <span style="color: #F8F8F2">prompt</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">f&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">        基于以下知识回答问题：</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        知识：</span><br/><span style="color: #E6DB74">        {</span><span style="color: #F8F8F2">context[</span><span style="color: #E6DB74">&quot;documents&quot;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        问题：{</span><span style="color: #F8F8F2">question</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">        &quot;&quot;&quot;</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">llm</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(prompt)</span><br/><br/><span style="color: #e0e0e0"># 使用示例</span><br/><span style="color: #F8F8F2">qa</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">KnowledgeQA()</span><br/><br/><span style="color: #e0e0e0"># 添加公司文档</span><br/><span style="color: #F8F8F2">qa</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add_knowledge([</span><br/>    <span style="color: #E6DB74">&quot;公司成立于2020年，专注于AI Agent开发...&quot;</span><span style="color: #F8F8F2">,</span><br/>    <span style="color: #E6DB74">&quot;OpenClaw是我们的核心产品，提供...&quot;</span><br/><span style="color: #F8F8F2">])</span><br/><br/><span style="color: #e0e0e0"># 问答</span><br/><span style="color: #F8F8F2">answer</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">qa</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">answer(</span><span style="color: #E6DB74">&quot;公司是做什么的？&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #e0e0e0"># &quot;公司专注于AI Agent开发，核心产品是OpenClaw...&quot;</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">九、记忆 vs 核心循环</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">9.1</span><span class="title-text">记忆在核心循环中的作用</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>感知环节：<br/>- 从记忆中加载上下文<br/>- 检索相关知识<br/>- 回忆用户偏好<br/><br/>思考环节：<br/>- 基于历史经验推理<br/>- 参考相似案例<br/>- 规划行动步骤<br/><br/>行动环节：<br/>- 调用技能（程序性记忆）<br/>- 执行工作流<br/><br/>反思环节：<br/>- 记录执行结果<br/>- 更新经验库<br/>- 优化策略</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">9.2</span><span class="title-text">记忆让Agent更智能</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>没有记忆</th>
+<th>有记忆</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>每次对话从零开始</td>
+<td>记住历史，连贯对话</td>
+</tr>
+<tr>
+<td>不知道用户是谁</td>
+<td>知道用户偏好</td>
+</tr>
+<tr>
+<td>无法利用知识</td>
+<td>RAG增强，回答准确</td>
+</tr>
+<tr>
+<td>重复犯同样错误</td>
+<td>从经验中学习</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">十、小结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">记忆系统四层架构</span></h3>
+<blockquote data-tool="mdnice编辑器"><p><strong>工作记忆：</strong> 当前对话，快速但有限</p></blockquote>
+<blockquote data-tool="mdnice编辑器"><p><strong>对话记忆：</strong> 历史会话，持久化存储</p></blockquote>
+<blockquote data-tool="mdnice编辑器"><p><strong>知识记忆：</strong> 向量数据库，语义检索</p></blockquote>
+<blockquote data-tool="mdnice编辑器"><p><strong>技能记忆：</strong> 流程定义，程序性知识</p></blockquote>
+<h3 data-tool="mdnice编辑器"><span class="title-text">关键技术</span></h3>
+<ul>
+<li><section>✅ Token管理与上下文压缩</section></li>
+<li><section>✅ 向量化与语义搜索</section></li>
+<li><section>✅ RAG检索增强生成</section></li>
+<li><section>✅ 分层记忆管理</section></li>
+<li><section>✅ 记忆清理与优化</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="title-text">下一篇预告</span></h3>
+<p data-tool="mdnice编辑器"><strong>第<span class="num">13</span>篇：OpenClaw架构解析</strong></p>
+<ul>
+<li><section>整体架构设计</section></li>
+<li><section>核心组件分析</section></li>
+<li><section>设计哲学与原则</section></li>
+<li><section>与其他框架对比</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">思考题</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">🤔 深度思考</span></h3>
+<ol>
+<li><section><strong>如果用户说"忘记我刚才说的"，怎么实现？</strong> 需要删除哪些记忆？</section></li>
+</ol>
+<ol>
+<li><section><strong>RAG和微调（Fine-tuning）有什么区别？</strong> 各自适合什么场景？</section></li>
+</ol>
+<ol>
+<li><section><strong>如何平衡记忆容量和检索速度？</strong> 有什么优化策略？</section></li>
+</ol>
+<p data-tool="mdnice编辑器"><strong>欢迎在评论区分享你的思考！</strong> 💬</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">下期预告</span></h2>
+<p data-tool="mdnice编辑器"><strong>下一篇：</strong>《OpenClaw架构解析：设计哲学》</p>
+<p data-tool="mdnice编辑器"><strong>你将学到：</strong></p>
+<ul>
+<li><section>✅ OpenClaw整体架构</section></li>
+<li><section>✅ 核心组件深度解析</section></li>
+<li><section>✅ 设计哲学与原则</section></li>
+<li><section>✅ 与LangChain/AutoGPT对比</section></li>
+<li><section>✅ 扩展机制</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>准备好深入架构了吗？</strong> 🏗️</p>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：核心循环：感知-思考-行动-反思</section></li>
+<li><section>下一篇：OpenClaw架构解析：设计哲学</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《OpenClaw从入门到精通》系列第<span class="num">12</span>篇（原理篇第<span class="num">2</span>篇）</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-03-26</p>
+</article>
+</div>
+</body>
+</html>

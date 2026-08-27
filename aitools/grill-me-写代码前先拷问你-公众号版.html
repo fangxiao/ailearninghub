@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 AI 在写代码前先拷问你 50 个问题——grill-me 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=interrogation%20spotlight%20on%20a%20developer%20sitting%20at%20a%20desk%20being%20grilled%20with%20questions%20by%20an%20AI%20dramatic%20lighting%20film%20noir%20style%20teal%20amber%20tones%20no%20text&image_size=landscape_16_9" alt="grill-me 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    让 AI 在写代码前先拷问你 50 个问题——grill-me 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    Matt Pocock 的爆款 Skill，812k 安装量的需求对齐利器
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程规划 Skill 推荐 | Claude Code 需求澄清实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 AI 写代码，最经典的翻车现场是这个：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 你说"帮我加个登录"，AI 不问"要不要记住设备""失败几次锁账号""session 多久过期"，直接铺一套它觉得合理的方案
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 你 review 时 AI 已经写了 500 行，回炉重写两小时
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 你以为脑子里的需求很清楚，AI 一写出来，完全不是那回事
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 反复改 prompt、反复生成、反复推翻，Token 烧了一堆还是没对齐
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Matt Pocock（TypeScript 圈的大佬）在自己的演讲里讲过这段体感："我运行它，我尽量不看代码，但我还是看了，然后我发现代码更糟了。我又来了一次，更糟……最后就是一堆垃圾。" 他把这个失败模式叫 <strong style="color: #00897B;">"Agent 没做我想要的"</strong>——代码写得不算慢，问题在于<strong style="color: #00897B;">需求还没对齐，AI 就已经把代码写完了</strong>。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    他的解法是一个不到 15 行的 Skill：<strong style="color: #00897B;">grill-me</strong>。在 AI 动手写代码之前，先反过来拷问你，一个一个地问，每个问题都给推荐答案，直到你们对要做什么达成共识。这个 Skill 在 skills.sh 上累计 <strong style="color: #00897B;">812k 安装量</strong>，是 Matt 仓库里最火的一个。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">它在干什么：</strong>让 Claude Code 在写代码前，沿着设计树逐个拷问你的需求，每个问题带推荐答案，直到模糊需求全部落地。812k 安装，Matt Pocock 出品。
+    </p>
+  </section>
+
+  <!-- 章节01：为什么需要 grill-me -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">为什么需要 grill-me？design concept 跑偏</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Matt 引用《程序员修炼之道》里的一句话：<em>"没有人确切知道自己想要什么。"</em> 这不是讽刺，是事实，你脑子里的需求是模糊的，你以为它清楚，但一旦落地就发现到处是洞。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    更深的解释来自 Frederick P. Brooks（《人月神话》作者）在《The Design of Design》里提的 <strong style="color: #00897B;">design concept</strong>（设计概念）：当多人合作设计一个东西时，你们之间会有一个正在被造出来的东西——它在脑子里飘着，是个隐形的"关于这个东西的理论"。AI 一上来就动手写代码，等于它压根没和你共享同一个 design concept。最后写出来的东西，毛病往往不是语法，而是<strong style="color: #00897B;">前提</strong>。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Brooks 给的工具叫 <strong style="color: #00897B;">design tree</strong>（设计树），把一个决策拆成多分支，每个分支再拆。<strong style="color: #00897B;">你不能跳过上游决策直接做下游决策</strong>，否则上游一变下游全要重做。比如你说"做登录"，上游是"鉴权方式"（账号密码 / SSO / OAuth），选了 SSO，下游的"密码策略"问题就自动消失了，不用问。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    grill-me 做的就是这件事：在写代码前，沿着 design tree 从根到叶逐个拷问，把模糊需求逼清楚。它跟 <strong style="color: #00897B;">Superpowers</strong> 工程化流程里的"Brainstorming 头脑风暴"阶段是同一个思路，先想清楚再动手（参见《Superpowers 把 AI 编程从凭感觉变按流程》），也跟 <strong style="color: #00897B;">pm-skills</strong> 写 PRD 前的需求澄清对齐（参见《pm-skills 产品经理技能市场》）。
+  </p>
+
+  <!-- 章节02：SKILL.md 拆解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">15 行 SKILL.md：每一句都是设计</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    grill-me 的 SKILL.md 全文加 frontmatter 不到 15 行，但每一句都在压住 LLM 的某个坏习惯：
+  </p>
+
+  <section style="margin: 25px 0; padding: 18px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 4px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      ---
+    </p>
+    <p style="margin: 0 0 4px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8;">
+      name: grill-me
+    </p>
+    <p style="margin: 0 0 4px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8;">
+      description: Interview the user relentlessly about a plan or design
+    </p>
+    <p style="margin: 0 0 10px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      ---
+    </p>
+    <p style="margin: 0 0 8px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8;">
+      Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+    </p>
+    <p style="margin: 0 0 8px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8;">
+      Ask the questions one at a time.
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8;">
+      If a question can be answered by exploring the codebase, explore the codebase instead.
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    逐句拆解，每一句都在解决一个具体的 LLM 失败模式：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>"interview me relentlessly"</strong> — 关键词是 relentlessly（不放过）。LLM 默认问 1-2 个问题就觉得"差不多了"开始动手。这个词强行压住这个倾向。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>"walk down each branch of the design tree"</strong> — Brooks 的 design tree。强迫 Claude 把需求当树，先解上游再解下游。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>"resolving dependencies one-by-one"</strong> — 禁止打包提问。决策之间有依赖，先确定上游能砍掉一堆下游问题。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>"provide your recommended answer"</strong> — AI 不只问，还给推荐答案。你只需点头/否决，省 80% 输入时间。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>"one at a time"</strong> — 防止一次甩 10 个问题让你头大。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #00695C; line-height: 1.8;">
+      <strong>"explore the codebase instead"</strong> — 能查代码就别问用户。AI 能自己看的（比如"项目用的什么框架"）就自己看，只把真正的决策留给你。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这就是 <strong style="color: #00897B;">prompt as software</strong>——15 行指令，每一行都在堵一个已知的失败模式。跟 <strong style="color: #00897B;">anthropics/skills</strong> 官方 Skill 库强调的"指令要小而精、可组合"是同一个设计哲学（参见《anthropics/skills 官方技能库》）。
+  </p>
+
+  <!-- 章节03：安装 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装：30 秒两种方式</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Matt 的仓库（mattpocock/skills）在 Claude Code 官方市场里，提供两种安装哲学：插件式（托管、自动更新）和文件式（可编辑、自己拥有）。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式一：Claude Code 插件（推荐，自动更新）</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 命令行安装
+    </p>
+    <p style="margin: 0 0 8px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      claude plugins install mattpocock-skills
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 或在 Claude Code 会话内
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /plugin install mattpocock-skills
+    </p>
+  </section>
+
+  <p style="margin: 15px 0; font-size: 15px; color: #666; line-height: 1.8;">
+    官方市场直装，不用先 add marketplace。Matt 发新版会自动更新，你订阅的是一份只读副本。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式二：skills.sh 文件式（可编辑，支持 Codex 等）</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 交互式选择要装哪些 skill
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      npx skills@latest add mattpocock/skills
+    </p>
+  </section>
+
+  <p style="margin: 15px 0; font-size: 15px; color: #666; line-height: 1.8;">
+    把 skill 文件写进你的仓库，你拥有它们、可以改。想拉新版跑 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npx skills update</code>。两种方式选一种就行，都装会重复。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式三：直接告诉 Agent</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      帮我安装 github.com/mattpocock/skills 中的 grill-me skill
+    </p>
+  </section>
+
+  <!-- 章节04：实战 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战：一次完整的拷问</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    假设你要给项目加一个登录功能。不装 grill-me，你会直接说"加个登录"，AI 闷头写 500 行。装了 grill-me，流程变成这样：
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">触发拷问</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 方式一：斜杠命令
+    </p>
+    <p style="margin: 0 0 8px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /grill-me
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 方式二：自然语言
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      grill me on this plan: 给项目加登录功能
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">拷问过程（模拟）</p>
+
+  <section style="margin: 10px 0; padding: 20px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #00897B; line-height: 1.8;">
+      <strong>AI Q1：</strong>鉴权方式用哪种？<em>推荐：账号密码 + JWT，因为项目已有用户表</em>
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #333; line-height: 1.8;">
+      <strong>你：</strong>用 OAuth，接 GitHub 和 Google
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #00897B; line-height: 1.8;">
+      <strong>AI Q2：</strong>那密码策略问题跳过。OAuth 回调地址用哪个域名？<em>推荐：localhost:3000/auth/callback 开发期，生产配 yourapp.com</em>
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #333; line-height: 1.8;">
+      <strong>你：</strong>同意推荐
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #00897B; line-height: 1.8;">
+      <strong>AI Q3：</strong>Session 过期时间？<em>推荐：7 天，refresh token 30 天</em>
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #333; line-height: 1.8;">
+      <strong>你：</strong>session 1 天，refresh 7 天，安全优先
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #00897B; line-height: 1.8;">
+      <strong>AI Q4：</strong>失败登录要锁定吗？<em>推荐：5 次失败锁 15 分钟，但你用了 OAuth，这条只对绑定本地账号的场景生效</em>
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #333; line-height: 1.8;">
+      <strong>你：</strong>暂不绑本地账号，跳过
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    注意几个细节：Q1 选了 OAuth 后，Q4 自动标注"这条对你不太生效"，这就是 design tree 在工作，上游决策砍掉了下游问题。每个问题都带推荐答案，你只需说"同意"或改。整个流程通常 30-45 分钟，但省下的是后面回炉重写的两小时。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    拷问结束后，AI 会和你确认"shared understanding"（共识），确认后才动手写代码。这跟 <strong style="color: #00897B;">Planning with Files</strong> 把计划写进 task_plan.md 持久化是互补的，grill-me 负责把需求逼清楚，Planning with Files 负责把逼清楚的计划存下来防 AI 健忘（参见《Planning with Files AI 健忘症解决方案》）。
+  </p>
+
+  <!-- 章节05：衍生版本 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">衍生版本：从拷问到自动驾驶</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    grill-me 太火了，社区在它基础上长出了几个衍生版本，把"拷问"扩展成了完整的自动化链路。
+  </p>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 580px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">版本</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">在 grill-me 上加了什么</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">仓库</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">drill-me</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">拷问 + 自动模式，AI 自己走完决策树</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">lukeselr/claude-autonomy-kit</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">autopilot-loop</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">拷问 → 构建 → 测试 → 提交，自动循环</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">lukeselr/claude-autonomy-kit</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">grill-with-docs</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">拷问时对照项目 CONTEXT.md 术语表 + 写 ADR</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">mattpocock/skills（官方）</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">grill-me-codex</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">Claude 拷问 + Codex 对抗审查 + Codex 构建</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">chaseai-yt/grill-me-codex</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    最值得说的是 <strong style="color: #00897B;">Claude Autonomy Kit</strong>（lukeselr 出品），它把 grill-me 扩展成四件套。灵感来自 Boris Cherny（Claude Code 的创造者）的一句话：<em>"我不再 prompt Claude 了。我让循环跑着。我的工作是写循环。"</em> 这套 kit 就是教你写循环的：grill-me 对齐需求 → drill-me 自动解决策 → autopilot-loop 自动构建测试提交。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">安装 Claude Autonomy Kit</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 克隆仓库后复制 skill
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      cp -R skills/* ~/.claude/skills/
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">grill-me-codex</strong>（chaseai-yt 出品）走得更远：Act 1 用 Claude 拷问你锁定计划，Act 2 把计划交给 OpenAI Codex 做对抗性审查（换个模型挑刺，因为同一个模型不能给自己改卷），Act 3 角色翻转，Codex 写代码，Claude review diff。双模型交叉验证，是 grill-me 在多模型协作上的延伸。
+  </p>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：4 个常见问题</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; border-left: 4px solid #ffb300;">
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 1：拷问太久，30 分钟还没开始写</strong><br>
+      grill-me 是 user-invoked skill（只能你手动触发，AI 不会自作主张启动）。对于 trivial 任务（改个文案、调个样式）不需要拷问，直接说就行。Matt 自己说："Skip it for trivial or fully-specified tasks。" 它是为 non-trivial 设计的。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 2：AI 不按 design tree 走，跳着问</strong><br>
+      这通常是模型能力不够。grill-me 依赖模型理解"design tree"和"dependency"概念，推荐用 Claude Sonnet 4 以上。如果跳着问，可以在回答后补一句"先解决上游决策再问下游"。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 3：推荐答案总是"默认选项"，不够 sharp</strong><br>
+      推荐答案的质量取决于 AI 对你项目的理解。首次用之前，先让 AI 读一遍代码库（"explore the codebase"那条指令就会触发）。也可以配合 <strong style="color: #00897B;">grill-with-docs</strong> 版本，它会读你的 CONTEXT.md 术语表，推荐更贴合项目。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 4：两种安装方式都装了，skill 出现两份</strong><br>
+      Matt 在 README 里明确警告："installing both leaves you with every skill twice。" 插件式和文件式选一种。如果误装了双份，删掉 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">~/.claude/skills/</code> 里手动复制的那些，保留插件版即可。
+    </p>
+  </section>
+
+  <!-- 对比表 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">横向对比：grill-me vs Plan Mode vs Superpowers</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">工具</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">核心理念</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">触发方式</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">推荐答案</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">grill-me</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">先拷问再动手，消解模糊需求</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">/grill-me 手动触发</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">✅ 每问必给</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">Claude Plan Mode</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">先生成计划再执行</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">自动 / Shift+Tab</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">❌ 不问只列</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">Superpowers</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">5 步工程化流程</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">流程内置 brainstorming</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">部分场景给</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">Planning with Files</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">计划持久化防健忘</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">自动写 task_plan.md</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">❌ 不问只存</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单说：<strong style="color: #00897B;">Plan Mode</strong> 是"AI 列计划给你看"，单向输出；<strong style="color: #00897B;">grill-me</strong> 是"AI 问你问题"，双向对齐。Plan Mode 更像"先给你看菜单"，grill-me 更像"先把你脑子里的模糊需求逼清楚"。两者不冲突，可以先 grill-me 对齐，再让 Plan Mode 出执行计划。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    跟 <strong style="color: #00897B;">Superpowers</strong> 的关系是包含式的：Superpowers 的第一步 Brainstorming 本质就是一次 grill，你可以把 grill-me 装进去当 Brainstorming 阶段的执行器。跟 <strong style="color: #00897B;">TDD-skills</strong> 的"先写测试再写代码"也是同一个哲学的不同阶段，grill-me 管的是"写代码前"，TDD 管的是"写代码时"（参见《TDD-skills 强制 AI 先写测试》）。
+  </p>
+
+  <!-- 金句收尾 -->
+  <section style="margin: 40px 0 30px 0; padding: 25px 20px; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); border-radius: 12px;">
+    <p style="margin: 0 0 8px 0; color: #fff; font-size: 17px; line-height: 1.8; text-align: center; font-weight: bold;">
+      "没有人确切知道自己想要什么。"
+    </p>
+    <p style="margin: 0; color: #fff; font-size: 15px; line-height: 1.8; text-align: center; opacity: 0.9;">
+      所以在 AI 动手前，先让它把你拷问到清楚。
+    </p>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="margin: 30px 0; padding: 20px; background: #E0F2F1; border: 2px solid #00897B; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; font-size: 17px; font-weight: bold; color: #00897B; text-align: center;">
+      仓库地址
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 14px; color: #555; text-align: center;">
+      github.com/mattpocock/skills
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #1a1a1a; text-align: center;">
+      一键安装命令
+    </p>
+    <section style="margin: 10px 0; padding: 12px; background: #1e1e1e; border-radius: 8px;">
+      <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; text-align: center;">
+        /plugin install mattpocock-skills
+      </p>
+    </section>
+  </section>
+
+  <!-- 评论区互动引导 -->
+  <p style="margin: 25px 0; font-size: 15px; color: #666; text-align: center; line-height: 1.8;">
+    你被 AI"坑"过最惨的一次需求跑偏是什么场景？<br>
+    评论区聊聊，看看 grill-me 能不能救你，咱们下一篇见。
+  </p>
+
+  <!-- Ending 渐变卡 -->
+  <section style="margin: 30px 0 0 0; padding: 20px; background: linear-gradient(135deg, #00897B 0%, #4DB6AC 100%); border-radius: 12px;">
+    <p style="margin: 0; color: #fff; font-size: 14px; text-align: center; letter-spacing: 2px;">
+      aitools 系列 · 第 23 篇
+    </p>
+    <p style="margin: 5px 0 0 0; color: #fff; font-size: 13px; text-align: center; opacity: 0.85;">
+      关注获取更多 AI 编程工具实战
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

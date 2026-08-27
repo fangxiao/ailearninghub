@@ -1,0 +1,18 @@
+graph TB
+    Start[创建Bot实例] --> LoadConfig[加载配置文件<br/>customer_service.yaml]
+    LoadConfig --> LoadPrompt[加载System Prompt<br/>system_prompt.md]
+    LoadPrompt --> InitComplete[初始化完成]
+    
+    LoadConfig --> ConfigData[配置数据<br/>LLM provider, model等]
+    LoadPrompt --> PromptData[Prompt内容<br/>角色定义、能力等]
+    
+    ConfigData --> Store[存储到self.config]
+    PromptData --> Store2[存储到self.system_prompt]
+    
+    Store --> InitComplete
+    Store2 --> InitComplete
+    
+    style Start fill:#e1f5fe,stroke:#0288d1
+    style InitComplete fill:#c8e6c9,stroke:#388e3c
+    style LoadConfig fill:#fff9c4,stroke:#fbc02d
+    style LoadPrompt fill:#fff9c4,stroke:#fbc02d

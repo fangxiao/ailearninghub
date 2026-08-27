@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 04</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">项目初始化与目录结构</span></h2>
+
+<p>技术选型定好了，接下来开始搭建项目。这一步很多人会忽略，但我认为<strong>目录结构是架构设计的实体化</strong>——你的代码组织方式，直接反映了你对系统的理解程度。</p>
+
+<p>很多人喜欢在写代码之前就画一个完美的目录结构图。我觉得没必要，<strong>先跑起来，再重构</strong>。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>目录结构不是一开始设计出来的，是随着系统复杂度增加，逐步演化出来的。但最初的结构要定好边界，给后期演化留足空间。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">Monorepo架构：为什么前后端放一个仓库？</span></h3>
+
+<p>myAgent采用<strong>Monorepo</strong>架构——前后端代码放在同一个Git仓库里。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #f8f8f2">selfclaw/</span>
+<span style="color: #f8f8f2">├── frontend/          </span><span style="color: #a8a8a8; font-style: italic;"># Next.js 14 App Router</span>
+<span style="color: #f8f8f2">├── backend/           </span><span style="color: #a8a8a8; font-style: italic;"># Python FastAPI</span>
+<span style="color: #f8f8f2">├── shared/            </span><span style="color: #a8a8a8; font-style: italic;"># 共享类型定义</span>
+<span style="color: #f8f8f2">├── docker-compose.yml</span>
+<span style="color: #f8f8f2">└── README.md</span></code></pre>
+
+<p>为什么不用两个独立仓库？</p>
+
+<ul>
+<li><strong>共享类型更方便</strong>——TypeScript的类型定义可以直接给Python用</li>
+<li><strong>版本同步</strong>——API改了，类型定义跟着改，不容易漏</li>
+<li><strong>一次clone搞定所有</strong>——新人上手成本低</li>
+</ul>
+
+<p>为什么不装NPM Workspace或者Python Poetry？<strong>因为没必要。</strong>这个项目规模还不到需要这些工具的时候。简单即美。</p>
+
+<h3><span class="icon">2</span><span class="title-text">Shared包：共享类型定义</span></h3>
+
+<p>Shared目录是myAgent的核心设计之一。<strong>前后端的类型定义，只在这里写一次。</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #f8f8f2">shared/</span>
+<span style="color: #f8f8f2">├── types/</span>
+<span style="color: #f8f8f2">│   ├── bot.ts        </span><span style="color: #a8a8a8; font-style: italic;"># Bot相关类型</span>
+<span style="color: #f8f8f2">│   ├── plugin.ts     </span><span style="color: #a8a8a8; font-style: italic;"># 插件相关类型</span>
+<span style="color: #f8f8f2">│   └── workflow.ts   </span><span style="color: #a8a8a8; font-style: italic;"># 工作流相关类型</span>
+<span style="color: #f8f8f2">├── python/</span>
+<span style="color: #f8f8f2">│   └── models.py     </span><span style="color: #a8a8a8; font-style: italic;"># Pydantic模型（从types生成或手写）</span>
+<span style="color: #f8f8f2">└── package.json     </span><span style="color: #a8a8a8; font-style: italic;"># TypeScript编译</span></code></pre>
+
+<p>类型定义示例：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">typescript</span></span><code><span style="color: #a8a8a8; font-style: italic;">// shared/types/bot.ts</span>
+<span style="color: #66d9ef">export</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">interface</span><span style="color: #f8f8f2"> BotConfig {</span>
+<span style="color: #f8f8f2">  id: string;</span>
+<span style="color: #f8f8f2">  name: string;</span>
+<span style="color: #f8f8f2">  description: string;</span>
+<span style="color: #f8f8f2">  model: </span><span style="color: #66d9ef">string</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">  temperature: number;</span>
+<span style="color: #f8f8f2">  maxTokens: number;</span>
+<span style="color: #f8f8f2">  plugins: string[];    </span><span style="color: #a8a8a8; font-style: italic;">// 启用的插件ID列表</span>
+<span style="color: #f8f8f2">  workflowId?: string;  </span><span style="color: #a8a8a8; font-style: italic;">// 关联的工作流</span>
+<span style="color: #f8f8f2">  status: </span><span style="color: #e6db74">'draft'</span><span style="color: #f8f8f2"> | </span><span style="color: #e6db74">'published'</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #66d9ef">export</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">interface</span><span style="color: #f8f8f2"> BotMessage {</span>
+<span style="color: #f8f8f2">  id: string;</span>
+<span style="color: #f8f8f2">  botId: string;</span>
+<span style="color: #f8f8f2">  role: </span><span style="color: #e6db74">'user'</span><span style="color: #f8f8f2"> | </span><span style="color: #e6db74">'assistant'</span><span style="color: #f8f8f2"> | </span><span style="color: #e6db74">'system'</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">  content: string;</span>
+<span style="color: #f8f8f2">  createdAt: string;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+
+<p><strong>类型即文档</strong>。前端看到`BotConfig`就知道Bot需要哪些字段，后端看到就知道API要返回什么格式。这就是共享类型的价值。</p>
+
+<h3><span class="icon">3</span><span class="title-text">Frontend目录：Next.js App Router</span></h3>
+
+<p>前端用Next.js 14的App Router，这是目前React SSR的最新方案。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #f8f8f2">frontend/</span>
+<span style="color: #f8f8f2">├── app/</span>
+<span style="color: #f8f8f2">│   ├── page.tsx               </span><span style="color: #a8a8a8; font-style: italic;"># 首页</span>
+<span style="color: #f8f8f2">│   ├── layout.tsx             </span><span style="color: #a8a8a8; font-style: italic;"># 根布局</span>
+<span style="color: #f8f8f2">│   ├── bots/</span>
+<span style="color: #f8f8f2">│   │   ├── page.tsx           </span><span style="color: #a8a8a8; font-style: italic;"># Bot列表页</span>
+<span style="color: #f8f8f2">│   │   ├── new/page.tsx       </span><span style="color: #a8a8a8; font-style: italic;"># 创建Bot</span>
+<span style="color: #f8f8f2">│   │   └── [id]/</span>
+<span style="color: #f8f8f2">│   │       ├── page.tsx       </span><span style="color: #a8a8a8; font-style: italic;"># Bot详情</span>
+<span style="color: #f8f8f2">│   │       └── edit/page.tsx  </span><span style="color: #a8a8a8; font-style: italic;"># 编辑Bot</span>
+<span style="color: #f8f8f2">│   └── api/</span>
+<span style="color: #f8f8f2">│       └── bots/</span>
+<span style="color: #f8f8f2">│           └── route.ts       </span><span style="color: #a8a8a8; font-style: italic;"># API Routes</span>
+<span style="color: #f8f8f2">├── components/</span>
+<span style="color: #f8f8f2">│   ├── ui/                    </span><span style="color: #a8a8a8; font-style: italic;"># 基础UI组件</span>
+<span style="color: #f8f8f2">│   ├── bot/                   </span><span style="color: #a8a8a8; font-style: italic;"># Bot相关组件</span>
+<span style="color: #f8f8f2">│   └── workflow/              </span><span style="color: #a8a8a8; font-style: italic;"># 工作流相关</span>
+<span style="color: #f8f8f2">├── lib/</span>
+<span style="color: #f8f8f2">│   └── api.ts                 </span><span style="color: #a8a8a8; font-style: italic;"># API调用封装</span>
+<span style="color: #f8f8f2">├── package.json</span>
+<span style="color: #f8f8f2">└── next.config.js</span></code></pre>
+
+<p>App Router的核心是<strong>约定式路由</strong>。文件路径就是路由，不需要额外配置。</p>
+
+<h3><span class="icon">4</span><span class="title-text">Backend目录：FastAPI分层</span></h3>
+
+<p>后端采用<strong>分层架构</strong>：API层 → Service层 → Repository层。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #f8f8f2">backend/</span>
+<span style="color: #f8f8f2">├── api/</span>
+<span style="color: #f8f8f2">│   ├── bots.py         </span><span style="color: #a8a8a8; font-style: italic;"># Bot相关API</span>
+<span style="color: #f8f8f2">│   ├── plugins.py      </span><span style="color: #a8a8a8; font-style: italic;"># 插件相关API</span>
+<span style="color: #f8f8f2">│   └── workflows.py    </span><span style="color: #a8a8a8; font-style: italic;"># 工作流相关API</span>
+<span style="color: #f8f8f2">├── core/</span>
+<span style="color: #f8f8f2">│   ├── agent.py        </span><span style="color: #a8a8a8; font-style: italic;"># Agent核心循环</span>
+<span style="color: #f8f8f2">│   ├── event_bus.py    </span><span style="color: #a8a8a8; font-style: italic;"># 事件总线</span>
+<span style="color: #f8f8f2">│   └── config.py       </span><span style="color: #a8a8a8; font-style: italic;"># 配置管理</span>
+<span style="color: #f8f8f2">├── services/</span>
+<span style="color: #f8f8f2">│   ├── bot_service.py  </span><span style="color: #a8a8a8; font-style: italic;"># Bot业务逻辑</span>
+<span style="color: #f8f8f2">│   └── memory_service.py</span><span style="color: #a8a8a8; font-style: italic;"># 记忆业务逻辑</span>
+<span style="color: #f8f8f2">├── repositories/</span>
+<span style="color: #f8f8f2">│   ├── bot_repo.py     </span><span style="color: #a8a8a8; font-style: italic;"># Bot数据访问</span>
+<span style="color: #f8f8f2">│   └── message_repo.py  </span><span style="color: #a8a8a8; font-style: italic;"># 消息数据访问</span>
+<span style="color: #f8f8f2">├── models/</span>
+<span style="color: #f8f8f2">│   └── database.py     </span><span style="color: #a8a8a8; font-style: italic;"># SQLAlchemy模型</span>
+<span style="color: #f8f8f2">├── main.py</span>
+<span style="color: #f8f8f2">└── requirements.txt</span></code></pre>
+
+<p>为什么分三层？</p>
+
+<ul>
+<li><strong>API层</strong>——只处理请求解析和响应格式化，不写业务逻辑</li>
+<li><strong>Service层</strong>——写业务逻辑，调用多个Repository或Service</li>
+<li><strong>Repository层</strong>——只管数据库操作，SQL写这里</li>
+</ul>
+
+<p>这种分层的好处是<strong>可测试性极强</strong>。Service层可以完全脱离数据库单独测试，Mock掉Repository就行。</p>
+
+<h3><span class="icon">5</span><span class="title-text">初始化脚本：一键启动</span></h3>
+
+<p>项目根目录的<code>init.sh</code>脚本负责初始化开发环境：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #a8a8a8; font-style: italic;">#!/bin/bash</span>
+<span style="color: #a8a8a8; font-style: italic;"># init.sh - 一键初始化开发环境</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 1. 安装前端依赖</span>
+<span style="color: #f8f8f2">cd frontend && npm install && cd ..</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 2. 安装后端依赖</span>
+<span style="color: #f8f8f2">cd backend && pip install -r requirements.txt && cd ..</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 3. 启动数据库服务</span>
+<span style="color: #f8f8f2">docker-compose up -d postgres redis</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 4. 初始化数据库</span>
+<span style="color: #f8f8f2">cd backend && python -m alembic upgrade head && cd ..</span>
+
+<span style="color: #f8f8f2">echo </span><span style="color: #e6db74">"初始化完成！运行 docker-compose up 启动服务"</span></code></pre>
+
+<p><strong>新同事clone代码后，执行一个脚本就能开始开发。</strong>这就是好架构的体现——降低协作成本。</p>
+
+<blockquote><p>💡 <strong>总结：</strong>myAgent采用Monorepo架构，前端Next.js、后端FastAPI，通过Shared包共享类型。目录结构是系统理解的实体化——先跑起来，再逐步优化。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-16-实战01-开发命令行工具-公众号版.md" class="key">AI Coding系列 16：项目结构设计</a></li>
+<li><a href="myAgent开发系列-03.html" class="key">myAgent开发系列 03：技术选型</a></li>
+</ul>
+
+<p>下期预告：第5篇《Bot数据模型设计》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

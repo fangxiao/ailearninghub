@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 19-20</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">动态调整</span></h2>
+
+<p>任务分解和执行引擎讲完了。但在实际执行中，计划往往赶不上变化。子任务可能失败、外部条件可能改变、用户需求可能调整——这时候就需要动态调整。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>好的执行系统不是一条道走到黑，而是能根据实际情况灵活应变。动态调整让Agent系统更健壮。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">回滚机制</span></h3>
+
+<p>当某个子任务失败时，需要回滚已完成的操作，保持系统状态一致。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">RollbackManager</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.history = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">save_state</span><span style="color: #f8f8f2">(self, state):</span>
+<span style="color: #f8f8f2">        self.history.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(state)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">rollback</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> self.history:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return None</span>
+<span style="color: #f8f8f2">        state = self.history.</span><span style="color: #a6e22e">pop</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> state</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">handle_failure</span><span style="color: #f8f8f2">(self, failed_task, context):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 回滚到上一个稳定状态</span>
+<span style="color: #f8f8f2">        previous_state = self.</span><span style="color: #a6e22e">rollback</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> previous_state:</span>
+<span style="color: #f8f8f2">            context.</span><span style="color: #a6e22e">restore</span><span style="color: #f8f8f2">(previous_state)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"action"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"replan"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"reason"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">f"Task {failed_task} failed"</span>
+<span style="color: #f8f8f2">        }</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">降级策略</span></h3>
+
+<p>当理想方案不可用时，自动切换到备选方案。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">FallbackStrategy</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.fallbacks = {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"image_gen"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"dalle"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"stable_diffusion"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"placeholder"</span><span style="color: #f8f8f2">],</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"search"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"google"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"bing"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"cache"</span><span style="color: #f8f8f2">],</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"llm"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"gpt-3.5"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"local"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute_with_fallback</span><span style="color: #f8f8f2">(self, capability, func, *args):</span>
+<span style="color: #f8f8f2">        fallbacks = self.fallbacks.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(capability, [])</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> fallback </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> fallbacks:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">                result = func(fallback, *args)</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> result</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">continue</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">raise</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">f"All fallbacks failed for {capability}"</span><span style="color: #f8f8f2">)</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">用户干预</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">DynamicExecutor</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute_with_intervention</span><span style="color: #f8f8f2">(self, plan):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> batch </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> plan:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> task </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> batch:</span>
+<span style="color: #f8f8f2">                result = self.</span><span style="color: #a6e22e">check_and_execute</span><span style="color: #f8f8f2">(task)</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> result.get(</span><span style="color: #e6db74">"needs_intervention"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">                    user_choice = self.</span><span style="color: #a6e22e">request_user_input</span><span style="color: #f8f8f2">(result)</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> user_choice == </span><span style="color: #e6db74">"abort"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">                        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span><span style="color: #e6db74">"status"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"aborted"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> user_choice == </span><span style="color: #e6db74">"modify"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">                        modified_plan = self.</span><span style="color: #a6e22e">replan</span><span style="color: #f8f8f2">(result)</span>
+<span style="color: #f8f8f2">                        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">execute_with_intervention</span><span style="color: #f8f8f2">(modified_plan)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">check_and_execute</span><span style="color: #f8f8f2">(self, task):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 高风险操作需要用户确认</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> task.get(</span><span style="color: #e6db74">"risk_level"</span><span style="color: #f8f8f2">) > </span><span style="color: #ae81ff">0.7</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span><span style="color: #e6db74">"needs_intervention"</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"task"</span><span style="color: #f8f8f2">: task}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">execute_task</span><span style="color: #f8f8f2">(task)</span></code></pre>
+
+<blockquote><p>💡 <strong>动态调整的三板斧：</strong>回滚恢复状态、降级切换方案、干预交给用户。这三招让系统面对意外时也能稳如泰山。</p></blockquote>
+
+<hr/>
+
+<h2><span class="title-text">协作模式设计</span></h2>
+
+<p>单个Agent能力有限，遇到复杂任务时需要多个Agent协作。这一篇，我们来看多Agent协作的基本模式。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>多Agent协作不是简单地把多个Agent串起来，而是要设计好协作模式，让它们各司其职、高效配合。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">三种协作模式</span></h3>
+
+<table>
+<tr><th>模式</th><th>特点</th><th>适用场景</th></tr>
+<tr><td>流水线</td><td>顺序执行，上游输出是下游输入</td><td>内容生产、数据处理</td></tr>
+<tr><td>主从</td><td>一个主Agent协调多个从Agent</td><td>复杂任务分解、团队管理</td></tr>
+<tr><td>对等</td><td>所有Agent平等协作，共享目标</td><td>头脑风暴、方案评审</td></tr>
+</table>
+
+<h3><span class="icon">2</span><span class="title-text">流水线模式</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">PipelineOrchestrator</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.stages = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_stage</span><span style="color: #f8f8f2">(self, name, agent):</span>
+<span style="color: #f8f8f2">        self.stages.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">({</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: name, </span><span style="color: #e6db74">"agent"</span><span style="color: #f8f8f2">: agent})</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, initial_input):</span>
+<span style="color: #f8f8f2">        context = {</span><span style="color: #e6db74">"input"</span><span style="color: #f8f8f2">: initial_input}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> stage </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.stages:</span>
+<span style="color: #f8f8f2">            agent = stage[</span><span style="color: #e6db74">"agent"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">            result = agent.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(context)</span>
+<span style="color: #f8f8f2">            context[stage[</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">]] = result</span>
+<span style="color: #f8f8f2">            context[</span><span style="color: #e6db74">"input"</span><span style="color: #f8f8f2">] = result  </span><span style="color: #a8a8a8; font-style: italic;"># 传递给下一个阶段</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> context</span>
+
+<span style="color: #f8f8f2">pipeline = </span><span style="color: #a6e22e">PipelineOrchestrator</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">pipeline.</span><span style="color: #a6e22e">add_stage</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"research"</span><span style="color: #f8f8f2">, research_agent)</span>
+<span style="color: #f8f8f2">pipeline.</span><span style="color: #a6e22e">add_stage</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"write"</span><span style="color: #f8f8f2">, write_agent)</span>
+<span style="color: #f8f8f2">pipeline.</span><span style="color: #a6e22e">add_stage</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"review"</span><span style="color: #f8f8f2">, review_agent)</span>
+<span style="color: #f8f8f2">result = pipeline.</span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"AI发展趋势"</span><span style="color: #f8f8f2">)</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">主从模式</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">MasterSlaveOrchestrator</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, master_agent):</span>
+<span style="color: #f8f8f2">        self.master = master_agent</span>
+<span style="color: #f8f8f2">        self.slaves = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">register_slave</span><span style="color: #f8f8f2">(self, name, agent, capabilities):</span>
+<span style="color: #f8f8f2">        self.slaves[name] = {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"agent"</span><span style="color: #f8f8f2">: agent,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"capabilities"</span><span style="color: #f8f8f2">: capabilities</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, task):</span>
+<span style="color: #f8f8f2">        subtasks = self.master.</span><span style="color: #a6e22e">decompose</span><span style="color: #f8f8f2">(task)</span>
+<span style="color: #f8f8f2">        results = {}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> subtask </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> subtasks:</span>
+<span style="color: #f8f8f2">            slave_name = self.master.</span><span style="color: #a6e22e">assign</span><span style="color: #f8f8f2">(subtask, self.slaves)</span>
+<span style="color: #f8f8f2">            slave = self.slaves[slave_name][</span><span style="color: #e6db74">"agent"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">            results[subtask[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">]] = slave.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(subtask)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.master.</span><span style="color: #a6e22e">aggregate</span><span style="color: #f8f8f2">(results)</span></code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">对等模式</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">PeerToPeerOrchestrator</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.peers = []</span>
+<span style="color: #f8f8f2">        self.message_bus = </span><span style="color: #a6e22e">MessageBus</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_peer</span><span style="color: #f8f8f2">(self, agent):</span>
+<span style="color: #f8f8f2">        self.peers.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(agent)</span>
+<span style="color: #f8f8f2">        agent.</span><span style="color: #a6e22e">set_message_bus</span><span style="color: #f8f8f2">(self.message_bus)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, goal):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 每个peer独立工作，通过message bus共享进展</span>
+<span style="color: #f8f8f2">        threads = []</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> peer </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.peers:</span>
+<span style="color: #f8f8f2">            t = </span><span style="color: #a6e22e">Thread</span><span style="color: #f8f8f2">(target=peer.</span><span style="color: #a6e22e">work</span><span style="color: #f8f8f2">, args=(goal,))</span>
+<span style="color: #f8f8f2">            threads.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(t)</span>
+<span style="color: #f8f8f2">            t.</span><span style="color: #a6e22e">start</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> t </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> threads:</span>
+<span style="color: #f8f8f2">            t.</span><span style="color: #a6e22e">join</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.message_bus.</span><span style="color: #a6e22e">get_all_results</span><span style="color: #f8f8f2">()</span></code></pre>
+
+<blockquote><p>💡 <strong>协作模式选择指南：</strong>流水线适合线性流程、主从适合任务分配、对等适合并行探索。根据场景选对模式，协作效率翻倍。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>Agent开发系列 17-18：任务分解 + 执行引擎</li>
+</ul>
+
+<p>下期预告：Agent开发系列 21-22 — 消息总线 + 团队编排</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

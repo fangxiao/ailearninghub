@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 02</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">模块边界与通信机制</span></h2>
+
+<p>上一期我们讲了四层架构，但架构只是蓝图。<strong>真正的问题是：这些层之间怎么通信？模块之间怎么解耦？</strong></p>
+
+<p>我见过太多"一开始写得爽，后来改一行代码崩整个系统"的惨案。问题出在哪？<strong>模块边界没划清楚。</strong></p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>好的架构不是"怎么代码写得多漂亮"，而是"将来改需求的时候能不能只改一个地方"。模块边界划清楚，是这一切的基础。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">myAgent有哪几个核心模块？</span></h3>
+
+<p>拆开myAgent，内部其实就四个核心模块：</p>
+
+<table>
+<tr><th>模块</th><th>职责</th><th>类比</th></tr>
+<tr><td><strong>Bot模块</strong></td><td>Bot的创建、配置、版本管理</td><td>一个活的AI助手</td></tr>
+<tr><td><strong>插件模块</strong></td><td>工具扩展、第三方能力接入</td><td>给助手装上各种技能</td></tr>
+<tr><td><strong>工作流模块</strong></td><td>流程编排、多步骤任务执行</td><td>帮助手规划复杂任务</td></tr>
+<tr><td><strong>记忆模块</strong></td><td>对话历史、知识存储、上下文</td><td>助手的大脑</td></tr>
+</table>
+
+<p>这四个模块，<strong>理论上可以独立开发、独立测试、独立部署</strong>。但它们又不是完全隔离的——需要通信。</p>
+
+<h3><span class="icon">2</span><span class="title-text">模块间通信：事件驱动架构</span></h3>
+
+<p>模块之间怎么通信？最笨的办法是直接调用：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 耦合的写法 —— 不要这样做</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> Bot:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        memory = Memory()      </span><span style="color: #a8a8a8; font-style: italic;"># 直接创建</span>
+<span style="color: #f8f8f2">        plugin = Plugin()      </span><span style="color: #a8a8a8; font-style: italic;"># 直接创建</span>
+<span style="color: #f8f8f2">        workflow = Workflow()  </span><span style="color: #a8a8a8; font-style: italic;"># 直接创建</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># ... 几十个直接调用</span></code></pre>
+
+<p>这种写法，短期爽，长期痛苦。某天你要把Memory换成另一个实现？<strong>改到吐血。</strong></p>
+
+<p>正确做法是<strong>事件驱动 + 依赖注入</strong>：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 解耦的写法 —— 事件总线模式</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> EventBus:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 单例，全局事件总线</span>
+<span style="color: #f8f8f2">    _subscribers: Dict[str, List[Callable]] = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">subscribe</span><span style="color: #f8f8f2">(self, event_type: str, handler: Callable):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> event_type </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self._subscribers:</span>
+<span style="color: #f8f8f2">            self._subscribers[event_type] = []</span>
+<span style="color: #f8f8f2">        self._subscribers[event_type].append(handler)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">publish</span><span style="color: #f8f8f2">(self, event: "Event"):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> handler </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self._subscribers.get(event.type, []):</span>
+<span style="color: #f8f8f2">            handler(event)</span></code></pre>
+
+<p>事件驱动的核心思想是：<strong>模块之间不直接调用，而是通过"发布事件"来通信</strong>。谁关心谁订阅，不需要的模块完全无感知。</p>
+
+<h3><span class="icon">3</span><span class="title-text">事件类型：哪些事件需要全局通信？</span></h3>
+
+<p>myAgent内部有这几类核心事件：</p>
+
+<table>
+<tr><th>事件</th><th>触发时机</th><th>谁关心</th></tr>
+<tr><td><code>bot.message</code></td><td>用户发消息</td><td>记忆模块、工作流模块</td></tr>
+<tr><td><code>bot.response</code></td><td>Bot生成回复</td><td>记忆模块、插件模块</td></tr>
+<tr><td><code>plugin.called</code></td><td>插件被调用</td><td>记忆模块、监控模块</td></tr>
+<tr><td><code>workflow.started</code></td><td>工作流启动</td><td>Bot模块、监控模块</td></tr>
+<tr><td><code>memory.stored</code></td><td>记忆被存储</td><td>监控模块</td></tr>
+</table>
+
+<p>通过事件机制，<strong>新增一个插件不需要改Bot代码</strong>，只需要订阅它关心的事件。反过来，Bot代码重构，插件也完全不受影响。</p>
+
+<h3><span class="icon">4</span><span class="title-text">模块内部：为什么不用的功能别乱加</span></h3>
+
+<p>说完模块间通信，再说说模块内部。</p>
+
+<p>我见过最糟糕的设计是：在一个函数里塞了20个参数，做了15件不同的事。<strong>这不是能力强，是缺乏边界意识。</strong></p>
+
+<p>每个模块应该有：</p>
+
+<ul>
+<li><strong>明确的输入</strong>——这个函数需要什么？</li>
+<li><strong>明确的输出</strong>——这个函数返回什么？</li>
+<li><strong>明确的职责</strong>——这件事我只做，不做别的</li>
+</ul>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 好的设计：一个类只做一件事</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BotConfig:</span>
+<span style="color: f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 只负责Bot配置的管理</span>
+<span style="color: #f8f8f2">    pass</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BotExecutor:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 只负责Bot的执行逻辑</span>
+<span style="color: #f8f8f2">    pass</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BotVersionManager:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 只负责Bot的版本控制</span>
+<span style="color: #f8f8f2">    pass</span></code></pre>
+
+<p><strong>专业的人做专业的事，专业的类做专业的事。</strong>一个Bot类干所有事，那是学生作业；生产级代码，一个类只干一件事。</p>
+
+<h3><span class="icon">5</span><span class="title-text">实战：怎么画出模块边界图</span></h3>
+
+<p>很多人说"我知道要划分子模块，但不知道怎么画边界"。</p>
+
+<p>我的经验是：<strong>先写代码，后画边界</strong>。不要想着一开始就把边界划清楚，这是不可能的。</p>
+
+<p>正确流程是：</p>
+
+<ol>
+<li>先写最核心的代码，让功能跑起来</li>
+<li>观察哪些地方在频繁修改</li>
+<li>把这些频繁修改的地方划成一个模块</li>
+<li>定义好模块的接口（Interface）</li>
+<li>后续修改只改模块内部，不影响其他模块</li>
+</ol>
+
+<p>myAgent的模块边界不是我想出来的，是<strong>根据实际开发过程中的改动频率总结出来的</strong>。</p>
+
+<blockquote><p>💡 <strong>总结：</strong>模块边界清晰是架构设计的核心。模块间通信用事件驱动，模块内职责单一。不要过度设计，但也不要设计不足。最好的架构是改需求的时候只需要改一个地方。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="myAgent开发系列-01.html" class="key">myAgent开发系列 01：先验知识与开发准备</a></li>
+<li><a href="Agent开发系列-21.html" class="key">Agent开发系列 21：消息总线 + 团队编排</a></li>
+</ul>
+
+<p>下期预告：第3篇《技术选型：为什么用现在的技术栈》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

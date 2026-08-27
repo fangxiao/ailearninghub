@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 Claude Code 拥有长期记忆——claude-mem 实战指南</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=glowing%20brain%20connected%20to%20database%20cylinder%20with%20flowing%20memory%20fragments%20between%20chat%20sessions%20minimalist%20tech%20illustration%20blue%20purple%20gradient%20digital%20art%20no%20text&image_size=landscape_16_9" alt="claude-mem 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    让 Claude Code 拥有长期记忆——claude-mem 实战指南
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    跨会话持久记忆，AI 不再健忘
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code 增强实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 做项目，你一定被这种"金鱼记忆"折磨过：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 昨天和 AI 讨论了半天的架构方案，今天新开对话，它一脸茫然地问"我们要做什么？"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 上周踩过的坑、定下的规范，本周 AI 又踩了一遍，理由是"我之前不知道"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 每次开新会话，都要花 10 分钟把项目背景、技术栈、约定重新讲一遍
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 团队成员各自和 AI 聊，记忆完全隔离，经验无法沉淀
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这不是 AI 模型不够聪明，问题出在<strong style="color: #00897B;">记忆机制</strong>。AI 的记忆只活在当前对话窗口里，对话一关，记忆全清。它就像一条只有 7 秒记忆的金鱼，每次见面都得重新认识你。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">claude-mem</strong> 就是来终结这种"金鱼记忆"的。它会在每次会话结束时不声不响地<strong style="color: #00897B;">自动捕获内容</strong>、用 AI <strong style="color: #00897B;">压缩成结构化记忆</strong>，并在你下次开会话时<strong style="color: #00897B;">自动注入相关上下文</strong>，你不用记，AI 替你记。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这个项目目前在 GitHub 上拿到了 <strong style="color: #00897B;">88.6k Star</strong>，是 Claude Code 生态里最热门的记忆类工具之一。今天我们就来完整拆解它：是什么、怎么装、怎么用、和 Planning with Files 这种手动方案比有什么优势。
+  </p>
+
+  <!-- 章节01 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">claude-mem 是什么</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    claude-mem 由 thedotmack 开源，定位非常明确：<strong style="color: #00897B;">给 AI 编程助手装一个跨会话的"长期记忆系统"</strong>。它是一个独立的记忆服务层（不是插件也不是 Skill），通过 hook 机制挂在你的 AI 编程工具上，悄悄记录、悄悄回忆。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你可以把它理解成"AI 的海马体"。人类大脑里的海马体负责把短期记忆转成长期记忆，claude-mem 干的就是这件事。它把每次会话里有价值的内容（决策、代码片段、踩坑记录、用户偏好）提取出来，压缩成结构化的记忆条目，存到本地数据库里。下次你需要时，它自动把相关的记忆取出来，塞进 AI 的上下文。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧠 自动捕获</strong>：会话结束自动提取关键信息，不用手动整理
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🗜️ AI 压缩</strong>：用模型把冗长对话压成精炼记忆，省存储、省 token
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔗 语义检索</strong>：基于向量数据库，按"意思"而非"关键词"召回相关记忆
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">💉 上下文注入</strong>：新会话开始自动注入历史记忆，无需手动复制粘贴
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🌐 多平台支持</strong>：Claude Code、OpenClaw、Codex、Gemini、Hermes、Copilot、OpenCode 等
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    技术栈也很硬核：<strong style="color: #00897B;">SQLite</strong> 存结构化数据，<strong style="color: #00897B;">ChromaDB</strong> 做向量检索，<strong style="color: #00897B;">Bun</strong> 跑运行时，<strong style="color: #00897B;">uv</strong> 管 Python 依赖。所有数据都存在你本地，不上传任何服务器。这点对涉及商业代码的项目很关键。
+  </p>
+
+  <!-- 章节02 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">两种安装方式</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    claude-mem 提供两种安装方式，适合不同的使用场景。<strong style="color: #00897B;">推荐第一种 npx 方式</strong>，一行命令搞定，不需要预装任何东西。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">方式一：npx 一键安装（推荐）</p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      最简单的方式，npx 会自动拉取最新版本并完成所有配置。适合不想折腾环境、第一次接触 claude-mem 的同学。
+    </p>
+  </section>
+
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">npx claude-mem install</p>
+  </section>
+
+  <p style="margin: 15px 0; text-align: justify; text-indent: 2em; font-size: 15px; line-height: 1.8; color: #666;">
+    执行后会自动检测你的 Claude Code 配置目录、写入 hook、初始化本地数据库。下次启动 Claude Code 时，记忆系统就开始工作了。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">方式二：plugin marketplace 安装</p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      如果你已经在用 Claude Code 的 plugin 体系（比如装过 Planning with Files、Superpowers），用这种方式更统一。两步走：先添加 marketplace，再安装插件。
+    </p>
+  </section>
+
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0 0 8px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin marketplace add thedotmack/claude-mem</p>
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin install claude-mem</p>
+  </section>
+
+  <p style="margin: 15px 0; text-align: justify; text-indent: 2em; font-size: 15px; line-height: 1.8; color: #666;">
+    两种方式装出来的功能完全一致，区别只在管理方式。如果你后续要升级、卸载，plugin 方式可以用 <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/plugin update</code> 和 <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/plugin remove</code> 管理；npx 方式则重新跑一次安装命令即可更新到最新版。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">前置依赖</strong>：需要先装好 <strong style="color: #00897B;">Bun</strong>（<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">curl -fsSL https://bun.sh/install | bash</code>）和 <strong style="color: #00897B;">uv</strong>（<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">curl -LsSf https://astral.sh/uv/install.sh | sh</code>）。第一次安装时 claude-mem 会自动检测并提示你装哪个。
+    </p>
+  </section>
+
+  <!-- 章节03 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">四大核心功能</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    claude-mem 的核心是一个"记忆闭环"：<strong style="color: #00897B;">捕获 → 压缩 → 存储 → 检索 → 注入</strong>。下面拆开看每一环。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">① 自动捕获会话内容</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      通过 Claude Code 的 hook 机制，每次会话结束时 claude-mem 会自动拉取本次对话的完整内容。你不需要做任何额外操作，关掉对话、跑 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/clear</code>、甚至 IDE 崩溃，记忆都会被捕获。捕获的内容包括你的指令、AI 的回复、执行的命令、修改的文件路径。
+    </p>
+  </section>
+
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">② AI 压缩成结构化记忆</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      原始对话又长又啰嗦，直接存进去既费空间又不好检索。claude-mem 会调用模型，把对话压成结构化的"记忆条目"，包含<strong style="color: #00897B;">决策摘要</strong>、<strong style="color: #00897B;">关键技术点</strong>、<strong style="color: #00897B;">踩坑记录</strong>、<strong style="color: #00897B;">用户偏好</strong>等字段。一次 30 分钟的对话，压缩后可能只剩几百字，但核心信息全保留。
+    </p>
+  </section>
+
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">③ 语义化上下文注入</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      这是最关键的一环。新会话开始时，claude-mem 会分析你这次的<strong style="color: #00897B;">意图</strong>，从 ChromaDB 里向量检索出最相关的若干条历史记忆，自动注入到 AI 的上下文里。注意，它<strong style="color: #00897B;">按相关性精挑细选</strong>，不会把所有历史一股脑塞进去（那会把上下文撑爆）。你问"上次那个登录 bug 怎么修的"，它就把修 bug 的记忆找出来；你问"我们的技术栈是什么"，它就把选型决策的记忆找出来。
+    </p>
+  </section>
+
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">④ Web 记忆查看器</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      记忆不能是黑盒，你得能看见 AI 到底"记住"了什么。claude-mem 提供一个本地 Web 查看器，启动后浏览器打开就能看到所有记忆条目：按时间排序、按项目过滤、按关键词搜索。发现记错的、过时的、不该记的，可以直接在 Web 界面里编辑或删除。<strong style="color: #00897B;">记忆对你完全透明可控</strong>。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    四个功能加起来，构成了一个"自学习"的记忆系统：用得越久，AI 对你和项目的理解越深，对话效率越高。这和 ECC（<em style="color: #00897B;">ecc-everything-claude-code-公众号版.html</em>）里提到的"AI 越用越懂你"是同一个思路，但 claude-mem 把它做成了独立的、可移植的记忆层。
+  </p>
+
+  <!-- 章节04 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：让 AI 记住你的项目</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    来看一个真实场景。假设你在做一个电商后台，技术栈是 Next.js + Prisma + PostgreSQL，团队约定<strong style="color: #00897B;">所有 API 必须写 Zod 校验、所有数据库操作必须走 Repository 层</strong>。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      第一次会话：确立约定
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      你和 AI 讨论项目结构，定下"API 走 Zod 校验、DB 走 Repository 层"的约定，写了第一个用户模块作为示范。会话结束，claude-mem 自动捕获并压缩成记忆：<strong>"项目采用 Next.js + Prisma + PostgreSQL，约定 API 必须用 Zod 校验，DB 操作走 Repository 层，参考 user 模块实现"</strong>。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      第二次会话：自动遵循
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      三天后你新开对话："加一个订单模块，CRUD 就行"。
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      claude-mem 检测到"加模块"这个意图，自动注入上次的记忆。AI 第一句话是：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-size: 14px; line-height: 1.8; color: #333; font-style: italic;">"基于我们之前约定的架构（Zod 校验 + Repository 层），我来创建订单模块，参考 user 模块的结构。"</p>
+    </section>
+    <p style="margin: 10px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      然后它直接按规范写代码，<strong style="color: #00897B;">你完全不需要重新解释约定</strong>。这就是记忆注入的威力。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      第三次会话：踩坑也被记住
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      你这次发现 Prisma 的一个事务坑，调试了 20 分钟才解决。claude-mem 把这个坑也压成记忆：<strong>"Prisma 事务中嵌套查询需要显式传 tx client，否则会报 P2003 错误"</strong>。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      两周后同事用同一个项目问 AI，AI 主动提醒"这里要注意事务嵌套的问题"，经验在团队里沉淀下来。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    注意一个细节：记忆是<strong style="color: #00897B;">按项目隔离</strong>的。你在 A 项目里的记忆不会污染 B 项目。这避免了"做电商项目时 AI 突然提起你两周前写博客时的技术选型"这种尴尬。
+  </p>
+
+  <!-- 章节05 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比 Planning with Files：自动 vs 手动</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    读到这里你可能想：这不就是 Planning with Files（<em style="color: #00897B;">planning-with-files-AI健忘症解决方案-公众号版.html</em>）想解决的同一个问题吗？没错，两者的目标都是"让 AI 不再健忘"，但路径完全不同。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Planning with Files 走的是<strong style="color: #00897B;">手动文件式记忆</strong>路线，3 个 Markdown 文件（task_plan / notes / deliverable），AI 主动读写，你能看到能编辑。claude-mem 走的是<strong style="color: #00897B;">自动向量式记忆</strong>路线，hook 自动捕获、AI 自动压缩、向量自动召回，你基本不用管。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 22%;">维度</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 39%;">claude-mem</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 39%;">Planning with Files</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">记忆方式</td>
+          <td style="padding: 10px 8px;">自动捕获 + AI 压缩 + 向量检索</td>
+          <td style="padding: 10px 8px;">手动维护 3 个 Markdown 文件</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">用户负担</td>
+          <td style="padding: 10px 8px;">几乎为零，全自动</td>
+          <td style="padding: 10px 8px;">需要 /plan、/planning 等命令驱动</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">召回机制</td>
+          <td style="padding: 10px 8px;">语义向量检索，按相关性召回</td>
+          <td style="padding: 10px 8px;">AI 主动读文件，全文加载</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">透明度</td>
+          <td style="padding: 10px 8px;">Web 查看器可看可改，但偏后台</td>
+          <td style="padding: 10px 8px;">文件就在项目里，完全可见可 Git</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">跨项目隔离</td>
+          <td style="padding: 10px 8px;">按项目自动隔离</td>
+          <td style="padding: 10px 8px;">每个项目独立目录，天然隔离</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">团队协作</td>
+          <td style="padding: 10px 8px;">本地数据库，需手动同步</td>
+          <td style="padding: 10px 8px;">文件可提交 Git，天然共享</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">Token 占用</td>
+          <td style="padding: 10px 8px;">只注入相关条目，省 token</td>
+          <td style="padding: 10px 8px;">整个文件加载，长项目可能撑上下文</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px; font-weight: bold;">最佳场景</td>
+          <td style="padding: 10px 8px;">个人长期项目、不想操心的"无感"记忆</td>
+          <td style="padding: 10px 8px;">团队项目、需要可追溯可审查的记忆</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一句话总结：<strong style="color: #00897B;">claude-mem 是"自动驾驶"，Planning with Files 是"手动挡"</strong>。前者省心，把记忆这件事彻底外包给系统；后者可控，每条记忆你都看得见、改得动、提交得进 Git。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    那能不能两个都用？可以，而且推荐。Superpowers（<em style="color: #00897B;">superpowers-把AI编程从凭感觉变按流程-公众号版.html</em>）管流程纪律，Planning with Files 管可见的项目记忆，claude-mem 管"无感"的长期记忆。三者各司其职，合在一起基本覆盖了日常开发会用到的场景，这也正是 ECC 想做的事情，只不过这里你可以自己拼装。
+  </p>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    claude-mem 用起来简单，但有几个坑提前知道能少走弯路。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑 1：依赖没装全，hook 静默失败</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      claude-mem 依赖 Bun 和 uv，缺一个就装不上去。但有时候装得不干净（比如 Bun 装了但 PATH 没配好），hook 会静默失败，你看着 Claude Code 正常跑，其实记忆一条都没记。装完先跑 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">claude-mem status</code> 确认服务正常，再开始用。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑 2：把敏感信息也记进去了</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      自动捕获是把双刃剑，它会把你贴在对话里的 <strong style="color: #c62828;">API Key、数据库密码、token</strong> 也记进本地数据库。虽然数据只在本地，但万一你后续把项目目录或数据库备份传到云端就麻烦了。<strong style="color: #00897B;">建议在 .env 里管理所有密钥，对话里别直接贴</strong>；万一贴了，去 Web 查看器里手动删掉那条记忆。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑 3：记忆数据库越来越大，拖慢启动</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      用半年后，记忆条目可能积累到几千条，ChromaDB 索引会变大，新会话启动时的检索变慢。定期去 Web 查看器清理过时记忆（比如已经废弃的项目的、半年没召回过的）。也可以用 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">claude-mem prune</code> 自动清理低相关度记忆。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑 4：误以为记忆"绝对准确"</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 压缩记忆时可能丢细节、甚至理解错。比如你当时讨论的是"暂定用 PostgreSQL"，压缩后可能变成"确定用 PostgreSQL"。涉及关键决策时，<strong style="color: #00897B;">别完全相信注入的记忆，让 AI 把记忆原文贴出来确认</strong>，或者直接去 Web 查看器核对。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑 5：多机协作时记忆不同步</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      记忆数据库在本地，公司电脑和家里电脑的记忆是隔离的。如果你跨设备办公，需要手动同步 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 13px;">~/.claude-mem/</code> 目录（用 syncthing、iCloud 或 git 都行）。团队协作场景下更麻烦，这也是为什么团队项目我们更推荐 Planning with Files。
+    </p>
+  </section>
+
+  <!-- 适合场景 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">这些场景最值</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">① 个人长期项目</strong>：一个项目做几个月，AI 越用越懂你的代码风格和偏好</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">② 频繁切项目</strong>：手上同时好几个项目，AI 不会把 A 项目的约定带到 B 项目</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">③ 学习新框架</strong>：踩过的坑自动沉淀，下次遇到类似问题 AI 主动提醒</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">④ 不爱整理笔记</strong>：懒人福音，系统替你记，你只管聊</p>
+    <p style="margin: 0;"><strong style="color: #00897B;">⑤ 多 AI 工具并用</strong>：今天用 Claude Code，明天用 Codex，记忆层打通不同工具</p>
+  </section>
+
+  <!-- 结尾 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">AI 不健忘，健忘的是它的"记忆机制"。claude-mem 用最克制的方式解决了这个问题：你不用学新命令、不用改工作流，装上之后该干嘛干嘛，记忆在后台悄悄积累。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">如果说 Planning with Files 是"显式的工程纪律"，那 claude-mem 就是"隐式的肌肉记忆"。两者不冲突，甚至可以叠加：用 Planning with Files 管项目级的可追溯记忆，用 claude-mem 管跨项目的长期偏好。<strong style="color: #00897B;">装好之后你会发现，跟 AI 开口前要交代的背景，越来越少了。</strong></p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- CTA -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🚀 立即体验</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/thedotmack/claude-mem</span>
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #666; line-height: 1.8;">
+      Stars：<strong style="color: #00897B;">88.6k</strong>　|　技术栈：SQLite + ChromaDB + Bun + uv
+    </p>
+    <p style="margin: 12px 0 8px 0; font-size: 15px; color: #666; line-height: 1.8;">推荐安装（npx 一键）：</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 8px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">npx claude-mem install</p>
+    </section>
+    <p style="margin: 12px 0 8px 0; font-size: 15px; color: #666; line-height: 1.8;">或用 plugin marketplace 安装：</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 8px 0;">
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin marketplace add thedotmack/claude-mem</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin install claude-mem</p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      💡 搭配推荐：Planning with Files（项目记忆）+ Superpowers（流程纪律）+ ECC（生态扩展）
+    </p>
+  </section>
+
+  <!-- 评论区引导 -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你被 AI 的"金鱼记忆"坑过最惨的一次是什么场景？装了 claude-mem 之后体验如何？欢迎在评论区聊聊。</p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 工具实战干货</p>
+    <p style="margin: 0; font-size: 13px; color: #bbb;">系列文章：Claude Code 增强实战</p>
+  </section>
+
+</section>
+
+</body>
+</html>

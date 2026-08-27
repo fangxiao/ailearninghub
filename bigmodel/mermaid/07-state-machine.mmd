@@ -1,0 +1,17 @@
+stateDiagram-v2
+    [*] --> Draft: Create Bot
+    Draft --> Published: Publish
+    Published --> Draft: Create New Version
+    Published --> Published: Update Config
+    Draft --> [*]: Delete
+    Published --> [*]: Unpublish
+
+    note right of Draft
+        Can freely edit
+        No user impact
+    end note
+
+    note right of Published
+        Locked for editing
+        Serving users
+    end note

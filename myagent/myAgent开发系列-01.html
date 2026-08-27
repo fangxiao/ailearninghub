@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 01</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">先验知识与开发准备</span></h2>
+
+<p>很多人用Coze/扣子、Dify，觉得好用。但好用背后的架构是怎么设计的？大多数文章只告诉你"怎么用"，没人告诉你"为什么这么设计"。<a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/13-架构解析-公众号版.md" class="key">(参考OpenClaw进阶篇13)</a></p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>不要急着写代码。在动手之前，先问自己：我真的准备好了吗？这一篇，我们先聊聊开发myAgent之前必须掌握的知识点，以及为什么这些知识比写代码更重要。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">myAgent是什么？为什么要做这个项目？</span></h3>
+
+<p><strong>myAgent = Self + Claw</strong>。寓意：自我定制、自我进化的智能体平台。</p>
+
+<p>OpenClaw（龙虾）是一个开源的AI Agent开发平台，功能强大，但部署门槛高、定制困难。<strong>myAgent的目标是：做一个更轻量、更易定制、更适合学习的版本。</strong></p>
+
+<table>
+<tr><th>对比项</th><th>OpenClaw</th><th>myAgent</th></tr>
+<tr><td>定位</td><td>企业级平台</td><td>学习+轻量定制</td></tr>
+<tr><td>部署</td><td>Docker/K8s</td><td>本地即可运行</td></tr>
+<tr><td>复杂度</td><td>高</td><td>中</td></tr>
+<tr><td>学习曲线</td><td>陡峭</td><td>平缓</td></tr>
+<tr><td>代码量</td><td>数十万行</td><td>几千行（核心）</td></tr>
+</table>
+
+<p><strong>myAgent不是要替代OpenClaw，而是提供一个更容易上手的学习版本。</strong>学完之后，你再去研究OpenClaw的完整代码，会发现一切都是相通的。</p>
+
+<h3><span class="icon">2</span><span class="title-text">开发myAgent之前，你需要掌握什么？</span></h3>
+
+<p>我见过太多人"只会调API"，不理解底层原理。这种人写的代码，<strong>bug一堆，优化无从下手，遇到问题就抓瞎</strong>。</p>
+
+<p>在动手之前，你至少需要掌握这四个系列的知识：</p>
+
+<table>
+<tr><th>系列</th><th>需要掌握的程度</th><th>为什么必须</th></tr>
+<tr><td><a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/00-系列导航.md" class="key">一步一步学习OpenClaw</a></td><td>会用，理解核心概念</td><td>知道"成品"长什么样</td></tr>
+<tr><td><a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" class="key">一步一步学习AI Coding</a></td><td>能独立开发完整项目</td><td>前端后端都要自己写</td></tr>
+<tr><td><a href="Agent开发系列-01.html" class="key">Agent开发系列</a></td><td>理解Agent核心循环</td><td>这是整个系统的灵魂</td></tr>
+<tr><td>本系列（myAgent开发）</td><td>从0到1构建平台</td><td>整合所有知识</td></tr>
+</table>
+
+<h3><span class="icon">3</span><span class="title-text">技术栈选择：为什么用这些技术？</span></h3>
+
+<p>很多人问我：为什么选Next.js + Python？为什么不选XXX？</p>
+
+<p><strong>技术选型的核心原则是：够用就行，不要过度设计。</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #a8a8a8; font-style: italic;"># myAgent技术栈</span>
+<span style="color: #a8a8a8; font-style: italic;">## 前端</span>
+<span style="color: #f8f8f2">Next.js 14 (App Router)     </span><span style="color: #a8a8a8; font-style: italic;"># React SSR框架，现代前端标配</span>
+<span style="color: #f8f8f2">TypeScript                 </span><span style="color: #a8a8a8; font-style: italic;"># 类型安全，减少bug</span>
+<span style="color: #f8f8f2">TailwindCSS                </span><span style="color: #a8a8a8; font-style: italic;"># 快速样式开发</span>
+<span style="color: #f8f8f2">React Flow                 </span><span style="color: #a8a8a8; font-style: italic;"># 工作流可视化</span>
+
+<span style="color: #a8a8a8; font-style: italic;">## 后端</span>
+<span style="color: #f8f8f2">Python 3.11+               </span><span style="color: #a8a8a8; font-style: italic;"># AI领域首选，生态丰富</span>
+<span style="color: #f8f8f2">FastAPI                    </span><span style="color: #a8a8a8; font-style: italic;"># 异步高性能，类型提示好</span>
+<span style="color: #f8f8f2">PostgreSQL                 </span><span style="color: #a8a8a8; font-style: italic;"># 关系数据存储</span>
+<span style="color: #f8f8f2">Redis                      </span><span style="color: #a8a8a8; font-style: italic;"># Session和缓存</span>
+<span style="color: #f8f8f2">pgvector                   </span><span style="color: #a8a8a8; font-style: italic;"># 向量检索（选pgvector因为一体化）</span></code></pre>
+
+<p><strong>为什么不选XXX？</strong></p>
+
+<ul>
+<li>为什么不选Django？→ 太重，Agent场景不需要ORM的复杂功能</li>
+<li>为什么不选Node.js后端？→ Python在AI领域生态碾压</li>
+<li>为什么不选MongoDB？→ 结构化数据用PostgreSQL更稳</li>
+<li>为什么不选Pinecone？→ pgvector够用，没必要多一个外部服务</li>
+</ul>
+
+<h3><span class="icon">4</span><span class="title-text">最小知识集：Agent核心循环</span></h3>
+
+<p>如果你的时间只够学一个知识点，那必须是<strong>Agent核心循环</strong>。<a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">(参考OpenClaw原理篇11)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># Agent核心循环 - 这是一切的基础</span>
+<span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">agent_loop</span><span style="color: #f8f8f2">(agent, user_input):</span>
+<span style="color: #f8f8f2">    context = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 1. 思考：基于上下文，让LLM决定下一步</span>
+<span style="color: #f8f8f2">        response = llm.</span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(context + [user_input])</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 2. 如果是最终回答，结束</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> response.is_final:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.content</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 3. 如果是工具调用，执行并把结果加回上下文</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> tool </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> response.tool_calls:</span>
+<span style="color: #f8f8f2">            result = </span><span style="color: #a6e22e">execute_tool</span><span style="color: #f8f8f2">(tool)</span>
+<span style="color: #f8f8f2">            context.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">f"Tool {tool.name} returned: {result}"</span><span style="color: #f8f8f2">)</span></code></pre>
+
+<p><strong>这个循环不理解清楚，后面的代码你根本看不懂。</strong>很多人觉得"不就是调API吗"，但真正的问题是：什么时候该调用工具？如何让多轮对话保持连贯？遇到失败怎么办？</p>
+
+<h3><span class="icon">5</span><span class="title-text">项目结构：一上来就要设计好</span></h3>
+
+<p>我见过太多"先写再说"的项目，最后代码成一团乱麻。<strong>myAgent的项目结构，在第一天就定好了。</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #a8a8a8; font-style: italic;"># myAgent项目结构</span>
+<span style="color: #f8f8f2">selfclaw/</span>
+<span style="color: #f8f8f2">├── frontend/              </span><span style="color: #a8a8a8; font-style: italic;"># Next.js前端</span>
+<span style="color: #f8f8f2">│   ├── app/</span>
+<span style="color: #f8f8f2">│   ├── components/</span>
+<span style="color: #f8f8f2">│   └── ...</span>
+<span style="color: #f8f8f2">├── backend/              </span><span style="color: #a8a8a8; font-style: italic;"># Python后端</span>
+<span style="color: #f8f8f2">│   ├── api/</span>
+<span style="color: #f8f8f2">│   ├── core/            </span><span style="color: #a8a8a8; font-style: italic;"># Agent核心循环</span>
+<span style="color: #f8f8f2">│   ├── plugins/         </span><span style="color: #a8a8a8; font-style: italic;"># 插件系统</span>
+<span style="color: #f8f8f2">│   └── ...</span>
+<span style="color: #f8f8f2">├── shared/              </span><span style="color: #a8a8a8; font-style: italic;"># 共享类型定义</span>
+<span style="color: #f8f8f2">└── docker-compose.yml   </span><span style="color: #a8a8a8; font-style: italic;"># 一键启动</span></code></pre>
+
+<p><strong>核心原则：前后端分离，共享类型定义。</strong>这样前端改需求不会波及后端，后端升级不会搞挂前端。</p>
+
+<h3><span class="icon">6</span><span class="title-text">准备好了吗？</span></h3>
+
+<p>如果上面的内容你都OK，那就可以开始了。如果有不懂的，<strong>先去补对应系列的知识</strong>。</p>
+
+<p>记住：<strong>磨刀不误砍柴工</strong>。很多人急着写代码，结果写出来的代码自己都看不懂。花费一周做准备，比花费一个月填坑值多了。</p>
+
+<blockquote><p>💡 <strong>总结：</strong>myAgent是一个学习导向的AI Agent平台项目。开发它需要：1) 理解OpenClaw的核心概念 2) 掌握AI Coding的全栈开发能力 3) 理解Agent核心循环。技术栈选型原则是"够用就行"。项目结构在第一天就定好，避免后期重构。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/00-系列导航.md" class="key">一步一步学习OpenClaw</a></li>
+<li><a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" class="key">一步一步学习AI Coding</a></li>
+<li><a href="Agent开发系列-01.html" class="key">Agent开发系列 01：从用户到创造者</a></li>
+</ul>
+
+<p>下期预告：第2篇《myAgent核心架构解析》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

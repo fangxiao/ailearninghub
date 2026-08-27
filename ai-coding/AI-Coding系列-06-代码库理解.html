@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代码库理解：让 AI 认识你的项目</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">25</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：掌握让 AI 理解大型项目的技巧，效率提升 3-5 倍</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：你已经掌握了什么？</span></h2>
+<p data-tool="mdnice编辑器"><strong>新手篇（01-05）你学会了：</strong></p>
+<p data-tool="mdnice编辑器">✅ <strong>第<span class="num">1</span>篇：</strong> 理解 AI Coding 的概念和价值</p>
+<p data-tool="mdnice编辑器">✅ <strong>第<span class="num">2</span>篇：</strong> 完成安装配置，运行第一个示例</p>
+<p data-tool="mdnice编辑器">✅ <strong>第<span class="num">3</span>篇：</strong> 掌握<span class="num">5</span>个核心操作（生成、解释、调试、重构、测试）</p>
+<p data-tool="mdnice编辑器">✅ <strong>第<span class="num">4</span>篇：</strong> 掌握提示词技巧，提高沟通效率</p>
+<p data-tool="mdnice编辑器">✅ <strong>第<span class="num">5</span>篇：</strong> 回顾总结，建立知识体系</p>
+<p data-tool="mdnice编辑器"><strong>你已经能够：</strong></p>
+<ul>
+<li><section>用 AI 生成、解释、优化代码</section></li>
+<li><section>写出高质量的提示词</section></li>
+<li><section>完成日常 60-70% 的编码工作</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>但你会发现一个问题：</strong></p>
+<p data-tool="mdnice编辑器">当你让 AI 修改一个大项目时，它经常不理解项目结构，给出的建议不准确。</p>
+<p data-tool="mdnice编辑器"><strong>问题根源：</strong> AI 不了解你的项目。</p>
+<p data-tool="mdnice编辑器"><strong>这一篇将教你：</strong> 如何让 AI "认识"你的项目，建立项目上下文，从而提供精准的帮助。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：为什么代码库理解这么重要？</span></h2>
+<p data-tool="mdnice编辑器"><strong>场景1：你刚接手一个老项目</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：请帮我优化这个函数<br/>AI：好的，这个函数在哪个文件里？<br/>你：我不知道，项目有500个文件...<br/>AI：...（无法帮助）</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景2：你在做一个新功能</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：我要添加用户权限功能<br/>AI：好的，你的项目结构是什么？<br/>你：我不知道从何说起...<br/>AI：...（无法给出准确建议）</code></pre>
+<p data-tool="mdnice编辑器"><strong>问题根源：</strong> AI 不了解你的项目，就像新同事第一天上班，不知道公司的代码库结构。</p>
+<p data-tool="mdnice编辑器"><strong>解决方法：</strong> 让 AI "认识"你的项目，建立项目上下文。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、快速回顾</span></h2>
+<p data-tool="mdnice编辑器"><strong>✅ 新手篇已完成：</strong> AI Coding 基础 + <span class="num">5</span>个核心操作 + 提示词技巧</p>
+<p data-tool="mdnice编辑器"><strong>🎯 当前能力：</strong> 能解决 80% 的日常问题，效率提升 2-3 倍</p>
+<p data-tool="mdnice编辑器"><strong>❓ 新挑战：</strong> 接手大项目时，AI 不了解项目结构，建议不准确</p>
+<p data-tool="mdnice编辑器"><strong>📚 本篇目标：</strong> 让 AI "认识"你的项目，建立上下文，效率提升 3-5 倍</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、什么是代码库理解？</span></h2>
+<p data-tool="mdnice编辑器"><strong>代码库理解 = 让 AI 知道：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 项目结构：有哪些目录和文件<br/>✅ 技术栈：用了哪些框架和库<br/>✅ 编码规范：代码风格和约定<br/>✅ 业务逻辑：核心功能和模块关系<br/>✅ 依赖关系：模块之间如何调用</code></pre>
+<p data-tool="mdnice编辑器"><strong>效果对比：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>没有理解</th>
+<th>有理解</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>"修改这个函数" → 哪个文件？</td>
+<td>"修改用户登录函数" → <code class="inline">auth/login.py</code></td>
+</tr>
+<tr>
+<td>"添加新功能" → 不知道在哪添加</td>
+<td>"添加权限功能" → 扩展 <code class="inline">middleware/</code></td>
+</tr>
+<tr>
+<td>效率：⭐⭐</td>
+<td>效率：⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">Claude Code 的优势</span></h3>
+<p data-tool="mdnice编辑器"><strong>200K tokens 上下文窗口 = 记住整个中小型项目</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>小项目（&lt;50个文件）：<br/>✅ 可以记住所有文件内容<br/><br/>中型项目（50-200个文件）：<br/>✅ 可以记住核心文件 + 项目结构<br/><br/>大型项目（&gt;200个文件）：<br/>✅ 可以记住关键模块 + 架构概览</code></pre>
+<p data-tool="mdnice编辑器"><strong>对比其他工具：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>工具</th>
+<th>上下文窗口</th>
+<th>项目规模支持</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="key">Claude</span> Code</td>
+<td>200K tokens</td>
+<td>✅ 中大型项目</td>
+</tr>
+<tr>
+<td>Cursor</td>
+<td>~8K tokens</td>
+<td>⚠️ 小型项目</td>
+</tr>
+<tr>
+<td><span class="key">GitHub</span> Copilot</td>
+<td>~8K tokens</td>
+<td>⚠️ 当前文件</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、建立项目上下文的 4 种方法</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">方法1：自动扫描（推荐新手）</span></h3>
+<p data-tool="mdnice编辑器"><strong>操作步骤：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 1. 进入项目目录</span><br/><span style="color: #F8F8F2">cd </span>/path/to/your/project<br/><br/><span style="color: #e0e0e0"># 2. 让 Claude Code 扫描项目</span><br/>claude-code<span style="color: #F8F8F2"> </span>scan<br/><br/><span style="color: #e0e0e0"># 3. 查看项目结构</span><br/>claude-code<span style="color: #F8F8F2"> </span>tree<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 会自动：</strong></p>
+<ul>
+<li><section>✅ 识别项目类型（<span class="key">Python</span>/JS/Go等）</section></li>
+<li><section>✅ 分析目录结构</section></li>
+<li><section>✅ 识别关键文件（README、package.json等）</section></li>
+<li><section>✅ 生成项目概览</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>示例输出：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>📁 项目分析结果<br/><br/>项目类型：Python Web Application<br/>框架：Flask 2.3<br/>规模：中型（127个文件，15,234行代码）<br/><br/>目录结构：<br/>├── app/<br/>│   ├── models/      # 数据模型（12个）<br/>│   ├── views/       # 视图层（24个）<br/>│   ├── services/    # 业务逻辑（18个）<br/>│   └── utils/       # 工具函数（8个）<br/>├── tests/           # 测试文件<br/>├── config/          # 配置文件<br/>└── requirements.txt # 依赖列表<br/><br/>核心模块：<br/>- auth: 用户认证（5个文件）<br/>- api: RESTful API（12个文件）<br/>- db: 数据库操作（6个文件）</code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong></p>
+<ul>
+<li><section>✅ 自动化，无需手动操作</section></li>
+<li><section>✅ 快速建立项目上下文</section></li>
+<li><section>✅ 适合新手</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong></p>
+<ul>
+<li><section>⚠️ 可能漏掉业务逻辑细节</section></li>
+<li><section>⚠️ 对复杂项目理解有限</section></li>
+</ul>
+<hr/>
+<h3 data-tool="mdnice编辑器"><span class="title-text">方法2：手动引导（推荐进阶）</span></h3>
+<p data-tool="mdnice编辑器"><strong>核心思路：</strong> 像带新同事一样，逐步介绍项目</p>
+<p data-tool="mdnice编辑器"><strong>步骤1：介绍项目背景</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户：<br/>这是一个 Flask 电商项目，主要功能包括：<br/>- 用户管理（注册、登录、权限）<br/>- 商品管理（CRUD、搜索、分类）<br/>- 订单系统（购物车、支付、物流）<br/>- 后台管理（数据统计、用户管理）<br/><br/>技术栈：<br/>- Flask 2.3<br/>- SQLAlchemy（ORM）<br/>- Redis（缓存）<br/>- Celery（异步任务）</code></pre>
+<p data-tool="mdnice编辑器"><strong>步骤2：展示项目结构</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户：<br/>项目结构如下：<br/><br/>app/<br/>├── models/          # 数据模型<br/>│   ├── user.py      # 用户模型<br/>│   ├── product.py   # 商品模型<br/>│   └── order.py     # 订单模型<br/>├── views/           # 视图层<br/>│   ├── auth.py      # 认证相关<br/>│   ├── product.py   # 商品相关<br/>│   └── order.py     # 订单相关<br/>├── services/        # 业务逻辑<br/>│   ├── auth_service.py<br/>│   ├── product_service.py<br/>│   └── order_service.py<br/>└── utils/           # 工具函数<br/>    ├── decorators.py<br/>    └── validators.py</code></pre>
+<p data-tool="mdnice编辑器"><strong>步骤3：说明编码规范</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户：<br/>我们的编码规范：<br/><br/>1. 文件命名：snake_case（如 user_service.py）<br/>2. 类命名：PascalCase（如 UserService）<br/>3. 函数命名：snake_case（如 get_user_by_id）<br/>4. 变量命名：snake_case（如 user_id）<br/>5. 常量命名：UPPER_CASE（如 MAX_RETRY_COUNT）<br/><br/>6. 每个模块包含：<br/>   - 类/函数定义<br/>   - 类型注解<br/>   - docstring<br/>   - 单元测试（在 tests/ 目录）</code></pre>
+<p data-tool="mdnice编辑器"><strong>步骤4：指出关键文件</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户：<br/>关键文件：<br/><br/>1. app/__init__.py - Flask 应用初始化<br/>2. config/config.py - 配置管理<br/>3. app/models/base.py - 数据模型基类<br/>4. app/utils/decorators.py - 通用装饰器（权限、缓存等）<br/>5. app/services/ - 业务逻辑核心<br/><br/>依赖关系：<br/>views → services → models<br/>     ↘ utils</code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong></p>
+<ul>
+<li><section>✅ 深度理解项目</section></li>
+<li><section>✅ 可以强调重点</section></li>
+<li><section>✅ 符合团队习惯</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong></p>
+<ul>
+<li><section>⚠️ 需要时间准备</section></li>
+<li><section>⚠️ 需要对项目熟悉</section></li>
+</ul>
+<hr/>
+<h3 data-tool="mdnice编辑器"><span class="title-text">方法3：README 驱动（推荐团队）</span></h3>
+<p data-tool="mdnice编辑器"><strong>核心思路：</strong> 写一份详细的 README，让 AI 自动理解</p>
+<p data-tool="mdnice编辑器"><strong>README 模板：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #F8F8F2"># 项目名称</span><br/><br/><span style="color: #e0e0e0">## 项目简介</span><br/>这是一个 Flask 电商项目，提供用户管理、商品管理、订单系统等功能。<br/><br/><span style="color: #e0e0e0">## 技术栈</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>Flask 2.3<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>SQLAlchemy（ORM）<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>Redis（缓存）<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>Celery（异步任务）<br/><br/><span style="color: #e0e0e0">## 项目结构</span><br/><br/>app/<br/>├── models/      # 数据模型<br/>├── views/       # 视图层<br/>├── services/    # 业务逻辑<br/>└── utils/       # 工具函数<br/><br/><span style="color: #e0e0e0">## 核心模块</span><br/><br/><span style="color: #e0e0e0">### 用户模块（app/models/user.py, app/views/auth.py）</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>用户注册、登录、权限管理<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>依赖：app/services/auth_service.py<br/><br/><span style="color: #e0e0e0">### 商品模块（app/models/product.py, app/views/product.py）</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>商品 CRUD、搜索、分类<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>依赖：app/services/product_service.py<br/><br/><span style="color: #e0e0e0">### 订单模块（app/models/order.py, app/views/order.py）</span><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>购物车、订单创建、支付<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>依赖：app/services/order_service.py<br/><br/><span style="color: #e0e0e0">## 编码规范</span><br/><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>文件命名：snake_case<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>类命名：PascalCase<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>函数命名：snake_case<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>必须添加类型注解和 docstring<br/><br/><span style="color: #e0e0e0">## 开发指南</span><br/><br/><span style="color: #66D9EF">1.</span> 新增功能：在 app/views/ 添加视图，app/services/ 添加业务逻辑<br/><span style="color: #66D9EF">2.</span> 数据模型：在 app/models/ 添加，继承 app/models/base.py<br/><span style="color: #66D9EF">3.</span> 测试：在 tests/ 目录添加单元测试<br/><br/><span style="color: #e0e0e0">## 常见任务</span><br/><br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>添加新 API：参考 app/views/product.py<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>添加新模型：参考 app/models/product.py<br/><span style="color: #66D9EF">-</span><span style="color: #F8F8F2"> </span>添加新服务：参考 app/services/product_service.py<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>使用方法：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># Claude Code 会自动读取 README</span><br/><span style="color: #F8F8F2">cd </span>/path/to/project<br/>claude-code<span style="color: #F8F8F2"> </span>chat<br/><br/><span style="color: #e0e0e0"># 直接开始对话，AI 已经理解项目</span><br/>你：帮我添加一个评论功能<br/>AI：好的，我会参考商品模块的结构，在<span style="color: #F8F8F2"> </span>app/models/<span style="color: #F8F8F2"> </span>添加<span style="color: #F8F8F2"> </span>comment.py，<br/><span style="color: #F8F8F2">    </span>在<span style="color: #F8F8F2"> </span>app/views/<span style="color: #F8F8F2"> </span>添加<span style="color: #F8F8F2"> </span>comment.py，在<span style="color: #F8F8F2"> </span>app/services/<span style="color: #F8F8F2"> </span>添加<span style="color: #F8F8F2"> </span>comment_service.py<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong></p>
+<ul>
+<li><section>✅ 一次编写，长期受益</section></li>
+<li><section>✅ 团队成员都能用</section></li>
+<li><section>✅ 方便项目交接</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong></p>
+<ul>
+<li><section>⚠️ 需要维护 README</section></li>
+<li><section>⚠️ 初次编写需要时间</section></li>
+</ul>
+<hr/>
+<h3 data-tool="mdnice编辑器"><span class="title-text">方法4：对话式探索（推荐实战）</span></h3>
+<p data-tool="mdnice编辑器"><strong>核心思路：</strong> 通过对话逐步建立理解</p>
+<p data-tool="mdnice编辑器"><strong>示例对话：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1轮：了解项目背景<br/>你：这是一个什么项目？<br/>AI：我看到这是一个 Flask 项目，有用户、商品、订单模块。<br/>    请问主要功能是什么？<br/><br/>你：这是一个电商后台，主要管理商品和订单。<br/><br/>第2轮：了解技术栈<br/>你：我们用的是 Flask 2.3，数据库是 PostgreSQL。<br/>AI：好的，我看到你用了 SQLAlchemy 作为 ORM。<br/><br/>第3轮：了解关键文件<br/>你：最关键的是 app/services/ 目录，包含所有业务逻辑。<br/>AI：明白了，我会重点关注 services 目录。<br/><br/>第4轮：开始实际工作<br/>你：帮我优化 app/services/order_service.py 的 create_order 函数。<br/>AI：好的，我已经理解了这个函数的作用和依赖关系...</code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong></p>
+<ul>
+<li><section>✅ 自然渐进</section></li>
+<li><section>✅ 可以随时调整</section></li>
+<li><section>✅ 适合探索新项目</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>缺点：</strong></p>
+<ul>
+<li><section>⚠️ 需要多轮对话</section></li>
+<li><section>⚠️ 效率相对较低</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、上下文管理技巧</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">Token 管理</span></h3>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 项目太大，超过 200K tokens 限制</p>
+<p data-tool="mdnice编辑器"><strong>解决方案：</strong> 优先级管理</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优先级1（必须包含）：<br/>✅ 项目结构概览<br/>✅ 核心模块代码<br/>✅ 关键配置文件<br/>✅ README 文档<br/><br/>优先级2（重要包含）：<br/>⭐ 常用工具函数<br/>⭐ 数据模型定义<br/>⭐ 接口定义<br/><br/>优先级3（按需包含）：<br/>⚠️ 测试代码<br/>⚠️ 文档注释<br/>⚠️ 示例代码<br/><br/>优先级4（可以省略）：<br/>❌ 第三方库代码<br/>❌ 生成的代码<br/>❌ 历史代码</code></pre>
+<p data-tool="mdnice编辑器"><strong>实际操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 方法1：指定关键文件</span><br/><span style="color: #F8F8F2">你</span><span style="color: #ED007E; background-color: #1E0010">：</span><span style="color: #F8F8F2">重点关注这些文件</span><span style="color: #ED007E; background-color: #1E0010">：</span><br/>    <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">app</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">services</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">order_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">py</span><br/>    <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">app</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">models</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">py</span><br/>    <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">app</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">views</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">py</span><br/>    <br/><span style="color: #e0e0e0"># 方法2：排除次要文件</span><br/><span style="color: #F8F8F2">你</span><span style="color: #ED007E; background-color: #1E0010">：</span><span style="color: #F8F8F2">忽略这些文件</span><span style="color: #ED007E; background-color: #1E0010">：</span><br/>    <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">tests</span><span style="color: #FF4689">/</span><br/>    <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">docs</span><span style="color: #FF4689">/</span><br/>    <span style="color: #FF4689">-</span> <span style="color: #F8F8F2">migrations</span><span style="color: #FF4689">/</span><br/><br/><span style="color: #e0e0e0"># 方法3：使用摘要</span><br/><span style="color: #F8F8F2">你</span><span style="color: #ED007E; background-color: #1E0010">：</span><span style="color: #F8F8F2">这个文件只看前50行就行</span><span style="color: #ED007E; background-color: #1E0010">，</span><span style="color: #F8F8F2">后面都是CRUD</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">模块化理解</span></h3>
+<p data-tool="mdnice编辑器"><strong>策略：</strong> 分块理解，按需加载</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>项目分层：<br/><br/>1. 架构层（全局理解）<br/>   - 目录结构<br/>   - 技术栈<br/>   - 模块关系<br/>   <br/>2. 模块层（按需理解）<br/>   - 用户模块<br/>   - 商品模块<br/>   - 订单模块<br/>   <br/>3. 文件层（具体理解）<br/>   - 单个文件代码<br/>   - 函数实现细节</code></pre>
+<p data-tool="mdnice编辑器"><strong>实际操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code># 第1步：先理解架构<br/>你：帮我理解整个项目的架构<br/><br/># 第2步：深入某个模块<br/>你：现在详细讲解用户认证模块<br/><br/># 第3步：查看具体文件<br/>你：分析 app/services/auth_service.py<br/><br/># 第4步：修改代码<br/>你：优化 auth_service.py 的 login 函数</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">长期记忆</span></h3>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 每次对话都要重新介绍项目</p>
+<p data-tool="mdnice编辑器"><strong>解决方案：</strong> 建立项目知识库</p>
+<p data-tool="mdnice编辑器"><strong>方法1：项目配置文件</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># .claude-code/project.yaml</span><br/><br/><span style="color: #FF4689">project</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;电商后台&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">type</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;flask&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">structure</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">models</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;app/models/&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">views</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;app/views/&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">services</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;app/services/&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">key_files</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  - </span><span style="color: #E6DB74">&quot;app/__init__.py&quot;</span><br/><span style="color: #F8F8F2">  - </span><span style="color: #E6DB74">&quot;config/config.py&quot;</span><br/><span style="color: #F8F8F2">  - </span><span style="color: #E6DB74">&quot;app/models/base.py&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">conventions</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">naming</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;snake_case&quot;</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">style</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;pep8&quot;</span><br/><span style="color: #F8F8F2">  </span><br/><span style="color: #FF4689">modules</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">auth</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">files</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #E6DB74">&quot;app/models/user.py&quot;</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #E6DB74">&quot;app/views/auth.py&quot;</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #E6DB74">&quot;app/services/auth_service.py&quot;</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>方法2：对话历史保存</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 保存对话历史</span><br/>claude-code<span style="color: #F8F8F2"> </span>save-session<span style="color: #F8F8F2"> </span>project-intro<br/><br/><span style="color: #e0e0e0"># 下次加载</span><br/>claude-code<span style="color: #F8F8F2"> </span>load-session<span style="color: #F8F8F2"> </span>project-intro<br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、大型项目处理技巧</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">项目太大怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 项目有 500+ 个文件，超过上下文限制</p>
+<p data-tool="mdnice编辑器"><strong>解决方案：</strong> 渐进式理解</p>
+<p data-tool="mdnice编辑器"><strong>步骤1：先理解核心</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：这是一个大型项目，先理解核心模块：<br/>    - 用户认证<br/>    - 数据库模型<br/>    - API 路由<br/><br/>AI：好的，我会重点理解这些核心模块。</code></pre>
+<p data-tool="mdnice编辑器"><strong>步骤2：按需深入</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：现在我要修改订单模块，请理解这部分代码。<br/>    文件：app/services/order_service.py<br/><br/>AI：好的，我会深入分析这个文件及其依赖。</code></pre>
+<p data-tool="mdnice编辑器"><strong>步骤3：保持上下文</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：记住，这个项目使用了：<br/>    - Redis 缓存<br/>    - Celery 异步任务<br/>    - 分层架构（views → services → models）<br/><br/>AI：好的，我记住了这些关键信息。</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">微服务项目怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 项目是微服务架构，多个服务</p>
+<p data-tool="mdnice编辑器"><strong>解决方案：</strong> 服务级别理解</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>项目结构：<br/><br/>services/<br/>├── user-service/      # 用户服务<br/>├── product-service/   # 商品服务<br/>└── order-service/     # 订单服务<br/><br/># 方法1：单独理解每个服务<br/>你：先理解 user-service<br/><br/># 方法2：理解服务间通信<br/>你：这些服务如何通信？<br/>AI：通过 REST API 和消息队列<br/><br/># 方法3：理解当前工作的服务<br/>你：我现在在改 order-service，请理解这个服务</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">遗留代码怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 项目是老代码，没有文档</p>
+<p data-tool="mdnice编辑器"><strong>解决方案：</strong> 反向理解</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code># 步骤1：让 AI 分析代码结构<br/>你：分析这个项目的结构<br/><br/>AI：我看到：<br/>    - 目录：app/, lib/, config/<br/>    - 主要文件：app.py, models.py<br/>    - 看起来是一个 Flask 项目<br/><br/># 步骤2：识别关键模块<br/>你：找出最重要的 10 个文件<br/><br/>AI：根据代码量和依赖关系，重要文件是：<br/>    1. app.py（主程序）<br/>    2. models.py（数据模型）<br/>    3. routes.py（路由定义）<br/>    ...<br/><br/># 步骤3：生成文档<br/>你：为这个项目生成 README<br/><br/>AI：好的，我已经生成了项目 README...</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、实战案例</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">案例1：快速上手新项目</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 刚入职，接手一个 Flask 项目</p>
+<p data-tool="mdnice编辑器"><strong>步骤：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code><span style="color: #e0e0e0"># 1. 扫描项目</span><br/><span style="color: #F8F8F2">cd </span>/path/to/project<br/>claude-code<span style="color: #F8F8F2"> </span>scan<br/><br/><span style="color: #e0e0e0"># 2. 生成项目概览</span><br/>你：请生成项目概览<br/><br/>AI：项目概览：<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>类型：Flask<span style="color: #F8F8F2"> </span>Web<span style="color: #F8F8F2"> </span>应用<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>规模：中型（127个文件）<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>主要功能：用户管理、商品管理、订单系统<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>技术栈：Flask、SQLAlchemy、Redis<br/><br/><span style="color: #e0e0e0"># 3. 理解核心模块</span><br/>你：详细讲解用户认证模块<br/><br/>AI：用户认证模块：<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>文件：app/views/auth.py,<span style="color: #F8F8F2"> </span>app/services/auth_service.py<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>功能：注册、登录、权限验证<br/><span style="color: #F8F8F2">    </span>-<span style="color: #F8F8F2"> </span>依赖：app/models/user.py<br/><br/><span style="color: #e0e0e0"># 4. 开始工作</span><br/>你：帮我添加邮箱登录功能<br/><br/>AI：好的，我会：<br/><span style="color: #F8F8F2">    </span><span style="color: #AE81FF">1</span>.<span style="color: #F8F8F2"> </span>在<span style="color: #F8F8F2"> </span>app/models/user.py<span style="color: #F8F8F2"> </span>添加<span style="color: #F8F8F2"> </span>email<span style="color: #F8F8F2"> </span>字段<br/><span style="color: #F8F8F2">    </span><span style="color: #AE81FF">2</span>.<span style="color: #F8F8F2"> </span>在<span style="color: #F8F8F2"> </span>app/services/auth_service.py<span style="color: #F8F8F2"> </span>添加邮箱登录方法<br/><span style="color: #F8F8F2">    </span><span style="color: #AE81FF">3</span>.<span style="color: #F8F8F2"> </span>在<span style="color: #F8F8F2"> </span>app/views/auth.py<span style="color: #F8F8F2"> </span>添加邮箱登录接口<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">案例2：大型项目重构</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 重构一个有 <span class="num">500</span>个文件的项目</p>
+<p data-tool="mdnice编辑器"><strong>步骤：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code># 1. 分层理解<br/>你：这个项目分层架构是什么？<br/><br/>AI：我看到三层：<br/>    - 表现层：views/<br/>    - 业务层：services/<br/>    - 数据层：models/<br/><br/># 2. 识别重构范围<br/>你：我要重构用户模块，需要改哪些文件？<br/><br/>AI：用户模块相关文件：<br/>    - app/models/user.py<br/>    - app/services/user_service.py（8个文件）<br/>    - app/views/user.py（5个文件）<br/>    - tests/test_user.py（3个文件）<br/>    <br/>    总共 17 个文件<br/><br/># 3. 分批处理<br/>你：先处理 models/user.py<br/><br/>AI：好的，我已经分析了这个文件...<br/><br/># 4. 保持一致性<br/>你：记住重构规范：<br/>    - 使用类型注解<br/>    - 添加 docstring<br/>    - 遵循 PEP 8<br/><br/>AI：好的，我会按照这些规范重构</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">建立项目上下文的时机</span></h3>
+<p data-tool="mdnice编辑器"><strong>最佳时机：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 开始新项目时<br/>✅ 接手他人项目时<br/>✅ 项目结构变更时<br/>✅ 开始大任务前</code></pre>
+<p data-tool="mdnice编辑器"><strong>不必要时机：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>❌ 修改单个文件时（AI 可以直接理解）<br/>❌ 写简单脚本时<br/>❌ 临时小修改时</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">项目文档维护</span></h3>
+<p data-tool="mdnice编辑器"><strong>推荐做法：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">markdown</span></span><code><span style="color: #F8F8F2"># README.md 结构</span><br/><br/><span style="color: #e0e0e0">## 项目简介</span><br/>（一句话说清楚项目是什么）<br/><br/><span style="color: #e0e0e0">## 技术栈</span><br/>（列出主要技术和版本）<br/><br/><span style="color: #e0e0e0">## 项目结构</span><br/>（目录树 + 关键文件说明）<br/><br/><span style="color: #e0e0e0">## 核心模块</span><br/>（每个模块的作用和关键文件）<br/><br/><span style="color: #e0e0e0">## 编码规范</span><br/>（命名、风格、最佳实践）<br/><br/><span style="color: #e0e0e0">## 开发指南</span><br/>（如何添加新功能、测试、部署）<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">团队协作</span></h3>
+<p data-tool="mdnice编辑器"><strong>团队规范：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 统一项目介绍模板<br/>2. 定期更新项目文档<br/>3. 共享项目上下文配置<br/>4. 代码审查时检查文档</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 代码库理解 = 让 AI 认识你的项目</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 项目结构<br/>- 技术栈<br/>- 编码规范<br/>- 业务逻辑<br/>- 依赖关系</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. 4种建立上下文的方法</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 自动扫描（新手推荐）<br/>✅ 手动引导（进阶推荐）<br/>✅ README 驱动（团队推荐）<br/>✅ 对话式探索（实战推荐）</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 上下文管理技巧</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- Token 管理（优先级）<br/>- 模块化理解（分层）<br/>- 长期记忆（知识库）</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 大型项目处理</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 渐进式理解<br/>- 服务级别理解<br/>- 反向理解</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">效率提升</span></h3>
+<p data-tool="mdnice编辑器"><strong>没有项目上下文：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>每次都要解释项目结构<br/>AI 理解不准确<br/>修改容易出错<br/>效率：⭐⭐</code></pre>
+<p data-tool="mdnice编辑器"><strong>有项目上下文：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>AI 准确理解项目<br/>快速定位代码<br/>修改准确高效<br/>效率：⭐⭐⭐⭐⭐<br/>提升：3-5 倍</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：新手总结：从入门到日常使用</section></li>
+<li><section>下一篇：多文件编辑：复杂重构不求人</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">6</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-03</p>
+<p data-tool="mdnice编辑器"><strong>让 AI 理解你的项目，就像让新同事快速上手，效率提升 3-5 倍！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

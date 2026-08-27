@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>基础操作：5个必会命令</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">15</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐ 初学者</p>
+<p data-tool="mdnice编辑器">你将收获：掌握 <span class="key">Claude</span> Code 的<span class="num">5</span>个核心操作</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾:从概念到实践</span></h2>
+<p data-tool="mdnice编辑器"><strong>前两篇我们完成了:</strong></p>
+<p data-tool="mdnice编辑器"><strong>第一篇:理解 AI Coding</strong></p>
+<ul>
+<li><section>什么是 AI Coding</section></li>
+<li><section>AI Coding <span class="key">Agent</span> 对比</section></li>
+<li><section><strong>AI Coding 能做什么</strong>（<span class="num">5</span>个核心能力:代码生成、代码解释、Bug修复、重构优化、测试生成）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>第二篇:完成安装配置</strong></p>
+<ul>
+<li><section>选择 Coding Plan</section></li>
+<li><section>注册并获取 <span class="key">API</span> Key</section></li>
+<li><section>安装配置 <span class="key">Claude</span> Code</section></li>
+<li><section>运行第一个示例</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>这一篇:学习具体操作</strong></p>
+<p data-tool="mdnice编辑器">→ 如何用 <span class="key">Claude</span> Code 实现 AI Coding 的<span class="num">5</span>个核心能力</p>
+<p data-tool="mdnice编辑器"><strong>上一篇你已经运行了第一个代码生成示例,这一篇我们将深入学习这<span class="num">5</span>个核心操作的高级用法。</strong></p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、代码生成实战</span></h2>
+<p data-tool="mdnice编辑器"><strong>上一篇你已经生成了第一个斐波那契数列函数,现在学习更高级的用法。</strong></p>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">详细需求的力量</span></h3>
+<p data-tool="mdnice编辑器"><strong>基础提示词:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用 Python 写一个计算斐波那契数列的函数</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 会生成:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">fibonacci</span><span style="color: #F8F8F2">(n):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;计算斐波那契数列第n项&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">n</span> <span style="color: #FF4689">&lt;=</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #AE81FF">0</span><br/>    <span style="color: #66D9EF">elif</span> <span style="color: #F8F8F2">n</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">1</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #AE81FF">1</span><br/>    <span style="color: #66D9EF">else</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">fibonacci(n</span><span style="color: #FF4689">-</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">fibonacci(n</span><span style="color: #FF4689">-</span><span style="color: #AE81FF">2</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 使用示例</span><br/><span style="color: #F8F8F2">print(fibonacci(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">))</span>  <span style="color: #e0e0e0"># 输出: 55</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>这是最基础的用法,但生成的代码还很简单。让我们看如何获得更好的结果。</strong></p>
+<p data-tool="mdnice编辑器"><strong>进阶提示词:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用 Python 写一个斐波那契数列函数:<br/><br/>要求:<br/>1. 支持递归和迭代两种实现<br/>2. 添加类型注解<br/>3. 包含边界检查<br/>4. 生成前n项的列表<br/>5. 包含性能优化(记忆化)<br/>6. 写出测试用例<br/><br/>输出格式:<br/>- 代码有详细注释<br/>- 包含使用示例</code></pre>
+<p data-tool="mdnice编辑器"><strong>这次 <span class="key">Claude</span> 生成的代码质量会显著提升:</strong></p>
+<ul>
+<li><section>✅ 两种实现方式</section></li>
+<li><section>✅ 完整的类型注解</section></li>
+<li><section>✅ 边界检查和错误处理</section></li>
+<li><section>✅ 性能优化</section></li>
+<li><section>✅ 完整的测试用例</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">实战技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1:指定代码风格</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用 Python 写一个排序函数:<br/><br/>风格要求:<br/>- 遵循 PEP 8 规范<br/>- 使用类型注解<br/>- 函数和变量命名清晰<br/>- 添加 docstring</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2:指定性能要求</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>实现一个快速排序:<br/><br/>性能要求:<br/>- 平均时间复杂度 O(n log n)<br/>- 空间复杂度 O(log n)<br/>- 使用原地排序</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧3:提供项目上下文</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我在做一个 Django 电商项目,需要一个商品搜索功能:<br/><br/>技术栈:<br/>- Django 3.2<br/>- PostgreSQL<br/>- Redis(缓存)<br/><br/>要求:<br/>- 支持关键词搜索<br/>- 支持价格区间筛选<br/>- 使用缓存优化</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、代码解释实战</span></h2>
+<p data-tool="mdnice编辑器"><strong>理解代码是开发者的重要能力。</strong></p>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">基础用法</span></h3>
+<p data-tool="mdnice编辑器"><strong>提问方式:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>解释这段代码:<br/><br/>def quicksort(arr):<br/>    if len(arr) &lt;= 1:<br/>        return arr<br/>    pivot = arr[len(arr) // 2]<br/>    left = [x for x in arr if x &lt; pivot]<br/>    middle = [x for x in arr if x == pivot]<br/>    right = [x for x in arr if x &gt; pivot]<br/>    return quicksort(left) + middle + quicksort(right)</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 的解释:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>这是快速排序的 Python 实现:<br/><br/>【核心思想】<br/>分治法:选一个基准值,把数组分成三部分<br/>- left:小于基准值的元素<br/>- middle:等于基准值的元素  <br/>- right:大于基准值的元素<br/><br/>【执行流程】<br/>1. 递归出口:数组长度 ≤ 1 时返回<br/>2. 选择基准:取中间元素作为 pivot<br/>3. 分割数组:遍历数组,分成三组<br/>4. 递归排序:对左右两部分递归调用<br/>5. 合并结果:left + middle + right<br/><br/>【时间复杂度】<br/>- 平均:O(n log n)<br/>- 最坏:O(n²)(数组已排序时)<br/><br/>【空间复杂度】<br/>- O(n):每次递归都创建新数组<br/><br/>【改进建议】<br/>可以使用原地排序优化空间复杂度到 O(log n)</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">深度解释技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>更详细的提问:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>深度解释这段代码:<br/><br/>1. 工作原理是什么?<br/>2. 有什么优缺点?<br/>3. 时间复杂度是多少?为什么?<br/>4. 有什么潜在问题?<br/>5. 如何改进?<br/>6. 适用场景是什么?<br/>7. 和其他排序算法对比?<br/><br/>[粘贴代码]</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">实战场景</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景1:理解别人代码</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我接手了一个项目,请帮我理解这个函数:<br/><br/>1. 这个函数的作用是什么?<br/>2. 输入输出是什么?<br/>3. 核心逻辑是什么?<br/>4. 有什么潜在问题?<br/>5. 如何优化?<br/><br/>[粘贴代码]</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景2:学习新技术</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我在学习 React Hooks,请解释这段代码:<br/><br/>1. useState 和 useEffect 在做什么?<br/>2. 为什么要在 useEffect 里返回一个函数?<br/>3. 依赖数组 [count] 是什么意思?<br/>4. 有什么常见错误?<br/><br/>[粘贴 React 代码]</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、Bug 修复实战</span></h2>
+<p data-tool="mdnice编辑器"><strong>Bug 修复是开发者的日常工作。</strong></p>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">基础用法</span></h3>
+<p data-tool="mdnice编辑器"><strong>提供错误信息:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>这段代码报错了,帮我修复:<br/><br/>错误信息:<br/>TypeError: 'NoneType' object is not iterable<br/><br/>代码:<br/>def get_user_names(users):<br/>    result = []<br/>    for user in users:<br/>        result.append(user['name'])<br/>    return result<br/><br/>data = None<br/>names = get_user_names(data)</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 的回复:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 问题分析:</span><br/><span style="color: #e0e0e0"># users 参数为 None,导致 for 循环报错</span><br/><br/><span style="color: #e0e0e0"># 修复方案:</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_user_names</span><span style="color: #F8F8F2">(users):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;安全地获取用户名列表&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">users</span> <span style="color: #FF4689">is</span> <span style="color: #66D9EF">None</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">[]</span><br/>    <br/>    <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[]</span><br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">users:</span><br/>        <span style="color: #e0e0e0"># 防御性编程:检查 user 是否有 &#39;name&#39; 键</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">and</span> <span style="color: #E6DB74">&#39;name&#39;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">user:</span><br/>            <span style="color: #F8F8F2">result</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(user[</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">])</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">result</span><br/><br/><span style="color: #e0e0e0"># 或者更简洁的写法:</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get_user_names_safe</span><span style="color: #F8F8F2">(users):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;使用列表推导式的简洁版本&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">[user[</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">(users</span> <span style="color: #FF4689">or</span> <span style="color: #F8F8F2">[])</span> <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">and</span> <span style="color: #E6DB74">&#39;name&#39;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">user]</span><br/><br/><span style="color: #e0e0e0"># 测试</span><br/><span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">None</span><br/><span style="color: #F8F8F2">print(get_user_names(data))</span>  <span style="color: #e0e0e0"># 输出: []</span><br/><br/><span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[{</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;Alice&#39;</span><span style="color: #F8F8F2">},</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;Bob&#39;</span><span style="color: #F8F8F2">}]</span><br/><span style="color: #F8F8F2">print(get_user_names(data))</span>  <span style="color: #e0e0e0"># 输出: [&#39;Alice&#39;, &#39;Bob&#39;]</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">完整的 Bug 报告</span></h3>
+<p data-tool="mdnice编辑器"><strong>提供完整的 Bug 报告:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>请帮我修复这个 Bug:<br/><br/>【错误信息】<br/>Traceback (most recent call last):<br/>  File "app.py", line 25, in &lt;module&gt;<br/>    result = calculate_average(numbers)<br/>ZeroDivisionError: division by zero<br/><br/>【代码】<br/>def calculate_average(numbers):<br/>    total = sum(numbers)<br/>    return total / len(numbers)<br/><br/>numbers = []<br/>result = calculate_average(numbers)<br/><br/>【预期行为】<br/>空列表应该返回 0,而不是报错<br/><br/>【环境】<br/>- Python 3.10<br/><br/>【请提供】<br/>1. 问题原因<br/>2. 修复方案(多个)<br/>3. 推荐方案和理由</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 的回复:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 问题原因:</span><br/><span style="color: #e0e0e0"># 当 numbers 为空列表时,len(numbers) = 0</span><br/><span style="color: #e0e0e0"># 导致除法运算 total / 0 抛出 ZeroDivisionError</span><br/><br/><span style="color: #e0e0e0"># 修复方案1:添加边界检查(推荐)</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_average</span><span style="color: #F8F8F2">(numbers):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;计算平均值,空列表返回 0&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">numbers:</span>  <span style="color: #e0e0e0"># 空列表检查</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #AE81FF">0</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">sum(numbers)</span> <span style="color: #FF4689">/</span> <span style="color: #F8F8F2">len(numbers)</span><br/><br/><span style="color: #e0e0e0"># 修复方案2:使用异常处理</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_average_v2</span><span style="color: #F8F8F2">(numbers):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;使用 try-except 处理&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">try</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">sum(numbers)</span> <span style="color: #FF4689">/</span> <span style="color: #F8F8F2">len(numbers)</span><br/>    <span style="color: #66D9EF">except</span> <span style="color: #A6E22E">ZeroDivisionError</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #AE81FF">0</span><br/><br/><span style="color: #e0e0e0"># 修复方案3:使用默认值</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_average_v3</span><span style="color: #F8F8F2">(numbers):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;使用 or 运算符&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">sum(numbers)</span> <span style="color: #FF4689">/</span> <span style="color: #F8F8F2">len(numbers)</span> <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">numbers</span> <span style="color: #66D9EF">else</span> <span style="color: #AE81FF">0</span><br/><br/><span style="color: #e0e0e0"># 测试</span><br/><span style="color: #F8F8F2">print(calculate_average([]))</span>        <span style="color: #e0e0e0"># 输出: 0</span><br/><span style="color: #F8F8F2">print(calculate_average([</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span><span style="color: #AE81FF">2</span><span style="color: #F8F8F2">,</span><span style="color: #AE81FF">3</span><span style="color: #F8F8F2">,</span><span style="color: #AE81FF">4</span><span style="color: #F8F8F2">]))</span> <span style="color: #e0e0e0"># 输出: 2.5</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>推荐方案:方案1</strong></p>
+<ul>
+<li><section>理由:边界检查是最清晰、最高效的方式</section></li>
+<li><section>性能:无需异常处理开销</section></li>
+<li><section>可读性:意图明确</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">复杂 Bug 调试</span></h3>
+<p data-tool="mdnice编辑器"><strong>提供更多上下文信息:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>这个 Bug 很难定位,请帮我分析:<br/><br/>【现象】<br/>偶尔出现数据不一致,大约 1% 的请求<br/><br/>【代码】<br/>class Cache:<br/>    def __init__(self):<br/>        self.data = {}<br/>    <br/>    def get(self, key):<br/>        return self.data.get(key)<br/>    <br/>    def set(self, key, value):<br/>        self.data[key] = value<br/><br/># 多线程环境使用<br/>cache = Cache()<br/><br/>【环境】<br/>- 多线程 Web 服务器<br/>- 高并发场景<br/><br/>【请分析】<br/>1. 可能的原因<br/>2. 如何复现<br/>3. 修复方案<br/>4. 预防措施</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 的回复:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 问题分析:</span><br/><span style="color: #e0e0e0"># 在多线程环境下,多个线程同时读写 self.data 字典</span><br/><span style="color: #e0e0e0"># Python 字典在并发访问时可能出现竞争条件</span><br/><span style="color: #e0e0e0"># 导致数据不一致或偶发的 KeyError</span><br/><br/><span style="color: #e0e0e0"># 复现方法:</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> threading</span><br/><br/><span style="color: #F8F8F2">cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Cache()</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">concurrent_access</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">i</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">range(</span><span style="color: #AE81FF">1000</span><span style="color: #F8F8F2">):</span><br/>        <span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">set(</span><span style="color: #E6DB74">f&quot;key_{</span><span style="color: #F8F8F2">i</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">i)</span><br/>        <span style="color: #F8F8F2">cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">f&quot;key_{</span><span style="color: #F8F8F2">i</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #e0e0e0"># 创建多个线程并发访问</span><br/><span style="color: #F8F8F2">threads</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[threading</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">Thread(target</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">concurrent_access)</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">_</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">range(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">)]</span><br/><span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">t</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">threads:</span><br/>    <span style="color: #F8F8F2">t</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">start()</span><br/><span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">t</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">threads:</span><br/>    <span style="color: #F8F8F2">t</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">join()</span><br/><span style="color: #e0e0e0"># 很可能出现数据不一致</span><br/><br/><span style="color: #e0e0e0"># 修复方案1:使用 threading.Lock(推荐)</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> threading</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ThreadSafeCache</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{}</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lock</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">threading</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">Lock()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">key):</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lock:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">data</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(key)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">set</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">key,</span> <span style="color: #F8F8F2">value):</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lock:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">data[key]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">value</span><br/><br/><span style="color: #e0e0e0"># 修复方案2:使用 concurrent.futures</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> concurrent.futures </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">ThreadPoolExecutor</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> threading</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">ConcurrentCache</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{}</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lock</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">threading</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">RLock()</span>  <span style="color: #e0e0e0"># 可重入锁</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">get</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">key):</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lock:</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">data</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(key)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">set</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">key,</span> <span style="color: #F8F8F2">value):</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">lock:</span><br/>            <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">data[key]</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">value</span><br/><br/><span style="color: #e0e0e0"># 修复方案3:使用 multiprocessing.Manager(进程安全)</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> multiprocessing </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Manager</span><br/><br/><span style="color: #F8F8F2">manager</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Manager()</span><br/><span style="color: #F8F8F2">cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">manager</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">dict()</span>  <span style="color: #e0e0e0"># 进程间共享的字典</span><br/><br/><span style="color: #e0e0e0"># 预防措施:</span><br/><span style="color: #AE81FF">1.</span> <span style="color: #F8F8F2">使用线程安全的数据结构</span><br/><span style="color: #AE81FF">2.</span> <span style="color: #F8F8F2">加锁保护共享资源</span><br/><span style="color: #AE81FF">3.</span> <span style="color: #F8F8F2">尽量使用不可变数据</span><br/><span style="color: #AE81FF">4.</span> <span style="color: #F8F8F2">添加单元测试验证并发安全性</span><br/><span style="color: #AE81FF">5.</span> <span style="color: #F8F8F2">使用压力测试工具验证(Redis</span> <span style="color: #F8F8F2">benchmark,</span> <span style="color: #F8F8F2">Apache</span> <span style="color: #F8F8F2">Bench)</span><br/><br/><span style="color: #e0e0e0"># 测试</span><br/><span style="color: #F8F8F2">safe_cache</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">ThreadSafeCache()</span><br/><span style="color: #F8F8F2">safe_cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">set(</span><span style="color: #E6DB74">&quot;name&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;Claude&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">print(safe_cache</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&quot;name&quot;</span><span style="color: #F8F8F2">))</span>  <span style="color: #e0e0e0"># 输出: Claude</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、重构优化实战</span></h2>
+<p data-tool="mdnice编辑器"><strong>重构提升代码质量,但需要谨慎进行。</strong></p>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">基础用法</span></h3>
+<p data-tool="mdnice编辑器"><strong>简单的重构请求:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>重构这个函数,让它更清晰:<br/><br/>def calc(a,b,c):<br/>    if a&gt;0:<br/>        if b&gt;0:<br/>            return a+b+c<br/>        else:<br/>            return a-b+c<br/>    else:<br/>        if b&gt;0:<br/>            return -a+b+c<br/>        else:<br/>            return -a-b+c</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> Code 的重构:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_sum</span><span style="color: #F8F8F2">(a:</span> <span style="color: #F8F8F2">int,</span> <span style="color: #F8F8F2">b:</span> <span style="color: #F8F8F2">int,</span> <span style="color: #F8F8F2">c:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">int:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">    计算三个数的和,根据 a 和 b 的符号调整</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        a: 第一个数</span><br/><span style="color: #E6DB74">        b: 第二个数</span><br/><span style="color: #E6DB74">        c: 第三个数</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        计算结果</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #e0e0e0"># 根据符号确定 a 的值</span><br/>    <span style="color: #F8F8F2">a_value</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">a</span> <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">a</span> <span style="color: #FF4689">&gt;</span> <span style="color: #AE81FF">0</span> <span style="color: #66D9EF">else</span> <span style="color: #FF4689">-</span><span style="color: #F8F8F2">a</span><br/>    <br/>    <span style="color: #e0e0e0"># 根据符号确定 b 的值</span><br/>    <span style="color: #F8F8F2">b_value</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">b</span> <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">b</span> <span style="color: #FF4689">&gt;</span> <span style="color: #AE81FF">0</span> <span style="color: #66D9EF">else</span> <span style="color: #FF4689">-</span><span style="color: #F8F8F2">b</span><br/>    <br/>    <span style="color: #e0e0e0"># 返回总和</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">a_value</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">b_value</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">c</span><br/><br/><span style="color: #e0e0e0"># 或者更简洁的写法:</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_sum_simple</span><span style="color: #F8F8F2">(a:</span> <span style="color: #F8F8F2">int,</span> <span style="color: #F8F8F2">b:</span> <span style="color: #F8F8F2">int,</span> <span style="color: #F8F8F2">c:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">int:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;简洁版本&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">abs(a)</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">(a</span> <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">a</span> <span style="color: #FF4689">&gt;</span> <span style="color: #AE81FF">0</span> <span style="color: #66D9EF">else</span> <span style="color: #FF4689">-</span><span style="color: #F8F8F2">a)</span> <span style="color: #FF4689">+</span> <span style="color: #F8F8F2">c</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">重构技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1:指定重构目标</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>重构这段代码,目标:<br/><br/>1. 提升可读性(降低圈复杂度)<br/>2. 增加可测试性<br/>3. 遵循 SOLID 原则<br/>4. 不改变功能<br/><br/>[粘贴代码]</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2:分步重构</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>这个函数有 200 行,需要重构。<br/><br/>请分步进行:<br/>1. 第一步:提取子函数<br/>2. 第二步:优化逻辑<br/>3. 第三步:增加类型注解<br/>4. 第四步:添加文档<br/><br/>每步提供完整代码。</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、测试生成实战</span></h2>
+<p data-tool="mdnice编辑器"><strong>测试保证代码质量,AI 可以帮你快速生成。</strong></p>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">基础用法</span></h3>
+<p data-tool="mdnice编辑器"><strong>生成测试用例:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>为这个函数生成测试用例:<br/><br/>def divide(a, b):<br/>    if b == 0:<br/>        raise ValueError("除数不能为0")<br/>    return a / b</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">Claude</span> 生成的测试:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> unittest</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TestDivide</span><span style="color: #F8F8F2">(unittest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">TestCase):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;除法函数测试&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_positive_numbers</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试正数除法&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(divide(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">2</span><span style="color: #F8F8F2">),</span> <span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(divide(</span><span style="color: #AE81FF">9</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">3</span><span style="color: #F8F8F2">),</span> <span style="color: #AE81FF">3</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_negative_numbers</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试负数除法&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(divide(</span><span style="color: #FF4689">-</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">2</span><span style="color: #F8F8F2">),</span> <span style="color: #FF4689">-</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(divide(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">-</span><span style="color: #AE81FF">2</span><span style="color: #F8F8F2">),</span> <span style="color: #FF4689">-</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(divide(</span><span style="color: #FF4689">-</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">-</span><span style="color: #AE81FF">2</span><span style="color: #F8F8F2">),</span> <span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_zero_dividend</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试被除数为0&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(divide(</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">5</span><span style="color: #F8F8F2">),</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_zero_divisor</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试除数为0(应该抛出异常)&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertRaises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #F8F8F2">divide(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_float_result</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试浮点数结果&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertAlmostEqual(divide(</span><span style="color: #AE81FF">7</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">2</span><span style="color: #F8F8F2">),</span> <span style="color: #AE81FF">3.5</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertAlmostEqual(divide(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">3</span><span style="color: #F8F8F2">),</span> <span style="color: #AE81FF">0.333333</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">places</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_large_numbers</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试大数&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">divide(</span><span style="color: #AE81FF">10</span><span style="color: #FF4689">**</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">10</span><span style="color: #FF4689">**</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assertEqual(result,</span> <span style="color: #AE81FF">10</span><span style="color: #FF4689">**</span><span style="color: #AE81FF">5</span><span style="color: #F8F8F2">)</span><br/><br/><br/><span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">__name__</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;__main__&#39;</span><span style="color: #F8F8F2">:</span><br/>    <span style="color: #F8F8F2">unittest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">main()</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">测试技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1:指定覆盖率</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>为这个函数生成测试用例:<br/><br/>要求:<br/>- 覆盖率 90% 以上<br/>- 包含边界测试<br/>- 包含异常测试<br/>- 使用 pytest 框架<br/><br/>[粘贴代码]</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2:测试驱动开发</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>我要实现一个用户注册功能,请用 TDD 方式:<br/><br/>1. 先写测试用例<br/>2. 再实现功能<br/>3. 确保测试通过<br/><br/>要求:<br/>- 验证邮箱格式<br/>- 密码强度检查<br/>- 用户名唯一性</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">提示词模板</span></h3>
+<p data-tool="mdnice编辑器"><strong>代码生成模板:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>【背景】我在做 [项目类型]<br/><br/>【任务】实现 [功能描述]<br/><br/>【要求】<br/>- 语言:[Python/JavaScript/etc]<br/>- 框架:[Django/Flask/etc]<br/>- 风格:[规范要求]<br/><br/>【输入输出】<br/>输入:[描述]<br/>输出:[描述]<br/><br/>【示例】<br/>输入:[example]<br/>输出:[example]</code></pre>
+<p data-tool="mdnice编辑器"><strong>Bug 修复模板:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>【错误信息】<br/>[粘贴错误]<br/><br/>【代码】<br/>[粘贴代码]<br/><br/>【预期行为】<br/>[应该发生什么]<br/><br/>【环境】<br/>- Python 版本:<br/>- 相关库:<br/><br/>【已尝试】<br/>1. [方法1]<br/>2. [方法2]</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">常见问题</span></h3>
+<p data-tool="mdnice编辑器"><strong>Q1:生成的代码质量不高?</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>解决方案:<br/>1. 提供更详细的要求<br/>2. 指定代码风格<br/>3. 要求添加注释<br/>4. 让 Claude 解释代码</code></pre>
+<p data-tool="mdnice编辑器"><strong>Q2:Bug 修复后还有新问题?</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>解决方案:<br/>1. 提供完整上下文<br/>2. 说明环境信息<br/>3. 要求 Claude 考虑边界情况<br/>4. 生成测试用例验证</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong><span class="num">5</span>个必会操作:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 代码生成:从0到1<br/>   - 提供详细需求<br/>   - 指定风格和格式<br/>   - 包含示例<br/><br/>2. 代码解释:理解原理<br/>   - 问清楚是什么<br/>   - 问为什么这样<br/>   - 问如何改进<br/><br/>3. Bug 修复:找错改错<br/>   - 提供错误信息<br/>   - 提供完整代码<br/>   - 说明预期行为<br/><br/>4. 重构优化:提升质量<br/>   - 明确重构目标<br/>   - 分步进行<br/>   - 保持功能不变<br/><br/>5. 测试生成:保证质量<br/>   - 要求高覆盖率<br/>   - 包含边界测试<br/>   - 使用测试框架</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">效率提升</span></h3>
+<p data-tool="mdnice编辑器"><strong>使用 <span class="key">Claude</span> Code 后:</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>代码生成:从 2小时 → 10分钟<br/>代码理解:从 1小时 → 5分钟<br/>Bug 修复:从 1小时 → 15分钟<br/>代码重构:从 3小时 → 30分钟<br/>测试编写:从 1小时 → 10分钟<br/><br/>平均效率提升:5-10倍</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇:<span class="num">10</span>分钟安装配置,开始你的 AI 编程之旅</section></li>
+<li><section>下一篇:提示词技巧:让 <span class="key">Claude</span> 更懂你</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">3</span>篇</p>
+<p data-tool="mdnice编辑器">作者:生活助理 | 发布时间:2026-03-27</p>
+<p data-tool="mdnice编辑器"><strong>掌握这<span class="num">5</span>个操作,你已经能用 <span class="key">Claude</span> Code 做很多事了!</strong> 💪</p>
+</article>
+</div>
+</body>
+</html>

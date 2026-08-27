@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 分钟搭一个 MCP Server——MCP Builder 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    10 分钟搭一个 MCP Server——MCP Builder 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    一句话生成完整 MCP 服务，TypeScript/Python 双支持
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 工具实战 | MCP Server 快速搭建指南
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    MCP（Model Context Protocol）是当下最火的 AI 集成标准，各家大模型、IDE、Agent 框架都在抢着支持。但真到自己动手搭一个 MCP Server 时，你会发现门槛远比想象中高：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 协议规范读半天：JSON-RPC、stdio、SSE、tool/resource/prompt 三种能力，文档翻了一圈还没理清
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 工具注册写到手酸：每个工具的 schema、输入校验、错误处理都得手动来一遍
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 测试验证无人盯：写完不知道对不对，要自己写客户端连上去一个一个试
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 重复造轮子：每个 Server 都得把上面这套流程再来一遍，10 个 Server 写 10 次
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题，<strong style="color: #00897B;">MCP Builder</strong> 都能解决。它是 Anthropic 官方推出的一个 Skill，把"研究 API → 写代码 → 测试 → 评估"封装成 4 阶段自动工作流，你只要说一句"帮我搭一个 XX 的 MCP Server"，剩下的它全包。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>Anthropic 官方 4 阶段工作流 Skill，支持 TypeScript 和 Python 双语言，自动激活，一句话生成完整可用的 MCP Server。
+    </p>
+  </section>
+
+  <!-- 章节01：MCP Builder 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">MCP Builder 是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    MCP Builder 是 Anthropic 官方维护的一个 <strong style="color: #00897B;">Skill</strong>，本质是一份加载到 Claude Code 中的工作流定义文件。装上之后，它会按照固定的 4 阶段流程帮你搭建 MCP Server，无需手动处理协议细节。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🎯 官方维护</strong>：Anthropic 出品，与 MCP 协议规范同步更新
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">⚙️ 4 阶段工作流</strong>：Research → Implement → Test → Evaluate，全自动串起来
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🌐 双语言支持</strong>：TypeScript 和 Python 任选，按你的技术栈来
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">⚡ 自动激活</strong>：检测到"搭 MCP Server"相关需求时自动启动，不用记命令
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📊 自带评估</strong>：内置评估工具，给生成的 Server 打分，质量看得见
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单说，它把"搭 MCP Server"这件事从手工活变成了流水线作业。你只管提需求，研究、实现、测试、评估都交给它。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">两种安装方式，挑一个就行</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    MCP Builder 提供两种安装方式，<strong style="color: #00897B;">推荐第一种插件市场方式</strong>，省心省事。
+  </p>
+
+  <!-- 方式1：插件市场 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      推荐：插件市场安装（两条命令搞定）
+    </p>
+    <p style="margin: 8px 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      在 Claude Code 对话框依次输入下面两行命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin marketplace add make-heavy-metal/mcp-builder <span style="color: #999; font-size: 12px;"># 添加插件市场</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin install mcp-builder@make-heavy-metal <span style="color: #999; font-size: 12px;"># 安装插件</span></p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      装完即用，下次说"帮我搭一个 MCP Server"就会自动激活工作流。
+    </p>
+  </section>
+
+  <!-- 方式2：本地开发 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      本地开发：git clone（适合想改源码的同学）
+    </p>
+    <p style="margin: 8px 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      把仓库 clone 下来，放到 Claude Code 的 skills 目录：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">git clone https://github.com/make-heavy-metal/mcp-builder.git <span style="color: #999; font-size: 12px;"># 克隆仓库到本地</span></p>
+    </section>
+    <p style="margin: 12px 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      评估工具需要装一下 Python 依赖：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">pip install -r scripts/requirements.txt <span style="color: #999; font-size: 12px;"># 安装评估工具依赖</span></p>
+    </section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 选哪个？</strong>99% 的同学选第一种就够。第二种适合想给 MCP Builder 提 PR、改工作流的开发者。
+    </p>
+  </section>
+
+  <!-- 章节03：4 阶段工作流详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">4 阶段工作流详解：Research → Implement → Test → Evaluate</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    MCP Builder 的核心是它的 4 阶段工作流。下面每个阶段用不同颜色卡片区分，方便对照理解：
+  </p>
+
+  <!-- 阶段1：Research -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">① Research 研究阶段</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #1565C0;">目标：</strong>搞清楚你要对接的服务有什么 API、能力边界在哪、有没有现成的 SDK。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #1565C0;">动作：</strong>读官方文档、查 API Reference、扫描现有 SDK、列出可作为 MCP 工具暴露的能力清单。输出一份"研究简报"作为下一阶段的输入。
+    </p>
+  </section>
+
+  <!-- 阶段2：Implement -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">② Implement 实现阶段</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #2E7D32;">目标：</strong>根据研究简报生成完整 MCP Server 代码。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #2E7D32;">动作：</strong>按你选的语言（TypeScript 或 Python）生成项目骨架，注册工具、定义 schema、实现具体逻辑、处理错误。代码风格遵循官方 MCP SDK 推荐。
+    </p>
+  </section>
+
+  <!-- 阶段3：Test -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">③ Test 测试阶段</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #E65100;">目标：</strong>验证 Server 能跑、工具能用、错误处理正常。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #E65100;">动作：</strong>启动 Server 进程、模拟客户端连接、逐个调用工具检查返回值、构造异常输入验证错误处理。发现的问题自动回到 Implement 阶段修复。
+    </p>
+  </section>
+
+  <!-- 阶段4：Evaluate -->
+  <section style="background: #F3E5F5; border-left: 4px solid #6A1B9A; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #4A148C; font-weight: bold; font-size: 16px;">④ Evaluate 评估阶段</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #6A1B9A;">目标：</strong>给生成的 Server 打分，量化质量。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #6A1B9A;">动作：</strong>调用 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/mcp-builder:evaluate</code> 跑评估脚本，从协议合规、工具完整性、错误处理、文档完备性等维度打分，输出报告。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">四个阶段串起来：</strong>Research 喂给 Implement，Implement 输出给 Test，Test 发现问题回 Implement，全部通过后 Evaluate 打分。整个过程不需要你切换上下文，工作流自动衔接。
+    </p>
+  </section>
+
+  <!-- 章节04：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：搭一个 Notion MCP Server</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说再多不如看一遍完整流程。需求很简单："给 Claude 装上读写 Notion 的能力"。下面是 MCP Builder 自动跑完 4 阶段的对话实录：
+  </p>
+
+  <!-- 步骤1：用户说需求 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      用户提需求
+    </p>
+    <section style="border-left: 4px solid #00897B; padding: 14px 18px; margin: 12px 0; background: #f8f8f8; border-radius: 4px;">
+      <p style="margin: 0; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+        "帮我搭一个 Notion 的 MCP Server，要支持查询数据库、读取页面、创建页面三个工具，用 TypeScript。"
+      </p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      MCP Builder 检测到关键词，自动激活 4 阶段工作流。
+    </p>
+  </section>
+
+  <!-- 步骤2：Research -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      Research：自动研究 Notion API
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      MCP Builder 自动完成：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>访问 Notion API 官方文档，确认 v1 接口路径</li>
+      <li>识别三个目标能力：query database / retrieve page / create page</li>
+      <li>检查到官方有 <code style="background: #e8e8e8; padding: 2px 5px; border-radius: 3px; font-size: 12px;">@notionhq/notion-client</code> SDK 可复用</li>
+      <li>列出鉴权方式：Bearer Token，从环境变量 <code style="background: #e8e8e8; padding: 2px 5px; border-radius: 3px; font-size: 12px;">NOTION_API_KEY</code> 读取</li>
+      <li>输出研究简报：3 个工具的输入输出 schema 草稿</li>
+    </ul>
+  </section>
+
+  <!-- 步骤3：Implement -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      Implement：生成完整代码
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      基于研究简报，MCP Builder 生成项目结构：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">notion-mcp-server/</p>
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">├── src/index.ts <span style="color: #999; font-size: 12px;"># Server 入口，stdio 传输</span></p>
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">├── src/tools/ <span style="color: #999; font-size: 12px;"># 三个工具实现</span></p>
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">│   ├── query-database.ts</p>
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">│   ├── retrieve-page.ts</p>
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">│   └── create-page.ts</p>
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">├── package.json <span style="color: #999; font-size: 12px;"># 依赖 + 启动脚本</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">└── README.md <span style="color: #999; font-size: 12px;"># 使用说明</span></p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      代码包含完整的 schema 定义、参数校验、错误处理、SDK 调用，直接能跑。
+    </p>
+  </section>
+
+  <!-- 步骤4：Test -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">4</span>
+      Test：启动并验证
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      MCP Builder 自动：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>执行 <code style="background: #e8e8e8; padding: 2px 5px; border-radius: 3px; font-size: 12px;">npm install &amp;&amp; npm run build</code>，编译通过</li>
+      <li>启动 Server 进程，模拟 MCP 客户端连接</li>
+      <li>逐个调用三个工具，传入测试参数，验证返回结构</li>
+      <li>构造无权限、空 ID 等异常输入，验证错误返回</li>
+      <li>全部通过，进入评估阶段</li>
+    </ul>
+  </section>
+
+  <!-- 步骤5：Evaluate -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">5</span>
+      Evaluate：打分报告
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      评估脚本输出最终报告：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0 0 6px 0; font-size: 13px; line-height: 1.8; color: #333;">协议合规性：<span style="color: #2E7D32; font-weight: bold;">✓ 通过</span>（JSON-RPC 2.0，stdio 传输正确）</p>
+      <p style="margin: 0 0 6px 0; font-size: 13px; line-height: 1.8; color: #333;">工具完整性：<span style="color: #2E7D32; font-weight: bold;">✓ 3/3</span>（全部按需求实现）</p>
+      <p style="margin: 0 0 6px 0; font-size: 13px; line-height: 1.8; color: #333;">错误处理：<span style="color: #2E7D32; font-weight: bold;">✓ 覆盖</span>（鉴权失败、参数缺失、API 限流）</p>
+      <p style="margin: 0 0 6px 0; font-size: 13px; line-height: 1.8; color: #333;">文档完备性：<span style="color: #2E7D32; font-weight: bold;">✓ 完整</span>（README + 工具描述）</p>
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">综合评分：<span style="color: #00897B; font-weight: bold;">92 / 100</span></p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">全程耗时：约 10 分钟。</strong>手动写至少要半天。
+    </p>
+  </section>
+
+  <!-- 章节05：评估工具用法 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">评估工具 /mcp-builder:evaluate 怎么用</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    工作流第 4 阶段会自动调用评估工具，你也可以手动触发，单独评估任意一个已存在的 MCP Server。命令就一条：
+  </p>
+
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/mcp-builder:evaluate <span style="color: #999; font-size: 12px;"># 评估当前目录下的 MCP Server</span></p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #e65100; font-weight: bold;">⚠️ 前置条件：需要 ANTHROPIC_API_KEY</p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      评估工具会调用 Anthropic 的模型对生成的 Server 做语义层面的检查（比如工具命名是否清晰、描述是否符合 MCP 最佳实践），所以需要配置环境变量 <code style="background: #fff3e0; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #e65100;">ANTHROPIC_API_KEY</code>。没配置的话评估阶段会跳过语义打分，只做协议层面的硬性检查。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00695C; font-weight: bold; font-size: 16px;">📊 评估报告包含的维度</p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">协议合规性</strong>：JSON-RPC 格式、传输方式、消息序列是否符合 MCP 规范
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">工具完整性</strong>：声明的工具是否都实现、schema 是否正确、参数是否齐全
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">错误处理</strong>：异常输入、网络错误、鉴权失败是否有合理返回
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">文档完备性</strong>：README、工具描述、参数说明是否齐全
+    </p>
+  </section>
+
+  <!-- 章节06：适用场景 + 关联引用 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">这些场景最值 + 和其他工具的关联</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    MCP 这边有两个方向：<strong style="color: #00897B;">之前在 cc-switch 文章中介绍过 MCP 代理的用法，本文聚焦 MCP Server 的快速搭建</strong>。两者是 MCP 生态的两端：cc-switch 帮你管理怎么用 MCP，MCP Builder 帮你造 MCP。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">① 内部系统接入 AI</strong>：把公司内部 API（审批、考勤、CRM）封装成 MCP Server，让 Claude 直接调用</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">② SaaS 工具集成</strong>：Notion、Linear、Jira、飞书、企业微信……批量造 Server，一键接入</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">③ 数据查询服务</strong>：把数据库、数据仓库封装成 MCP 工具，让 AI 自然语言查数据</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">④ 自动化工作流</strong>：MCP Server 作为可调用节点，串到 ECC 或其他 Agent 框架里</p>
+    <p style="margin: 0;"><strong style="color: #00897B;">⑤ 学习 MCP 协议</strong>：读 MCP Builder 生成的代码，是理解 MCP 规范最快的路径</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">🔗 和 ECC 的关联</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      如果你用了 ECC，它的 MCP 集成能力正好可以接住 MCP Builder 做出来的 Server：MCP Builder 负责造 Server，ECC 负责在 Claude Code 里把多个 MCP Server 编排起来一起干活。一个管造，一个管用。
+    </p>
+  </section>
+
+  <!-- 章节07：FAQ -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 个常见疑问</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：需要什么基础才能用？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      会写一句话需求就行。MCP Builder 把协议规范、SDK 选型、错误处理都封装在 4 阶段工作流里，你只需要说清楚"对接什么服务、要哪些工具、用什么语言"。当然，能看懂生成的代码、知道怎么调试，会让你更踏实。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：支持哪些语言？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      目前官方支持 <strong style="color: #00897B;">TypeScript</strong> 和 <strong style="color: #00897B;">Python</strong> 两种，对应 MCP 官方 SDK 的两个主要实现。提需求时说一句"用 TypeScript"或"用 Python"即可，工作流会按对应语言的 SDK 规范生成代码。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：评估工具必须装吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      不是必须的。前 3 个阶段（Research、Implement、Test）不依赖评估工具，能跑出可用 Server。但评估工具能帮你量化质量、检查出遗漏，还是建议装上。它跑语义打分需要有 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">ANTHROPIC_API_KEY</code>。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">最后的话</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">MCP 协议本身不算难，但手动搭一个 Server 要处理的琐碎事多：协议规范、工具注册、错误处理、测试验证，每一项都得自己啃。MCP Builder 把这几步重复的活编成了 4 阶段流程，你要琢磨的是"对接什么"，而不是"怎么对接"。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">从提一句需求到跑通一个能用的 Server，大约 10 分钟。Anthropic 官方把它做成了 Skill，注册进 Claude Code 就能用。下次想给 AI 加能力，可以直接说一句需求，剩下让它跑一遍给你看。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0 0 8px 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/make-heavy-metal/mcp-builder</span><br>
+      推荐安装命令（两条）：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin marketplace add make-heavy-metal/mcp-builder</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin install mcp-builder@make-heavy-metal</p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      评估工具依赖：<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">pip install -r scripts/requirements.txt</code>
+    </p>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">你搭过 MCP Server 吗？卡在哪一步？用 MCP Builder 体验如何？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

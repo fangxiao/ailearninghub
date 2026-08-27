@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 13-14</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+.key { color: #2b8cc4; font-weight: 500; }
+strong { color: #2c2c2c; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">Tool接口设计</span></h2>
+
+<p>之前我们说了记忆系统。Agent能记住东西了，下一步是让它能"做事"。</p>
+
+<p>这一篇，我们来说说Tool接口设计——怎么让Agent调用工具。<a href="../../../.openclaw/workspace/openclaw-complete-series/09-工具与API集成-公众号版.md" class="key">(参考OpenClaw进阶篇09)</a></p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>Agent能做什么事，取决于它有多少工具。好的Tool接口设计，让扩展工具变得简单。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">为什么需要统一的接口</span></h3>
+
+<p>想象一下，如果没有统一的接口，每个工具都得单独写调用代码。搜索要写一套、计算器要写一套、发邮件又要写一套。</p>
+
+<p>有了统一的Tool接口，所有工具都遵循同样的规范。注册、调用、返回结果，都是一套代码。</p>
+
+<h3><span class="icon">2</span><span class="title-text">Tool基类</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> abc </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> ABC, abstractmethod</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Any, Dict</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">BaseTool</span><span style="color: #f8f8f2">(ABC):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">"""所有工具的基类"""</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: a6e22e;>@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""工具名称，Agent通过这个名字调用"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">raise</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">NotImplementedError</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e;>@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""工具描述，让模型知道什么时候该用"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">raise</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">NotImplementedError</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e;>@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parameters</span><span style="color: #f8f8f2">(self) -> Dict:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""参数schema，用于Function Calling"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">raise</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">NotImplementedError</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e;>@abstractmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, **kwargs) -> Any:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""实际执行工具逻辑"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">pass</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">参数校验</span></h3>
+
+<p>参数校验很重要。不能让Agent传给工具的参数是乱七八糟的。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> pydantic </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> BaseModel, ValidationError</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">WeatherInput</span><span style="color: #f8f8f2">(BaseModel):</span>
+<span style="color: #f8f8f2">    city: str</span>
+<span style="color: #f8f8f2">    date: str </span><span style="color: #a8a8a8; font-style: italic;">= "today"</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">WeatherTool</span><span style="color: #f8f8f2">(BaseTool):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self): </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"get_weather"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"查询指定城市的天气"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parameters</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"object"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"properties"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"city"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"城市名称"</span><span style="color: #f8f8f2">},</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"date"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"日期，默认为today"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">            },</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"city"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, city, date=</span><span style="color: #e6db74">"today"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            WeatherInput(city=city, date=date)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> ValidationError:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"参数错误：城市名称不能为空"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"{city} {date}的天气：晴，25度"</span></code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">结果格式化</span></h3>
+
+<p>工具返回的结果也要格式化，不然Agent可能看不懂。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">ToolResult</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, success, data, error=</span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        self.success = success</span>
+<span style="color: #f8f8f2">        self.data = data</span>
+<span style="color: #f8f8f2">        self.error = error</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__str__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> self.success:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"成功：{self.data}"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"失败：{self.error}"</span></code></pre>
+
+<blockquote><p>💡 <strong>Tool设计的要点：</strong>1) 统一接口方便扩展 2) 参数校验防止错误 3) 结果格式化让Agent好理解</p></blockquote>
+
+<hr/>
+
+<h2><span class="title-text">内置工具实现</span></h2>
+
+<p>Tool接口设计好了，接下来看看常见的内置工具怎么实现。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>内置工具是Agent的"基本功"。搜索、计算、文件、代码——这些是每个Agent都应该会的东西。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">搜索工具</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SearchTool</span><span style="color: #f8f8f2">(BaseTool):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self): </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"search"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"搜索互联网获取信息"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parameters</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"object"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"properties"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"搜索关键词"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">            },</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, query):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> requests</span>
+<span style="color: #f8f8f2">        response = requests.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"https://api.search.com"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            params={</span><span style="color: #e6db74">"q"</span><span style="color: #f8f8f2">: query}</span>
+<span style="color: #f8f8f2">        )</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.json()</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">计算工具</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">CalculatorTool</span><span style="color: #f8f8f2">(BaseTool):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self): </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"calculate"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"执行数学计算"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parameters</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"object"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"properties"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"expression"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"数学表达式，如 2+3*4"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">            },</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"expression"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, expression):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            result = </span><span style="color: #a6e22e">eval</span><span style="color: #f8f8f2">(expression)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"{expression} = {result}"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"计算错误：{e}"</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">文件工具</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">FileTool</span><span style="color: #f8f8f2">(BaseTool):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self): </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"read_file"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"读取文件内容"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">@property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parameters</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"object"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"properties"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"path"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"文件路径"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">            },</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"path"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, path):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> os</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> os.path.exists(path):</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"文件不存在：{path}"</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">open</span><span style="color: #f8f8f2">(path, </span><span style="color: #e6db74">'r'</span><span style="color: #f8f8f2">) as f:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> f.read()</span></code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">工具注册中心</span></h3>
+
+<p>所有工具注册到中心，方便管理：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">ToolRegistry</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.tools = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">register</span><span style="color: #f8f8f2">(self, tool: BaseTool):</span>
+<span style="color: #f8f8f2">        self.tools[tool.name] = tool</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">get_tool</span><span style="color: #f8f8f2">(self, name):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.tools.get(name)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">list_tools</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> [(t.name, t.description) </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> t </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.tools.values()]</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">get_tools_for_llm</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> [</span>
+<span style="color: #f8f8f2">            {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: t.name,</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: t.description,</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"parameters"</span><span style="color: #f8f8f2">: t.parameters</span>
+<span style="color: #f8f8f2">                }</span>
+<span style="color: #f8f8f2">            }</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> t </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.tools.values()</span>
+<span style="color: #f8f8f2">        ]</span></code></pre>
+
+<blockquote><p>💡 <strong>工具注册中心的好处：</strong>1) 统一管理所有工具 2) 方便添加/删除工具 3) 一键生成LLM可用的tools参数</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>OpenClaw进阶篇09：工具与API集成 <span class="file-tag">{原文件:09-工具与API集成-公众号版.md}</span></li>
+<li>AI Coding第29篇：工具系统 <span class="file-tag">{原文件:AI-29-工具系统-Tool-System-公众号版.md}</span></li>
+</ul>
+
+<p>下期预告：Agent开发系列 15-16 — Function Calling + 工具安全</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

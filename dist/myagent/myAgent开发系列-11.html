@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 11</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">插件市场与发布</span></h2>
+
+<p>有了插件架构，接下来要做的是<strong>让第三方能开发、发布、分享插件</strong>——这就是插件市场。<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-17-实战02-开发Web-API-公众号版.md" class="key">(参考AI Coding系列17：前后端交互设计)</a></p>
+
+<p>插件市场的核心是：注册、审核、发布、发现。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>插件市场不是"把插件扔上去就行"，而是要解决：谁来审、怎么审、出了问题怎么办。这三个问题没想清楚，市场就是空中楼阁。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">插件元数据</span></h3>
+
+<p>插件在市场上架，需要完整的元数据：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PluginManifest(BaseModel):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 插件市场元数据</span>
+<span style="color: #f8f8f2">    id: str</span>
+<span style="color: #f8f8f2">    name: str</span>
+<span style="color: #f8f8f2">    version: str</span>
+<span style="color: #f8f8f2">    description: str</span>
+<span style="color: #f8f8f2">    icon: str</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 分类和标签</span>
+<span style="color: #f8f8f2">    category: str  </span><span style="color: #a8a8a8; font-style: italic;"># search, image, productivity, etc.</span>
+<span style="color: #f8f8f2">    tags: List[str]</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 作者信息</span>
+<span style="color: #f8f8f2">    author: str</span>
+<span style="color: #f8f8f2">    author_url: str</span>
+<span style="color: #f8f8f2">    homepage: str</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 安全信息</span>
+<span style="color: #f8f8f2">    permissions: List[str]  </span><span style="color: #a8a8a8; font-style: italic;"># 需要哪些权限</span>
+<span style="color: #f8f8f2">    sandbox_mode: bool = </span><span style="color: #66d9ef">True</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># manifest.yaml 示例</span>
+<span style="color: #a8a8a8; font-style: italic;"># name: my-plugin</span>
+<span style="color: #a8a8a8; font-style: italic;"># version: 1.0.0</span>
+<span style="color: #a8a8a8; font-style: italic;"># description: "A plugin that does X"</span>
+<span style="color: #a8a8a8; font-style: italic;"># category: productivity</span>
+<span style="color: #a8a8a8; font-style: italic;"># permissions: ["network"]</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">插件审核流程</span></h3>
+
+<p>插件上架前必须审核，防止恶意代码危害用户。<a href="Agent开发系列-15.html" class="key">(详见Agent开发系列15：工具安全)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PluginReviewStatus:</span>
+<span style="color: #f8f8f2">    PENDING = </span><span style="color: #e6db74">"pending"</span>
+<span style="color: #f8f8f2">    APPROVED = </span><span style="color: #e6db74">"approved"</span>
+<span style="color: #f8f8f2">    REJECTED = </span><span style="color: #e6db74">"rejected"</span>
+<span style="color: #f8f8f2">    REQUIRES_REVISION = </span><span style="color: #e6db74">"requires_revision"</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PluginReview:</span>
+<span style="color: #f8f8f2">    plugin_id: str</span>
+<span style="color: #f8f8f2">    version: str</span>
+<span style="color: #f8f8f2">    status: str</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 审核内容</span>
+<span style="color: #f8f8f2">    security_check: bool  </span><span style="color: #a8a8a8; font-style: italic;"># 安全扫描是否通过</span>
+<span style="color: #f8f8f2">    functionality_check: bool  </span><span style="color: #a8a8a8; font-style: italic;"># 功能是否正常</span>
+<span style="color: #f8f8f2">    documentation_check: bool  </span><span style="color: #a8a8a8; font-style: italic;"># 文档是否完整</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 审核结果</span>
+<span style="color: #f8f8f2">    reviewer_comments: str</span>
+<span style="color: #f8f8f2">    reviewed_at: datetime</span>
+<span style="color: #f8f8f2">    reviewed_by: str</span></code></pre>
+
+<p>审核流程：</p>
+
+<ol>
+<li><strong>自动扫描</strong>——代码静态分析、权限检查、恶意代码检测</li>
+<li><strong>功能测试</strong>——沙箱环境运行，验证功能是否符合描述</li>
+<li><strong>人工审核</strong>——审核员复核，特别复杂的插件需要专家评审</li>
+</ol>
+
+<h3><span class="icon">3</span><span class="title-text">插件版本管理</span></h3>
+
+<p>插件也要有版本管理，支持升级和回滚：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PluginVersion:</span>
+<span style="color: #f8f8f2">    plugin_id: str</span>
+<span style="color: #f8f8f2">    version: str  </span><span style="color: #a8a8a8; font-style: italic;"># 语义化版本：major.minor.patch</span>
+<span style="color: #f8f8f2">    changelog: str</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 兼容性</span>
+<span style="color: #f8f8f2">    min_platform_version: str  </span><span style="color: #a8a8a8; font-style: italic;"># 最低平台版本要求</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 状态</span>
+<span style="color: #f8f8f2">    status: str  </span><span style="color: #a8a8a8; font-style: italic;"># draft, published, deprecated</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #a8a8a8; font-style: italic;"># 统计</span>
+<span style="color: #f8f8f2">    install_count: int = </span><span style="color: #ae81ff">0</span>
+<span style="color: #f8f8f2">    rating: float = </span><span style="color: #ae81ff">0.0</span></code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">插件搜索与发现</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PluginSearchService:</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">search</span><span style="color: #f8f8f2">(self, query: str, filters: dict) -> List[PluginManifest]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 1. 全文搜索</span>
+<span style="color: #f8f8f2">        results = </span><span style="color: #66d9ef">await</span><span style="color: #f8f8f2"> self.vector_search(query)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 2. 过滤</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> filters.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"category"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">            results = [p </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> p </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> results </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> p.category == filters[</span><span style="color: #e6db74">"category"</span><span style="color: #f8f8f2">]]</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 3. 排序（综合评分）</span>
+<span style="color: #f8f8f2">        results.</span><span style="color: #a6e22e">sort</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">key</span><span style="color: #f8f8f2">=</span><span style="color: #66d9ef">lambda</span><span style="color: #f8f8f2"> p: </span><span style="color: #66d9ef">self</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">calculate_score</span><span style="color: #f8f8f2">(p), reverse=</span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> results[:20]  </span><span style="color: #a8a8a8; font-style: italic;"># 返回前20个</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">calculate_score</span><span style="color: #f8f8f2">(self, plugin) -> float:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 综合评分 = 安装量*0.3 + 评分*0.3 + 安全性*0.4</span>
+<span style="color: #f8f8f2">        install_score = </span><span style="color: #a6e22e">min</span><span style="color: #f8f8f2">(plugin.install_count / </span><span style="color: #ae81ff">10000</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">1.0</span><span style="color: #f8f8f2">) * </span><span style="color: #ae81ff">0.3</span>
+<span style="color: #f8f8f2">        rating_score = plugin.rating * </span><span style="color: #ae81ff">0.3</span>
+<span style="color: #f8f8f2">        security_score = </span><span style="color: #ae81ff">0.4</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> plugin.security_check </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0.0</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> install_score + rating_score + security_score</span></code></pre>
+
+<blockquote><p>💡 <strong>总结：</strong>插件市场需要完整的元数据、审核流程、版本管理和搜索发现能力。审核是安全的重要保障，版本管理支持升级回滚，搜索发现让优质插件能被找到。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-17-实战02-开发Web-API-公众号版.md" class="key">AI Coding系列 17：前后端交互设计</a></li>
+<li><a href="Agent开发系列-15.html" class="key">Agent开发系列 15：工具安全</a></li>
+<li><a href="myAgent开发系列-10.html" class="key">myAgent开发系列 10：内置插件实现</a></li>
+</ul>
+
+<p>下期预告：第12篇《插件沙箱与安全》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>问答接口开发——构建你的专属AI助手</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  问答接口开发
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  构建你的专属AI助手
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  本地大模型知识库系列第08篇 | 接口开发
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  上一篇我们学习了RAG的核心原理，现在我们要把这个能力封装成一个可调用的接口，方便其他应用使用。
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/qa_interface.png" alt="问答接口流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">封装问答函数</span>
+  </p>
+</section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> json</span>
+<span class="code-keyword">import</span><span class="code-name"> time</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.chains </span><span class="code-keyword">import</span><span class="code-name"> RetrievalQA</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.llms </span><span class="code-keyword">import</span><span class="code-name"> Ollama</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.vectorstores </span><span class="code-keyword">import</span><span class="code-name"> Chroma</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.embeddings </span><span class="code-keyword">import</span><span class="code-name"> HuggingFaceEmbeddings</span>
+
+<span class="code-keyword">class</span><span class="code-function"> KnowledgeBaseQA</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model_name</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">, </span><span class="code-name">db_path</span><span class="code-operator">=</span><span class="code-string">"./chroma_db"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">embeddings</span><span class="code-operator"> = </span><span class="code-function">HuggingFaceEmbeddings</span><span class="code-operator">(</span><span class="code-name">model_name</span><span class="code-operator">=</span><span class="code-string">"all-MiniLM-L6-v2"</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">vector_store</span><span class="code-operator"> = </span><span class="code-function">Chroma</span><span class="code-operator">.</span><span class="code-function">persist_directory</span><span class="code-operator">(</span>
+            <span class="code-name">persist_directory</span><span class="code-operator">=</span><span class="code-name">db_path</span><span class="code-operator">,</span>
+            <span class="code-name">embedding_function</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">embeddings</span>
+        <span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">llm</span><span class="code-operator"> = </span><span class="code-function">Ollama</span><span class="code-operator">(</span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">model_name</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">retriever</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">vector_store</span><span class="code-operator">.</span><span class="code-function">as_retriever</span><span class="code-operator">(</span>
+            <span class="code-name">search_kwargs</span><span class="code-operator">=</span><span class="code-operator">{</span><span class="code-string">"k"</span><span class="code-operator">: </span><span class="code-number">3</span><span class="code-operator">}</span>
+        <span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">qa_chain</span><span class="code-operator"> = </span><span class="code-function">RetrievalQA</span><span class="code-operator">.</span><span class="code-function">from_chain_type</span><span class="code-operator">(</span>
+            <span class="code-name">llm</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">llm</span><span class="code-operator">,</span>
+            <span class="code-name">chain_type</span><span class="code-operator">=</span><span class="code-string">"stuff"</span><span class="code-operator">,</span>
+            <span class="code-name">retriever</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">retriever</span><span class="code-operator">,</span>
+            <span class="code-name">return_source_documents</span><span class="code-operator">=</span><span class="code-keyword">True</span>
+        <span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> answer</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">query</span><span class="code-operator">, </span><span class="code-name">top_k</span><span class="code-operator">=</span><span class="code-number">3</span><span class="code-operator">):</span>
+        <span class="code-name">start_time</span><span class="code-operator"> = </span><span class="code-name">time</span><span class="code-operator">.</span><span class="code-function">time</span><span class="code-operator">()</span>
+        
+        <span class="code-keyword">try</span><span class="code-operator">:</span>
+            <span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">qa_chain</span><span class="code-operator">({</span><span class="code-string">"query"</span><span class="code-operator">: </span><span class="code-name">query</span><span class="code-operator">})</span>
+            
+            <span class="code-name">sources</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+            <span class="code-keyword">for</span><span class="code-name"> doc </span><span class="code-keyword">in</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"source_documents"</span><span class="code-operator">]:</span>
+                <span class="code-name">sources</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">({</span>
+                    <span class="code-string">"source"</span><span class="code-operator">: </span><span class="code-name">doc</span><span class="code-operator">.</span><span class="code-name">metadata</span><span class="code-operator">.</span><span class="code-name">get</span><span class="code-operator">(</span><span class="code-string">"source"</span><span class="code-operator">),</span>
+                    <span class="code-string">"page"</span><span class="code-operator">: </span><span class="code-name">doc</span><span class="code-operator">.</span><span class="code-name">metadata</span><span class="code-operator">.</span><span class="code-name">get</span><span class="code-operator">(</span><span class="code-string">"page"</span><span class="code-operator">, </span><span class="code-number">0</span><span class="code-operator">),</span>
+                    <span class="code-string">"score"</span><span class="code-operator">: </span><span class="code-name">doc</span><span class="code-operator">.</span><span class="code-name">metadata</span><span class="code-operator">.</span><span class="code-name">get</span><span class="code-operator">(</span><span class="code-string">"score"</span><span class="code-operator">, </span><span class="code-string">"N/A"</span><span class="code-operator">)</span>
+                <span class="code-operator">})</span>
+            
+            <span class="code-name">response_time</span><span class="code-operator"> = </span><span class="code-name">time</span><span class="code-operator">.</span><span class="code-function">time</span><span class="code-operator">()</span> <span class="code-operator">-</span> <span class="code-name">start_time</span>
+            
+            <span class="code-keyword">return</span><span class="code-operator"> {</span>
+                <span class="code-string">"success"</span><span class="code-operator">: </span><span class="code-keyword">True</span><span class="code-operator">,</span>
+                <span class="code-string">"answer"</span><span class="code-operator">: </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"result"</span><span class="code-operator">],</span>
+                <span class="code-string">"sources"</span><span class="code-operator">: </span><span class="code-name">sources</span><span class="code-operator">,</span>
+                <span class="code-string">"response_time"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">response_time</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">),</span>
+                <span class="code-string">"model"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">llm</span><span class="code-operator">.</span><span class="code-name">model</span>
+            <span class="code-operator">}</span>
+        
+        <span class="code-keyword">except</span><span class="code-name"> Exception </span><span class="code-keyword">as</span><span class="code-name"> e</span><span class="code-operator">:</span>
+            <span class="code-keyword">return</span><span class="code-operator"> {</span>
+                <span class="code-string">"success"</span><span class="code-operator">: </span><span class="code-keyword">False</span><span class="code-operator">,</span>
+                <span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-keyword">str</span><span class="code-operator">(</span><span class="code-name">e</span><span class="code-operator">),</span>
+                <span class="code-string">"answer"</span><span class="code-operator">: </span><span class="code-string">""</span><span class="code-operator">,</span>
+                <span class="code-string">"sources"</span><span class="code-operator">: </span><span class="code-operator">[]</span>
+            <span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">添加引用标注</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  让用户知道答案来自哪份文档，增加回答的可信度：
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/source_citation.png" alt="引用标注流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">def</span><span class="code-function"> add_citations</span><span class="code-operator">(</span><span class="code-name">answer</span><span class="code-operator">,</span> <span class="code-name">sources</span><span class="code-operator">):</span>
+    <span class="code-name">citation_text</span><span class="code-operator"> = </span><span class="code-string">"\n\n## 引用来源\n"</span>
+    
+    <span class="code-keyword">for</span><span class="code-name"> i</span><span class="code-operator">, </span><span class="code-name">source</span><span class="code-keyword"> in</span><span class="code-name"> enumerate</span><span class="code-operator">(</span><span class="code-name">sources</span><span class="code-operator">, </span><span class="code-number">1</span><span class="code-operator">):</span>
+        <span class="code-name">source_name</span><span class="code-operator"> = </span><span class="code-name">source</span><span class="code-operator">.</span><span class="code-name">get</span><span class="code-operator">(</span><span class="code-string">"source"</span><span class="code-operator">, </span><span class="code-string">"未知来源"</span><span class="code-operator">)</span>
+        <span class="code-name">page</span><span class="code-operator"> = </span><span class="code-name">source</span><span class="code-operator">.</span><span class="code-name">get</span><span class="code-operator">(</span><span class="code-string">"page"</span><span class="code-operator">, </span><span class="code-string">""</span><span class="code-operator">)</span>
+        
+        <span class="code-name">citation_text</span><span class="code-operator"> += </span><span class="code-operator">f</span><span class="code-string">"{i}. [{source_name}]"</span>
+        <span class="code-keyword">if</span><span class="code-name"> page</span><span class="code-operator">:</span>
+            <span class="code-name">citation_text</span><span class="code-operator"> += </span><span class="code-operator">f</span><span class="code-string">"(第{page}页)"</span>
+        <span class="code-name">citation_text</span><span class="code-operator"> += </span><span class="code-string">"\n"</span>
+    
+    <span class="code-keyword">return</span><span class="code-name"> answer </span><span class="code-operator">+ </span><span class="code-name">citation_text</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">测试问答接口</span>
+  </p>
+</section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-comment"># 初始化问答助手</span>
+<span class="code-name">qa</span><span class="code-operator"> = </span><span class="code-function">KnowledgeBaseQA</span><span class="code-operator">()</span>
+
+<span class="code-comment"># 测试问题</span>
+<span class="code-name">query</span><span class="code-operator"> = </span><span class="code-string">"请解释什么是RAG？"</span>
+<span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">qa</span><span class="code-operator">.</span><span class="code-function">answer</span><span class="code-operator">(</span><span class="code-name">query</span><span class="code-operator">)</span>
+
+<span class="code-comment"># 输出结果</span>
+<span class="code-keyword">if</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"success"</span><span class="code-operator">]:</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-string">"回答:"</span><span class="code-operator">)</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"answer"</span><span class="code-operator">])</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-string">"\n引用来源:"</span><span class="code-operator">)</span>
+    <span class="code-keyword">for</span><span class="code-name"> src </span><span class="code-keyword">in</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"sources"</span><span class="code-operator">]:</span>
+        <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-string">f"- {src['source']}"</span><span class="code-operator">)</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-operator">f</span><span class="code-string">"\n响应时间: {result['response_time']}秒"</span><span class="code-operator">)</span>
+<span class="code-keyword">else</span><span class="code-operator">:</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-operator">f</span><span class="code-string">"错误: {result['error']}"</span><span class="code-operator">)</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 文档元数据缺失：确保加载文档时保留metadata信息</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 引用标注格式混乱：统一引用格式模板</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 响应时间过长：添加进度回调或异步处理</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 错误信息不友好：统一错误格式和提示</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  本地大模型知识库系列第08篇<br>
+  下一篇：Web界面——让知识库"好用"起来
+</p>
+
+</section>
+</body>
+</html>

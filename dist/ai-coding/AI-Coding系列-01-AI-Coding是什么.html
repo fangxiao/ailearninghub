@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding 是什么？从手动编程到 AI 辅助</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">8</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐ 零基础</p>
+<p data-tool="mdnice编辑器">你将收获：理解 AI Coding 概念，了解主流工具，知道为什么学</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：编程方式的革命</span></h2>
+<p data-tool="mdnice编辑器">2026年3月，一个程序员在 Twitter 发帖：</p>
+<blockquote data-tool="mdnice编辑器"><p>"去年写一个 CRUD <span class="key">API</span> 还需要 <span class="num">2</span>小时，现在用 AI Coding，<span class="num">10</span>分钟搞定。剩下的时间都在思考架构。"</p></blockquote>
+<p data-tool="mdnice编辑器">评论区炸了：</p>
+<ul>
+<li><section>"真的假的？"</section></li>
+<li><section>"哪个工具？求推荐！"</section></li>
+<li><section>"AI 写的代码能看吗？"</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>这不是夸张，是正在发生的现实。</strong></p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、AI Coding 是什么？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">核心概念</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI Coding = AI 辅助编程</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>传统编程：<br/>程序员写代码 → 编译运行 → 调试修改 → 再运行<br/><br/>AI 编程：<br/>程序员描述需求 → AI 生成代码 → 审查调整 → 完成</code></pre>
+<p data-tool="mdnice编辑器"><strong>本质变化：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>维度</th>
+<th>传统编程</th>
+<th>AI 编程</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>核心技能</td>
+<td>语法、算法、<span class="key">API</span></td>
+<td>提示词、架构思维</td>
+</tr>
+<tr>
+<td>时间分配</td>
+<td>80% 写代码</td>
+<td>80% 设计+审查</td>
+</tr>
+<tr>
+<td>门槛</td>
+<td>高（需学语法）</td>
+<td>低（会描述即可）</td>
+</tr>
+<tr>
+<td>效率</td>
+<td>基准</td>
+<td>3-10倍提升</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">AI Coding Agent 是什么？</span></h3>
+<p data-tool="mdnice编辑器"><strong>Coding <span class="key">Agent</span> = AI 编程助手产品</strong></p>
+<p data-tool="mdnice编辑器">它不是简单的"代码补全"，而是：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>传统补全：<br/>输入 "pri" → 提示 "print()"<br/><br/>AI Coding Agent：<br/>输入 "写一个登录功能" → <br/>  生成完整代码<br/>  + 数据库设计<br/>  + 错误处理<br/>  + 测试用例<br/>  + 文档注释</code></pre>
+<p data-tool="mdnice编辑器"><strong>核心能力：</strong></p>
+<ul>
+<li><section>🧠 <strong>理解需求</strong> - 听懂自然语言描述</section></li>
+<li><section>💻 <strong>生成代码</strong> - 写出可运行的代码</section></li>
+<li><section>🔍 <strong>解释代码</strong> - 说明原理和逻辑</section></li>
+<li><section>🐛 <strong>修复 Bug</strong> - 定位和解决问题</section></li>
+<li><section>📝 <strong>写文档</strong> - 生成注释和文档</section></li>
+<li><section>🧪 <strong>写测试</strong> - 生成测试用例</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、AI Coding Agent 有哪些？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">市场概览</span></h3>
+<p data-tool="mdnice编辑器"><strong>2025-2026 年 AI Coding 工具成熟期：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>国际：<br/>├── GitHub Copilot (微软)<br/>├── Claude Code (Anthropic)<br/>├── Cursor (独立公司)<br/>├── Amazon CodeWhisperer<br/>└── Google Gemini Code Assist<br/><br/>国内：<br/>├── 通义灵码 (阿里)<br/>├── CodeGeeX (智谱 AI)<br/>├── 豆包 MarsCode (字节)<br/>├── 文心快码 (百度)<br/>└── 腾讯云 AI 代码助手</code></pre>
+<p data-tool="mdnice编辑器"><strong>市场规模：</strong></p>
+<ul>
+<li><section>2024年：约 20 亿美元（爆发期）</section></li>
+<li><section>2025年：约 50 亿美元（快速增长）</section></li>
+<li><section>2026年预计：80+ 亿美元（成熟期）</section></li>
+<li><section>年增长率：60%+</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">主流产品对比</span></h3>
+<h4 data-tool="mdnice编辑器">国际产品</h4>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>产品</th>
+<th>公司</th>
+<th>特点</th>
+<th>价格</th>
+<th>模型</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong><span class="key">Claude</span> Code</strong></td>
+<td>Anthropic</td>
+<td>上下文长、理解深</td>
+<td>免费/订阅制</td>
+<td>可配置多模型</td>
+</tr>
+<tr>
+<td><span class="key">GitHub</span> Copilot</td>
+<td>微软</td>
+<td>生态集成好</td>
+<td>$10/月</td>
+<td>固定模型</td>
+</tr>
+<tr>
+<td>Cursor</td>
+<td>独立</td>
+<td><span class="key">IDE</span> 体验好</td>
+<td>$20/月</td>
+<td>可配置</td>
+</tr>
+<tr>
+<td>CodeWhisperer</td>
+<td>亚马逊</td>
+<td>AWS 集成</td>
+<td>免费/付费</td>
+<td>固定模型</td>
+</tr>
+</tbody>
+</table>
+<h4 data-tool="mdnice编辑器">国内产品</h4>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>产品</th>
+<th>公司</th>
+<th>特点</th>
+<th>价格</th>
+<th>模型</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>通义灵码</strong></td>
+<td>阿里</td>
+<td>开箱即用、免费</td>
+<td>免费</td>
+<td>通义千问</td>
+</tr>
+<tr>
+<td><strong>CodeGeeX</strong></td>
+<td>智谱 AI</td>
+<td>完全免费</td>
+<td>免费</td>
+<td>CodeGeeX</td>
+</tr>
+<tr>
+<td><strong>MarsCode</strong></td>
+<td>字节</td>
+<td>新产品、功能全</td>
+<td>免费</td>
+<td>豆包</td>
+</tr>
+<tr>
+<td>文心快码</td>
+<td>百度</td>
+<td>百度生态</td>
+<td>免费</td>
+<td>文心</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">如何选择？</span></h3>
+<p data-tool="mdnice编辑器"><strong>选择维度：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 模型灵活性<br/>   - 可配置多模型：Claude Code、Cursor<br/>   - 固定模型：Copilot、通义灵码<br/><br/>2. 价格<br/>   - 免费：CodeGeeX、通义灵码、MarsCode<br/>   - 付费：Copilot、Cursor<br/><br/>3. 国内可用性<br/>   - 无需代理：国内产品 + Claude Code(配国内模型)<br/>   - 需要代理：Copilot、Claude(官方模型)<br/><br/>4. 功能深度<br/>   - 补全为主：Copilot、通义灵码<br/>   - 对话为主：Claude Code、Cursor</code></pre>
+<p data-tool="mdnice编辑器"><strong>推荐组合：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>用户类型</th>
+<th>推荐方案</th>
+<th>理由</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>学生/新手</td>
+<td>CodeGeeX</td>
+<td>完全免费、简单易用</td>
+</tr>
+<tr>
+<td>国内开发者</td>
+<td>通义灵码 + <span class="key">Claude</span> Code(GLM)</td>
+<td>免费 + 灵活</td>
+</tr>
+<tr>
+<td>企业团队</td>
+<td><span class="key">GitHub</span> Copilot 或 Claude Code</td>
+<td>生态成熟、企业支持</td>
+</tr>
+<tr>
+<td>高级玩家</td>
+<td><span class="key">Claude</span> Code</td>
+<td>模型灵活、功能强大</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、为什么选 Claude Code 讲这个系列？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">不是广告，是教学选择</span></h3>
+<p data-tool="mdnice编辑器"><strong>本系列以 <span class="key">Claude</span> Code 为主要示例工具，原因如下：</strong></p>
+<p data-tool="mdnice编辑器"><strong>1. 模型灵活（最重要）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Claude Code 可以配置不同模型：<br/><br/>国内模型（无需代理）：<br/>✅ GLM-5（智谱）- 免费1000万tokens<br/>✅ 通义千问（阿里）<br/>✅ 豆包（字节）<br/><br/>国际模型：<br/>✅ Claude 4（Anthropic）<br/>✅ GPT-4.5（OpenAI）<br/><br/>其他工具：<br/>❌ GitHub Copilot - 固定模型<br/>❌ 通义灵码 - 只能用通义千问</code></pre>
+<p data-tool="mdnice编辑器"><strong>为什么这很重要？</strong></p>
+<blockquote data-tool="mdnice编辑器"><p>不同任务需要不同模型。<br/>简单补全用便宜的，复杂推理用强的。<br/><span class="key">Claude</span> Code 让你自己选择。</p></blockquote>
+<p data-tool="mdnice编辑器"><strong>2. 国内用户友好</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>配置国内模型：<br/>1. 注册 open.bigmodel.cn（智谱）<br/>2. 获取 API Key<br/>3. 配置 Claude Code<br/>4. 开始使用<br/><br/>无需：<br/>❌ 代理<br/>❌ 国际信用卡<br/>❌ 复杂配置</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 功能对比（2026年3月）</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>功能</th>
+<th><span class="key">Claude</span> Code</th>
+<th>Copilot</th>
+<th>通义灵码</th>
+<th>Cursor</th>
+<th>CodeGeeX</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>代码生成</td>
+<td>✅ 强</td>
+<td>✅ 强</td>
+<td>✅ 强</td>
+<td>✅ 强</td>
+<td>✅ 中</td>
+</tr>
+<tr>
+<td>代码解释</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>多文件编辑</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>⚠️ 基础</td>
+</tr>
+<tr>
+<td>代码库理解</td>
+<td>✅ 深</td>
+<td>✅ 中</td>
+<td>✅ 中</td>
+<td>✅ 深</td>
+<td>⚠️ 基础</td>
+</tr>
+<tr>
+<td>模型可配置</td>
+<td>✅ 多模型</td>
+<td>❌ 固定</td>
+<td>❌ 固定</td>
+<td>✅ 多模型</td>
+<td>❌ 固定</td>
+</tr>
+<tr>
+<td><span class="key">CLI</span> 支持</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>国内可用</td>
+<td>✅ 无障碍</td>
+<td>⚠️ 需代理</td>
+<td>✅ 原生</td>
+<td>⚠️ 需代理</td>
+<td>✅ 原生</td>
+</tr>
+<tr>
+<td>免费/低价</td>
+<td>✅</td>
+<td>❌ $10/月</td>
+<td>✅</td>
+<td>❌ $20/月</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>IDE支持</td>
+<td>✅ 通用</td>
+<td>✅ VS/JetBrains</td>
+<td>✅ VS/JetBrains</td>
+<td>✅ 自带IDE</td>
+<td>✅ VS/JetBrains</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>说明：</strong></p>
+<ul>
+<li><section><strong>强</strong> = 行业领先</section></li>
+<li><section><strong>中</strong> = 达到主流水平</section></li>
+<li><section><strong>基础</strong> = 功能有限</section></li>
+<li><section><strong>深</strong> = 理解能力强</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>各工具特点：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>工具</th>
+<th>核心优势</th>
+<th>适用场景</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong><span class="key">Claude</span> Code</strong></td>
+<td>模型灵活、深度理解、国内友好</td>
+<td>学习、复杂项目、成本敏感</td>
+</tr>
+<tr>
+<td><strong><span class="key">GitHub</span> Copilot</strong></td>
+<td>生态成熟、企业支持、VS Code集成</td>
+<td>企业团队、微软生态</td>
+</tr>
+<tr>
+<td><strong>通义灵码</strong></td>
+<td>开箱即用、阿里云集成、免费</td>
+<td>阿里云用户、快速上手</td>
+</tr>
+<tr>
+<td><strong>Cursor</strong></td>
+<td>AI IDE体验好、功能强大</td>
+<td>重度AI编程用户</td>
+</tr>
+<tr>
+<td><strong>CodeGeeX</strong></td>
+<td>完全免费、简单易用</td>
+<td>学生、新手、预算有限</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>4. 适合教学</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Claude Code 的特点很适合教学：<br/><br/>✅ 通用性强<br/>   - 学会的方法能迁移到其他工具<br/>   - 不局限于某个产品<br/><br/>✅ 透明度高<br/>   - 可以看到 AI 的思考过程<br/>   - 便于理解原理<br/><br/>✅ 可控性好<br/>   - 可以指定模型<br/>   - 可以调整参数<br/>   - 便于对比实验</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">但你不必只用 Claude Code</span></h3>
+<p data-tool="mdnice编辑器"><strong>本系列教的是 AI Coding 方法论，不是单一工具：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>学完本系列，你能：<br/><br/>✅ 掌握 AI 编程思维<br/>   - 如何描述需求<br/>   - 如何审查代码<br/>   - 如何与 AI 协作<br/><br/>✅ 掌握提示词技巧<br/>   - 黄金公式<br/>   - 常见错误<br/>   - 高级技巧<br/><br/>✅ 理解底层原理<br/>   - AI 如何理解代码<br/>   - 上下文管理<br/>   - 安全与隐私<br/><br/>✅ 迁移到其他工具<br/>   - 方法通用<br/>   - 触类旁通</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">系列中也会提及其他工具</span></h3>
+<p data-tool="mdnice编辑器"><strong>本系列不是 <span class="key">Claude</span> Code 说明书：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>会对比讲解：<br/>- Claude Code vs GitHub Copilot<br/>- Claude Code vs 通义灵码<br/>- Claude Code vs Cursor<br/><br/>会介绍组合使用：<br/>- 快速补全：CodeGeeX<br/>- 复杂任务：Claude Code<br/>- 代码审查：通义灵码<br/><br/>会说明迁移方法：<br/>- 学会 Claude Code<br/>- 能快速上手其他工具</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、AI Coding 能做什么？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">代码生成</span></h3>
+<p data-tool="mdnice编辑器"><strong>从自然语言到代码：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输入：<br/>"用 Python 写一个函数，验证邮箱格式，<br/>返回布尔值，使用正则表达式"<br/><br/>输出：<br/>import re<br/><br/>def validate_email(email: str) -&gt; bool:<br/>    """验证邮箱格式"""<br/>    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'<br/>    return bool(re.match(pattern, email))<br/><br/># 测试<br/>print(validate_email("test@example.com"))  # True<br/>print(validate_email("invalid-email"))      # False</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">代码解释</span></h3>
+<p data-tool="mdnice编辑器"><strong>理解复杂代码：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输入：<br/>"解释这段代码的原理，指出潜在问题"<br/>[粘贴代码]<br/><br/>输出：<br/>【工作原理】<br/>这段代码实现了...<br/><br/>【执行流程】<br/>1. 首先...<br/>2. 然后...<br/><br/>【潜在问题】<br/>1. 性能问题：...<br/>2. 安全风险：...<br/><br/>【改进建议】<br/>...</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">Bug 修复</span></h3>
+<p data-tool="mdnice编辑器"><strong>快速定位问题：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输入：<br/>错误：ZeroDivisionError: division by zero<br/>代码：[粘贴代码]<br/><br/>输出：<br/>【问题原因】<br/>当除数为0时会触发...<br/><br/>【修复方案】<br/>def safe_divide(a, b):<br/>    if b == 0:<br/>        return None  # 或 raise ValueError<br/>    return a / b<br/><br/>【预防措施】<br/>...</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.4</span><span class="title-text">重构优化</span></h3>
+<p data-tool="mdnice编辑器"><strong>提升代码质量：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输入：<br/>"重构这个函数，提升可读性和性能"<br/>[粘贴长函数]<br/><br/>输出：<br/>【重构前问题】<br/>- 函数过长（150行）<br/>- 嵌套太深（5层）<br/>- 职责不清<br/><br/>【重构后】<br/>- 拆分为3个子函数<br/>- 降低嵌套（最多2层）<br/>- 单一职责<br/><br/>【代码】<br/>...</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.5</span><span class="title-text">测试生成</span></h3>
+<p data-tool="mdnice编辑器"><strong>自动写测试：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>输入：<br/>"为这个函数生成单元测试，覆盖率90%+"<br/>[粘贴函数]<br/><br/>输出：<br/>import unittest<br/><br/>class TestFunction(unittest.TestCase):<br/>    def test_normal_case(self):<br/>        ...<br/>    <br/>    def test_edge_case(self):<br/>        ...<br/>    <br/>    def test_error_case(self):<br/>        ...<br/><br/># 覆盖率: 95%</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、AI Coding 不能做什么？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">局限性</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI 不是万能的：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>❌ 不能替代思考<br/>   - 架构设计还需要你<br/>   - 技术选型还需要你<br/>   - 业务理解还需要你<br/><br/>❌ 不能保证正确<br/>   - AI 会犯错<br/>   - 需要人工审查<br/>   - 需要测试验证<br/><br/>❌ 不能处理所有情况<br/>   - 极其复杂的业务逻辑<br/>   - 没见过的技术栈<br/>   - 需要创造性的设计<br/><br/>❌ 不能替代学习<br/>   - 不懂原理，AI 的代码你也看不懂<br/>   - 出了问题，你也改不了<br/>   - 技术债务会积累</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">正确的使用姿势</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI Coding = AI + Human</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>AI 负责：<br/>✅ 重复性工作<br/>✅ 样板代码<br/>✅ 快速原型<br/>✅ 文档生成<br/><br/>你负责：<br/>✅ 架构设计<br/>✅ 需求理解<br/>✅ 代码审查<br/>✅ 最终决策<br/><br/>协作模式：<br/>你描述需求 → AI 生成代码 → 你审查调整 → 完成</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、本系列讲什么？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">系列结构</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI Coding 从入门到精通（<span class="num">25</span>篇）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手篇（01-05）：快速上手<br/>├─ 01 AI Coding 是什么（本文）<br/>├─ 02 10分钟安装配置<br/>├─ 03 基础操作：5个必会命令<br/>├─ 04 提示词技巧<br/>└─ 05 新手总结<br/><br/>进阶篇（06-11）：提升效率<br/>├─ 06 代码库理解<br/>├─ 07 多文件编辑<br/>├─ 08 测试驱动<br/>├─ 09 调试高手<br/>├─ 10 文档生成<br/>└─ 11 进阶总结<br/><br/>原理篇（12-15）：深入理解<br/>├─ 12 代码补全原理<br/>├─ 13 上下文管理<br/>├─ 14 架构揭秘<br/>└─ 15 安全与隐私<br/><br/>实战篇（16-23）：项目实践<br/>├─ 16-18 CLI 工具开发<br/>├─ 19-21 Web 应用开发<br/>└─ 22-23 数据项目<br/><br/>专题篇（24-25）：进阶专题<br/>├─ 24 多语言开发<br/>└─ 25 团队协作</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">学习目标</span></h3>
+<p data-tool="mdnice编辑器"><strong>学完本系列，你将：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 掌握 AI 编程方法论<br/>   - 不是学会一个工具，而是掌握一种能力<br/>   - 能迁移到任何 AI 编程工具<br/><br/>✅ 效率提升 3-10 倍<br/>   - 代码生成：2小时 → 10分钟<br/>   - Bug 修复：1小时 → 15分钟<br/>   - 文档编写：1小时 → 5分钟<br/><br/>✅ 理解底层原理<br/>   - 知道 AI 怎么理解代码<br/>   - 知道如何优化提示词<br/>   - 知道局限性和风险<br/><br/>✅ 具备实战能力<br/>   - 完成真实项目<br/>   - 积累实战经验<br/>   - 建立工作流</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、谁适合学这个系列？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">适合人群</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 软件开发者<br/>   - 想提升编码效率<br/>   - 想减少重复劳动<br/>   - 想学习新技术<br/><br/>✅ 编程学习者<br/>   - 刚学编程的新手<br/>   - 想转行的开发者<br/>   - 需要快速上手<br/><br/>✅ 技术管理者<br/>   - 想了解 AI 编程<br/>   - 想评估技术选型<br/>   - 想提升团队效率<br/><br/>✅ 独立开发者<br/>   - 一个人干多个人的活<br/>   - 需要快速原型<br/>   - 预算有限</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">前置要求</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>最低要求：<br/>✅ 会基本的编程（任何语言）<br/>✅ 有开发环境<br/>✅ 愿意尝试新工具<br/><br/>不需要：<br/>❌ AI/ML 背景<br/>❌ 特定语言精通<br/>❌ 昂贵的硬件</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、准备工作</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.1</span><span class="title-text">心态准备</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 保持学习心态<br/>   - AI 编程是新事物<br/>   - 需要时间适应<br/>   - 允许犯错<br/><br/>2. 保持批判思维<br/>   - AI 会犯错<br/>   - 需要审查代码<br/>   - 不要盲目信任<br/><br/>3. 保持实践习惯<br/>   - 光看不够<br/>   - 要动手试试<br/>   - 做中学最快</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">8.2</span><span class="title-text">工具准备</span></h3>
+<p data-tool="mdnice编辑器"><strong>下一篇会详细讲，这里先预告：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>选项1（推荐）：<br/>Claude Code + GLM-5<br/>- 免费 1000万 tokens<br/>- 无需代理<br/>- 国内可用<br/><br/>选项2：<br/>通义灵码<br/>- 完全免费<br/>- 开箱即用<br/>- 阿里云生态<br/><br/>选项3：<br/>CodeGeeX<br/>- 完全免费<br/>- 简单易用<br/>- 智谱 AI</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">九、开始之前</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">9.1</span><span class="title-text">你可能关心的问题</span></h3>
+<p data-tool="mdnice编辑器"><strong>Q：AI 会取代程序员吗？</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>不会，但会改变程序员的工作方式：<br/><br/>消失的：<br/>- 重复性编码<br/>- 简单的 CRUD<br/>- 样板代码<br/><br/>增加的：<br/>- 架构设计<br/>- 需求理解<br/>- 代码审查<br/>- AI 协作<br/><br/>本质：<br/>从"写代码的人"变成"设计系统的人"</code></pre>
+<p data-tool="mdnice编辑器"><strong>Q：需要付费吗？</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>不需要！<br/><br/>免费方案：<br/>✅ Claude Code + GLM-5：1000万 tokens 免费<br/>✅ 通义灵码：完全免费<br/>✅ CodeGeeX：完全免费<br/>✅ MarsCode：完全免费<br/><br/>足够个人使用。</code></pre>
+<p data-tool="mdnice编辑器"><strong>Q：学不会怎么办？</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>这个系列设计为：<br/><br/>✅ 循序渐进<br/>   - 从简单到复杂<br/>   - 每篇都有实例<br/>   - 可随时复习<br/><br/>✅ 动手实践<br/>   - 不是理论课<br/>   - 每篇都有练习<br/>   - 边学边用<br/><br/>✅ 实用导向<br/>   - 学完就能用<br/>   - 解决真实问题<br/>   - 即时反馈</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">十、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">10.1</span><span class="title-text">核心要点</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. AI Coding 是编程方式的革命<br/>   - 从写代码变成描述需求<br/>   - 效率提升 3-10 倍<br/><br/>2. AI Coding Agent 有很多选择<br/>   - 国际：Claude Code、Copilot、Cursor<br/>   - 国内：通义灵码、CodeGeeX、MarsCode<br/><br/>3. 本系列用 Claude Code 讲解<br/>   - 模型灵活（最重要）<br/>   - 国内友好<br/>   - 功能全面<br/>   - 适合教学<br/><br/>4. 但学的是方法论，不是单一工具<br/>   - 技能可迁移<br/>   - 触类旁通</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">10.2</span><span class="title-text">下一步</span></h3>
+<p data-tool="mdnice编辑器"><strong>准备好了吗？</strong></p>
+<p data-tool="mdnice编辑器">下一篇，我们将：</p>
+<ul>
+<li><section>选择适合你的工具</section></li>
+<li><section>完成安装配置</section></li>
+<li><section>运行第一个示例</section></li>
+<li><section>开启 AI 编程之旅</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong><span class="num">10</span>分钟后，你就能体验 AI 编程的威力！</strong></p>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>下一篇：<span class="num">10</span>分钟安装配置，开始你的 AI 编程之旅</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">1</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-03-31</p>
+<p data-tool="mdnice编辑器"><strong>AI 编程时代已经到来，别掉队！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

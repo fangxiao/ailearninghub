@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用看板管理 10+ AI 编程助手——Vibe Kanban 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://raw.githubusercontent.com/BloopAI/vibe-kanban/main/packages/public/vibe-kanban-screenshot-overview.png" alt="vibe-kanban 真实界面截图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block; background: #eee;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    用看板管理 10+ AI 编程助手——Vibe Kanban 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    可视化任务流，多 Agent 并行开发
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具测评 | Vibe Kanban 看板管理实战（含新手前置科普）
+  </p>
+
+  <!-- 重要提醒：项目停更 -->
+  <section style="margin: 25px 0; padding: 18px 20px; background: #FFF8E1; border: 1px solid #FFD54F; border-left: 4px solid #F9A825; border-radius: 8px;">
+    <p style="margin: 0 0 8px 0; color: #F57F17; font-weight: bold; font-size: 16px;">⚠ 先说一件最重要的事：这个项目正在停更（sunsetting）</p>
+    <p style="margin: 0; color: #5d4037; font-size: 15px; line-height: 1.8;">Vibe Kanban 背后的公司 bloop 已宣布关闭，官方仓库和官网都挂着「Vibe Kanban is sunsetting」的声明。项目会作为<strong style="color: #F57F17;">开源、社区维护</strong>的形态继续存在，但不再有官方团队持续迭代。<strong style="color: #F57F17;">所以本文的定位是「教你理解多 Agent 协作的思路、趁社区版还能跑先上手体验」，而不是「强烈建议把它写进团队长期 SOP」</strong>。如果你在找一个会长期维护的同类工具，文末也给了几个替代方向。</p>
+  </section>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    如果你是一个把 Claude Code、Codex、Gemini CLI 轮着用的人，大概率有过这样的崩溃瞬间：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 一个项目里同时跑 Claude Code 改后端、Codex 改前端、Gemini 写文档，三个终端窗口来回切，鼠标点错窗口直接把命令敲到了错误的项目
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想知道 Codex 改了哪些文件，得 <code style="background: #ffebee; padding: 1px 5px; border-radius: 3px; font-size: 14px;">git diff</code> 跑一遍，再切回 Claude Code 窗口对照刚才它改的内容
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 任务进度全靠脑子里记，"后端登录那个 bug Claude 改完没？""Codex 的 PR 合了没？"只能挨个窗口去问 Agent
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想给某个 Agent 的改动加条评论，得开 VS Code 跳到对应行号，等 Agent 跑完再回来继续，上下文断裂是常态
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">问题不在 Agent 不够强，在于"多 Agent 并行"这件事缺一个统一的可视化调度层。</strong>每个 Agent 自己很强，但它们之间没有共享看板，没有任务状态的实时同步，也没有 diff 的并排对照，你只能靠人脑当任务队列，靠终端窗口当进度条。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    于是就有了今天的主角——<strong style="color: #00897B;">Vibe Kanban</strong>，一个把所有 AI 编程 Agent 都装进看板的开源应用，项目停更前已在 GitHub 收获 <strong style="color: #00897B;">约 2.8 万 Star</strong>（数据截至 2026 年，停更前峰值）。注意：下面讲的能力都是它停更前已经具备的，社区接手后可能会有变化。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它和传统 IDE 的差异，本质上是从<strong style="color: #00897B;">"工具驱动"</strong>切换到了<strong style="color: #00897B;">"任务驱动"</strong>。IDE 关心的是"怎么写这一行代码"，Vibe Kanban 关心的是"这个任务该给谁做、做到哪一步了、改完要不要合并"。这种视角的切换，让多 Agent 协作从"嘴上协调"变成了"看板上推进"。
+  </p>
+
+  <!-- 章节00：新手前置科普 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">00</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">新手前置科普：先搞懂这几个词</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    如果你刚接触 AI 编程，下面这些词先扫一眼，后面就不会卡：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">🔹 AI 编程 Agent（编码智能体）</p>
+    <p style="margin: 0 0 14px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">就是一个能在你电脑上读代码、改代码、跑命令的 AI 助手，通常通过命令行（CLI）使用。文中提到的 Claude Code（Anthropic）、Codex（OpenAI）、Gemini CLI（Google）都是这类。它们各自要单独安装、单独登录（背后是各自账号的额度/付费）。</p>
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">🔹 PR / 分支（branch）/ git diff / worktree</p>
+    <p style="margin: 0 0 14px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;"><strong style="color:#00897B;">分支</strong>是代码的一份平行副本；<strong style="color:#00897B;">PR（Pull Request）</strong>是把分支的改动申请合并回主线的请求；<strong style="color:#00897B;">git diff</strong> 是查看"改了哪些行"的命令；<strong style="color:#00897B;">worktree</strong> 是 Git 的"同一仓库多份工作目录"机制，让多个任务能在互相隔离的目录里并行改代码，互不踩踏。</p>
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">🔹 tmux / pane</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">tmux 是终端多窗口管理工具，<strong style="color:#00897B;">pane</strong> 是它的一个分屏。很多老手用"tmux 开好几个 pane，每个跑一个 Agent"来并行——这就是 Vibe Kanban 想替代的那种手工方式。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">记住一个核心认知：Vibe Kanban 本身不写代码，它只是把上面这些 Agent"排兵布阵"的指挥中心。</strong>真正的智能在底层 Agent，它负责的是规划、分配、看 diff、收反馈、提 PR。
+  </p>
+
+  <!-- 章节01：Vibe Kanban 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Vibe Kanban 是什么：给 AI 编程助手装一块看板</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Vibe Kanban 底层基于 Rust + Tauri，用看板视图统一管理 10+ 种 AI 编程 Agent。</strong>它不是某个 Agent 的替代品，而是它们的"指挥中心"。它调用你本地的 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude</code>、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">codex</code>、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">gemini</code>、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">cursor</code> 等 CLI，只是把任务从"在终端里裸跑"变成了"在卡片上推进"。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    关于"它是桌面应用还是网页"：官方主推的 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npx vibe-kanban</code> 其实是一个 npm 包装器，会在<strong style="color: #00897B;">本地起一个服务、自动打开浏览器</strong>使用（也有原生 Tauri 桌面窗口可选）。所以对读者来说，理解成"本地运行的 Web 应用"最准确，不用纠结它到底是不是独立 exe。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">📋 一句话定位</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Vibe Kanban = AI 编程助手的多 Agent 看板调度器，让你的任务从 Backlog 一路推到 Done，每一步都看得见、改得了、回得了头。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它和几个 GUI/编排工具是互补关系：<a href="claudia-Claude-Code的GUI外衣-公众号版.html" style="color: #00897B; text-decoration: none;">Claudia</a> 是把单个 Claude Code 的会话/费用/Agent 配置可视化，<a href="claude-code-router-公众号版.html" style="color: #00897B; text-decoration: none;">Claude Code Router</a> 解决的是多 Provider 路由分发，<a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">ECC</a> 提供的是 Claude Code 内部的多 Agent 协作。<strong style="color: #00897B;">而 Vibe Kanban 干的是跨 Agent 的任务编排</strong>，把 Claude Code、Codex、Gemini CLI 这些异构 Agent 统一进同一块看板里调度。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    目前官方支持的 Agent 已覆盖主流的 10 个：
+  </p>
+
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">Claude Code · Codex · Gemini CLI · GitHub Copilot
+Amp · Cursor · OpenCode · Droid · CCR · Qwen Code</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    注意 <strong style="color: #00897B;">CCR（Claude Code Router）</strong> 也在列表里，也就是说你可以把 CCR 当成一个统一入口，再让 Vibe Kanban 在看板上调度它，多层组合起来用。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：npx 一行启动，零配置上手</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Vibe Kanban 最舒服的一点是<strong style="color: #00897B;">不需要 git clone、不需要本地编译 Rust</strong>。只要本机有 Node.js（建议 18+）和 Git，一行命令就能拉起：
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">一行启动</p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">npx vibe-kanban</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    第一次执行时 npx 会从 npm 拉取最新版 vibe-kanban 包，在本地启动服务并自动打开浏览器。后续每次执行都会自动检查更新。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 前置条件与成本提示（新手必看）</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">① 本机至少要装好<strong style="color:#00897B;">一个</strong>被支持的 Agent 的 CLI（例如 <code style="background: #fff; padding: 1px 5px; border-radius: 3px; font-size: 14px;">claude</code>、<code style="background: #fff; padding: 1px 5px; border-radius: 3px; font-size: 14px;">codex</code>），并完成登录认证。Vibe Kanban 不替你装 Agent，它只负责调度你已有的 Agent。</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">② 这些 Agent 的登录背后是<strong style="color:#c62828;">各自账号的额度或付费 API</strong>。同时跑多个 Agent = 多个账号同时在烧钱，<strong style="color:#00897B;">学生/预算敏感的朋友务必先确认自己有可用额度</strong>，别一上来就并行拉 4 个 Agent。</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">③ 首次启动会让你用 GitHub 或 Google 账号登录 Vibe Kanban 本身（也可选"不登录继续"，但看板/团队功能会受限）。这步涉及账号体系，介意的话可以了解它的自托管选项。</p>
+  </section>
+
+  <!-- 章节03：核心功能 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心功能：看板 / Diff / 预览 / PR / 多 Agent</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Vibe Kanban 的核心能力可以拆成五大块，每一块都对应一个真实痛点。当前版本里它的模型是「<strong style="color:#00897B;">看板 issues（规划）+ Workspaces 工作区（执行）</strong>」：每张任务卡可以挂一个或多个工作区，每个工作区给 Agent 一条独立分支和一个独立工作目录。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      看板视图管理任务
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">经典的 <strong style="color: #00897B;">Backlog → In Progress → Review → Done</strong> 四列看板。每张卡片就是一个任务，可绑定具体 Agent、文件路径、目标分支。任务卡可以从一列拖到另一列，状态变更会反映 Agent 的执行情况（例如进入 Review 时可以看到当前改动的概述）。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      Diff 查看 + 内联评论
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Agent 改完代码后，点开任务卡就能看到<strong style="color: #00897B;">并排 diff</strong>，新增行绿、删除行红，支持语法高亮。最关键的是<strong style="color: #00897B;">可以在 diff 的任意行上加内联评论</strong>，这些评论会作为新的上下文喂给 Agent，让它针对你的反馈继续修改，告别"先看完 diff 再切回终端打字"的来回折腾。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      内置浏览器预览
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Agent 改前端代码，<strong style="color: #00897B;">不用切到浏览器刷新</strong>。Vibe Kanban 自带一个内置 webview，集成了 devtools 和设备模拟（iPhone、iPad、桌面等多种 viewport）。Agent 改完保存，预览窗实时刷新；发现问题直接在 devtools 里看 console、network，再把日志拷给 Agent 让它修。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">4</span>
+      PR 创建和合并
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Review 通过后，<strong style="color: #00897B;">直接在 Vibe Kanban 里点按钮创建 PR</strong>，标题、描述、关联 issue 自动从任务卡生成。PR 创建后建议去 GitHub 上做正式 review，确认无误再合并。它更像一个"快速创建 + 一键合并"的便捷入口，正式协作流程仍然建议走代码托管平台。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">5</span>
+      多 Agent 切换 + worktree 隔离
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">同一块看板上的不同任务，<strong style="color: #00897B;">可以分别指派给不同 Agent</strong>。它真正的并行隔离靠的是 <strong style="color:#00897B;">Git worktree</strong>：每创建一个工作区，Vibe Kanban 会自动生成独立的分支和工作目录，主分支原封不动，多个 Agent 在各自空间里改代码、互不踩踏。任务卡片上会显示当前是哪个 Agent 在跑、跑了多久、当前进度，一眼看清整块板子的状态。</p>
+  </section>
+
+  <!-- 章节04：实战工作流 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战工作流：从任务创建到 PR 合并</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    把刚才那五大能力串起来，就是一个真实的多 Agent 协作流程，跑通之后你会发现<strong style="color: #00897B;">"同时指挥三个 AI 助手一起干活"也并没有想象中那么乱</strong>。
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">Step 1：把需求拆成卡片，扔进 Backlog</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    在看板的 Backlog 列里新建任务卡，每张卡写清楚：标题、目标文件、期望产出、建议用哪个 Agent。例如"用 Codex 重构 Login.tsx 为 hooks 写法"、"用 Claude Code 给 user service 加单元测试"。
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">Step 2：创建 Worktree 工作区，选 Agent 启动</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    选中卡片后创建 Workspace，Vibe Kanban 会自动生成 git worktree（独立分支 + 独立目录），你在面板里选择 Agent（Claude Code / Codex / Gemini CLI 等）和模型/力度，点开始。后台拉起对应 CLI 进程，卡片上实时显示 Agent 的状态：Running / Waiting / Done。
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">Step 3：看 diff，加内联评论</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Agent 跑完后卡片进入 Review。点开看 diff，发现某行不合适，直接在该行旁点评论："这里改成 useMemo，依赖项别漏"。评论保存后 Agent 会被自动唤起继续改，<strong style="color: #00897B;">你的反馈直接变成 Agent 的下一轮 prompt</strong>，无需切窗口、无需复制粘贴。
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">Step 4：内置浏览器预览，验证 UI 改动</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    前端任务卡旁边直接点"预览"按钮，内置 webview 弹出，自动加载 dev server。打开 iPhone 模拟器看移动端表现，发现问题截图或拷 console 日志，再贴回任务卡作为 Agent 的下一轮输入。
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">Step 5：创建并合并 PR</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Review 通过后，Vibe Kanban 自动用任务卡内容生成 PR 标题和描述，点"创建 PR"提交到远端。CI 通过后，在 GitHub 上点"合并"即可。<strong style="color: #00897B;">整个流程从需求到落地，看板上的每一列都对应一个真实阶段</strong>。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 工作流亮点</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">这种"看板 + Agent"的工作流最直接的好处是：<strong style="color: #00897B;">你终于不用再拿自己的脑子记任务进度</strong>。"Claude 那个任务跑完没""Codex 的 PR 合了没"——这些都不用想了，看一眼板子，每个任务状态清清楚楚。每张卡片还自带完整的上下文历史（Agent 跑了哪几轮、你加过哪些评论、diff 怎么演化），中途换人接手看一张卡就能接上。</p>
+  </section>
+
+  <!-- 章节05：对比纯 CLI 多开终端 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比纯 CLI 多开终端：差距与代价</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    可能有人会说："我用 tmux 多开几个 pane，每个 pane 跑一个 Agent，不也能并行？"并行是能并行，但<strong style="color: #00897B;">"并行跑"和"统一管"是两回事</strong>。下面这张表把差距列清楚（同时也标了它付出的代价）：
+  </p>
+
+  <section style="margin: 25px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 12px 10px; text-align: left; border: 1px solid #00897B; font-weight: bold;">对比维度</th>
+          <th style="padding: 12px 10px; text-align: left; border: 1px solid #00897B; font-weight: bold;">纯 CLI 多开终端</th>
+          <th style="padding: 12px 10px; text-align: left; border: 1px solid #00897B; font-weight: bold;">Vibe Kanban</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">任务状态可见性</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">靠记，每个 pane 自己记</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">看板四列，全任务状态一目了然</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">Diff 查看</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">手动 git diff，无并排视图</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">并排 diff + 语法高亮</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">内联评论反馈</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">无，只能复制行号回终端</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">diff 行级评论，自动转 prompt</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">前端预览</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">切浏览器刷新，无设备模拟</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">内置 webview + devtools + 设备模拟</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">PR 创建/合并</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">gh CLI 或网页手动操作</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">任务卡一键创建，合并仍建议走 GitHub</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">多 Agent 隔离</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">靠人工分目录，易冲突</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">自动 git worktree 隔离</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">心智负担</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">高，要记每个 pane 状态</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">低，看板即状态</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #3f3f3f; font-weight: bold;">代价</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #666;">几乎零成本，随手就用</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #c62828; font-weight: bold;">需登录账号、吃更多资源、项目已停更</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一句话概括：<strong style="color: #00897B;">纯 CLI 是"多 Agent 能并行但难管理"，Vibe Kanban 是"多 Agent 既能并行又能统一管理"，代价是多了账号体系和资源开销</strong>。如果你的工作流里只有一个 Agent、单线推进，CLI 够用；一旦要两个以上 Agent 并行、要给团队汇报进度、要在 diff 上加评论反馈，Vibe Kanban 的优势立刻拉开——前提是你接受它已停更的事实。
+  </p>
+
+  <!-- 客观局限 -->
+  <section style="margin: 40px 0 20px 0; padding: 22px; background: #f3f7f7; border: 1px solid #cfd8d8; border-left: 4px solid #607d8b; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #37474f; font-weight: bold; font-size: 17px;">🧭 客观说：它的局限与不适合的场景</p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">① <strong style="color:#37474f;">项目已停更</strong>：官方不再持续迭代，未来兼容新 Agent / 修 bug 要靠社区，长期可靠性存疑。</p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">② <strong style="color:#37474f;">需要登录与账号体系</strong>：首次要用 GitHub/Google 登录（可跳过但功能受限），对"数据完全不出本地、必须离线"的场景不友好；介意的话可研究其自托管方案。</p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">③ <strong style="color:#37474f;">仍是 v0.x 成熟度</strong>：版本号未到 1.0，定位是"加速人的规划与 review"，并不能替你做架构决策。</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">④ <strong style="color:#37474f;">单 Agent 单线场景反而是负担</strong>：多一层 GUI 和登录，不如直接开终端。</p>
+  </section>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">⚠</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：这些坑别踩</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 1：Agent CLI 没装好就启动</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">Vibe Kanban 不替你装 Agent，它只调度。如果你本机没装 <code style="background: #ffebee; padding: 1px 5px; border-radius: 3px; font-size: 14px;">claude</code>、<code style="background: #ffebee; padding: 1px 5px; border-radius: 3px; font-size: 14px;">codex</code> 等 CLI，看板上选 Agent 时会直接报错。<strong style="color: #c62828;">先用官方文档把至少一个 Agent 装好并完成认证（含额度）</strong>，再启动 Vibe Kanban。</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 2：同时拉太多 Agent 把机器和钱包跑爆</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">每张工作区背后都是一个真实 Agent 进程，吃 CPU、内存，<strong style="color: #c62828;">更吃 API 额度</strong>。8GB 内存的机器同时跑 4 个 Agent 大概率卡死，额度也可能很快见底。<strong style="color: #c62828;">建议同时不超过 2-3 个工作区</strong>，剩下的留在 Backlog 排队；学生党先用单个 Agent 试水。</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 3：以为 worktree 能完全避免冲突（其实只隔离过程）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">Vibe Kanban 用 git worktree 给每个工作区独立分支/目录，<strong style="color: #c62828;">并行阶段确实互不踩踏</strong>。但最后合并回主线时，如果两个工作区改了同一份逻辑，冲突照样发生。<strong style="color: #c62828;">任务拆分时仍要按模块/文件边界切</strong>，让每个工作区的改动落在不重叠的区域，合并才顺。</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 4：内联评论太长 Agent 抓不住重点</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">diff 上的内联评论会被拼进 Agent 的下一轮 prompt。如果评论写成长段落，Agent 容易跑偏。<strong style="color: #c62828;">每条评论只说一件事</strong>，"这里改用 useMemo"比"我觉得这里性能不太好你看看是不是该用 useMemo 或者 useCallback 之类的方法"有效得多。</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 5：盲目信任多 Agent 自动协作</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">Vibe Kanban 提供的是<strong style="color: #c62828;">调度</strong>而不是<strong style="color: #c62828;">自动决策</strong>。哪个任务给哪个 Agent、什么时候拖到 Review、PR 要不要合并，这些判断仍然是人来做。把所有任务一股脑拖进 In Progress 然后等 Agent 自动跑完，<strong style="color: #c62828;">大概率会得到一堆互相打架的 diff</strong>。</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 6：把 Vibe Kanban 当 PR 审查工具用</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">它的 diff 视图很顺手，但它<strong style="color: #c62828;">不是 GitHub/GitLab 的替代品</strong>。多人协作的代码评审、CI/CD 触发、保护分支策略，这些还是要走代码托管平台。Vibe Kanban 的 PR 模块更像一个"快速创建 + 一键合并"的便捷入口，正式 review 流程仍然建议在 GitHub 上完成。</p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 22px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #c62828; font-weight: bold; font-size: 17px;">🚨 坑 7：忽略"项目已停更"再投入长期流程</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">别忘了开头那条提醒：bloop 已停更此项目。可以拿它<strong style="color: #c62828;">学习和体验多 Agent 协作思路</strong>，但别急着把它写进团队的长期 SOP、也别依赖它对接关键业务。想长期用，关注社区维护动态，或考虑仍在活跃迭代的同类编排工具。</p>
+  </section>
+
+  <!-- 结尾CTA -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      AI 编程工具现在越来越往"多个 Agent 一起干活"的方向走，但多数人卡在同一个地方：Agent 各有各的强项，却缺一个能把它们串起来、让人看得见也管得住的调度层。<strong style="color: #00897B;">Vibe Kanban 补上的正是这一块</strong>——而且它恰好是个很好的"教学样本"，让你直观理解 worktree 隔离、内联评论转 prompt、看板驱动开发这些多 Agent 协作的核心机制。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      不过要清醒：它现在<strong style="color: #c62828;">已停更</strong>，约 2.8 万 Star 是停更前的成绩。把它当"趁社区版还能跑先体验"的玩具/学习工具很合适，指望它当长期基建就得自己权衡了。
+    </p>
+    <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      如果你也正被"多终端窗口 + 多 Agent CLI"折腾到怀疑人生，今天就可以拉起来试试。一行命令，零编译，启动后第一块看板就开始用。
+    </p>
+
+    <section style="background: #fff; border: 2px solid #00897B; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center;">
+      <p style="margin: 0 0 10px 0; font-size: 15px; color: #00897B; font-weight: bold;">🚀 一行命令立即体验</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 16px; color: #1a1a1a; background: #E0F2F1; padding: 10px 16px; border-radius: 6px; display: inline-block;">npx vibe-kanban</p>
+      <p style="margin: 12px 0 0 0; font-size: 13px; color: #666;">GitHub 仓库：github.com/BloopAI/vibe-kanban（已标注 sunsetting）</p>
+    </section>
+
+    <p style="margin: 20px 0 0 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: center;">
+      <strong style="color: #00897B;">说到底，装起来不费劲、能马上跑，后面的一切才有得聊。</strong>
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: center;">
+      <strong style="color: #00897B;">真上了手，你可能就回不去一份份终端来回切的日子了。</strong>
+    </p>
+  </section>
+
+  <!-- 分隔线 -->
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 相关文章推荐 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📚 关联阅读</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ▸ <a href="claudia-Claude-Code的GUI外衣-公众号版.html" style="color: #00897B; text-decoration: none;">给 Claude Code 穿上 GUI 外衣——Claudia 实战指南</a>（同样是 GUI 工具，单 Agent 可视化）
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ▸ <a href="claude-code-router-公众号版.html" style="color: #00897B; text-decoration: none;">Claude Code Router（CCR）</a>（Vibe Kanban 支持的 Agent 之一，多 Provider 路由）
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ▸ <a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">Everything Claude Code（ECC）</a>（多 Agent 协作对比，Claude Code 内部增强）
+    </p>
+  </section>
+
+  <!-- 替代/延伸 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🔁 想找长期维护的同类工具？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">Vibe Kanban 停更后，可关注：① 各 Agent 官方自己的并行/子 Agent 能力（如 Claude Code 的 subagent、Codex 的并行任务）；② 仍在活跃迭代的多 Agent 编排/看板类开源项目；③ 直接用 tmux + git worktree 的轻量手工方案（本文对比表里那一侧）。选型时优先看「是否活跃维护、是否需要登录云账号、能否离线自托管」这三点。</p>
+  </section>
+
+  <!-- 下期预告 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📖 下期预告</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">下期我们会聊一个把 AI 编程助手"编排成流水线"的工具，让 Claude Code 的产出自动喂给 Codex 验证，再把 Codex 的结果交给 Gemini 写文档，整条链路全自动。</p>
+  </section>
+
+  <!-- 评论区引导 -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">
+      💬 <strong style="color: #00897B;">你平时是怎么管理多个 AI 编程助手的？</strong>是 tmux 多开 pane、还是干脆只跑一个？欢迎在评论区聊聊你的工作流，下篇我们挑高频留言里的问题展开写。
+    </p>
+    <p style="margin: 8px 0 12px 0; font-size: 15px; color: #888; line-height: 1.8;">
+      如果你已经用过 Vibe Kanban，也欢迎分享你最常指派给它的 Agent 组合，我们会整理成一份"多 Agent 最佳实践"清单发出来。
+    </p>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 编程实战干货</p>
+    <p style="margin: 6px 0 0 0; font-size: 13px; color: #bbb;">点击「在看」让更多需要的人看到 👇</p>
+  </section>
+
+</section>
+
+</body>
+</html>

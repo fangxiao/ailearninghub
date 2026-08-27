@@ -1,0 +1,12 @@
+graph TB
+    S[开始] --> A[安装依赖<br/>pip install -r requirements.txt]
+    A --> B{选择部署方式}
+    B --> |云端| C[配置API Key]
+    B --> |本地| D[启动Ollama<br/>ollama serve]
+    C --> E[验证配置]
+    D --> E
+    E --> F[测试大模型]
+    F --> G[✅ 完成]
+    
+    style S fill:#e3f2fd
+    style G fill:#e8f5e9

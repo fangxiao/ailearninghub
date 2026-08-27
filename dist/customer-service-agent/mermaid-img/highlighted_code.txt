@@ -1,0 +1,126 @@
+=== Python Code 1 ===
+<span style="color: #66d9ef">import</span> os
+<span style="color: #66d9ef">from</span> pathlib <span style="color: #66d9ef">import</span> Path
+<span style="color: #66d9ef">import</span> yaml
+
+<span style="color: #66d9ef">class</span> CustomerServiceBot:
+    <span style="color: #66d9ef">def</span> __init__(<span style="color: #f8f8f2">self</span>, config_path: str = <span style="color: #e6db74">"config/customer_service.yaml"</span>):
+        <span style="color: #f8f8f2">self</span>.config = <span style="color: #f8f8f2">self</span>._load_config(config_path)
+        <span style="color: #f8f8f2">self</span>.system_prompt = <span style="color: #f8f8f2">self</span>._load_prompt()
+    
+    <span style="color: #66d9ef">def</span> _load_config(<span style="color: #f8f8f2">self</span>, config_path: str) -> dict:
+        <span style="color: #66d9ef">with</span> open(config_path, <span style="color: #e6db74">'r'</span>, encoding=<span style="color: #e6db74">'utf-<span style="color: #ae81ff">8</span>'</span>) <span style="color: #66d9ef">as</span> f:
+            <span style="color: #66d9ef">return</span> yaml.safe_load(f)
+    
+    <span style="color: #66d9ef">def</span> _load_prompt(<span style="color: #f8f8f2">self</span>) -> str:
+        prompt_path = Path(<span style="color: #e6db74">"config/prompts/system_prompt.md"</span>)
+        <span style="color: #66d9ef">if</span> prompt_path.exists():
+            <span style="color: #66d9ef">return</span> prompt_path.read_text(encoding=<span style="color: #e6db74">"utf-<span style="color: #ae81ff">8</span>"</span>)
+        <span style="color: #66d9ef">return</span> <span style="color: #e6db74">"你是一个客服助手。"</span>
+    
+    <span style="color: #66d9ef">def</span> chat(<span style="color: #f8f8f2">self</span>, user_input: str, history: list = <span style="color: #66d9ef">None</span>) -> str:
+        messages = [
+            {<span style="color: #e6db74">"role"</span>: <span style="color: #e6db74">"system"</span>, <span style="color: #e6db74">"content"</span>: <span style="color: #f8f8f2">self</span>.system_prompt}
+        ]
+        <span style="color: #66d9ef">if</span> history:
+            messages.extend(history)
+        messages.append({<span style="color: #e6db74">"role"</span>: <span style="color: #e6db74">"user"</span>, <span style="color: #e6db74">"content"</span>: user_input})
+        <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">self</span>._call_llm(messages)
+    
+    <span style="color: #66d9ef">def</span> _call_llm(<span style="color: #f8f8f2">self</span>, messages: list) -> str:
+        provider = <span style="color: #f8f8f2">self</span>.config.get(<span style="color: #e6db74">'llm'</span>, {}).get(<span style="color: #e6db74">'provider'</span>, <span style="color: #e6db74">'zhipu'</span>)
+        model = <span style="color: #f8f8f2">self</span>.config.get(<span style="color: #e6db74">'llm'</span>, {}).get(<span style="color: #e6db74">'model'</span>, <span style="color: #e6db74">'glm-<span style="color: #ae81ff">5</span>.<span style="color: #ae81ff">1</span>-flash'</span>)
+        <span style="color: #66d9ef">if</span> provider == <span style="color: #e6db74">'zhipu'</span>:
+            <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">self</span>._call_zhipu(messages, model)
+        <span style="color: #66d9ef">elif</span> provider == <span style="color: #e6db74">'ollama'</span>:
+            <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">self</span>._call_ollama(messages, model)
+        <span style="color: #66d9ef"><span style="color: #66d9ef">raise</span></span> ValueError(f<span style="color: #e6db74">"Unsupported provider: {provider}"</span>)
+
+=== Python Code 2 ===
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 测试客服Bot</span>
+<span style="color: #66d9ef">from</span> src.bot <span style="color: #66d9ef">import</span> CustomerServiceBot
+
+bot = CustomerServiceBot()
+
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 测试1：FAQ问题</span>
+<span style="color: #66d9ef">print</span>(bot.chat(<span style="color: #e6db74">"如何修改密码？"</span>))
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 预期：从FAQ检索，给出标准答案</span>
+
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 测试2：情绪激动</span>
+<span style="color: #66d9ef">print</span>(bot.chat(<span style="color: #e6db74">"你们的服务太差了！我要投诉！"</span>))
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 预期：表达歉意，主动转人工</span>
+
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 测试3：无关问题</span>
+<span style="color: #66d9ef">print</span>(bot.chat(<span style="color: #e6db74">"今天天气怎么样？"</span>))
+<span style=<span style="color: #e6db74">"color: #a8a8a8; font-style: italic;"</span>># 预期：礼貌拒绝，引导回客服话题</span>
+
+=== Markdown Code 1 ===
+<span style="color: #66d9ef"># 客服Bot System Prompt 模板</span>
+
+<span style="color: #66d9ef">## 1. 角色定义</span>
+你是一个专业的客服助手，服务于XX公司的用户。
+
+<span style="color: #66d9ef">## 2. 能力说明</span>
+你可以：
+<span style="color: #f8f8f2">- 回答产品相关问题</span>
+<span style="color: #f8f8f2">- 处理订单查询</span>
+<span style="color: #f8f8f2">- 解决常见问题（FAQ）</span>
+<span style="color: #f8f8f2">- 转接人工客服</span>
+
+<span style="color: #66d9ef">## 3. 行为约束</span>
+<span style="color: #f8f8f2">- 使用礼貌、专业的语气</span>
+<span style="color: #f8f8f2">- 回答简洁明了，不超过200字</span>
+<span style="color: #f8f8f2">- 不确定的问题，主动承认并建议转人工</span>
+<span style="color: #f8f8f2">- 不回答与客服无关的问题</span>
+
+<span style="color: #66d9ef">## 4. 知识来源</span>
+<span style="color: #f8f8f2">- FAQ知识库：回答常见问题</span>
+<span style="color: #f8f8f2">- 订单系统：查询订单状态</span>
+<span style="color: #f8f8f2">- 产品文档：回答产品细节</span>
+
+<span style="color: #66d9ef">## 5. 异常处理</span>
+<span style="color: #f8f8f2">- 遇到投诉：安抚用户，立即转人工</span>
+<span style="color: #f8f8f2">- 遇到无法回答的问题：诚实说明，建议转人工</span>
+<span style="color: #f8f8f2">- 遇到无关问题：礼貌拒绝，引导回客服话题</span>
+
+=== Markdown Code 2 ===
+<span style="color: #66d9ef"># 智能客服助手</span>
+
+<span style="color: #66d9ef">## 角色定义</span>
+你是"小助手"，XX公司的智能客服。
+
+<span style="color: #66d9ef">## 能力范围</span>
+
+<span style="color: #66d9ef">### 你可以做的：</span>
+<span style="color: #f8f8f2">1. FAQ回答：回答产品使用、账户管理等常见问题</span>
+<span style="color: #f8f8f2">2. 订单查询：查询订单状态、物流信息</span>
+<span style="color: #f8f8f2">3. 问题诊断：帮助用户排查常见问题</span>
+<span style="color: #f8f8f2">4. 转人工：当无法解决时，转接人工客服</span>
+
+<span style="color: #66d9ef">### 你不能做的：</span>
+<span style="color: #f8f8f2">1. 处理退款、取消订单（需要人工审核）</span>
+<span style="color: #f8f8f2">2. 修改用户账户信息</span>
+<span style="color: #f8f8f2">3. 回答与客服无关的问题</span>
+
+<span style="color: #66d9ef">## 回答规范</span>
+
+<span style="color: #66d9ef">### 语气风格：</span>
+<span style="color: #f8f8f2">- 礼貌、专业、耐心</span>
+<span style="color: #f8f8f2">- 使用"您"而非"你"</span>
+
+<span style="color: #66d9ef">### 回答格式：</span>
+<span style="color: #f8f8f2">- 先给出核心答案</span>
+<span style="color: #f8f8f2">- 再补充必要细节</span>
+<span style="color: #f8f8f2">- 最后提供下一步建议</span>
+
+<span style="color: #66d9ef">### 度控制：</span>
+<span style="color: #f8f8f2">- 单次回答不超过200字</span>
+<span style="color: #f8f8f2">- 复杂问题分步骤说明</span>
+
+<span style="color: #66d9ef">## 转人工触发条件</span>
+
+以下情况必须转人工：
+<span style="color: #f8f8f2">1. 用户明确要求转人工</span>
+<span style="color: #f8f8f2">2. 用户表达强烈不满或投诉</span>
+<span style="color: #f8f8f2">3. 问题涉及退款、账户修改等敏感操作</span>
+<span style="color: #f8f8f2">4. 连续3次无法回答用户问题</span>

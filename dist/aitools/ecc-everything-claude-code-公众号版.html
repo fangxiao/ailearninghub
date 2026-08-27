@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>给 Claude Code 装个操作系统？ECC 深度测评</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    给 Claude Code 装个操作系统？这款开源神器值得试试
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    67 个 Agent、281 个 Skill、94 个命令——ECC 实战指南
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code 增强实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 写代码时，你可能遇到过这些场景：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 改了个 bug，直接让 Claude 写代码，结果写完才发现没写测试
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想让 Claude 帮忙审代码，每次都得重复说"帮我看看这段有没有问题"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 对话开太长， Claude 忘了之前说的项目背景，得重新解释
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 写完代码想做安全扫描，装了一堆工具还是没搞定
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题，<strong style="color: #00897B;">Everything Claude Code（简称 ECC）</strong>都能解决。它是一个给 Claude Code 用的增强配置——67 个专职 Agent、281 个 Skill、94 个斜杠命令，装完之后 Claude Code 就多了规划、测试、审查、安全扫描这些能力。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>Anthropic 黑客松冠军项目，给 Claude Code 加上多 Agent 协作、自动测试、安全扫描、持续学习等能力。
+    </p>
+  </section>
+
+  <!-- 章节01：ECC 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">ECC 到底是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    ECC 是一个<strong style="color: #00897B;">增强层</strong>，不是独立的 Agent。装在 Claude Code（或 Cursor、Codex、OpenCode）上，提供以下能力：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🏗️ 67 个专职 Agent</strong>：规划师、架构师、代码审查员、测试工程师、安全审计员……每个角色有专属工具和职责
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📦 281 个 Skill</strong>：涵盖 TypeScript、Python、Go、Rust 等语言的编码规范，TDD、安全审查、DevOps 等工作流
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">⚡ 94 个斜杠命令</strong>：<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plan</code> 自动拆解任务、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/tdd</code> 强制测试驱动、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/code-review</code> 一键代码审查
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔒 Hook 自动化</strong>：在每次编辑、运行命令、提交代码时自动触发格式化、类型检查、安全扫描
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧠 持续学习</strong>：跨会话记忆，项目知识自动保存，下次对话直接调用
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些能力组合起来，相当于给你配了一支工程团队：planner 帮你想清楚再动手，tdd-guide 盯着测试别偷懒，security-reviewer 主动扫漏洞，你只需要在关键节点拍板。
+  </p>
+
+  <!-- 章节02：安装与快速上手 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 步安装，5 分钟上手</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    ECC 支持 4 种 AI 编程工具：Claude Code、Cursor、Codex、OpenCode。如果你用的是 Claude Code，安装最简单：
+  </p>
+
+  <!-- 步骤1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      添加插件市场
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/plugin marketplace add https://github.com/affaan-m/ECC</p>
+    </section>
+  </section>
+
+  <!-- 步骤2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      安装 ECC 插件
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/plugin install ecc@ecc</p>
+    </section>
+  </section>
+
+  <!-- 步骤3 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      验证安装
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plan</code> 试试。如果出现规划流程，说明装好了。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 备选方案：</strong>如果插件方式不兼容，可以直接 git clone：<br>
+      <code style="background: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 13px; color: #e65100;">git clone https://github.com/affaan-m/ECC.git ~/.claude/skills/ecc</code>
+    </p>
+  </section>
+
+  <!-- 章节03：六大核心能力 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">六大核心能力逐个拆解</span>
+    </p>
+  </section>
+
+  <!-- 能力1：Agent 编排 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">① 多 Agent 编排：让 AI 学会分工协作</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      ECC 的 67 个 Agent 各有专属职责：planner 拆解任务、architect 设计架构、tdd-guide 盯着测试、code-reviewer 检查质量、security-reviewer 扫漏洞。输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/multi-plan</code> 可以让多个 Agent 并行处理复杂任务。
+    </p>
+  </section>
+
+  <!-- 能力2：Skill 系统 -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">② 281 个 Skill：内置专业知识库</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      Skill 是预定义的工作流和知识库。比如 TypeScript Skill 包含编码规范，PyTorch Skill 包含模型最佳实践，Playwright Skill 包含 E2E 测试流程。AI 会根据任务自动加载对应的 Skill。
+    </p>
+  </section>
+
+  <!-- 能力3：斜杠命令 -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">③ 94 个斜杠命令：常用操作一键触发</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      不用每次都写长 prompt。<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/plan</code> 自动拆解需求、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/tdd</code> 强制测试驱动开发、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/code-review</code> 一键审查、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/build-fix</code> 自动解决构建错误。
+    </p>
+  </section>
+
+  <!-- 能力4：Hook 自动化 -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">④ Hook 自动化：后台自动跑</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      不用你操心，ECC 会在后台自动运行：每次编辑后格式化代码、提交前跑类型检查、运行命令后自动检测错误。支持 8 种事件类型，可以自定义触发时机。
+    </p>
+  </section>
+
+  <!-- 能力5：持续学习 -->
+  <section style="background: #F3E5F5; border-left: 4px solid #6A1B9A; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #4A148C; font-weight: bold; font-size: 16px;">⑤ 持续学习：AI 不再"失忆"</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      ECC 会自动保存项目知识、架构决策、常见问题到记忆系统。下次打开新对话，<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/sessions</code> 查看历史，<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/learn-eval</code> 评估学习效果。项目越大，这个能力越值钱。
+    </p>
+  </section>
+
+  <!-- 能力6：安全扫描 -->
+  <section style="background: #FFEBEE; border-left: 4px solid #C62828; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #B71C1C; font-weight: bold; font-size: 16px;">⑥ 安全扫描：912 条规则覆盖</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      集成 AgentShield，内置 912 条安全规则。代码提交前自动扫描，检测潜在漏洞、敏感信息泄露、依赖风险。输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/security-scan</code> 手动触发。
+    </p>
+  </section>
+
+  <!-- 章节04：Agent & Skill 详细用法 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Agent & Skill 怎么用？详细指南</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    六大能力是概念，落到实处要看 Agent 和 Skill 怎么调用。下面拆解具体用法：
+  </p>
+
+  <!-- Agent 用法 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      🤖 Agent 用法：三种方式调用
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">方式一：斜杠命令直接调用</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      最常用的方式，直接在对话框输入：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plan <span style="color: #999; font-size: 12px;"># 规划 Agent 拆解任务</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/code-review ./src/auth/login.ts <span style="color: #999; font-size: 12px;"># 代码审查 Agent 审查指定文件</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/security-scan <span style="color: #999; font-size: 12px;"># 安全审计 Agent 扫描漏洞</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/tdd <span style="color: #999; font-size: 12px;"># TDD Agent 强制测试驱动</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/build-fix <span style="color: #999; font-size: 12px;"># 构建修复 Agent 解决编译错误</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/api-design <span style="color: #999; font-size: 12px;"># 设计 RESTful/GraphQL 接口规范</span></p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">方式二：自然语言触发</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      不用记命令，直接说需求，ECC 会自动分派给对应 Agent：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"帮我审一下这个文件有没有问题" → 自动调用 <span style="color: #2E7D32; font-weight: bold;">code-reviewer</span></p>
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"这个功能怎么设计比较好" → 自动调用 <span style="color: #2E7D32; font-weight: bold;">architect</span></p>
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"写代码之前先帮我写测试" → 自动调用 <span style="color: #2E7D32; font-weight: bold;">tdd-guide</span></p>
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"检查下有没有安全风险" → 自动调用 <span style="color: #2E7D32; font-weight: bold;">security-reviewer</span></p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">方式三：多 Agent 协作</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      复杂任务可以让多个 Agent 并行工作：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/multi-plan <span style="color: #999; font-size: 12px;"># 启动规划集群，多个 Agent 并行分析</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/multi-execute <span style="color: #999; font-size: 12px;"># 启动执行集群，多个 Agent 并行开发</span></p>
+    </section>
+  </section>
+
+  <!-- 常用 Agent 列表 -->
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00695C; font-weight: bold; font-size: 17px;">
+      📋 最常用的 10 个 Agent
+    </p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 20%;">Agent</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 40%;">职责</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 40%;">调用方式</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">planner</td>
+          <td style="padding: 10px 8px;">需求拆解、任务排期</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/plan</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">architect</td>
+          <td style="padding: 10px 8px;">架构设计、技术选型</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/api-design</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">code-reviewer</td>
+          <td style="padding: 10px 8px;">代码质量、规范检查</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/code-review [file]</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">security-reviewer</td>
+          <td style="padding: 10px 8px;">漏洞扫描、权限风险</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/security-scan</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">tdd-guide</td>
+          <td style="padding: 10px 8px;">测试驱动开发引导</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/tdd</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">build-error-resolver</td>
+          <td style="padding: 10px 8px;">编译错误修复</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/build-fix</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">refactor-cleaner</td>
+          <td style="padding: 10px 8px;">代码重构建议</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/refactor-clean</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">doc-updater</td>
+          <td style="padding: 10px 8px;">文档自动更新</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/update-docs</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">loop-operator</td>
+          <td style="padding: 10px 8px;">自动化循环任务</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/gan-build</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px; font-weight: bold;">chief-of-staff</td>
+          <td style="padding: 10px 8px;">会话协调、任务分配</td>
+          <td style="padding: 10px 8px;"><code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">自然语言触发</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Skill 用法 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #2E7D32; font-weight: bold; font-size: 17px;">
+      📦 Skill 用法：按需加载，自动匹配
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">Skill 是什么？</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      Skill 是预定义的工作流和知识库，以 <code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">SKILL.md</code> 文件存在。每个 Skill 包含：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>YAML frontmatter：定义 name、description、触发关键词</li>
+      <li>工作流步骤：具体的执行流程和检查点</li>
+      <li>知识库：相关的编码规范、最佳实践、常见陷阱</li>
+    </ul>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">触发方式：自动匹配 + 手动调用</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      大部分时候 Skill 是<strong style="color: #00897B;">自动加载</strong>的——当你写 TypeScript 代码时，TS 相关的编码规范 Skill 会自动激活；当你运行测试时，TDD Skill 会自动加载。
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      也可以手动指定：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"用 TypeScript 规范检查这个文件" → 加载 <span style="color: #2E7D32; font-weight: bold;">typescript-coding-standards</span> Skill</p>
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"按照 Playwright 最佳实践写 E2E 测试" → 加载 <span style="color: #2E7D32; font-weight: bold;">playwright-e2e</span> Skill</p>
+      <p style="margin: 0; font-size: 13px; line-height: 1.8; color: #333;">"用 PyTorch 风格优化这个模型代码" → 加载 <span style="color: #2E7D32; font-weight: bold;">pytorch-patterns</span> Skill</p>
+    </section>
+  </section>
+
+  <!-- 常用 Skill 分类 -->
+  <section style="margin: 25px 0; padding: 20px; background: #E8F5E9; border: 1px solid #c5e1a5; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #1B5E20; font-weight: bold; font-size: 17px;">
+      🗂️ 常用 Skill 分类速查
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">编程语言规范类</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 15px 0;">
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">typescript-coding-standards</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">python-patterns</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">golang-patterns</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">rust-patterns</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">java-coding-standards</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">cpp-coding-standards</span>
+    </div>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">测试质量类</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 15px 0;">
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">tdd-workflow</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">playwright-e2e</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">verification-loop</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">eval-harness</span>
+    </div>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">框架模式类</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 15px 0;">
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">nextjs-turbopack</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">django-patterns</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">springboot-patterns</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">pytorch-patterns</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">laravel-patterns</span>
+    </div>
+
+    <p style="margin: 15px 0 5px 0; color: #1B5E20; font-weight: bold; font-size: 15px;">安全 & DevOps 类</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0;">
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">security-audit</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">docker-deploy</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">db-migration</span>
+      <span style="background: #fff; color: #1B5E20; padding: 4px 10px; border-radius: 4px; font-size: 13px; border: 1px solid #c5e1a5;">api-design</span>
+    </div>
+  </section>
+
+  <!-- 查看更多用法 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 12px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0 0 10px 0; color: #E65100; font-weight: bold; font-size: 16px;">📖 查看完整列表</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      ECC 有详细的官方文档，分两本指南：
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">Shortform Guide</strong>：基础用法、安装、核心概念（推荐先读）
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">Longform Guide</strong>：Token 优化、记忆持久化、并行化、子代理编排等高级玩法
+    </p>
+    <p style="margin: 15px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      文档地址：<span style="color: #00897B;">https://github.com/affaan-m/ECC#the-guides</span>
+    </p>
+  </section>
+
+  <!-- 章节05：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：用 ECC 开发一个功能</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说再多不如看一次完整流程。假设要开发一个"用户登录"功能，看看 ECC 怎么接管整个过程：
+  </p>
+
+  <!-- 演示步骤 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      规划阶段：/plan 自动拆解任务
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      你输入："开发用户登录功能"
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ECC 的 planner Agent 自动产出：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>需求分析：手机号 + 验证码登录</li>
+      <li>技术方案：Redis 存验证码、JWT 鉴权</li>
+      <li>文件结构：新增 auth 模块 3 个文件</li>
+      <li>测试计划：单元测试 + 接口测试</li>
+    </ul>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      实现阶段：/tdd 强制测试驱动
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ECC 的 tdd-guide Agent 接管：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>先写失败的测试用例（发送验证码接口、验证接口、登录接口）</li>
+      <li>编写实现代码让测试通过</li>
+      <li>自动触发 Hook：格式化 + 类型检查</li>
+    </ul>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      审查阶段：/code-review + /security-scan
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      代码写完，两个 Agent 并行工作：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>code-reviewer 检查：命名规范、错误处理、边界条件</li>
+      <li>security-reviewer 扫描：验证码是否过期、JWT 是否有泄露风险、SQL 注入</li>
+    </ul>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">4</span>
+      交付阶段：/build-fix 自动解决构建问题
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      代码合并前，build-error-resolver Agent 自动：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>运行构建命令，捕获所有错误</li>
+      <li>分析错误日志，定位问题文件和行号</li>
+      <li>自动修复并验证</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">全程耗时：约 15 分钟。</strong>如果是以前，可能要 1 小时以上。
+    </p>
+  </section>
+
+  <!-- 章节06：常见问题 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 个常见疑问</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：ECC 会让 Claude Code 变慢吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      不会。ECC 使用 Progressive Disclosure 架构，Agent 和 Skill 按需加载，元数据扫描只占少量 token。Hook 脚本用 Node.js 运行，不影响主进程。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：我只用简单的补全，需要装 ECC 吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      如果只是写小脚本、改 bug，确实没必要。但如果你经常写新功能、做代码审查、维护项目，ECC 能帮你节省大量重复性工作。建议先装试试，不喜欢可以随时卸载。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：和 Superpowers 有什么区别？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Superpowers 是方法论（5 步开发流程），ECC 是工具箱（Agent + Skill + 命令 + Hook）。两者可以搭配使用：用 ECC 的 Agent 执行 Superpowers 的流程。
+    </p>
+  </section>
+
+  <!-- 章节07：适用场景 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">这些场景最值</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">① 新项目开发</strong>：/plan 规划 + /tdd 实现 + /code-review 审查，整套流程走完</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">② 遗留项目维护</strong>：代码审查、重构建议、构建错误修复</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">③ 团队协作</strong>：统一代码规范（Skill）、自动化审查（Hook）、知识共享（记忆系统）</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">④ 安全敏感项目</strong>：912 条规则的安全扫描，比手动检查靠谱</p>
+    <p style="margin: 0;"><strong style="color: #00897B;">⑤ 多语言全栈</strong>：TypeScript / Python / Go / Rust / C++ 等多语言专用 Agent</p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">最后的话</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">Claude Code 自带代码生成，但大部分人只用这一项。ECC 加了规划、测试、审查、安全扫描这些能力，让 AI 干更完整的工程活。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">装上之后，对话会有几个变化：它会主动问你要不要测试、提醒你检查安全、记住之前说过的项目背景。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/affaan-m/ECC</span><br>
+      官方网站：<span style="color: #00897B;">https://ecc.tools</span><br>
+      安装命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin marketplace add https://github.com/affaan-m/ECC</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin install ecc@ecc</p>
+    </section>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">你用过 ECC 吗？装上之后效果怎么样？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

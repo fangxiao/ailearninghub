@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型原理系列 06 · Token</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #e8f5e9 0%, #fff 100%); border-left-color: #66bb6a; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.feynman { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.feynman p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #fce4ec 0%, #fff 100%); border-left: #e91e63; }
+blockquote.opinion p { color: #5a5a5a; }
+.quiz-box { background: linear-gradient(135deg, #ffe0b2 0%, #fff 100%); border: 2px dashed #ff9800; border-radius: 12px; padding: 20px; margin: 24px 0; }
+.quiz-box .quiz-title { font-size: 15px; font-weight: bold; color: #e65100; margin-bottom: 12px; }
+.quiz-box .quiz-answer { background: #fff8e1; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 14px; }
+.dialogue { background: #f0f4ff; border-radius: 10px; padding: 16px; margin: 20px 0; }
+.dialogue .teacher { font-weight: bold; color: #667eea; }
+.dialogue .student { font-weight: bold; color: #ff9800; }
+.dialogue p { margin: 8px 0; font-size: 14px; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2b8cc4; font-weight: 500; }
+.series-link { display: inline-block; padding: 4px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 20px; font-size: 12px; margin-right: 8px; }
+.img-block { text-align: center; margin: 30px 0; }
+.img-block img { max-width: 100%; border-radius: 8px; }
+.img-caption { font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic; }
+.fun-fact { background: linear-gradient(135deg, #e1bee7 0%, #fff 100%); border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+.fun-fact .fact-title { font-size: 14px; font-weight: bold; color: #7b1fa2; margin-bottom: 8px; }
+.math-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px 18px; margin: 16px 0; border-left: 4px solid #667eea; }
+.math-card .card-title { font-size: 15px; font-weight: bold; color: #353535; margin: 0 0 6px; }
+.math-card .card-content { font-size: 14px; color: #5a5a5a; line-height: 1.8; margin: 0 0 6px; }
+.math-card .analogy { background: #e8f5e9; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 13px; color: #2e7d32; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">大模型原理系列 06</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+<span class="series-link">系列六</span>
+Token —— AI是怎么"认字"的
+</p>
+
+<blockquote class="opinion">
+<p><strong>我的观点：</strong>Token是大模型最基本的"原料"。很多人觉得大模型是直接处理文字的，其实不是——它处理的是Token。不理解Token，就像不理解"像素"就去做设计，迟早要踩坑。</p>
+</blockquote>
+
+<section class="quiz-box">
+<p class="quiz-title">先问大家一个问题</p>
+<p style="font-size: 18px; text-align: center; padding: 12px 0; color: #333;">
+"你好"是多少个"字"？
+</p>
+<p>你可能会说："两个字啊！"</p>
+<p>但对AI来说，答案可能是——</p>
+<section class="quiz-answer">
+<p>不一定。AI用的单位叫"Token"，"你好"可能是2个Token，也可能是1个、3个，甚至更多。这取决于AI用什么方式把文字切成小块。</p>
+</section>
+</section>
+
+<h3><span class="icon">0</span><span class="title-text">上期回顾：Encoder和Decoder是怎么配合的</span></h3>
+
+<p>上期我们讲了Encoder-Decoder架构：Encoder负责"理解"，把文字变成知识；Decoder负责"生成"，把知识变成文字。</p>
+
+<p>但不管是Encoder还是Decoder，它们处理的数据单位是什么？</p>
+
+<p>答案是——<strong>Token</strong>。这是大模型最基本的"原料"。</p>
+
+<h3><span class="icon">1</span><span class="title-text">什么是Token？</span></h3>
+
+<p>Token是AI处理文本的<strong>基本单位</strong>。你可以把它理解为"AI认识的字"或者"文字的积木块"。</p>
+
+<p>AI不是像人类一样一个字一个字地读，而是把文本切成一个个Token来处理。</p>
+
+<div class="fun-fact">
+<p class="fact-title">生活中的类比</p>
+<p>想象你教外国朋友学中文：</p>
+<p>• 你说"苹果"——他们可能当成一个词来记</p>
+<p>• 你说"水"——他们可能只记这一个字</p>
+<p>• 你说"中华人民共和国"——他们可能记成5个词，也可能记成更少</p>
+<p style="margin-top:8px;">同样的道理，AI把文字切成多少块，取决于怎么分最方便学习。</p>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">英文怎么分Token？</span></h3>
+
+<p>英文的Tokenization通常基于"子词"（Subword）规则。</p>
+
+<p>最常见的是<strong>Byte Pair Encoding（BPE）</strong>算法，简单说就是：</p>
+
+<ul>
+<li>先统计哪些字符组合最常出现</li>
+<li>然后把这些常用组合打包成一个Token</li>
+<li>不常用的组合继续拆开</li>
+</ul>
+
+<p>举个例子：</p>
+
+<table>
+<tr>
+<th>单词</th>
+<th>Token数量</th>
+<th>怎么切的</th>
+</tr>
+<tr>
+<td>"hello"</td>
+<td>1</td>
+<td>最常用的词，直接作为一个Token</td>
+</tr>
+<tr>
+<td>"tokenization"</td>
+<td>3-4</td>
+<td>可能切成 token / ize / tion</td>
+</tr>
+<tr>
+<td>"UNIVERSITY"</td>
+<td>3-4</td>
+<td>可能切成 UNIV / ERS / ITY</td>
+</tr>
+</table>
+
+<div class="img-block">
+<img src="data:image/png;base64,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">
+<p class="img-caption">图1：BPE分词示例——常用词整个成Token，生僻词拆开成多个</p>
+</div>
+
+<h3><span class="icon">3</span><span class="title-text">中文怎么分Token？</span></h3>
+
+<p>中文的分词更复杂，因为中文没有天然的空格分隔。</p>
+
+<p>主流方法有几种：</p>
+
+<ul>
+<li><strong>基于词的分词</strong>：把句子切成"词"，比如"今天/天气/很好"</li>
+<li><strong>基于字的分词</strong>：每个汉字一个Token，比如"今/天/天/气/很/好"</li>
+<li><strong>混合分词</strong>：常用词作为一个Token，生僻字单独切</li>
+</ul>
+
+<p>不同的模型可能用不同的策略：</p>
+
+<table>
+<tr>
+<th>分词方式</th>
+<th>例子</th>
+<th>Token数量</th>
+</tr>
+<tr>
+<td>基于字</td>
+<td>今/天/天/气/很/好</td>
+<td>6</td>
+</tr>
+<tr>
+<td>基于词</td>
+<td>今天/天气/很/好</td>
+<td>4</td>
+</tr>
+<tr>
+<td>混合（常见词优先）</td>
+<td>今天/天气/很好</td>
+<td>3</td>
+</tr>
+</table>
+
+<div class="dialogue">
+<p class="teacher">老师：为什么"苹果"在中文里通常是一个Token？</p>
+<p class="student">小明：因为苹果是个常用词？</p>
+<p class="teacher">老师：没错！苹果是常用词，出现频率高，所以被当成一个整体来学习。如果是不常见的词，可能会被拆成"苹"和"果"两个Token。</p>
+</div>
+
+<h3><span class="icon">4</span><span class="title-text">Token和字数的关系</span></h3>
+
+<p>这是大家最关心的问题：Token数和字数到底怎么换算？</p>
+
+<p>对于中文，有一个大致的关系：</p>
+
+<div class="math-card">
+<p class="card-title">中文Token估算</p>
+<p class="card-content">• 1个汉字 ≈ 1-1.5个Token</p>
+<p class="card-content">• 1个英文单词 ≈ 1.3-1.5个Token</p>
+<p class="card-content">• 1个标点符号 ≈ 0.5-1个Token</p>
+<p class="analogy"><strong>粗略估算：</strong>1000个Token ≈ 500-750个中文字 ≈ 750个英文单词</p>
+</div>
+
+<p>但这只是估算！实际情况取决于：</p>
+
+<ul>
+<li>文本内容（专业术语多的文本，Token可能更多）</li>
+<li>分词算法（不同模型用的分词器不同）</li>
+<li>语言混合（中英混杂的文本更难估算）</li>
+</ul>
+
+<h3><span class="icon">5</span><span class="title-text">Token为什么重要？</span></h3>
+
+<p>理解了Token，你会发现很多AI现象其实很正常：</p>
+
+<p><strong>现象1：为什么AI有时会"复读"？</strong></p>
+<p>比如你让它写诗，它可能重复"明月明月..."——这可能是因为某些Token组合特别常见，模型就学到了这种重复模式。</p>
+
+<p><strong>现象2：为什么中英文夹杂的文本处理效果差？</strong></p>
+<p>因为分词器通常针对一种语言优化，混合语言会增加分词难度。</p>
+
+<p><strong>现象3：为什么AI不认识你的名字？</strong></p>
+<p>生僻字或名字可能是分词器没学过的，就只能一个字一个字地处理，效果自然差。</p>
+
+<div class="fun-fact">
+<p class="fact-title">Token的限制</p>
+<p>每个AI模型都有"上下文窗口"限制，说白了就是一次能处理的Token数量有限：</p>
+<p>• GPT-3.5：约4000个Token（一次大约3000字）</p>
+<p>• GPT-4：约128000个Token（一次大约10万字）</p>
+<p>这就是为什么超长文本需要分段处理——超出窗口的部分，AI"看不见"。</p>
+</div>
+
+<h3><span class="icon">6</span><span class="title-text">Token的边界问题</span></h3>
+
+<p>Token切割有时候会产生有趣的问题：</p>
+
+<p><strong>问题1：文字游戏</strong></p>
+<p>"上海自来水来自海上"——正着读反着读意思不同。但对AI来说，如果"上海"是一个Token，它可能无法理解"海"在不同位置的含义差异。</p>
+
+<p><strong>问题2：算数难题</strong></p>
+<p>AI做数学题经常出错，因为数字的Token切分不符合数学直觉。比如"123"可能被切成"1"、"23"两个Token，而不是"一百二十三"这个整体概念。</p>
+
+<div class="math-card">
+<p class="card-title">为什么AI算数不行？</p>
+<p class="card-content">比如计算 25 + 37 = ?</p>
+<p class="card-content">人类可能直接算，但AI看到的是一串Token：</p>
+<p class="card-content">"25" 可能 = Token_A</p>
+<p class="card-content">"+" 可能 = Token_B</p>
+<p class="card-content">"37" 可能 = Token_C</p>
+<p class="card-content">它需要学会 Token_A + Token_B = Token_D 这种对应关系，但这种"学会"是靠统计规律，不是真正的数学能力。</p>
+<p class="analogy"><strong>类比：</strong>就像鹦鹉学舌，虽然能模仿说话，但不一定理解话的含义。</p>
+</div>
+
+<h3><span class="icon">7</span><span class="title-text">Token Embedding：Token怎么变成数字？</span></h3>
+
+<p>分词只是第一步。切好的Token需要变成数字，AI才能处理。</p>
+
+<p>这个过程叫<strong>Embedding</strong>——把每个Token映射到一个数字向量。</p>
+
+<div class="dialogue">
+<p class="teacher">老师：Embedding是什么？</p>
+<p class="student">小明：就是把Token变成向量？</p>
+<p class="teacher">老师：对。每个Token对应一个向量，就像给每个词发一张"身份证"。相似的词，它们的向量也会相似。比如"猫"和"狗"的向量应该很近，因为都是动物。</p>
+<p class="student">小明：那这个词向量是怎么来的？</p>
+<p class="teacher">老师：训练出来的。模型在学习海量文本的过程中，自然而然地学会了：经常出现在相似上下文中的词，它们的向量也应该相似。这就是著名的"分布假说"——你应该从上下文理解一个词的意义。</p>
+</div>
+
+<h3><span class="icon">8</span><span class="title-text">总结</span></h3>
+
+<blockquote class="highlight">
+<p><strong>Token的核心要点：</strong></p>
+<p>1. Token是AI处理文本的基本单位</p>
+<p>2. 中文通常是1个汉字=1个Token左右，但具体取决于分词器</p>
+<p>3. Token数 ≠ 字数，大致是1 Token ≈ 0.5-1.5个中文字</p>
+<p>4. 每个AI模型有Token数量限制（上下文窗口）</p>
+<p>5. Token的切分方式会影响AI对文本的理解</p>
+</blockquote>
+
+<p>理解Token，是理解大模型工作原理的关键一步。下次当你发现AI处理某些文本效果不好时，可以想想：是不是Token切分出了问题？</p>
+
+<section class="fun-fact">
+<p class="fact-title">📖 下篇预告</p>
+<p>下期我们会讲：<strong>GPT是怎么生成文字的</strong>。了解了Token之后，我们就可以理解：AI是如何一个字一个字地"创作"出完整回答的？这个过程叫"自回归生成"。</p>
+</section>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>系列六：大模型原理系列</strong><br>
+01 · Transformer架构原理<br>
+02 · Self-Attention数学原理<br>
+03 · 位置编码：让模型知道"谁在前面"<br>
+04 · 多头注意力：让模型从多个角度理解<br>
+05 · Encoder-Decoder架构：大模型的"双脑"结构<br>
+06 · Token：AI是怎么"认字"的 ← 你在这里<br>
+07 · GPT生成原理：AI是怎么一个字一个字"写"出来的
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 29-30</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">框架对比</span></h2>
+
+<p>市面上有很多Agent开发框架：AutoGPT、LangChain、CrewAI……它们的核心理念是什么？代码有什么区别？这一篇来做个深度对比。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>框架是工具，理解和原理才是根本。看完这篇，你就知道该选什么框架了。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">AutoGPT</span></h3>
+
+<p>AutoGPT是最早的Agent框架之一，核心理念是"自主Agent"——给定目标，Agent自己思考、分解、执行。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># AutoGPT核心逻辑（伪代码）</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">AutoGPT</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">think</span><span style="color: #f8f8f2">(self, goal):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 1. 分析目标，生成任务列表</span>
+<span style="color: #f8f8f2">        tasks = self.</span><span style="color: #a6e22e">decompose</span><span style="color: #f8f8f2">(goal)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 2. 逐个执行任务</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> task </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> tasks:</span>
+<span style="color: #f8f8f2">            result = self.</span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(task)</span>
+<span style="color: #f8f8f2">            self.</span><span style="color: #a6e22e">review</span><span style="color: #f8f8f2">(result)  </span><span style="color: #a8a8a8; font-style: italic;"># 自我审查</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 3. 如果目标没达成，重新规划</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if not</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">goal_achieved</span><span style="color: #f8f8f2">():</span>
+<span style="color: #f8f8f2">            self.</span><span style="color: #a6e22e">think</span><span style="color: #f8f8f2">(goal)  </span><span style="color: #a8a8a8; font-style: italic;"># 递归</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">LangChain</span></h3>
+
+<p>LangChain是目前最流行的框架，核心理念是"链式组合"——把LLM、工具、记忆串联成链。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># LangChain核心逻辑</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> langchain </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> LLMChain, Agent</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> langchain.agents </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> initialize_agent, Tool</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 1. 定义工具</span>
+<span style="color: #f8f8f2">tools = [</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e">Tool</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">        name=</span><span style="color: #e6db74">"Search"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        func=search_func,</span>
+<span style="color: #f8f8f2">        description=</span><span style="color: #e6db74">"用于搜索信息"</span>
+<span style="color: #f8f8f2">    ),</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e">Tool</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">        name=</span><span style="color: #e6db74">"Calculator"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        func=calc_func,</span>
+<span style="color: #f8f8f2">        description=</span><span style="color: #e6db74">"用于计算"</span>
+<span style="color: #f8f8f2">    )</span>
+<span style="color: #f8f8f2">]</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 2. 初始化Agent</span>
+<span style="color: #f8f8f2">agent = </span><span style="color: #a6e22e">initialize_agent</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    tools=tools,</span>
+<span style="color: #f8f8f2">    llm=llm,</span>
+<span style="color: #f8f8f2">    agent=</span><span style="color: #e6db74">"zero-shot-react-description"</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 3. 执行</span>
+<span style="color: #f8f8f2">result = agent.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"帮我查一下特斯拉股价并计算市盈率"</span><span style="color: #f8f8f2">)</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">CrewAI</span></h3>
+
+<p>CrewAI专注于多Agent协作，核心理念是"团队"——多个Agent扮演不同角色，协作完成任务。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># CrewAI核心逻辑</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> crewai </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Agent, Task, Crew</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 1. 定义Agent角色</span>
+<span style="color: #f8f8f2">researcher = </span><span style="color: #a6e22e">Agent</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    role=</span><span style="color: #e6db74">"研究员"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    goal=</span><span style="color: #e6db74">"提供准确的研究数据"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    backstory=</span><span style="color: #e6db74">"你是资深研究员"</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">writer = </span><span style="color: #a6e22e">Agent</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    role=</span><span style="color: #e6db74">"作家"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    goal=</span><span style="color: #e6db74">"写出优质文章"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    backstory=</span><span style="color: #e6db74">"你是资深编辑"</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 2. 定义任务</span>
+<span style="color: #f8f8f2">task1 = </span><span style="color: #a6e22e">Task</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"研究AI最新进展"</span><span style="color: #f8f8f2">, agent=researcher)</span>
+<span style="color: #f8f8f2">task2 = </span><span style="color: #a6e22e">Task</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"撰写文章"</span><span style="color: #f8f8f2">, agent=writer)</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 3. 组建团队并执行</span>
+<span style="color: #f8f8f2">crew = </span><span style="color: #a6e22e">Crew</span><span style="color: #f8f8f2">([researcher, writer], tasks=[task1, task2])</span>
+<span style="color: #f8f8f2">result = crew.</span><span style="color: #a6e22e">kickoff</span><span style="color: #f8f8f2">()</span></code></pre>
+
+<h3><span class="icon">4</span><span class="title-text">框架对比总结</span></h3>
+
+<table>
+<tr><th>框架</th><th>核心理念</th><th>优势</th><th>劣势</th></tr>
+<tr><td>AutoGPT</td><td>自主Agent</td><td>全自动化、目标驱动</td><td>token消耗大、难以控制</td></tr>
+<tr><td>LangChain</td><td>链式组合</td><td>生态完善、灵活性高</td><td>学习曲线陡、版本迭代快</td></tr>
+<tr><td>CrewAI</td><td>多Agent协作</td><td>角色清晰、易于理解</td><td>功能相对单一</td></tr>
+</table>
+
+<blockquote><p>💡 <strong>选框架建议：</strong>学习原理用AutoGPT、生产项目用LangChain、多Agent协作用CrewAI。当然，最理想的是理解原理后自己造轮子。</p></blockquote>
+
+<hr/>
+
+<h2><span class="title-text">终极总结</span></h2>
+
+<p>30篇文章，终于写到最后了。这一篇，我们来做个完整的总结，回顾这个系列的旅程。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>从会用工具，到会造工具，这是这个系列最想传递的东西。希望你学完之后，不只是个Agent用户，而是一个Agent开发者。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">三大系列回顾</span></h3>
+
+<table>
+<tr><th>系列</th><th>主题</th><th>核心能力</th></tr>
+<tr><td>AI编程系列</td><td>用AI工具编程</td><td>Copilot、Cursor、Claude</td></tr>
+<tr><td>AI Coding系列</td><td>用AI Coding</td><td>项目级开发能力</td></tr>
+<tr><td>Agent开发系列</td><td>自己造Agent</td><td>系统设计能力</td></tr>
+</table>
+
+<h3><span class="icon">2</span><span class="title-text">Agent能力矩阵</span></h3>
+
+<p>学完这个系列，你应该掌握了以下能力：</p>
+
+<ul>
+<li><strong>核心循环</strong>：感知、思考、行动、反思</li>
+<li><strong>记忆系统</strong>：工作记忆、对话记忆、知识记忆、技能记忆</li>
+<li><strong>工具系统</strong>：Tool接口、Function Calling、安全机制</li>
+<li><strong>规划系统</strong>：任务分解、执行引擎、动态调整</li>
+<li><strong>多Agent</strong>：协作模式、消息总线、团队编排</li>
+<li><strong>生产部署</strong>：可观测性、Docker、K8s</li>
+</ul>
+
+<h3><span class="icon">3</span><span class="title-text">下一步</span></h3>
+
+<p>学完这个系列，你可以：</p>
+
+<ul>
+<li>从零构建自己的Agent</li>
+<li>深入研究某个模块（比如RAG、多Agent协作）</li>
+<li>参与开源Agent项目</li>
+<li>把Agent能力应用到实际工作中</li>
+</ul>
+
+<p>最后送大家一句话：<strong>不要只做工具的用户，要做工具的创造者。</strong></p>
+
+<blockquote><p>💡 <strong>写在最后：</strong>三个系列到此结束。从会用、到会用工具、到会造工具——这个旅程，我们一起走完了。希望这个系列能帮你打开新世界的大门。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>AI Coding系列：<a href="https://github.com">AI Coding通关指南</a></li>
+<li>Agent开发系列 01-02：<a href="Agent开发系列-01-02.html">从用户到创造者</a></li>
+</ul>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI · 完结</p>
+
+</article>
+</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型原理系列 开篇</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff8e1 0%, #fff 100%); border-left-color: #ffb300; }
+blockquote.highlight p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2b8cc4; font-weight: 500; }
+.series-tag { display: inline-block; padding: 4px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 20px; font-size: 12px; margin-right: 8px; }
+.series-intro { background: linear-gradient(135deg, #f5f7fa 0%, #fff 100%); padding: 20px 24px; border-radius: 8px; margin: 20px 0; }
+.series-intro h4 { color: #667eea; margin-bottom: 12px; font-size: 15px; }
+.series-intro p { padding: 6px 0; color: #555; font-size: 14px; }
+.connect-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 20px; margin: 20px 0; }
+.connect-card .series-name { font-size: 14px; color: #667eea; font-weight: bold; margin-bottom: 10px; }
+.connect-card .topic { display: inline-block; padding: 4px 10px; background: #f0f0f0; border-radius: 4px; font-size: 12px; color: #666; margin: 4px; }
+.connect-card .topic:hover { background: #667eea; color: #fff; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2>
+<span class="title-text">大模型原理系列 · 开篇</span>
+</h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+从"会用"到"真懂"——Agent开发者的最后一公里
+</p>
+
+<h3><span class="icon">1</span><span class="title-text">一个老面试题的启发</span></h3>
+
+<p>"你了解GPT是怎么生成文字的吗？"</p>
+
+<p>这个问题，我问过很多AI应用开发者。大多数人的回答是："就是下一个字下一个字生成的。" 再追问几句，很多人就答不上来了。</p>
+
+<p>这很正常。毕竟<strong>会用</strong>和<strong>真懂</strong>之间，隔着一整个技术原理的世界。</p>
+
+<p>我们用了三个系列的时间，从用户走到创造者：</p>
+
+<ul>
+<li>系列一，我们学会了用OpenClaw，从部署到自定义开发</li>
+<li>系列二，我们学会了用AI Coding，做完整的项目级开发</li>
+<li>系列三，我们学会了造Agent，理解了执行引擎、记忆系统、工具调用、多Agent协作</li>
+</ul>
+
+<p>但你有没有想过一个问题：<strong>为什么你的Agent有时候会'智障'？</strong></p>
+
+<blockquote class="highlight">
+<p>为什么Prompt写得好与不好，效果天差地别？<br>
+为什么上下文窗口那么大，Agent还是容易遗忘？<br>为什么RAG听起来简单，真正用起来却效果不稳定？<br>为什么同样的模型，别人的Agent就是比你的聪明？</p>
+</blockquote>
+
+<p>这些问题，<strong>不在Agent层解决</strong>，而在更底层——在大模型层。</p>
+
+<h3><span class="icon">2</span><span class="title-text">三个系列学的是什么</span></h3>
+
+<div class="series-intro">
+<h4>系列一：OpenClaw学习</h4>
+<p>关键词：平台使用、Bot设计、插件开发</p>
+<p>你会用OpenClaw了，知道怎么创建Bot、配置插件、发布工作流</p>
+</div>
+
+<div class="series-intro">
+<h4>系列二：AI Coding</h4>
+<p>关键词：项目开发、前端工程、UI组件</p>
+<p>你会用AI工具做完整项目了，知道怎么设计架构、编写代码、调试bug</p>
+</div>
+
+<div class="series-intro">
+<h4>系列三：Agent开发工程</h4>
+<p>关键词：执行引擎、记忆系统、工具调用、多Agent协作</p>
+<p>你会造Agent应用了，知道怎么让Agent思考、记忆、调用工具、协同工作</p>
+</div>
+
+<p>但这三个系列，<strong>都建立在一个前提上</strong>：有一个能力足够强的大模型在背后支撑。</p>
+
+<p>我们一直在<strong>使用</strong>大模型，却从来没有<strong>理解</strong>大模型。</p>
+
+<h3><span class="icon">3</span><span class="title-text">为什么要理解大模型</span></h3>
+
+<p>让我给你几个具体的场景：</p>
+
+<blockquote>
+<p>你在系列三里实现了<strong>上下文窗口管理</strong>（第9篇），学会了控制Token数量来优化成本。但你有没有想过：上下文窗口到底是怎么工作的？为什么模型能"看到"很长的对话，却对远处的信息记忆模糊？</p>
+</blockquote>
+
+<p>这需要理解 <strong>Attention机制</strong>——Transformer的核心。</p>
+
+<blockquote>
+<p>你在系列三里实现了<strong>RAG知识库</strong>（第11篇），学会了让Agent从文档中检索答案。但你有没有想过：Embedding是怎么把文字变成向量的？相似度搜索为什么能找到相关的内容？</p>
+</blockquote>
+
+<p>这需要理解 <strong>Embedding和向量检索</strong>——语义搜索的基础。</p>
+
+<blockquote>
+<p>你在系列三里实现了<strong>Agent自我进化</strong>（第20篇），想让Agent能不断学习。但你有没有想过：模型是怎么从人类的反馈中学习的？为什么有些模型特别"听话"，有些却很难调教？</p>
+</blockquote>
+
+<p>这需要理解 <strong>RLHF和对齐技术</strong>——让模型更懂人类意图。</p>
+
+<h3><span class="icon">4</span><span class="title-text">这个系列要讲什么</span></h3>
+
+<p>大模型原理系列，共12篇文章，承上启下，每篇独立发布。</p>
+
+<table>
+<tr>
+<th>篇次</th>
+<th>主题</th>
+<th>承接的系列三内容</th>
+</tr>
+<tr>
+<td>第1篇</td>
+<td>Transformer架构原理</td>
+<td>Agent执行引擎(17)、模块边界与通信</td>
+</tr>
+<tr>
+<td>第2篇</td>
+<td>Attention机制详解</td>
+<td>记忆系统(8,19)、向量检索(11)</td>
+</tr>
+<tr>
+<td>第3篇</td>
+<td>GPT系列进化史</td>
+<td>Bot版本控制(7)、模型选型</td>
+</tr>
+<tr>
+<td>第4篇</td>
+<td>RLHF与人类对齐</td>
+<td>Agent自我进化(20)、提示词安全(18)</td>
+</tr>
+<tr>
+<td>第5篇</td>
+<td>Prompt工程原理</td>
+<td>Agent角色定义(12)、多Agent协作(14)</td>
+</tr>
+<tr>
+<td>第6篇</td>
+<td>Tokenizer与Token优化</td>
+<td>上下文窗口管理(9)、API成本控制</td>
+</tr>
+<tr>
+<td>第7篇</td>
+<td>模型推理优化</td>
+<td>执行引擎(17)、长连接管理(36)</td>
+</tr>
+<tr>
+<td>第8篇</td>
+<td>LoRA微调原理</td>
+<td>Agent自我进化(20)、插件系统(19)</td>
+</tr>
+<tr>
+<td>第9篇</td>
+<td>RAG核心原理</td>
+<td>记忆系统(8,11)、知识库管理(21)</td>
+</tr>
+<tr>
+<td>第10篇</td>
+<td>Agent与LLM的关系</td>
+<td>系列三全部内容——核心连接</td>
+</tr>
+<tr>
+<td>第11篇</td>
+<td>多模态模型原理</td>
+<td>感知(5)、工具调用(13)</td>
+</tr>
+<tr>
+<td>第12篇</td>
+<td>模型安全与对齐</td>
+<td>Function Calling安全(15)、提示词攻防(18)</td>
+</tr>
+</table>
+
+<h3><span class="icon">5</span><span class="title-text">学完这个系列你能做什么</span></h3>
+
+<p>不再是"调API的"，而是<strong>真正懂AI应用内核的开发者</strong>。</p>
+
+<ul>
+<li><strong>更精准的Prompt</strong>：理解Attention原理后，你知道怎么设计让模型"重点关注"关键信息</li>
+<li><strong>更稳定的RAG</strong>：理解Embedding原理后，你知道怎么优化切分策略和检索逻辑</li>
+<li><strong>更聪明的Agent</strong>：理解模型能力边界后，你知道什么该让Agent做，什么该让模型做</li>
+<li><strong>更高效的工程</strong>：理解Tokenizer后，你能精准控制成本；理解推理优化后，你能提升响应速度</li>
+<li><strong>更安全的应用</strong>：理解对齐技术后，你知道怎么防止Prompt注入和模型越狱</li>
+</ul>
+
+<blockquote>
+<p>更重要的是：当你面试时，能真正回答出"GPT是怎么生成文字的"——不是死记硬背，而是真正理解。</p>
+</blockquote>
+
+<h3><span class="icon">6</span><span class="title-text">写在最后</span></h3>
+
+<p>四个系列，终于要闭环了：</p>
+
+<p>系列一看清<strong>平台</strong> → 系列二掌握<strong>工具</strong> → 系列三学会<strong>造应用</strong> → 系列四理解<strong>大脑</strong></p>
+
+<p>学完这四系列，你不再是"调API的程序员"，而是真正能从底层理解AI应用、从顶层设计系统的<strong>AI应用开发专家</strong>。</p>
+
+<p>这不是一条轻松的路。但既然你已经走完了前三个系列，这条路对你来说，不会是问题。</p>
+
+<p>下期预告：<strong>第1篇 · Transformer架构原理</strong>——从 RNN 到 Attention，模型是怎么"学会"理解语言的。</p>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 13px;">
+大模型原理系列 · 开篇<br>
+从"会用"到"真懂"，我们一起走完这最后一公里
+</p>
+
+</div>
+</body>
+</html>

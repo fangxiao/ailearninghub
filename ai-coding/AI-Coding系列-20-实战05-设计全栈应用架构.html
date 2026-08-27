@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实战05：设计全栈应用架构</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">40</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：前后端分离架构、技术选型、系统设计</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">从服务到平台</span></h2>
+<p data-tool="mdnice编辑器"><strong>之前完成：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;实战01-04：单机版&nbsp;codestats<br/>&nbsp;&nbsp;&nbsp;-&nbsp;CLI&nbsp;工具<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Web&nbsp;API<br/>&nbsp;&nbsp;&nbsp;-&nbsp;MCP&nbsp;集成<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Docker&nbsp;部署<br/><br/>核心功能：<br/>&nbsp;&nbsp;&nbsp;-&nbsp;代码统计<br/>&nbsp;&nbsp;&nbsp;-&nbsp;GitHub&nbsp;同步<br/>&nbsp;&nbsp;&nbsp;-&nbsp;项目管理</code></pre>
+<p data-tool="mdnice编辑器"><strong>当前限制：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>❌&nbsp;单用户设计<br/>&nbsp;&nbsp;&nbsp;没有用户系统，无法区分不同用户<br/><br/>❌&nbsp;缺少前端<br/>&nbsp;&nbsp;&nbsp;只有&nbsp;API，需要用&nbsp;curl&nbsp;测试<br/><br/>❌&nbsp;功能简单<br/>&nbsp;&nbsp;&nbsp;只能统计和同步，缺少协作功能<br/><br/>❌&nbsp;无法扩展<br/>&nbsp;&nbsp;&nbsp;架构设计不支持团队使用</code></pre>
+<p data-tool="mdnice编辑器"><strong>平台化需求：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;多用户系统<br/>&nbsp;&nbsp;&nbsp;-&nbsp;注册/登录<br/>&nbsp;&nbsp;&nbsp;-&nbsp;个人项目<br/>&nbsp;&nbsp;&nbsp;-&nbsp;团队协作<br/><br/>✅&nbsp;完整前端<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Vue&nbsp;3&nbsp;界面<br/>&nbsp;&nbsp;&nbsp;-&nbsp;数据可视化<br/>&nbsp;&nbsp;&nbsp;-&nbsp;实时更新<br/><br/>✅&nbsp;高级功能<br/>&nbsp;&nbsp;&nbsp;-&nbsp;项目分组<br/>&nbsp;&nbsp;&nbsp;-&nbsp;标签管理<br/>&nbsp;&nbsp;&nbsp;-&nbsp;数据导出<br/><br/>✅&nbsp;可扩展架构<br/>&nbsp;&nbsp;&nbsp;-&nbsp;微服务准备<br/>&nbsp;&nbsp;&nbsp;-&nbsp;插件系统</code></pre>
+<p data-tool="mdnice编辑器"><strong>本篇目标：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>设计&nbsp;codestats&nbsp;平台架构<br/><br/>内容：<br/>✅&nbsp;架构演进路线<br/>✅&nbsp;技术栈选型<br/>✅&nbsp;数据库设计<br/>✅&nbsp;API&nbsp;设计<br/>✅&nbsp;前端设计<br/>✅&nbsp;部署架构</code></pre>
+<p data-tool="mdnice编辑器"><strong>学习要点：</strong></p>
+<ul>
+<li><section>✅ 架构设计思维</section></li>
+<li><section>✅ 技术选型决策</section></li>
+<li><section>✅ 数据库设计</section></li>
+<li><section>✅ 前后端分离</section></li>
+<li><section>✅ 可扩展性设计</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、架构演进</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">三个阶段</span></h3>
+<p data-tool="mdnice编辑器"><strong>阶段1：单机版（已完成）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>架构：<br/>&nbsp;&nbsp;CLI&nbsp;→&nbsp;本地文件<br/>&nbsp;&nbsp;API&nbsp;→&nbsp;SQLite<br/><br/>特点：<br/>&nbsp;&nbsp;✅&nbsp;快速开发<br/>&nbsp;&nbsp;✅&nbsp;简单部署<br/>&nbsp;&nbsp;❌&nbsp;单用户<br/>&nbsp;&nbsp;❌&nbsp;无前端</code></pre>
+<p data-tool="mdnice编辑器"><strong>阶段2：团队版（本篇设计）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>架构：<br/>&nbsp;&nbsp;前端&nbsp;(Vue)&nbsp;→&nbsp;后端&nbsp;(FastAPI)&nbsp;→&nbsp;PostgreSQL<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MCP&nbsp;(GitHub/GitLab)<br/><br/>特点：<br/>&nbsp;&nbsp;✅&nbsp;多用户<br/>&nbsp;&nbsp;✅&nbsp;前端界面<br/>&nbsp;&nbsp;✅&nbsp;团队协作<br/>&nbsp;&nbsp;✅&nbsp;数据持久化</code></pre>
+<p data-tool="mdnice编辑器"><strong>阶段3：企业版（未来）</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>架构：<br/>&nbsp;&nbsp;前端&nbsp;→&nbsp;API&nbsp;网关&nbsp;→&nbsp;微服务集群<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;用户服务<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;项目服务<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;分析服务<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;通知服务<br/><br/>特点：<br/>&nbsp;&nbsp;✅&nbsp;高可用<br/>&nbsp;&nbsp;✅&nbsp;可扩展<br/>&nbsp;&nbsp;✅&nbsp;企业级</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">本次设计范围</span></h3>
+<p data-tool="mdnice编辑器"><strong>包含功能：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户管理<br/>&nbsp;&nbsp;-&nbsp;注册/登录<br/>&nbsp;&nbsp;-&nbsp;个人信息<br/>&nbsp;&nbsp;-&nbsp;密码重置<br/><br/>项目管理<br/>&nbsp;&nbsp;-&nbsp;创建项目<br/>&nbsp;&nbsp;-&nbsp;GitHub&nbsp;导入<br/>&nbsp;&nbsp;-&nbsp;项目分组<br/>&nbsp;&nbsp;-&nbsp;标签管理<br/><br/>统计分析<br/>&nbsp;&nbsp;-&nbsp;代码统计<br/>&nbsp;&nbsp;-&nbsp;历史趋势<br/>&nbsp;&nbsp;-&nbsp;项目对比<br/>&nbsp;&nbsp;-&nbsp;数据导出<br/><br/>团队协作<br/>&nbsp;&nbsp;-&nbsp;创建团队<br/>&nbsp;&nbsp;-&nbsp;邀请成员<br/>&nbsp;&nbsp;-&nbsp;权限管理<br/>&nbsp;&nbsp;-&nbsp;项目共享<br/><br/>数据可视化<br/>&nbsp;&nbsp;-&nbsp;仪表盘<br/>&nbsp;&nbsp;-&nbsp;图表展示<br/>&nbsp;&nbsp;-&nbsp;实时更新</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、技术栈选型</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">前端技术栈</span></h3>
+<p data-tool="mdnice编辑器"><strong>框架选择：Vue 3</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>为什么选&nbsp;Vue&nbsp;3？<br/><br/>优点：<br/>&nbsp;&nbsp;✅&nbsp;组合式&nbsp;API（逻辑复用）<br/>&nbsp;&nbsp;✅&nbsp;TypeScript&nbsp;支持好<br/>&nbsp;&nbsp;✅&nbsp;性能优秀<br/>&nbsp;&nbsp;✅&nbsp;生态成熟（Element&nbsp;Plus）<br/>&nbsp;&nbsp;✅&nbsp;学习曲线平缓<br/><br/>对比&nbsp;React：<br/>&nbsp;&nbsp;React:&nbsp;更灵活，但需要更多配置<br/>&nbsp;&nbsp;Vue&nbsp;3:&nbsp;开箱即用，适合快速开发<br/><br/>对比&nbsp;Angular：<br/>&nbsp;&nbsp;Angular:&nbsp;更完整，但更重<br/>&nbsp;&nbsp;Vue&nbsp;3:&nbsp;轻量级，够用即可</code></pre>
+<p data-tool="mdnice编辑器"><strong>UI 库：Element Plus</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>为什么选&nbsp;Element&nbsp;Plus？<br/><br/>优点：<br/>&nbsp;&nbsp;✅&nbsp;组件丰富（80+）<br/>&nbsp;&nbsp;✅&nbsp;Vue&nbsp;3&nbsp;原生支持<br/>&nbsp;&nbsp;✅&nbsp;文档完善<br/>&nbsp;&nbsp;✅&nbsp;社区活跃<br/>&nbsp;&nbsp;✅&nbsp;设计统一<br/><br/>包含组件：<br/>&nbsp;&nbsp;-&nbsp;表单、表格、图表<br/>&nbsp;&nbsp;-&nbsp;导航、布局、对话框<br/>&nbsp;&nbsp;-&nbsp;通知、加载、动画</code></pre>
+<p data-tool="mdnice编辑器"><strong>其他工具：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>状态管理：Pinia<br/>&nbsp;&nbsp;-&nbsp;Vue&nbsp;3&nbsp;官方推荐<br/>&nbsp;&nbsp;-&nbsp;TypeScript&nbsp;友好<br/>&nbsp;&nbsp;-&nbsp;DevTools&nbsp;支持<br/><br/>路由：Vue&nbsp;Router&nbsp;4<br/>&nbsp;&nbsp;-&nbsp;官方路由<br/>&nbsp;&nbsp;-&nbsp;支持嵌套路由<br/>&nbsp;&nbsp;-&nbsp;路由守卫<br/><br/>HTTP：Axios<br/>&nbsp;&nbsp;-&nbsp;拦截器<br/>&nbsp;&nbsp;-&nbsp;请求取消<br/>&nbsp;&nbsp;-&nbsp;自动转换<br/><br/>图表：ECharts<br/>&nbsp;&nbsp;-&nbsp;功能强大<br/>&nbsp;&nbsp;-&nbsp;配置灵活<br/>&nbsp;&nbsp;-&nbsp;性能优秀<br/><br/>构建：Vite<br/>&nbsp;&nbsp;-&nbsp;快速启动<br/>&nbsp;&nbsp;-&nbsp;HMR&nbsp;热更新<br/>&nbsp;&nbsp;-&nbsp;生产优化</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">后端技术栈</span></h3>
+<p data-tool="mdnice编辑器"><strong>保持现有技术栈，增加：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>认证：JWT<br/>&nbsp;&nbsp;-&nbsp;无状态认证<br/>&nbsp;&nbsp;-&nbsp;跨域支持<br/>&nbsp;&nbsp;-&nbsp;安全可靠<br/><br/>权限：RBAC<br/>&nbsp;&nbsp;-&nbsp;角色管理<br/>&nbsp;&nbsp;-&nbsp;权限控制<br/>&nbsp;&nbsp;-&nbsp;资源保护<br/><br/>缓存：Redis<br/>&nbsp;&nbsp;-&nbsp;Session&nbsp;存储<br/>&nbsp;&nbsp;-&nbsp;API&nbsp;缓存<br/>&nbsp;&nbsp;-&nbsp;频率限制<br/><br/>队列：Celery<br/>&nbsp;&nbsp;-&nbsp;异步任务<br/>&nbsp;&nbsp;-&nbsp;定时任务<br/>&nbsp;&nbsp;-&nbsp;任务监控<br/><br/>搜索：Elasticsearch（可选）<br/>&nbsp;&nbsp;-&nbsp;全文搜索<br/>&nbsp;&nbsp;-&nbsp;项目搜索<br/>&nbsp;&nbsp;-&nbsp;日志分析</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">数据库选择</span></h3>
+<p data-tool="mdnice编辑器"><strong>PostgreSQL vs <span class="key">MySQL</span></strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>选择：PostgreSQL<br/><br/>理由：<br/>&nbsp;&nbsp;✅&nbsp;JSON&nbsp;支持更好（存储&nbsp;language_stats）<br/>&nbsp;&nbsp;✅&nbsp;全文搜索内置<br/>&nbsp;&nbsp;✅&nbsp;扩展性强<br/>&nbsp;&nbsp;✅&nbsp;开源免费<br/>&nbsp;&nbsp;✅&nbsp;社区活跃<br/><br/>MySQL:<br/>&nbsp;&nbsp;-&nbsp;更流行<br/>&nbsp;&nbsp;-&nbsp;性能稍好<br/>&nbsp;&nbsp;-&nbsp;但功能不如&nbsp;PG&nbsp;丰富</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、数据库设计</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">ER 图</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌──────────────┐<br/>│&nbsp;&nbsp;&nbsp;User&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;Team&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>├─────────────┤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──────────────┤<br/>│&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;description&nbsp;&nbsp;│<br/>│&nbsp;password&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;owner_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;avatar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│──┐&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;created_at&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;created_at&nbsp;&nbsp;│&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└──────┬───────┘<br/>└──────┬──────┘&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;┌────▼───────────▼─────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;team_members&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;├──────────────────────┤<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;user_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;team_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;role&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└──────────────────────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;┌──────────────────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────►&nbsp;&nbsp;&nbsp;Project&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──────────────────┤<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;owner_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;team_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;group_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;is_public&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;github_repo_id&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;stats...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;created_at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──────┬───────────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────▼────────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;ProjectTag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├────────────────────┤<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;project_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;tag_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────────────────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────▼────────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├────────────────────┤<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;user_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────────────────┘</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">数据表设计</span></h3>
+<p data-tool="mdnice编辑器"><strong>用户表（users）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">sql</span></span><code><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;users&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;SERIAL&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;email&nbsp;VARCHAR(</span><span style="color: #AE81FF">255</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;VARCHAR(</span><span style="color: #AE81FF">50</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;password_hash&nbsp;VARCHAR(</span><span style="color: #AE81FF">255</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;avatar&nbsp;VARCHAR(</span><span style="color: #AE81FF">500</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;bio&nbsp;TEXT,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;is_active&nbsp;BOOLEAN&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">true</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;is_verified&nbsp;BOOLEAN&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">false</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;created_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;updated_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;last_login_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><br/><span style="color: #F8F8F2">);</span><br/><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_users_email&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;users(email);</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_users_username&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;users(username);</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>团队表（teams）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">sql</span></span><code><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;teams&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;SERIAL&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;VARCHAR(</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;slug&nbsp;VARCHAR(</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;TEXT,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;avatar&nbsp;VARCHAR(</span><span style="color: #AE81FF">500</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;owner_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;users(id),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;is_public&nbsp;BOOLEAN&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">false</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;created_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;updated_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><br/><span style="color: #F8F8F2">);</span><br/><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_teams_slug&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;teams(slug);</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_teams_owner&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;teams(owner_id);</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>团队成员表（team_members）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">sql</span></span><code><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TYPE</span><span style="color: #F8F8F2">&nbsp;team_role&nbsp;</span><span style="color: #66D9EF">AS</span><span style="color: #F8F8F2">&nbsp;ENUM&nbsp;(</span><span style="color: #E6DB74">&#39;owner&#39;</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #E6DB74">&#39;admin&#39;</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #E6DB74">&#39;member&#39;</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #E6DB74">&#39;guest&#39;</span><span style="color: #F8F8F2">);</span><br/><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;team_members&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;user_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;users(id)&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DELETE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CASCADE</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;team_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;teams(id)&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DELETE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CASCADE</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">role</span><span style="color: #F8F8F2">&nbsp;team_role&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">&#39;member&#39;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;joined_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">&nbsp;(user_id,&nbsp;team_id)</span><br/><span style="color: #F8F8F2">);</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>项目表（projects）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">sql</span></span><code><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;projects&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;SERIAL&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;VARCHAR(</span><span style="color: #AE81FF">255</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;slug&nbsp;VARCHAR(</span><span style="color: #AE81FF">255</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;VARCHAR(</span><span style="color: #AE81FF">500</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;TEXT,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;所有者</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;owner_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;users(id),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;team_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;teams(id),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;project_groups(id),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;访问控制</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;is_public&nbsp;BOOLEAN&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">false</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;统计数据</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;total_files&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;code_files&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;total_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;code_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;comment_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;blank_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;language_stats&nbsp;JSONB&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">&#39;{}&#39;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;GitHub&nbsp;信息</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_repo_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_full_name&nbsp;VARCHAR(</span><span style="color: #AE81FF">255</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_url&nbsp;VARCHAR(</span><span style="color: #AE81FF">500</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_stars&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_forks&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_open_issues&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_language&nbsp;VARCHAR(</span><span style="color: #AE81FF">50</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;github_last_commit&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;同步状态</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;auto_sync&nbsp;BOOLEAN&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">false</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;last_sync_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;last_analyzed_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;时间戳</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;created_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;updated_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">--&nbsp;唯一约束</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">(owner_id,&nbsp;slug),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">(team_id,&nbsp;slug)</span><br/><span style="color: #F8F8F2">);</span><br/><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_projects_owner&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;projects(owner_id);</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_projects_team&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;projects(team_id);</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_projects_github&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;projects(github_repo_id);</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_projects_public&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;projects(is_public);</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>标签表（tags）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">sql</span></span><code><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;tags&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;SERIAL&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;VARCHAR(</span><span style="color: #AE81FF">50</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;slug&nbsp;VARCHAR(</span><span style="color: #AE81FF">50</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">NOT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">NULL</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;VARCHAR(</span><span style="color: #AE81FF">7</span><span style="color: #F8F8F2">)&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">&#39;#409EFF&#39;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;user_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;users(id),</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;created_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">UNIQUE</span><span style="color: #F8F8F2">(user_id,&nbsp;slug)</span><br/><span style="color: #F8F8F2">);</span><br/><br/><span style="color: #e0e0e0">--&nbsp;项目-标签关联表</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;project_tags&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;projects(id)&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DELETE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CASCADE</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;tag_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;tags(id)&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DELETE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CASCADE</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">&nbsp;(project_id,&nbsp;tag_id)</span><br/><span style="color: #F8F8F2">);</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>分析历史表（analysis_history）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">sql</span></span><code><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">TABLE</span><span style="color: #F8F8F2">&nbsp;analysis_history&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;SERIAL&nbsp;</span><span style="color: #66D9EF">PRIMARY</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">KEY</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">REFERENCES</span><span style="color: #F8F8F2">&nbsp;projects(id)&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DELETE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CASCADE</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;total_files&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;code_files&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;total_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;code_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;comment_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;blank_lines&nbsp;INTEGER&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;language_stats&nbsp;JSONB&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">&#39;{}&#39;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;analyzed_at&nbsp;</span><span style="color: #66D9EF">TIMESTAMP</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">DEFAULT</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">CURRENT_TIMESTAMP</span><br/><span style="color: #F8F8F2">);</span><br/><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_history_project&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;analysis_history(project_id);</span><br/><span style="color: #66D9EF">CREATE</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">INDEX</span><span style="color: #F8F8F2">&nbsp;idx_history_time&nbsp;</span><span style="color: #66D9EF">ON</span><span style="color: #F8F8F2">&nbsp;analysis_history(analyzed_at&nbsp;</span><span style="color: #66D9EF">DESC</span><span style="color: #F8F8F2">);</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、API 设计</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">RESTful API 规范</span></h3>
+<p data-tool="mdnice编辑器"><strong>URL 设计：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>资源命名：<br/>&nbsp;&nbsp;✅&nbsp;复数形式：/api/users,&nbsp;/api/projects<br/>&nbsp;&nbsp;✅&nbsp;嵌套资源：/api/projects/{id}/stats<br/>&nbsp;&nbsp;✅&nbsp;过滤参数：/api/projects?tag=python&amp;sort=stars<br/><br/>HTTP&nbsp;方法：<br/>&nbsp;&nbsp;GET&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;获取资源<br/>&nbsp;&nbsp;POST&nbsp;&nbsp;&nbsp;-&nbsp;创建资源<br/>&nbsp;&nbsp;PATCH&nbsp;&nbsp;-&nbsp;部分更新<br/>&nbsp;&nbsp;PUT&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;完整更新（少用）<br/>&nbsp;&nbsp;DELETE&nbsp;-&nbsp;删除资源</code></pre>
+<p data-tool="mdnice编辑器"><strong>响应格式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code><span style="color: #e0e0e0">//&nbsp;成功响应</span><br/><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;data&quot;</span><span style="color: #F8F8F2">:&nbsp;{&nbsp;</span><span style="color: #ED007E; background-color: #1E0010">...</span><span style="color: #F8F8F2">&nbsp;},</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;message&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #E6DB74">&quot;操作成功&quot;</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #e0e0e0">//&nbsp;列表响应</span><br/><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;data&quot;</span><span style="color: #F8F8F2">:&nbsp;[&nbsp;</span><span style="color: #ED007E; background-color: #1E0010">...</span><span style="color: #F8F8F2">&nbsp;],</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;total&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;page&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;page_size&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #AE81FF">20</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #e0e0e0">//&nbsp;错误响应</span><br/><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;error&quot;</span><span style="color: #F8F8F2">:&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;code&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #E6DB74">&quot;VALIDATION_ERROR&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;message&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #E6DB74">&quot;验证失败&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;details&quot;</span><span style="color: #F8F8F2">:&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">&quot;email&quot;</span><span style="color: #F8F8F2">:&nbsp;[</span><span style="color: #E6DB74">&quot;邮箱格式不正确&quot;</span><span style="color: #F8F8F2">]</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;}</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">API 端点设计</span></h3>
+<p data-tool="mdnice编辑器"><strong>认证相关：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>POST&nbsp;&nbsp;&nbsp;/api/auth/register&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;注册<br/>POST&nbsp;&nbsp;&nbsp;/api/auth/login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;登录<br/>POST&nbsp;&nbsp;&nbsp;/api/auth/logout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;登出<br/>POST&nbsp;&nbsp;&nbsp;/api/auth/refresh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;刷新&nbsp;token<br/>POST&nbsp;&nbsp;&nbsp;/api/auth/forgot-password&nbsp;#&nbsp;忘记密码<br/>POST&nbsp;&nbsp;&nbsp;/api/auth/reset-password&nbsp;&nbsp;#&nbsp;重置密码<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/auth/me&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;当前用户信息<br/>PATCH&nbsp;&nbsp;/api/auth/me&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;更新个人信息</code></pre>
+<p data-tool="mdnice编辑器"><strong>项目管理：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/projects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;项目列表<br/>POST&nbsp;&nbsp;&nbsp;/api/projects&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;创建项目<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/projects/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;项目详情<br/>PATCH&nbsp;&nbsp;/api/projects/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;更新项目<br/>DELETE&nbsp;/api/projects/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;删除项目<br/>POST&nbsp;&nbsp;&nbsp;/api/projects/{id}/analyze&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;分析项目<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/projects/{id}/history&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;历史记录<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/projects/{id}/stats&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;统计数据<br/>POST&nbsp;&nbsp;&nbsp;/api/projects/{id}/tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;添加标签<br/>DELETE&nbsp;/api/projects/{id}/tags/{tag}&nbsp;#&nbsp;移除标签</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">GitHub</span> 集成：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/github/repos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;GitHub&nbsp;仓库列表<br/>POST&nbsp;&nbsp;&nbsp;/api/github/import&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导入仓库<br/>POST&nbsp;&nbsp;&nbsp;/api/github/sync/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;同步项目<br/>POST&nbsp;&nbsp;&nbsp;/api/github/sync-all&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;同步所有</code></pre>
+<p data-tool="mdnice编辑器"><strong>团队管理：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/teams&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;团队列表<br/>POST&nbsp;&nbsp;&nbsp;/api/teams&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;创建团队<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/teams/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;团队详情<br/>PATCH&nbsp;&nbsp;/api/teams/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;更新团队<br/>DELETE&nbsp;/api/teams/{id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;删除团队<br/>POST&nbsp;&nbsp;&nbsp;/api/teams/{id}/members&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;邀请成员<br/>DELETE&nbsp;/api/teams/{id}/members/{uid}&nbsp;#&nbsp;移除成员<br/>PATCH&nbsp;&nbsp;/api/teams/{id}/members/{uid}&nbsp;#&nbsp;更新角色</code></pre>
+<p data-tool="mdnice编辑器"><strong>统计对比：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>POST&nbsp;&nbsp;&nbsp;/api/stats/compare&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;项目对比<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/stats/trends&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;趋势分析<br/>GET&nbsp;&nbsp;&nbsp;&nbsp;/api/stats/languages&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;语言统计<br/>POST&nbsp;&nbsp;&nbsp;/api/stats/export&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;导出报告</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、前端架构</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">目录结构</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>frontend/<br/>├──&nbsp;public/<br/>│&nbsp;&nbsp;&nbsp;└──&nbsp;index.html<br/>├──&nbsp;src/<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;main.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;入口文件<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;App.vue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;根组件<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;router/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;路由配置<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;index.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;routes.ts<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;store/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;状态管理<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;index.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;modules/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;auth.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;project.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;team.ts<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;views/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;页面组件<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;auth/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Login.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;Register.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;dashboard/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;Dashboard.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;projects/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;ProjectList.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;ProjectDetail.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;ProjectCreate.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;teams/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;TeamList.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;TeamDetail.vue<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;components/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;通用组件<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;common/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;Navbar.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;Footer.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;project/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;ProjectCard.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;StatsChart.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;stats/<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;LanguagePie.vue<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;TrendLine.vue<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;api/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;API&nbsp;接口<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;request.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Axios&nbsp;配置<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;auth.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;project.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;team.ts<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;composables/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;组合式函数<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;useAuth.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;useProject.ts<br/>│&nbsp;&nbsp;&nbsp;├──&nbsp;utils/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;工具函数<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──&nbsp;format.ts<br/>│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──&nbsp;storage.ts<br/>│&nbsp;&nbsp;&nbsp;└──&nbsp;styles/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;样式文件<br/>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;main.scss<br/>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;variables.scss<br/>├──&nbsp;.env<br/>├──&nbsp;vite.config.ts<br/>├──&nbsp;tsconfig.json<br/>└──&nbsp;package.json</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">页面流程</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>用户访问<br/>&nbsp;&nbsp;│<br/>&nbsp;&nbsp;├─&nbsp;未登录&nbsp;→&nbsp;登录页<br/>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;登录成功&nbsp;→&nbsp;仪表盘<br/>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;注册&nbsp;→&nbsp;登录页<br/>&nbsp;&nbsp;│<br/>&nbsp;&nbsp;└─&nbsp;已登录&nbsp;→&nbsp;仪表盘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;项目列表<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;查看项目<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;创建项目<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;GitHub&nbsp;导入<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&nbsp;分析项目<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;团队管理<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;我的团队<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─&nbsp;创建团队<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─&nbsp;邀请成员<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;个人设置<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;个人信息<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─&nbsp;修改密码<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─&nbsp;API&nbsp;Token</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、部署架构</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">生产环境架构</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>┌─────────────────────────────────────────┐<br/>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CDN&nbsp;(静态资源)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS/JS/Images/Fonts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>└────────────────┬────────────────────────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>┌────────────────▼────────────────────────┐<br/>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nginx&nbsp;(反向代理&nbsp;+&nbsp;HTTPS)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;&nbsp;&nbsp;-&nbsp;SSL&nbsp;终结&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;&nbsp;&nbsp;-&nbsp;Gzip&nbsp;压缩&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;&nbsp;&nbsp;-&nbsp;静态文件服务&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>└────────┬───────────────────┬────────────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;┌────▼─────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────▼──────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;前端&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;后端&nbsp;API&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;(静态)&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;(Uvicorn)&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;└──────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─────┬──────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────────────────────┼────────────────────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;┌────▼─────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌─────▼──────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────▼─────┐<br/>&nbsp;&nbsp;&nbsp;│PostgreSQL│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;Redis&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;Celery&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;│&nbsp;(主数据库)│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;(缓存)&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│(异步任务)│<br/>&nbsp;&nbsp;&nbsp;└──────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────┬─────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────▼─────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;MCP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│(外部服务)│<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──────────┘</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">扩展性设计</span></h3>
+<p data-tool="mdnice编辑器"><strong>水平扩展：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0">#&nbsp;docker-compose.scale.yml</span><br/><span style="color: #FF4689">version</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #E6DB74">&#39;3.8&#39;</span><br/><br/><span style="color: #FF4689">services</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">api</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">deploy</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">replicas</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #AE81FF">3</span><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #e0e0e0">#&nbsp;3个API实例</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">environment</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;</span><span style="color: #AE81FF">DATABASE_URL=postgresql://...</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #FF4689">nginx</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">volumes</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;</span><span style="color: #AE81FF">./nginx-loadbalance.conf:/etc/nginx/nginx.conf</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>负载均衡配置：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">nginx</span></span><code><span style="color: #e0e0e0">#&nbsp;nginx-loadbalance.conf</span><br/><span style="color: #66D9EF">upstream</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">api_servers</span><span style="color: #F8F8F2">&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">least_conn</span><span style="color: #F8F8F2">;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">server</span><span style="color: #F8F8F2">&nbsp;api-1:</span><span style="color: #AE81FF">8000</span><span style="color: #F8F8F2">;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">server</span><span style="color: #F8F8F2">&nbsp;api-2:</span><span style="color: #AE81FF">8000</span><span style="color: #F8F8F2">;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">server</span><span style="color: #F8F8F2">&nbsp;api-3:</span><span style="color: #AE81FF">8000</span><span style="color: #F8F8F2">;</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #66D9EF">server</span><span style="color: #F8F8F2">&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">listen</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">80</span><span style="color: #F8F8F2">;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">location</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">/api/</span><span style="color: #F8F8F2">&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">proxy_pass</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">http://api_servers</span><span style="color: #F8F8F2">;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF4689">proxy_set_header</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">Host</span><span style="color: #F8F8F2">&nbsp;$host;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">架构设计原则</span></h3>
+<p data-tool="mdnice编辑器"><strong>简单优先：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;不过度设计<br/>✅&nbsp;选择成熟技术<br/>✅&nbsp;优先解决问题<br/>✅&nbsp;逐步演进</code></pre>
+<p data-tool="mdnice编辑器"><strong>可扩展性：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;模块化设计<br/>✅&nbsp;接口抽象<br/>✅&nbsp;配置外置<br/>✅&nbsp;无状态服务</code></pre>
+<p data-tool="mdnice编辑器"><strong>可维护性：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;代码规范<br/>✅&nbsp;文档完善<br/>✅&nbsp;测试覆盖<br/>✅&nbsp;日志完善</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.2</span><span class="title-text">技术栈总结</span></h3>
+<p data-tool="mdnice编辑器"><strong>前端：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Vue&nbsp;3&nbsp;+&nbsp;TypeScript&nbsp;+&nbsp;Vite<br/>Element&nbsp;Plus&nbsp;+&nbsp;ECharts<br/>Pinia&nbsp;+&nbsp;Vue&nbsp;Router<br/>Axios</code></pre>
+<p data-tool="mdnice编辑器"><strong>后端：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>FastAPI&nbsp;+&nbsp;SQLAlchemy<br/>PostgreSQL&nbsp;+&nbsp;Redis<br/>JWT&nbsp;+&nbsp;RBAC<br/>Celery</code></pre>
+<p data-tool="mdnice编辑器"><strong>部署：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Docker&nbsp;+&nbsp;Nginx<br/>GitHub&nbsp;Actions<br/>Let's&nbsp;Encrypt</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.3</span><span class="title-text">下一步</span></h3>
+<p data-tool="mdnice编辑器"><strong>实战06：后端服务 + <span class="key">Skills</span></strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>📋&nbsp;实现用户认证<br/>📋&nbsp;实现团队管理<br/>📋&nbsp;使用&nbsp;Skills&nbsp;加速开发<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Auth&nbsp;Skill（认证）<br/>&nbsp;&nbsp;&nbsp;-&nbsp;RBAC&nbsp;Skill（权限）<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Notification&nbsp;Skill（通知）</code></pre>
+<p data-tool="mdnice编辑器"><strong>为前端做准备：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>📋&nbsp;完整的&nbsp;API<br/>📋&nbsp;认证中间件<br/>📋&nbsp;WebSocket&nbsp;支持<br/>📋&nbsp;文件上传</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：实战04：打包发布</section></li>
+<li><section>下一篇：实战06：后端服务 + <span class="key">Skills</span></section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">20</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-06</p>
+<p data-tool="mdnice编辑器"><strong>好的架构是成功的一半！</strong> 🏗️</p>
+</article>
+</div>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI写的东西一眼识破？用Humanizer让你的文字"活"起来</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    AI写的东西一眼识破？试试这款去AI痕神器
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    一键让你的文字"活"起来——Humanizer-zh 实战指南
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | 写作 Skill 实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你有没有过这种尴尬：文章写完了，自己读着也觉得"怪怪的"，但说不上来哪里怪。直到被朋友一句"这是 AI 写的吧"戳中。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    比如这段：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      "这款产品标志着一个关键时刻，它不仅是一个工具，更是我们思考生产力方式的革命。行业专家认为这将对整个行业产生持久影响，彰显了公司在不断演变的技术格局中的关键作用。"
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    读一遍就感觉有问题：AI 高频词扎堆（标志着、关键作用、格局），否定式排比（不仅是…更是…），三段式结构（专家认为…彰显了…）。这些都是 AI 写作的典型指纹。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Humanizer-zh 就是干这个的——识别 AI 写作痕迹，然后改成像人写的。</strong>
+  </p>
+
+  <!-- 章节01：Humanizer 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">一句话讲清 Humanizer 是什么</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Humanizer-zh 是一个专门去除 AI 写作痕迹的 Skill。</strong>装在 Claude Code 里，输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/humanizer-zh</code> 就能调用。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它的数据源很靠谱：基于维基百科的"AI 写作特征"页面（由 WikiProject AI Cleanup 维护），翻译自 blader/humanizer 项目，中文示例和表达都做了本地化适配。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8; text-align: center;">
+      <strong style="color: #00897B;">核心能力</strong>：识别 <strong style="color: #00897B;">24 种</strong> AI 写作模式 → 自动改写 → 5 维度质量评分
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这 24 种模式分成 4 大类，分别对应选词、语法、风格和语气。下面逐一拆解。
+  </p>
+
+  <!-- 章节02：安装与基础用法 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装与基础用法</span>
+    </p>
+  </section>
+
+  <!-- 步骤1：安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      三种安装方式
+    </p>
+
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 15px;">方式一：npx 一键安装（推荐）</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 在 Claude Code 终端里执行</span>
+npx skills add https://github.com/op7418/Humanizer-zh.git</p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">方式二：git clone</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">git clone https://github.com/op7418/Humanizer-zh.git ~/.claude/skills/humanizer-zh</p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">方式三：手动安装</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">下载仓库 ZIP，解压到 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">~/.claude/skills/humanizer-zh/</code>，重启即可。</p>
+  </section>
+
+  <!-- 步骤2：三种调用方式 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      三种调用方式
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">① 直接调用（最常用）</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/humanizer-zh 请帮我人性化以下文本：
+
+[粘贴你的 AI 生成文本]</p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">② 自然语言触发</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">请用 humanizer 帮我改写这段话，让它更自然
+
+这个项目作为我们团队致力于创新的证明...</p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 15px;">③ 处理文件</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/humanizer-zh 请人性化 article.md 文件中的内容</p>
+    </section>
+  </section>
+
+  <!-- 步骤3：实战演示 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      实战演示：一段文字的去 AI 化过程
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #d32f2f; font-weight: bold; font-size: 15px;">输入（AI 味十足）</p>
+    <section style="background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+        "这款产品标志着一个关键时刻，它不仅是一个工具，更是我们思考生产力方式的革命。行业专家认为这将对整个行业产生持久影响，彰显了公司在不断演变的技术格局中的关键作用。"
+      </p>
+    </section>
+
+    <p style="margin: 15px 0 5px 0; color: #2e7d32; font-weight: bold; font-size: 15px;">Humanizer 检测到的问题</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 14px; line-height: 1.8;">
+      ① "标志着" → AI 高频词<br>
+      ② "不仅是…更是…" → 否定式排比<br>
+      ③ "行业专家认为" → 模糊归因<br>
+      ④ "彰显了…格局…关键作用" → AI 词汇堆砌
+    </p>
+
+    <p style="margin: 15px 0 5px 0; color: #1565c0; font-weight: bold; font-size: 15px;">输出（干净、自然）</p>
+    <section style="background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-size: 15px; color: #2e7d32; line-height: 1.8;">
+        "产品更新添加了批处理、键盘快捷键和离线模式。来自测试用户的早期反馈是积极的，大多数报告任务完成速度更快。"
+      </p>
+    </section>
+  </section>
+
+  <!-- 章节03：24种 AI 写作模式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">24 种 AI 写作模式速查</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Humanizer 检测的 24 种模式分成 4 类。了解这些模式，改 AI 写的东西能用，自己写的时候也能避开。
+  </p>
+
+  <!-- 类别1：内容模式 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">📝 内容模式（6 种）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">① 过度强调意义</strong> — "标志着关键时刻、彰显重要性、奠定基础"<br>
+      <strong style="color: #00897B;">② 过度强调知名度</strong> — 罗列媒体引用、粉丝数，不给上下文<br>
+      <strong style="color: #00897B;">③ -ing 结尾肤浅分析</strong> — "象征着…反映了…"凑深度<br>
+      <strong style="color: #00897B;">④ 宣传广告语言</strong> — "令人叹为观止、充满活力、位于中心"<br>
+      <strong style="color: #00897B;">⑤ 模糊归因</strong> — "专家认为、行业报告显示"（不给具体来源）<br>
+      <strong style="color: #00897B;">⑥ 挑战与展望套路</strong> — "面临挑战、未来展望"公式化结尾
+    </p>
+  </section>
+
+  <!-- 类别2：语法模式 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">🔤 语言语法模式（6 种）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">⑦ AI 高频词汇</strong> — 此外、至关重要、格局、关键性的、织锦<br>
+      <strong style="color: #00897B;">⑧ 系动词回避</strong> — 用"作为/充当"代替简单的"是"<br>
+      <strong style="color: #00897B;">⑨ 否定式排比</strong> — "不仅是…而是…"结构<br>
+      <strong style="color: #00897B;">⑩ 三段式法则</strong> — 强行分成三组显得全面<br>
+      <strong style="color: #00897B;">⑪ 刻意换词</strong> — 同义词循环（挑战/障碍/困境/难题）<br>
+      <strong style="color: #00897B;">⑫ 虚假范围</strong> — "从 X 到 Y"但 X 和 Y 没关联
+    </p>
+  </section>
+
+  <!-- 类别3：风格模式 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">🎨 风格模式（6 种）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">⑬ 破折号过度使用</strong> — 比人类使用频率高得多<br>
+      <strong style="color: #00897B;">⑭ 粗体机械强调</strong> — 每个关键词都加粗<br>
+      <strong style="color: #00897B;">⑮ 内联标题列表</strong> — "- **用户体验：** …"格式<br>
+      <strong style="color: #00897B;">⑯ 标题大写</strong> — 每个单词首字母大写（英文）<br>
+      <strong style="color: #00897B;">⑰ 表情符号堆砌</strong> — 标题里放🚀💡✅<br>
+      <strong style="color: #00897B;">⑱ 弯引号问题</strong> — 英文用弯引号代替直引号
+    </p>
+  </section>
+
+  <!-- 类别4：交流模式 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💬 交流模式与填充词（6 种）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">⑲ 聊天机器人痕迹</strong> — "希望这对您有帮助！"<br>
+      <strong style="color: #00897B;">⑳ 知识截止免责</strong> — "截至[日期]、根据我的训练"<br>
+      <strong style="color: #00897B;">㉑ 谄媚语气</strong> — "好问题！您说得完全正确"<br>
+      <strong style="color: #00897B;">㉒ 填充短语</strong> — "在这个时间点"→"现在"<br>
+      <strong style="color: #00897B;">㉓ 过度限定</strong> — "可能被认为该政策可能会"<br>
+      <strong style="color: #00897B;">㉔ 通用积极结论</strong> — "未来看起来光明"
+    </p>
+  </section>
+
+  <!-- 章节04：核心原则 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">5 条核心原则 & 灵魂注入</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    去 AI 痕只是第一步，让文字"活"起来才是 Humanizer 真正想做的事。5 条原则：
+  </p>
+
+  <p style="margin: 20px 0; padding: 15px 20px; background: #fafafa; border-radius: 8px; border-left: 3px solid #00897B; font-size: 15px; line-height: 1.8;">
+    <strong style="color: #00897B;">① 删除填充短语</strong> — 去除开场白和强调性拐杖词<br>
+    <strong style="color: #00897B;">② 打破公式结构</strong> — 避免二元对比、戏剧性分段<br>
+    <strong style="color: #00897B;">③ 变化节奏</strong> — 混合句子长度，两项优于三项<br>
+    <strong style="color: #00897B;">④ 信任读者</strong> — 直接陈述事实，跳过手把手引导<br>
+    <strong style="color: #00897B;">⑤ 删除金句</strong> — 听起来像可引用的就重写
+  </p>
+
+  <!-- 灵魂注入 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    但"干净"还不够。文本即使没了 AI 痕迹，如果读起来像维基百科，还是没灵魂。Humanizer 提供了 6 条灵魂注入指导：
+  </p>
+
+  <section style="background: #fff8e1; border-left: 4px solid #f57f17; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #f57f17;">有观点。</strong> 不要只报告事实，要对它们做出反应。<br>
+      <strong style="color: #f57f17;">变化节奏。</strong> 短促有力的句子 + 需要时间展开的长句。<br>
+      <strong style="color: #f57f17;">承认复杂性。</strong> "这令人印象深刻但也有点不安"胜过"这令人印象深刻"。<br>
+      <strong style="color: #f57f17;">适当用"我"。</strong> 第一人称不是不专业，而是诚实。<br>
+      <strong style="color: #f57f17;">允许混乱。</strong> 完美的结构感觉像算法。<br>
+      <strong style="color: #f57f17;">感受要具体。</strong> "凌晨三点没人看着的时候，智能体还在运转，这让人不安"。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    对比一下效果：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #c62828; font-weight: bold; font-size: 15px;">改写前（干净但无灵魂）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      "实验产生了有趣的结果。智能体生成了 300 万行代码。一些开发者印象深刻，另一些则持怀疑态度。影响尚不明确。"
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #2e7d32; font-weight: bold; font-size: 15px;">改写后（鲜活）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      "我真的不知道该怎么看待这件事。300 万行代码，在人类大概睡觉的时候生成的。开发社区有一半人疯了，另一半人在解释为什么这不算数。真相可能在无聊的中间某处——但我一直在想那些通宵工作的智能体。"
+    </p>
+  </section>
+
+  <!-- 章节05：质量评分 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">5 维度质量评分</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Humanizer 改完文本后，会给出 5 维度评分（满分 50），帮你判断改得到不到位：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 15px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 12px 10px; color: #00897B; font-weight: bold; width: 25%;">维度</th>
+          <th style="padding: 12px 10px; color: #3f3f3f; font-weight: bold; width: 50%; text-align: center;">评估标准</th>
+          <th style="padding: 12px 10px; color: #00897B; font-weight: bold; width: 25%; text-align: center;">满分</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">直接性</td>
+          <td style="padding: 12px 10px; text-align: center;">直接陈述事实还是绕圈？</td>
+          <td style="padding: 12px 10px; text-align: center; color: #00897B;">10</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">节奏</td>
+          <td style="padding: 12px 10px; text-align: center;">句子长度是否变化？</td>
+          <td style="padding: 12px 10px; text-align: center; color: #00897B;">10</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">信任度</td>
+          <td style="padding: 12px 10px; text-align: center;">是否尊重读者智慧？</td>
+          <td style="padding: 12px 10px; text-align: center; color: #00897B;">10</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">真实性</td>
+          <td style="padding: 12px 10px; text-align: center;">听起来像真人吗？</td>
+          <td style="padding: 12px 10px; text-align: center; color: #00897B;">10</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; font-weight: bold;">精炼度</td>
+          <td style="padding: 12px 10px; text-align: center;">还有可删减的内容吗？</td>
+          <td style="padding: 12px 10px; text-align: center; color: #00897B;">10</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 15px 0; text-align: justify; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <strong style="color: #00897B;">评分标准：</strong>45-50 优秀 | 35-44 良好 | 低于 35 需重写
+  </p>
+
+  <!-- 章节06：常见场景 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">适用场景</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; font-size: 15px; line-height: 1.8; color: #3f3f3f;">
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">① 公众号/博客文章</strong> — AI 辅助写作后，用 Humanizer 做最后润色</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">② 营销文案</strong> — 产品介绍、广告文案去 AI 化</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">③ 技术文档</strong> — API 说明、教程等正式文本</p>
+    <p style="margin: 0 0 12px 0;"><strong style="color: #00897B;">④ 学术摘要</strong> — 论文摘要、研究报告改写</p>
+    <p style="margin: 0;"><strong style="color: #00897B;">⑤ 个人写作</strong> — 日记、博客、邮件等需要真实感的内容</p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">最后的话</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">Humanizer 的价值在于让文字更真实，把华丽但空洞的包装拿掉，剩下有意义的内容。它不是用来"骗"AI 检测器的。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">写完文章跑一遍，5 分钟就能发现一堆自己没注意到的 AI 痕迹。改完之后，句子的节奏和用词会自然很多。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/op7418/Humanizer-zh</span><br>
+      原始英文版：<span style="color: #00897B;">https://github.com/blader/humanizer</span><br>
+      参考指南：<span style="color: #00897B;">https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing</span>
+    </p>
+    <p style="margin: 12px 0 0 0; font-size: 15px; color: #333; line-height: 1.8;">
+      一键安装：<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npx skills add https://github.com/op7418/Humanizer-zh.git</code>
+    </p>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">你用过 Humanizer 吗？去 AI 化效果怎么样？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>把别人的写作风格"抄"成 Skill——Khazix-Skills 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    把别人的写作风格"抄"成 Skill——Khazix-Skills 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    数字生命卡兹克开源的 AI Skills 合集
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 写作风格迁移实战 | Skill 合集推荐
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 AI 写东西，你可能遇到过这些尴尬：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 让 AI 写篇文章，结构对、信息全，但读完没记忆点——像机器写的
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想模仿某个博主的语气，调了几轮 prompt 还是"那个 AI 味"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 公众号、小红书、技术博客，AI 一上手全是"首先其次最后"的套路
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 自己写的稿子，被 AI 润色后反而没了人味
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题，<strong style="color: #00897B;">Khazix-Skills</strong> 想解的就是其中最难的那一环，风格迁移。它是数字生命卡兹克（KKKKhazix）开源的 6 个 Skill 合集，写作、清理、研究、对齐文档，全打包成可一键安装的 Skill。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>6 个 Skill 覆盖写作风格迁移、磁盘清理、AI 资讯查询、文档对齐、研究报告生成，支持 Claude Code、Codex、OpenClaw 等 40+ Agent。
+    </p>
+  </section>
+
+  <!-- 章节01：Khazix-Skills 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Khazix-Skills 是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Khazix-Skills 是<strong style="color: #00897B;">数字生命卡兹克（KKKKhazix）</strong>开源的 AI Skills 合集，一共 6 个 Skill，每个都解决一个具体场景。它不做成独立 App，是装在 Agent 里的能力包。装上之后，你的 Claude Code / Codex / OpenClaw 就多了写作风格迁移、磁盘清理、AI 资讯查询这些能力。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    跟那些大而全的 Agent 框架不同，Khazix-Skills 走的是<strong style="color: #00897B;">小而专</strong>路线：每个 Skill 只做一件事，但做到位。写作风格迁移这块尤其有意思，它不泛泛地"让 AI 写得像人"，而是把某个特定作者的写作 DNA 抽出来，让 AI 按这个 DNA 重新组织语言。
+  </p>
+
+  <section style="margin: 25px 0; padding: 18px 20px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 15px; color: #e65100; line-height: 1.8;">
+      <strong>💡 关于作者：</strong>数字生命卡兹克（KKKKhazix）长期研究 AI 写作和 Skill 工程，GitHub 上放了这套 Skills 供社区免费使用，MIT 协议，可商用。
+    </p>
+  </section>
+
+  <!-- 章节02：6 个 Skill 一览表 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">6 个 Skill 一览表</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    先看全景。6 个 Skill 各管一摊，写作、清理、查询、对齐、研究，互不干扰：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00695C; font-weight: bold; font-size: 17px;">
+      📋 6 个 Skill 速查表
+    </p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 25%;">Skill</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 20%;">定位</th>
+          <th style="padding: 10px 8px; color: #00897B; font-weight: bold; width: 55%;">解决什么</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">leader</td>
+          <td style="padding: 10px 8px;">领导</td>
+          <td style="padding: 10px 8px;">把模糊想法变成清晰目标</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">storage-analyzer</td>
+          <td style="padding: 10px 8px;">清理垃圾</td>
+          <td style="padding: 10px 8px;">扫描磁盘垃圾，释放空间</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">aihot</td>
+          <td style="padding: 10px 8px;">AI HOT 资讯</td>
+          <td style="padding: 10px 8px;">获取每日 AI 动态</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">neat-freak</td>
+          <td style="padding: 10px 8px;">洁癖</td>
+          <td style="padding: 10px 8px;">对齐项目文档和记忆</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px 8px; font-weight: bold;">hv-analysis</td>
+          <td style="padding: 10px 8px;">横纵分析法</td>
+          <td style="padding: 10px 8px;">万字 PDF 研究报告</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px; font-weight: bold;">khazix-writer</td>
+          <td style="padding: 10px 8px;">卡兹克写作</td>
+          <td style="padding: 10px 8px;">风格迁移写作</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    6 个里最值得细讲的是两个：<strong style="color: #00897B;">khazix-writer</strong>（写作风格迁移）和 <strong style="color: #00897B;">hv-analysis</strong>（横纵分析法）。下面先说安装，再重点拆这两个。
+  </p>
+
+  <!-- 章节03：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：Agent 装 or 手动装</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Khazix-Skills 支持 <strong style="color: #00897B;">Claude Code、Codex、OpenClaw 等 40+ Agent</strong>，安装分两条路：
+  </p>
+
+  <!-- 方式1：Agent 安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      Agent 安装（推荐）
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #c62828;">注意：这是合集仓库，含 6 个独立 skill</strong>，必须指定装哪一个。把下面地址里的 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">&lt;skill-name&gt;</code> 换成你想装的那个：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0 0 8px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">帮我安装这个 skill：https://github.com/KKKKhazix/khazix-skills/tree/main/&lt;skill-name&gt;</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #999;"># &lt;skill-name&gt; 可选：leader / storage-analyzer / aihot / neat-freak / hv-analysis / khazix-writer</p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      例如装写作 skill 就把地址换成 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 13px;">.../tree/main/khazix-writer</code>。Agent 会自己 clone 到对应目录，不用你操心路径。
+    </p>
+  </section>
+
+  <!-- 方式2：手动安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      手动安装
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      从 Releases 页面下载 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">.skill</code> 包，按 Agent 类型放到对应目录：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">下载地址：https://github.com/KKKKhazix/khazix-skills/releases <span style="color: #999; font-size: 12px;"># Releases 页面</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">~/.claude/skills/ <span style="color: #999; font-size: 12px;"># Claude Code 路径</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">~/.openclaw/skills/ <span style="color: #999; font-size: 12px;"># OpenClaw 路径</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">~/.agents/skills/ <span style="color: #999; font-size: 12px;"># Codex 路径</span></p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      放进去重启 Agent 就能识别，无需额外配置。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 验证安装：</strong>装完在对话里输入 <code style="background: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 13px; color: #e65100;">/neat</code>（neat-freak 的命令），如果 Agent 开始扫描项目文档并提示对齐，说明装好了。
+    </p>
+  </section>
+
+  <!-- 章节04：重点详解 khazix-writer -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">重点详解 khazix-writer——写作风格 DNA</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这是整个合集的核心。khazix-writer 不是简单地"让 AI 写得口语化"，而是把一个作者的<strong style="color: #00897B;">写作 DNA</strong> 拆成可复制的模式。它关注的是这几个层面：
+  </p>
+
+  <!-- DNA 1：节奏变化 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">① 节奏变化：句子长短交替、单句成段制造重量</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 默认输出是匀速的——每句差不多长，读起来像念稿。khazix-writer 强制引入长短交替：一段长句铺陈信息，紧跟一个短句收尾。<strong style="color: #00897B;">单句成段</strong>尤其重要，它能让一句话从信息流里跳出来，制造"重量感"。
+    </p>
+  </section>
+
+  <!-- DNA 2：刻意打断 -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">② 刻意打断：重复强调、中途插入、省略主语</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      人讲话不会一条直线走到底。khazix-writer 会主动制造打断：关键词重复两三次加深印象；一句说一半插个补充再绕回来；该省主语就省，不补完整。这些"不规整"恰恰是人味的来源。
+    </p>
+  </section>
+
+  <!-- DNA 3：知识像随意回忆 -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">③ 知识像随意回忆：不是正式介绍</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 写知识普及默认是"百科体"——定义、分类、特点。khazix-writer 改成<strong style="color: #00897B;">回忆体</strong>：像随口想起来的，先说印象深的，再补细节，偶尔岔开一句再拉回来。读起来像在听人聊天，不是在读教材。
+    </p>
+  </section>
+
+  <!-- DNA 4：私人视角 -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">④ 私人视角：用"我也遇到这问题"而非"教训是"</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 爱总结"教训""启示""最佳实践"，居高临下。khazix-writer 把视角拉平——用第一人称分享经历：<strong style="color: #00897B;">"我也踩过这个坑"</strong>而不是"教训是不要踩这个坑"。前者是同路人，后者是说教者。
+    </p>
+  </section>
+
+  <!-- DNA 5：四层自检体系 -->
+  <section style="background: #F3E5F5; border-left: 4px solid #6A1B9A; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #4A148C; font-weight: bold; font-size: 16px;">⑤ 四层自检体系</p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      写完不直接交付，khazix-writer 会跑四层自检，每层针对不同维度：
+    </p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #6A1B9A;">第一层 · AI 味检测：</strong>扫高频 AI 词（"首先""值得注意的是""综上所述"），标记出来重写
+    </p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #6A1B9A;">第二层 · 节奏检测：</strong>统计句子长度分布，匀速段落强制改长短交替
+    </p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #6A1B9A;">第三层 · 视角检测：</strong>找"教训是""应该""必须"这类说教词，改成分享体
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #6A1B9A;">第四层 · 风格匹配：</strong>跟目标作者的风格特征比对，偏离就拉回来
+    </p>
+  </section>
+
+  <!-- 章节05：重点详解 hv-analysis -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">重点详解 hv-analysis——横纵分析法</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    第二个值得细讲的是 hv-analysis（横纵分析法）。它干的是<strong style="color: #00897B;">研究报告生成</strong>，给一个主题，输出万字级 PDF，思路是两条轴交叉分析：
+  </p>
+
+  <!-- 纵轴 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">① 纵轴（历时性）：从诞生到现在的完整生命史</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      先按时间把主题的来龙去脉拉一遍：什么时候出现的、为什么出现、关键节点、转折点、被什么取代或吸收。这条轴回答<strong style="color: #00897B;">"它是怎么变成现在这样的"</strong>。
+    </p>
+  </section>
+
+  <!-- 横轴 -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">② 横轴（共时性）：当前竞争格局对比</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      再看当下：同赛道有哪些玩家、各自什么定位、强弱在哪、用户怎么选。这条轴回答<strong style="color: #00897B;">"它现在在什么位置"</strong>。
+    </p>
+  </section>
+
+  <!-- 交叉分析 -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">③ 交叉分析：历史如何塑造当前地位</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      两条轴的交叉点是精华，历史选择如何造就了今天的格局，当前的强弱哪些是路径依赖、哪些是主动选择。这一步让报告从"罗列信息"升级成<strong style="color: #00897B;">"解释因果"</strong>。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    交叉分析跑完，hv-analysis 会把结果整理成万字 PDF，结构包含：历时演进、当前格局、交叉洞察、趋势判断。研究一个新领域、写竞品分析、做技术选型报告，都能直接用。
+  </p>
+
+  <!-- 章节06：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：用 khazix-writer 写一篇公众号文章</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    看一遍完整流程。假设要写一篇介绍某 AI 工具的公众号文章，用 khazix-writer 走一遍：
+  </p>
+
+  <!-- 步骤1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      输入主题和参考样本
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      告诉 khazix-writer 要写什么，再喂几篇目标风格的样本文章（比如你想模仿的博主的几篇推文）。
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">写一篇介绍 Khazix-Skills 的公众号文章 <span style="color: #999; font-size: 12px;"># 主题</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">参考风格：[粘贴 3-5 篇样本文章] <span style="color: #999; font-size: 12px;"># 喂样本</span></p>
+    </section>
+  </section>
+
+  <!-- 步骤2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      Skill 提取风格 DNA
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      khazix-writer 分析样本，提取这个作者的风格特征：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>句子长度分布（平均多少字、长短交替频率）</li>
+      <li>高频词和口头禅（"其实""说实话""你懂吧"）</li>
+      <li>段落结构习惯（先抛结论还是先铺场景）</li>
+      <li>视角和语气（第一人称分享 vs 第三人称陈述）</li>
+    </ul>
+  </section>
+
+  <!-- 步骤3 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      初稿生成 + 四层自检
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      khazix-writer 按提取的 DNA 写初稿，写完自动跑四层自检：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>AI 味检测：标记"首先""值得注意"等词</li>
+      <li>节奏检测：匀速段落改长短交替</li>
+      <li>视角检测：说教体改成分享体</li>
+      <li>风格匹配：偏离样本风格就拉回来</li>
+    </ul>
+  </section>
+
+  <!-- 步骤4 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">4</span>
+      交付定稿
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      自检通过后输出定稿。这篇稿子读起来不会像 AI 写的——节奏有起伏、视角是分享式的、口头禅和样本对得上。
+    </p>
+    <p style="margin: 10px 0 0 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">关键差别：</strong>同样一个主题，普通 AI 输出是"信息正确但没个性"，khazix-writer 输出是"信息正确 + 风格对味"。前者能读，后者想转发。
+    </p>
+  </section>
+
+  <!-- 章节07：与 Humanizer 的区别 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">与 Humanizer 的区别</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    写到这肯定会有人问：那这跟 Humanizer 有啥区别？都是去 AI 味嘛。不一样，方向相反：
+  </p>
+
+  <!-- 对比卡 1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      Humanizer 是去 AI 味
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">把 AI 写的东西改得像人写的</strong>，目标是"看不出来是 AI"，但改完是"通用人味"，没有特定风格。它处理的是已有的 AI 文本，做减法。
+    </p>
+  </section>
+
+  <!-- 对比卡 2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      khazix-writer 是风格迁移
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">让 AI 按特定人的风格写</strong>，目标是"写出来像某个人写的"，带这个人的节奏、口头禅、视角。它从零生成，做的是加法。
+    </p>
+  </section>
+
+  <!-- 搭配用法 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">💡 两者可以搭配</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      先用 <strong style="color: #00897B;">khazix-writer</strong> 写初稿（带上目标风格），再用 <strong style="color: #00897B;">Humanizer</strong> 检查残留 AI 味。一个管"像谁写的"，一个管"别被认出来"。两步走，稿件的人味最稳。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>📖 延伸阅读：</strong>Humanizer 的详细用法和原理，可以参考之前的文章《Humanizer 去 AI 味实战》，两个工具配合效果最好。
+    </p>
+  </section>
+
+  <!-- 章节08：FAQ -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">08</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 个常见疑问</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：写作风格能完全复制吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      不能完全复制，但能逼近七八成。风格 DNA 提取的是可量化的特征（节奏、口头禅、视角），但作者的阅历、知识储备、当下情绪这些没法迁移。khazix-writer 做的是"形似"，不是"神似"，形似已经比泛 AI 输出强很多。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：支持哪些平台？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      支持 <strong style="color: #00897B;">Claude Code、Codex、OpenClaw 等 40+ Agent</strong>。只要是支持 Skill 加载的 Agent 都能用，安装方式略有不同（见上面第 03 节）。公众号、小红书、技术博客这些输出场景本身没有限制，写完直接复制粘贴即可。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：商用有限制吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Khazix-Skills 采用 <strong style="color: #00897B;">MIT 协议</strong>，可以免费商用、修改、分发，只需保留原始版权声明。生成的文章版权归你自己。但要注意：模仿的是风格不是抄袭内容，用别人写过的句子还是要注明出处。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">AI 写作比拼的地方，已经从"写得更对"慢慢挪到"写得更像"。Khazix-Skills 把写作风格这件最玄的事，拆成了节奏、打断、视角、自检这些可以落地的层。它不完美，但至少让"风格迁移"不再是个说不清的东西。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">装上试一篇你就懂——同样是介绍一个工具，泛 AI 输出和 khazix-writer 输出，读者读完的感受完全不一样。前者是"知道了"，后者是"想转发"。这个差别，就是风格的价值。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/KKKKhazix/khazix-skills</span><br>
+      Releases 下载：<span style="color: #00897B;">https://github.com/KKKKhazix/khazix-skills/releases</span><br>
+      协议：MIT（可商用）<br>
+      安装命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">帮我安装这个 skill：https://github.com/KKKKhazix/khazix-skills/tree/main/khazix-writer</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #999;"># 把 khazix-writer 换成你想装的 skill 名（共 6 个）</p>
+    </section>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你最想迁移哪个作者的写作风格？试过之后效果怎么样？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

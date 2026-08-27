@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG原理——检索增强生成全流程</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  RAG原理
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  检索增强生成全流程
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  本地大模型知识库系列第07篇 | RAG核心
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  前面我们已经学会了文档处理、向量数据库和Embedding，现在终于到了最核心的环节——RAG（Retrieval-Augmented Generation，检索增强生成）。
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  <strong style="color: #00897B;">RAG的核心思想非常简单</strong>：在让大模型回答问题之前，先从知识库中检索相关的文档片段，然后把这些文档和问题一起交给大模型，让它基于这些文档来回答。
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/rag_principle.png" alt="RAG原理流程图" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">RAG vs 纯LLM</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  为什么需要RAG？直接让大模型回答不行吗？来看一下对比：
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/rag_vs_llm.png" alt="RAG vs 纯LLM对比" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">RAG核心流程详解</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  RAG的完整流程可以分为三个阶段：
+</p>
+
+<p style="margin: 25px 0; padding-left: 20px; border-left: 3px solid #00897B;">
+  <strong style="color: #00897B;">第一阶段：检索</strong><br>
+  1. 用户提问 → 2. 问题向量化 → 3. 向量检索 → 4. 获取相关文档片段
+</p>
+
+<p style="margin: 25px 0; padding-left: 20px; border-left: 3px solid #00897B;">
+  <strong style="color: #00897B;">第二阶段：构建</strong><br>
+  5. 将检索到的文档和原始问题一起构建成Prompt
+</p>
+
+<p style="margin: 25px 0; padding-left: 20px; border-left: 3px solid #00897B;">
+  <strong style="color: #00897B;">第三阶段：生成</strong><br>
+  6. 将Prompt交给大模型 → 7. LLM生成回答 → 8. 返回结果
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">Prompt工程</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  RAG的效果很大程度上取决于Prompt的质量。一个好的Prompt应该包含以下几个要素：
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/prompt_engineering.png" alt="Prompt工程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">def</span><span class="code-function"> build_prompt</span><span class="code-operator">(</span><span class="code-name">query</span><span class="code-operator">,</span> <span class="code-name">context</span><span class="code-operator">):</span>
+    <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">"""你是一个专业的知识库助手，擅长基于给定的文档内容回答问题。
+
+## 角色设定
+- 你的回答必须基于提供的文档内容
+- 如果文档中没有相关信息，请明确说明"文档中未找到相关信息"
+- 回答要清晰、准确、简洁
+
+## 参考文档
+{context}
+
+## 用户问题
+{query}
+
+## 回答要求
+- 使用Markdown格式
+- 引用文档来源时使用上标标记
+- 保持回答逻辑清晰
+- 不要编造信息"""</span>
+    
+    <span class="code-keyword">return</span><span class="code-name"> prompt</span><span class="code-operator">.</span><span class="code-function">format</span><span class="code-operator">(</span><span class="code-name">context</span><span class="code-operator">=</span><span class="code-name">context</span><span class="code-operator">,</span> <span class="code-name">query</span><span class="code-operator">=</span><span class="code-name">query</span><span class="code-operator">)</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">完整RAG实现</span>
+  </p>
+</section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">from</span><span class="code-name"> langchain.chains </span><span class="code-keyword">import</span><span class="code-name"> RetrievalQA</span>
+<span class="code-keyword">from</span><span class="code-keyword"> langchain.llms </span><span class="code-keyword">import</span><span class="code-name"> Ollama</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.vectorstores </span><span class="code-keyword">import</span><span class="code-name"> Chroma</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.embeddings </span><span class="code-keyword">import</span><span class="code-name"> HuggingFaceEmbeddings</span>
+
+<span class="code-comment"># 初始化组件</span>
+<span class="code-name">embeddings</span><span class="code-operator"> = </span><span class="code-function">HuggingFaceEmbeddings</span><span class="code-operator">(</span><span class="code-name">model_name</span><span class="code-operator">=</span><span class="code-string">"all-MiniLM-L6-v2"</span><span class="code-operator">)</span>
+<span class="code-name">vector_store</span><span class="code-operator"> = </span><span class="code-function">Chroma</span><span class="code-operator">.</span><span class="code-function">persist_directory</span><span class="code-operator">(</span>
+    <span class="code-name">persist_directory</span><span class="code-operator">=</span><span class="code-string">"./chroma_db"</span><span class="code-operator">,</span>
+    <span class="code-name">embedding_function</span><span class="code-operator">=</span><span class="code-name">embeddings</span>
+<span class="code-operator">)</span>
+<span class="code-name">llm</span><span class="code-operator"> = </span><span class="code-function">Ollama</span><span class="code-operator">(</span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">)</span>
+
+<span class="code-comment"># 创建检索器</span>
+<span class="code-name">retriever</span><span class="code-operator"> = </span><span class="code-name">vector_store</span><span class="code-operator">.</span><span class="code-function">as_retriever</span><span class="code-operator">(</span>
+    <span class="code-name">search_kwargs</span><span class="code-operator">=</span><span class="code-operator">{</span><span class="code-string">"k"</span><span class="code-operator">: </span><span class="code-number">3</span><span class="code-operator">}</span>
+<span class="code-operator">)</span>
+
+<span class="code-comment"># 创建RAG链</span>
+<span class="code-name">qa_chain</span><span class="code-operator"> = </span><span class="code-function">RetrievalQA</span><span class="code-operator">.</span><span class="code-function">from_chain_type</span><span class="code-operator">(</span>
+    <span class="code-name">llm</span><span class="code-operator">=</span><span class="code-name">llm</span><span class="code-operator">,</span>
+    <span class="code-name">chain_type</span><span class="code-operator">=</span><span class="code-string">"stuff"</span><span class="code-operator">,</span>
+    <span class="code-name">retriever</span><span class="code-operator">=</span><span class="code-name">retriever</span><span class="code-operator">,</span>
+    <span class="code-name">return_source_documents</span><span class="code-operator">=</span><span class="code-keyword">True</span>
+<span class="code-operator">)</span>
+
+<span class="code-comment"># 测试问答</span>
+<span class="code-name">query</span><span class="code-operator"> = </span><span class="code-string">"请解释什么是RAG？"</span>
+<span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">qa_chain</span><span class="code-operator">({</span><span class="code-string">"query"</span><span class="code-operator">: </span><span class="code-name">query</span><span class="code-operator">})</span>
+
+<span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-string">"回答:"</span><span class="code-operator">)</span>
+<span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"result"</span><span class="code-operator">])</span>
+
+<span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-string">"\n引用来源:"</span><span class="code-operator">)</span>
+<span class="code-keyword">for</span><span class="code-name"> doc </span><span class="code-keyword">in</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"source_documents"</span><span class="code-operator">]:</span>
+    <span class="code-keyword">print</span><span class="code-operator">(</span><span class="code-name">doc</span><span class="code-operator">.</span><span class="code-name">metadata</span><span class="code-operator">.</span><span class="code-name">get</span><span class="code-operator">(</span><span class="code-string">"source"</span><span class="code-operator">))</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 检索结果不相关：调整chunk_size或更换Embedding模型</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 回答质量差：优化Prompt或使用更大的模型</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 回答速度慢：使用更小的模型或添加缓存</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 上下文超限：减少返回的文档数量(k值)</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  本地大模型知识库系列第07篇<br>
+  下一篇：问答接口开发——构建你的专属AI助手
+</p>
+
+</section>
+</body>
+</html>

@@ -1,0 +1,2140 @@
+[
+  {
+    "timestamp": 1785392083.962923,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0059604644775390625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785392083.963417,
+    "user_id": "user_001",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.1600723266601562,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785392083.963701,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785392083.964135,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.5128383636474609,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785392083.964489,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09775161743164062,
+    "error": ""
+  },
+  {
+    "timestamp": 1785392083.964895,
+    "user_id": "user_001",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.5619525909423828,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785392083.9659111,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7500648498535156,
+    "error": ""
+  },
+  {
+    "timestamp": 1785392083.9663072,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.1980533599853516,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785392083.966717,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.003814697265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785392083.967267,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.7622241973876953,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785392083.9678788,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.34880638122558594,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785392083.9682062,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.0019073486328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785392083.968624,
+    "user_id": "user_001",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 0.47206878662109375,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393744.2225459,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.007867813110351562,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393744.223114,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.8510818481445312,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393744.2241302,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7128715515136719,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393744.224604,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.2407302856445312,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393744.2250571,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393744.225497,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.6239414215087891,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393744.2258182,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393744.226326,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.5669593811035156,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393744.22663,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.025033950805664062,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393811.8625019,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.6852149963378906,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393811.863204,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.641916275024414,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393811.863793,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.005245208740234375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393811.864439,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.8480548858642578,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393811.865035,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.00476837158203125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393811.8657439,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.8041858673095703,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393811.866339,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.007867813110351562,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393811.867085,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.8380413055419922,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393811.867595,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.030994415283203125,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.940368,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7212162017822266,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.941257,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.9709339141845703,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.941911,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.004291534423828125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.94271,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.0020732879638672,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.943166,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.943798,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.7190704345703125,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.944256,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.003814697265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.945139,
+    "user_id": "user_001",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.9500980377197266,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.945803,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09393692016601562,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.946681,
+    "user_id": "user_001",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.0311603546142578,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.947262,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.007867813110351562,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.948011,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.8289813995361328,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.948511,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.02574920654296875,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393885.9490461,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.0019073486328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393885.9497962,
+    "user_id": "user_001",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 0.8041858673095703,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.035201,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.6878376007080078,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.036457,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.2198429107666016,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.037237,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0059604644775390625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.038132,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.085042953491211,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.038739,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.039616,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.9398460388183594,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.040299,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.003814697265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.041217,
+    "user_id": "user_001",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.9768009185791016,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.041951,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.08821487426757812,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.042782,
+    "user_id": "user_001",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.9701251983642578,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.043401,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0059604644775390625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.044254,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.9191036224365234,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.0449002,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.026941299438476562,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.04569,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.0021457672119140625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.046489,
+    "user_id": "user_001",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 0.8540153503417969,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785393935.047248,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.006198883056640625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785393935.048098,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 0.9081363677978516,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.305898,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.003814697265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394017.306986,
+    "user_id": "u1",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.670764923095703,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.3084512,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7278919219970703,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394017.309427,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.7638206481933594,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.310266,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394017.3112562,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.1830329895019531,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.312431,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": false,
+    "duration_ms": 0.07009506225585938,
+    "error": "'quantity'"
+  },
+  {
+    "timestamp": 1785394017.313476,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": false,
+    "handoff": false,
+    "response_time_ms": 1.116037368774414,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.314239,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394017.315277,
+    "user_id": "u1",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.107931137084961,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.316107,
+    "type": "skill_execution",
+    "skill": "sentiment",
+    "success": true,
+    "duration_ms": 0.0030994415283203125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394017.317167,
+    "user_id": "u1",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.1441707611083984,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.318142,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09202957153320312,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394017.3193312,
+    "user_id": "u1",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.3401508331298828,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394017.320309,
+    "user_id": "u2",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.3008842468261719,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.373559,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0040531158447265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.3750231,
+    "user_id": "u1",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.6900768280029297,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.3768399,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.8080005645751953,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.37834,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.3720264434814453,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.3794408,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.005245208740234375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.384106,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 4.869937896728516,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.384916,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": false,
+    "duration_ms": 0.06604194641113281,
+    "error": "'quantity'"
+  },
+  {
+    "timestamp": 1785394067.3859708,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": false,
+    "handoff": false,
+    "response_time_ms": 1.1210441589355469,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.3868039,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0059604644775390625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.3878489,
+    "user_id": "u1",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.111745834350586,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.388891,
+    "type": "skill_execution",
+    "skill": "sentiment",
+    "success": true,
+    "duration_ms": 0.0021457672119140625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.389923,
+    "user_id": "u1",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.1050701141357422,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.390854,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09226799011230469,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.391924,
+    "user_id": "u1",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.2149810791015625,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.3926861,
+    "user_id": "u2",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.022172927856445312,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.393621,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.00095367431640625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.3948631,
+    "user_id": "u1",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 1.2881755828857422,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.3961751,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.004291534423828125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.397233,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.3971328735351562,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.398082,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.005245208740234375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394067.399812,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.7838478088378906,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394067.401144,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": false,
+    "duration_ms": 0.06413459777832031,
+    "error": "'quantity'"
+  },
+  {
+    "timestamp": 1785394067.4035158,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": false,
+    "handoff": false,
+    "response_time_ms": 2.4368762969970703,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394097.7374861,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7600784301757812,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394097.738868,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.412961959838867,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394097.739989,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394097.741278,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.506805419921875,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.41821,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394151.419622,
+    "user_id": "u1",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.8290748596191406,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.4214451,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.9059906005859375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394151.422575,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.104043960571289,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.423815,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394151.4248981,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.2960433959960938,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.425855,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": false,
+    "duration_ms": 0.07295608520507812,
+    "error": "'quantity'"
+  },
+  {
+    "timestamp": 1785394151.4269598,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": false,
+    "handoff": false,
+    "response_time_ms": 1.1780261993408203,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.4279182,
+    "type": "skill_execution",
+    "skill": "sentiment",
+    "success": true,
+    "duration_ms": 0.0030994415283203125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394151.429013,
+    "user_id": "u1",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.1799335479736328,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.429961,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0069141387939453125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394151.431135,
+    "user_id": "u1",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.2438297271728516,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394151.432043,
+    "user_id": "u2",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.030994415283203125,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394169.27403,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7669925689697266,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394169.2755919,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.554821014404297,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394169.2769651,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.005245208740234375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394169.2782972,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.5568733215332031,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.247436,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.248922,
+    "user_id": "u1",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.869129180908203,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.25071,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.8146762847900391,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.252248,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.4149417877197266,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.253671,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.007152557373046875,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.2549582,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.5420913696289062,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.2559931,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.008821487426757812,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.2573178,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.3985633850097656,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.258384,
+    "type": "skill_execution",
+    "skill": "sentiment",
+    "success": true,
+    "duration_ms": 0.0030994415283203125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.2596202,
+    "user_id": "u1",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.3179779052734375,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.260819,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.009059906005859375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.262271,
+    "user_id": "u1",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.5299320220947266,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.263316,
+    "user_id": "u2",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.031948089599609375,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.264419,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0059604644775390625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.265719,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.3608932495117188,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.267103,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.268656,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.622915267944336,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394225.2701418,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.007867813110351562,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394225.27178,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.7142295837402344,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394239.715606,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7500648498535156,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394239.717196,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.5772323608398438,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394239.7186098,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.00476837158203125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394239.720336,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.954793930053711,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394239.721558,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0069141387939453125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394239.723007,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.5208721160888672,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.60094,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0040531158447265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.602627,
+    "user_id": "u1",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.917051315307617,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.604747,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.8327960968017578,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.606217,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.3648738861083984,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.607612,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.005245208740234375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.60964,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.2308826446533203,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.610923,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0069141387939453125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.61252,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.6601085662841797,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.613856,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.08893013000488281,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.615339,
+    "user_id": "u1",
+    "skill": "faq",
+    "intent": "unknown",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.6410350799560547,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.6166642,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.007152557373046875,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.618041,
+    "user_id": "u1",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.4870166778564453,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.619261,
+    "user_id": "u2",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.03218650817871094,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.6205812,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.08440017700195312,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.6226182,
+    "user_id": "u1",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.167224884033203,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.623986,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.00476837158203125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.625607,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.6841888427734375,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.626899,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.003814697265625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.628555,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.7058849334716797,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394286.629859,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.006198883056640625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394286.631476,
+    "user_id": "u3",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.6787052154541016,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.008526,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.005245208740234375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.010632,
+    "user_id": "u1",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.3936500549316406,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.01277,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7479190826416016,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.0142899,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.321958541870117,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.015875,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.0177011,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.008199691772461,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.019212,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0069141387939453125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.020836,
+    "user_id": "u1",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.683950424194336,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.022302,
+    "type": "skill_execution",
+    "skill": "general",
+    "success": true,
+    "duration_ms": 0.00286102294921875,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.030952,
+    "user_id": "u1",
+    "skill": "general",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": false,
+    "response_time_ms": 8.729934692382812,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.032468,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.0370848,
+    "user_id": "u1",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 4.687786102294922,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.038456,
+    "user_id": "u2",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.033855438232421875,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.040163,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09298324584960938,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.042103,
+    "user_id": "u1",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.0821094512939453,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394441.043582,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.0011920928955078125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394441.045364,
+    "user_id": "u1",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 1.8379688262939453,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.34726,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.3491032,
+    "user_id": "user_001",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.2749176025390625,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.3506,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.352288,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.7690658569335938,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.353908,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09799003601074219,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.355783,
+    "user_id": "user_001",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.0339488983154297,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.3581629,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.8578300476074219,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.359879,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.6319026947021484,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.361494,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0059604644775390625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.363242,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 1.9609928131103516,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.364811,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0069141387939453125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.366815,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.0737648010253906,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.368756,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.033855438232421875,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394454.370365,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.0019073486328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394454.372423,
+    "user_id": "user_001",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 2.1169185638427734,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394513.237441,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7398128509521484,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394513.2398221,
+    "user_id": "test_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 4.965305328369141,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785394549.73579,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.015974044799804688,
+    "error": ""
+  },
+  {
+    "timestamp": 1785394549.739369,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 4.040956497192383,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785397095.4140842,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": false,
+    "duration_ms": 0.0069141387939453125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785397095.418735,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": false,
+    "handoff": false,
+    "response_time_ms": 8.009910583496094,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785397098.9134421,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.4038810729980469,
+    "error": ""
+  },
+  {
+    "timestamp": 1785397098.918159,
+    "user_id": "user_001",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 5.326032638549805,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.7189171,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785482382.7212129,
+    "user_id": "user_001",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.548860549926758,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.722781,
+    "type": "skill_execution",
+    "skill": "order",
+    "success": true,
+    "duration_ms": 0.0057220458984375,
+    "error": ""
+  },
+  {
+    "timestamp": 1785482382.72484,
+    "user_id": "user_001",
+    "skill": "order",
+    "intent": "order_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.1369457244873047,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.7266,
+    "type": "skill_execution",
+    "skill": "faq",
+    "success": true,
+    "duration_ms": 0.09608268737792969,
+    "error": ""
+  },
+  {
+    "timestamp": 1785482382.7286358,
+    "user_id": "user_001",
+    "skill": "faq",
+    "intent": "faq_query",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.196788787841797,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.73102,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.7910728454589844,
+    "error": ""
+  },
+  {
+    "timestamp": 1785482382.73321,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 3.0410289764404297,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.73524,
+    "type": "skill_execution",
+    "skill": "slot_filling",
+    "success": true,
+    "duration_ms": 0.0050067901611328125,
+    "error": ""
+  },
+  {
+    "timestamp": 1785482382.737366,
+    "user_id": "user_001",
+    "skill": "slot_filling",
+    "intent": "order",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 2.315998077392578,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.738912,
+    "user_id": "user_002",
+    "skill": "sentiment",
+    "intent": "unknown",
+    "resolved": false,
+    "handoff": true,
+    "response_time_ms": 0.03528594970703125,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785482382.740566,
+    "type": "skill_execution",
+    "skill": "handoff",
+    "success": true,
+    "duration_ms": 0.0021457672119140625,
+    "error": ""
+  },
+  {
+    "timestamp": 1785482382.742748,
+    "user_id": "user_001",
+    "skill": "handoff",
+    "intent": "human_handoff",
+    "resolved": true,
+    "handoff": true,
+    "response_time_ms": 2.2368431091308594,
+    "tokens_used": 0,
+    "success": true
+  },
+  {
+    "timestamp": 1785485931.45378,
+    "type": "skill_execution",
+    "skill": "greeting",
+    "success": true,
+    "duration_ms": 0.07390975952148438,
+    "error": ""
+  },
+  {
+    "timestamp": 1785485931.460483,
+    "user_id": "user_001",
+    "skill": "greeting",
+    "intent": "greeting",
+    "resolved": true,
+    "handoff": false,
+    "response_time_ms": 8.812189102172852,
+    "tokens_used": 0,
+    "success": true
+  }
+]

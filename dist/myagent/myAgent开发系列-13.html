@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 13</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">插件调试与日志</span></h2>
+
+<p>插件写好了，怎么调试？线上出问题了，怎么追踪？<a href="Agent开发系列-25.html" class="key">(详见Agent开发系列25：可观测性)</a></p>
+
+<p>调试和日志是开发者和运维的"眼睛"，没有它们，就是在瞎子里走迷宫。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>插件调试的核心是"可复现"——本地能跑，线上也能跑。日志的核心是"可追溯"——出问题能快速定位是哪个插件、哪次调用、哪个参数。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">结构化日志</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> structlog</span>
+
+<span style="color: #f8f8f2">structlog.configure(</span>
+<span style="color: #f8f8f2">    processors=[</span>
+<span style="color: #f8f8f2">        structlog.processors.TimeStamper(fmt=</span><span style="color: #e6db74">"iso"</span><span style="color: #f8f8f2">),</span>
+<span style="color: #f8f8f2">        structlog.processors.JSONRenderer()</span>
+<span style="color: #f8f8f2">    ]</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">logger = structlog.get_logger()</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 插件调用日志</span>
+<span style="color: #f8f8f2">logger.info(</span>
+<span style="color: #e6db74">"tool_called"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    tool_name=</span><span style="color: #e6db74">"search"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    bot_id=</span><span style="color: #e6db74">"bot_xxx"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    params={</span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"Python教程"</span><span style="color: #f8f8f2">},</span>
+<span style="color: #f8f8f2">    duration_ms=</span><span style="color: #ae81ff">234</span>
+<span style="color: #f8f8f2">)</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">调用链路追踪</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> ToolCallTracer:</span>
+
+<span style="color: #f8f8f2">    @contextmanager</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">trace</span><span style="color: #f8f8f2">(self, tool_name: str, params: dict):</span>
+<span style="color: #f8f8f2">        trace_id = uuid.uuid4().hex</span>
+<span style="color: #f8f8f2">        start_time = time.time()</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 记录开始</span>
+<span style="color: #f8f8f2">        logger.info(</span>
+<span style="color: #e6db74">"tool_start"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            trace_id=trace_id,</span>
+<span style="color: #f8f8f2">            tool_name=tool_name,</span>
+<span style="color: #f8f8f2">            params=params</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            yield trace_id</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">finally</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            duration = (time.time() - start_time) * </span><span style="color: #ae81ff">1000</span>
+<span style="color: #f8f8f2">            logger.info(</span>
+<span style="color: #e6db74">"tool_end"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                trace_id=trace_id,</span>
+<span style="color: #f8f8f2">                duration_ms=</span><span style="color: #a6e22e">int</span><span style="color: #f8f8f2">(duration)</span>
+<span style="color: #f8f8f2">            )</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">本地调试模式</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> LocalDebugger:</span>
+
+<span style="color: #f8f8f2">    @staticmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">debug_tool</span><span style="color: #f8f8f2">(tool_class, params):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 本地调试：不需要连接LLM，直接测试工具</span>
+<span style="color: #f8f8f2">        tool = tool_class()</span>
+
+<span style="color: #f8f8f2">        print(</span><span style="color: #e6db74">f"🔧 Testing </span><span style="color: #f8f8f2">{tool.definition.name}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        print(</span><span style="color: #e6db74">f"📝 Definition: </span><span style="color: #f8f8f2">{tool.definition.dict()}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        print(</span><span style="color: #e6db74">f"📥 Params: </span><span style="color: #f8f8f2">{params}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">        result = </span><span style="color: #a6e22e">asyncio</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(tool.</span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(**params))</span>
+
+<span style="color: #f8f8f2">        print(</span><span style="color: #e6db74">f"📤 Result: </span><span style="color: #f8f8f2">{result.dict()}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> result</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 使用</span>
+<span style="color: #f8f8f2">LocalDebugger.</span><span style="color: #a6e22e">debug_tool</span><span style="color: (#f8f8f2">,
+    SearchTool,
+    {</span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"Python教程"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">)</span></code></pre>
+
+<blockquote><p>💡 <strong>总结：</strong>插件调试靠结构化日志、调用链路追踪、本地调试模式。日志要全链路可追溯，调试要能本地复现线上问题。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="Agent开发系列-25.html" class="key">Agent开发系列 25：可观测性</a></li>
+<li><a href="myAgent开发系列-12.html" class="key">myAgent开发系列 12：插件沙箱与安全</a></li>
+</ul>
+
+<p>下期预告：第14篇《工作流架构设计》—— 工作流引擎篇开始</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

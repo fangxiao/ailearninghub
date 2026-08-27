@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent加强版 - Harness+Skill架构</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: #f0f2f5; min-height: 100vh; }
+.container { max-width: 800px; margin: 0 auto; padding: 20px; }
+.header { background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: white; padding: 24px; border-radius: 12px; margin-bottom: 20px; }
+.header h1 { font-size: 20px; margin-bottom: 8px; }
+.header .subtitle { font-size: 14px; opacity: 0.9; }
+.header .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-top: 8px; }
+
+.chat-box { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden; }
+.chat-messages { height: 400px; overflow-y: auto; padding: 20px; }
+.message { margin-bottom: 16px; display: flex; }
+.message.user { justify-content: flex-end; }
+.message .bubble { max-width: 70%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
+.message.user .bubble { background: #00897B; color: white; border-radius: 12px 12px 2px 12px; }
+.message.assistant .bubble { background: #f0f0f0; color: #333; border-radius: 12px 12px 12px 2px; }
+.message .meta { font-size: 11px; color: #999; margin-top: 4px; }
+
+.chat-input { display: flex; padding: 16px; border-top: 1px solid #eee; }
+.chat-input input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 24px; font-size: 14px; outline: none; }
+.chat-input input:focus { border-color: #00897B; }
+.chat-input button { margin-left: 12px; padding: 12px 24px; background: #00897B; color: white; border: none; border-radius: 24px; font-size: 14px; cursor: pointer; }
+.chat-input button:hover { background: #00695C; }
+
+.skill-bar { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.skill-chip { padding: 6px 12px; background: #e8f5e9; color: #00695C; border-radius: 16px; font-size: 12px; border: 1px solid #c8e6c9; }
+.skill-chip.active { background: #00897B; color: white; border-color: #00897B; }
+
+.info-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.info-card { background: white; padding: 16px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.info-card .label { font-size: 12px; color: #999; margin-bottom: 4px; }
+.info-card .value { font-size: 16px; font-weight: 600; color: #333; }
+
+.status-bar { display: flex; justify-content: space-between; padding: 12px 20px; background: #fafafa; border-top: 1px solid #eee; font-size: 12px; color: #666; }
+.status-bar .status-item { display: flex; gap: 4px; align-items: center; }
+.status-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; }
+.status-bar .dot.error { background: #f44336; }
+.status-bar .dot.warn { background: #ff9800; }
+
+.quick-actions { display: flex; gap: 8px; margin-top: 12px; }
+.quick-btn { padding: 8px 16px; background: white; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; cursor: pointer; }
+.quick-btn:hover { background: #f5f5f5; border-color: #00897B; color: #00897B; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🤖 智能客服小助手</h1>
+    <div class="subtitle">基于 Harness+Skill 架构的客服系统</div>
+    <span class="badge" id="skills-badge">加载技能中...</span>
+  </div>
+
+  <div class="chat-box">
+    <div class="chat-messages" id="chat-messages">
+      <div class="message assistant">
+        <div>
+          <div class="bubble">您好！我是智能客服小助手。有什么可以帮您？</div>
+          <div class="meta">greeting skill</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-bar" id="skill-bar"></div>
+
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="输入消息..." />
+      <button onclick="sendMessage()">发送</button>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-btn" onclick="quickChat('我的订单到哪了')">订单查询</button>
+      <button class="quick-btn" onclick="quickChat('如何退款？')">FAQ</button>
+      <button class="quick-btn" onclick="quickChat('我要订花')">订花</button>
+      <button class="quick-btn" onclick="quickChat('转人工')">转人工</button>
+      <button class="quick-btn" onclick="resetChat()">🔄 重置</button>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-item"><span class="dot" id="llm-dot"></span>LLM: <span id="llm-status">检查中...</span></div>
+      <div class="status-item">响应时间: <span id="response-time">-</span></div>
+      <div class="status-item">对话轮数: <span id="dialog-count">0</span></div>
+      <div class="status-item">用户ID: user_001</div>
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <div class="info-card">
+      <div class="label">当前Skill</div>
+      <div class="value" id="current-skill">-</div>
+    </div>
+    <div class="info-card">
+      <div class="label">识别意图</div>
+      <div class="value" id="current-intent">-</div>
+    </div>
+    <div class="info-card">
+      <div class="label">槽位</div>
+      <div class="value" id="current-slots">-</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const messagesDiv = document.getElementById('chat-messages');
+const input = document.getElementById('message-input');
+const skillBar = document.getElementById('skill-bar');
+
+let skills = [];
+
+async function loadSkills() {
+  try {
+    const res = await fetch('/api/skills');
+    skills = await res.json();
+    document.getElementById('skills-badge').textContent = `${skills.length} 个Skill就绪`;
+    renderSkillBar();
+  } catch(e) {
+    document.getElementById('skills-badge').textContent = '加载失败';
+  }
+}
+
+function renderSkillBar() {
+  skillBar.innerHTML = skills.map(s =>
+    `<span class="skill-chip">${s.name}</span>`
+  ).join('');
+}
+
+function addMessage(role, text, meta) {
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.innerHTML = `<div>
+    <div class="bubble">${text}</div>
+    <div class="meta">${meta || ''}</div>
+  </div>`;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+  addMessage('user', text);
+  input.value = '';
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: text, user_id: 'user_001'})
+    });
+    const data = await res.json();
+    addMessage('assistant', data.response, data.skill);
+
+    document.getElementById('response-time').textContent = data.response_time_ms + 'ms';
+    document.getElementById('dialog-count').textContent = data.dialog_messages;
+    document.getElementById('current-skill').textContent = data.skill || '-';
+    document.getElementById('current-intent').textContent = data.intent || '-';
+    document.getElementById('current-slots').textContent =
+      data.slots ? Object.entries(data.slots).map(([k,v]) => `${k}:${v}`).join(', ') : '-';
+  } catch(e) {
+    addMessage('assistant', '❌ 请求失败', 'error');
+  }
+}
+
+function quickChat(text) {
+  input.value = text;
+  sendMessage();
+}
+
+async function resetChat() {
+  await fetch('/api/reset', {method: 'POST'});
+  messagesDiv.innerHTML = '';
+  addMessage('assistant', '对话已重置。有什么可以帮您？', 'greeting');
+  document.getElementById('current-skill').textContent = '-';
+  document.getElementById('current-slots').textContent = '-';
+}
+
+input.addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+loadSkills();
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 21-22</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">消息总线</span></h2>
+
+<p>多Agent协作需要一个通信中枢。消息总线就是扮演这个角色——它让Agent之间的消息传递变得可靠、可追踪。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>消息总线是Agent系统的"神经系统"，负责消息路由、事件分发和状态同步。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">消息类型</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">enum</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Enum</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">MessageType</span><span style="color: #f8f8f2">(Enum):</span>
+<span style="color: #f8f8f2">    TASK = </span><span style="color: #e6db74">"task"</span><span style="color: #f8f8f2">           </span><span style="color: #a8a8a8; font-style: italic;"># 任务分配</span>
+<span style="color: #f8f8f2">    RESULT = </span><span style="color: #e6db74">"result"</span><span style="color: #f8f8f2">       </span><span style="color: #a8a8a8; font-style: italic;"># 结果返回</span>
+<span style="color: #f8f8f2">    EVENT = </span><span style="color: #e6db74">"event"</span><span style="color: #f8f8f2">         </span><span style="color: #a8a8a8; font-style: italic;"># 事件通知</span>
+<span style="color: #f8f8f2">    QUERY = </span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">         </span><span style="color: #a8a8a8; font-style: italic;"># 状态查询</span>
+<span style="color: #f8f8f2">    BROADCAST = </span><span style="color: #e6db74">"broadcast"</span><span style="color: #f8f8f2">   </span><span style="color: #a8a8a8; font-style: italic;"># 广播消息</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Message</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, msg_type, sender, content, target=</span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        self.type = msg_type</span>
+<span style="color: #f8f8f2">        self.sender = sender</span>
+<span style="color: #f8f8f2">        self.target = target</span>
+<span style="color: #f8f8f2">        self.content = content</span>
+<span style="color: #f8f8f2">        self.timestamp = </span><span style="color: #a6e22e">datetime</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">now</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.id = </span><span style="color: #a6e22e">uuid</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">uuid4</span><span style="color: #f8f8f2">().</span><span style="color: #a6e22e">hex</span><span style="color: #f8f8f2">()</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">消息总线实现</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">MessageBus</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.subscribers = {}</span>
+<span style="color: #f8f8f2">        self.message_queue = </span><span style="color: #a6e22e">Queue</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.message_history = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">subscribe</span><span style="color: #f8f8f2">(self, agent, msg_types):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> msg_type </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> msg_types:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> msg_type </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.subscribers:</span>
+<span style="color: #f8f8f2">                self.subscribers[msg_type] = []</span>
+<span style="color: #f8f8f2">            self.subscribers[msg_type].</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(agent)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">publish</span><span style="color: #f8f8f2">(self, message):</span>
+<span style="color: #f8f8f2">        self.message_history.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(message)</span>
+<span style="color: #f8f8f2">        self.message_queue.</span><span style="color: #a6e22e">put</span><span style="color: #f8f8f2">(message)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">dispatch</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">while not</span><span style="color: #f8f8f2"> self.message_queue.</span><span style="color: #a6e22e">empty</span><span style="color: #f8f8f2">():</span>
+<span style="color: #f8f8f2">            message = self.message_queue.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">            targets = self.subscribers.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(message.type, [])</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> target </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> targets:</span>
+<span style="color: #f8f8f2">                target.</span><span style="color: #a6e22e">receive</span><span style="color: #f8f8f2">(message)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">send</span><span style="color: #f8f8f2">(self, from_agent, to_agent, content):</span>
+<span style="color: #f8f8f2">        msg = </span><span style="color: #a6e22e">Message</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">MessageType</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">TASK</span><span style="color: #f8f8f2">, from_agent, content, to_agent)</span>
+<span style="color: #f8f8f2">        self.</span><span style="color: #a6e22e">publish</span><span style="color: #f8f8f2">(msg)</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">事件分发</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">EventBus</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color=":#a8a8a8; font-style: italic;"># 事件类型</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">on_task_complete</span><span style="color: #f8f8f2">(self, task_id):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"event"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"task_complete"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"task_id"</span><span style="color: #f8f8f2">: task_id</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">on_agent_error</span><span style="color: #f8f8f2">(self, agent_id, error):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"event"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"agent_error"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"agent_id"</span><span style="color: #f8f8f2">: agent_id,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"error"</span><span style="color: #f8f8f2">: error</span>
+<span style="color: #f8f8f2">        }</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">emit</span><span style="color: #f8f8f2">(self, event_data):</span>
+<span style="color: #f8f8f2">        self.message_bus.</span><span style="color: #a6e22e">publish</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a6e22e">Message</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">MessageType</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">EVENT</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"system"</span><span style="color: #f8f8f2">, event_data)</span>
+<span style="color: #f8f8f2">        )</span></code></pre>
+
+<blockquote><p>💡 <strong>消息总线的核心能力：</strong>订阅发布机制实现松耦合、消息队列保证异步通信、历史记录便于调试追踪。</p></blockquote>
+
+<hr/>
+
+<h2><span class="title-text">团队编排</span></h2>
+
+<p>多个Agent一起工作，需要有人来分配任务、协调进度、汇总结果。这就是团队编排。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>团队编排解决的是"谁来做、做什么、结果怎么合"三个问题。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">角色定义</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">AgentRole</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    PLANNER = </span><span style="color: #e6db74">"planner"</span><span style="color: #f8f8f2">      </span><span style="color: #a8a8a8; font-style: italic;"># 规划者：分解任务</span>
+<span style="color: #f8f8f2">    EXECUTOR = </span><span style="color: #e6db74">"executor"</span><span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 执行者：完成任务</span>
+<span style="color: #f8f8f2">    COORDINATOR = </span><span style="color: #e6db74">"coordinator"</span><span style="color: #f8f8f2"> </span><span style="color: #a8a8a8; font-style: italic;"># 协调者：分配任务</span>
+<span style="color: #f8f8f2">    REVIEWER = </span><span style="color: #e6db74">"reviewer"</span><span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 审核者：质量把控</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">TeamMember</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, agent, role, capabilities):</span>
+<span style="color: #f8f8f2">        self.agent = agent</span>
+<span style="color: #f8f8f2">        self.role = role</span>
+<span style="color: #f8f8f2">        self.capabilities = capabilities</span>
+<span style="color: #f8f8f2">        self.current_task = </span><span style="color: #66d9ef">None</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">任务调度器</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">TeamOrchestrator</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.members = []</span>
+<span style="color: #f8f8f2">        self.task_queue = </span><span style="color: #a6e22e">Queue</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.results = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_member</span><span style="color: #f8f8f2">(self, agent, role, capabilities):</span>
+<span style="color: #f8f8f2">        member = </span><span style="color: #a6e22e">TeamMember</span><span style="color: #f8f8f2">(agent, role, capabilities)</span>
+<span style="color: #f8f8f2">        self.members.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(member)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> member</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">assign_task</span><span style="color: #f8f8f2">(self, task, member):</span>
+<span style="color: #f8f8f2">        member.current_task = task</span>
+<span style="color: #f8f8f2">        result = member.agent.</span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(task)</span>
+<span style="color: #f8f8f2">        self.results[task[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">]] = result</span>
+<span style="color: #f8f8f2">        member.current_task = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> result</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">find_best_member</span><span style="color: #f8f8f2">(self, task):</span>
+<span style="color: #f8f8f2">        required_caps = task.get(</span><span style="color: #e6db74">"capabilities"</span><span style="color: #f8f8f2">, [])</span>
+<span style="color: #f8f8f2">        best = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">        best_score = </span><span style="color: #ae81ff">0</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> member </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.members:</span>
+<span style="color: #f8f8f2">            score = </span><span style="color: #a6e22e">sum</span><span style="color: #f8f8f2">(1 </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> cap </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> required_caps </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> cap </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> member.capabilities)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> score > best_score:</span>
+<span style="color: #f8f8f2">                best_score = score</span>
+<span style="color: #f8f8f2">                best = member</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> best</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">结果汇总</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">ResultAggregator</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">aggregate</span><span style="color: #f8f8f2">(self, results, strategy=</span><span style="color: #e6db74">"merge"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> strategy == </span><span style="color: #e6db74">"merge"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">merge_results</span><span style="color: #f8f8f2">(results)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> strategy == </span><span style="color: #e6db74">"chain"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">chain_results</span><span style="color: #f8f8f2">(results)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> strategy == </span><span style="color: #e6db74">"vote"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">vote_results</span><span style="color: #f8f8f2">(results)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">merge_results</span><span style="color: #f8f8f2">(self, results):</span>
+<span style="color: #f8f8f2">        merged = {}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> task_id, result </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> results.items():</span>
+<span style="color: #f8f8f2">            merged.</span><span style="color: #a6e22e">update</span><span style="color: #f8f8f2">(result)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> merged</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">chain_results</span><span style="color: #f8f8f2">(self, results):</span>
+<span style="color: #f8f8f2">        ordered = </span><span style="color: #a6e22e">sorted</span><span style="color: #f8f8f2">(results.items(), key=</span><span style="color: #66d9ef">lambda</span><span style="color: #f8f8f2"> x: x[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">])</span>
+<span style="color: #f8f8f2">        output = </span><span style="color: #e6db74">""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> _, result </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> ordered:</span>
+<span style="color: #f8f8f2">            output += result.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">""</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: output}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">vote_results</span><span style="color: #f8f8f2">(self, results):</span>
+<span style="color: #f8f8f2">        votes = </span><span style="color: #a6e22e">Counter</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> result </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> results.values():</span>
+<span style="color: #f8f8f2">            answer = result.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"answer"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">            votes[answer] += </span><span style="color: #ae81ff">1</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span><span style="color: #e6db74">"answer"</span><span style="color: #f8f8f2">: votes.most_common(</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">][</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]}</span></code></pre>
+
+<blockquote><p>💡 <strong>团队编排的关键：</strong>明确角色分工、智能任务分配、合理结果汇总。三者缺一不可。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>Agent开发系列 19-20：动态调整 + 协作模式设计</li>
+</ul>
+
+<p>下期预告：Agent开发系列 23-24 — 内容生产团队 + 性能优化</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

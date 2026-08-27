@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 03-04</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+p { padding: 14px 0; color: #3f3f3f; }
+
+h2 {
+  margin: 50px 0 30px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+h3 {
+  margin: 40px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.num { color: #ff6b35; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+.hl { color: #e63946; font-weight: 600; }
+.success { color: #2a9d8f; }
+.tip { color: #7b68ee; }
+.warn { color: #f4a261; }
+
+strong { color: #2c2c2c; font-weight: 600; }
+em { font-style: italic; color: #5a5a5a; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">最小可行Agent</span></h2>
+
+<p>上一期我们说了Agent的核心循环：感知、思考、行动、反思。<a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">(见OpenClaw原理篇11)</a></p>
+
+<p>光说不练假把式。这一期，我们写一个能跑的系统。代码不到100行，但该有的循环都有。</p>
+
+<blockquote><p>💡 <strong>先跑起来：</strong>你看10篇原理文章，不如亲手写一个能跑的系统有感觉。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">最简版本：30行代码</span></h3>
+
+<p>先去掉所有花哨的东西，就保留最核心的循环：</p>
+
+<pre class="code-block"><span class="code-header"></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> openai</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SimpleAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.messages = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(self, user_input):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic"># 感知：把用户输入加到对话历史</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: user_input})</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic"># 思考+行动：调用大模型</span>
+<span style="color: #f8f8f2">        response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            messages=self.messages</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic"># 反思：从响应中提取助手回复</span>
+<span style="color: #f8f8f2">        assistant_msg = response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message</span>
+<span style="color: #f8f8f2">        self.messages.append(assistant_msg)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> assistant_msg[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">]</span></code></pre>
+
+<p>就这么点代码。一个类，三个方法，加起来不到30行。用法：</p>
+
+<pre class="code-block"><span class="code-header"></span><code><span style="color: #a6e22e">agent</span><span style="color: #f8f8f2"> = SimpleAgent()</span>
+<span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(agent.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"你好"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(agent.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"帮我写一首诗"</span><span style="color: #f8f8f2">))</span></code></pre>
+
+<p>这个版本能跑，但它只是个对话机器人。<strong>Agent和普通聊天机器人的区别，在于那个"循环"</strong>。<a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">(核心循环详解)</a></p>
+
+<h3><span class="icon">2</span><span class="title-text">进阶版本：加工具调用</span></h3>
+
+<p>真正的Agent会自己决定要不要调用工具。<a href="../../../.openclaw/workspace/openclaw-complete-series/09-工具与API集成-公众号版.md" class="key">(参考OpenClaw进阶篇09)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SimpleAgentWithTools</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.messages = []</span>
+<span style="color: #f8f8f2">        self.tools = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">register_tool</span><span style="color: #f8f8f2">(self, name, func):</span>
+<span style="color: #f8f8f2">        self.tools[name] = func</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(self, user_input, max_turns=</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: user_input})</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> _ </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">range</span><span style="color: #f8f8f2">(max_turns):</span>
+<span style="color: #f8f8f2">            response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">                model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                messages=self.messages,</span>
+<span style="color: #f8f8f2">                tools=self.tools</span>
+<span style="color: #f8f8f2">            )</span>
+
+<span style="color: #f8f8f2">            message = response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message</span>
+
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> message.get(</span><span style="color: #e6db74">"tool_calls"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> call </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> message[</span><span style="color: #e6db74">"tool_calls"</span><span style="color: #f8f8f2">]:</span>
+<span style="color: #f8f8f2">                    tool_name = call[</span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">                    args = json.</span><span style="color: #a6e22e">loads</span><span style="color: #f8f8f2">(call[</span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">"arguments"</span><span style="color: #f8f8f2">])</span>
+<span style="color: #f8f8f2">                    result = self.tools[tool_name](**args)</span>
+<span style="color: #f8f8f2">                    self.messages.append({</span>
+<span style="color: #f8f8f2">                        </span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"tool"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                        </span><span style="color: #e6db74">"tool_call_id"</span><span style="color: #f8f8f2">: call[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">],</span>
+<span style="color: #f8f8f2">                        </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(result)</span>
+<span style="color: #f8f8f2">                    })</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">                self.messages.append(message)</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">]</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"已达到最大轮次"</span></code></pre>
+
+<p>新增三个关键点：</p>
+
+<ul>
+<li><span class="key">register_tool</span> — 注册工具，让Agent知道有哪些武器可用</li>
+<li><span class="key">max_turns</span> — 限制最大轮次，防止无限循环</li>
+<li><span class="key">tool_calls</span> — 检测模型是否想调用工具 <a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">(参考AI Coding第28篇)</a></li>
+</ul>
+
+<p>举个例子。用户问"帮我算 (12 + 8) * 3"：</p>
+
+<ul>
+<li>1. Agent想了想，发现要调用calculator</li>
+<li>2. 调用工具，算出60</li>
+<li>3. 把结果返回给用户</li>
+</ul>
+
+<blockquote><p>💡 <strong>这就是Agent的核心能力：</strong>不只是聊天，而是能真的帮你做事。</p></blockquote>
+
+<h3><span class="icon">3</span><span class="title-text">还缺什么</span></h3>
+
+<p>这个最小版本能跑，但生产环境还差得远：</p>
+
+<pre class="code-block"><span class="code-header"></span><code>❌ 记忆系统 — 每次对话从零开始，Agent记不住之前说过什么
+   (见OpenClaw原理篇12)
+❌ 反思机制 — 没有判断结果对不对的能力
+❌ 错误处理 — 工具调用失败了怎么办
+❌ 流式输出 — 等全部生成完再返回，用户体验差</code></pre>
+
+<p>这个系列的后续文章，会一个一个把这些补上。先记住这个框架，后面的东西都好说。</p>
+
+<hr/>
+
+<h2><span class="title-text">感知：用户输入到结构化意图</span></h2>
+
+<p>感知是什么？你跟Agent说"帮我订明天去上海的机票"，Agent得先理解：</p>
+
+<ul>
+<li>用户想要什么？→ 订机票</li>
+<li>出发地？→ 没说，可能是当前位置</li>
+<li>目的地？→ 上海</li>
+</ul>
+
+<p>这个理解的过程，就是感知。<strong>把用户的自然语言，变成机器能理解的结构化数据</strong>。</p>
+
+<blockquote><p>💡 <strong>感知是第一步：</strong>没有这一步，Agent就是个复读机——你说啥它重复啥，不知道你要什么。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">意图识别</span></h3>
+
+<p>用户说了一句话，Agent首先要判断：用户想要做什么？这个过程叫意图识别（Intent Detection）。<a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">(参考AI Coding第28篇)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">INTENTS</span><span style="color: #f8f8f2"> = [</span><span style="color: #e6db74">"订机票"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"查天气"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"写代码"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"搜索信息"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"其他"</span><span style="color: #f8f8f2">]</span>
+
+<span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">detect_intent</span><span style="color: #f8f8f2">(user_input):</span>
+<span style="color: #f8f8f2">    prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"用户说："{user_input}"\n这个用户的意图是什么？" </span>
+
+<span style="color: #f8f8f2">    response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">        model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: prompt}]</span>
+<span style="color: #f8f8f2">    )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">]</span></code></pre>
+
+<p>⚠️ 但这个方法太慢了——每次都要调一次大模型。实际项目中，可以用规则匹配或者小模型来做意图识别，把大模型留到真正需要的地方。</p>
+
+<h3><span class="icon">2</span><span class="title-text">实体提取</span></h3>
+
+<p>判断了意图之后，还要提取关键信息。比如用户说"帮我订后天北京到上海的机票"：</p>
+
+<ul>
+<li>时间 → 后天</li>
+<li>出发地 → 北京</li>
+<li>目的地 → 上海</li>
+</ul>
+
+<p>这个过程叫实体提取（Entity Extraction）。代码：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">extract_entities</span><span style="color: #f8f8f2">(user_input):</span>
+<span style="color: #f8f8f2">    prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"""从以下用户输入中提取关键信息：</span>
+
+<span style="color: #e6db74">用户输入："{user_input}"</span>
+
+<span style="color: #e6db74">提取以下信息（如果没有则填"未知"）：</span>
+<span style="color: #e6db74">- 时间</span>
+<span style="color: #e6db74">- 出发地</span>
+<span style="color: #e6db74">- 目的地</span>
+<span style="color: #e6db74">- 人数</span>
+
+<span style="color: #e6db74">请用JSON格式返回"""</span>
+
+<span style="color: #f8f8f2">    response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">        model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: prompt}]</span>
+<span style="color: #f8f8f2">    )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.</span><span style="color: #a6e22e">loads</span><span style="color: #f8f8f2">(response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">])</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">整合：感知的完整实现</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">perceive</span><span style="color: #f8f8f2">(self, user_input):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic"># 1. 识别意图</span>
+<span style="color: #f8f8f2">    intent = self.</span><span style="color: #a6e22e">detect_intent</span><span style="color: #f8f8f2">(user_input)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic"># 2. 提取实体</span>
+<span style="color: #f8f8f2">    entities = self.</span><span style="color: #a6e22e">extract_entities</span><span style="color: #f8f8f2">(user_input)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic"># 3. 组合成结构化上下文</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"intent"</span><span style="color: #f8f8f2">: intent,</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"entities"</span><span style="color: #f8f8f2">: entities,</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"raw_input"</span><span style="color: #f8f8f2">: user_input</span>
+<span style="color: #f8f8f2">    }</span></code></pre>
+
+<blockquote><p>💡 <strong>感知做好了：</strong>后面的思考和行动就轻松了。Agent知道你要什么，才能决定怎么做。</p></blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">下一步</span></h3>
+
+<p>感知知道了你要什么，思考来决定怎么做。下一步我们来说说思考。</p>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><section>OpenClaw原理篇11：核心循环 <span class="file-tag">{原文件:11-核心循环-公众号版.md}</span></section></li>
+<li><section>OpenClaw原理篇12：记忆系统 <span class="file-tag">{原文件:12-记忆系统-公众号版.md}</span></section></li>
+<li><section>OpenClaw进阶篇09：工具与API集成 <span class="file-tag">{原文件:09-工具与API集成-公众号版.md}</span></section></li>
+<li><section>AI Coding第28篇：Agent核心实现 <span class="file-tag">{原文件:AI-28-Agent核心实现-公众号版.md}</span></section></li>
+<li><section>AI Coding第29篇：工具系统 <span class="file-tag">{原文件:AI-29-工具系统-Tool-System-公众号版.md}</span></section></li>
+</ul>
+
+<p>下期预告：Agent开发系列 05-06 — 思考：ReAct循环 + 行动：工具调用</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

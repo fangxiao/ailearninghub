@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent进化论 ③ | Registry+Router：Skill的生存哲学</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+<body>
+<div class="container">
+
+
+
+<h2><span class="title-text">客服Agent进化论 ③</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">Registry+Router：Skill的生存哲学</p>
+
+<blockquote class="opinion">
+<p>我见过太多同学写了五六个Skill，每个都实现了BaseSkill接口，有完整的can_handle和execute，自我感觉良好。然后跑起来一看——<strong>一个都没被调用</strong>。为什么？因为它们散落在代码各处，没人知道它们的存在，更没人知道该把请求派给谁。没有注册中心的Skill系统，就像没有通讯录的手机——你知道有人，但找不到；就像没有招聘的公司——你有十个HR，但没有候选人简历，面试个屁。</p>
+</blockquote>
+
+<p>解决这个问题只需要两个东西：<span class="key">SkillRegistry</span>（注册中心）和 <span class="key">SkillRouter</span>（路由器）。前者管"你是谁、你能干什么"，后者管"来了个活，派给谁干"。看似简单，但这俩家伙才是整个Skill体系的灵魂——没有它们，Skill就是死的；有了它们，Skill才真正"活"起来。</p>
+
+<blockquote class="opinion">
+<p>我要说一句可能得罪人的话：<strong>真正的解耦，不是让Skill不知道彼此，而是让Skill不需要知道彼此</strong>。你以为Skill之间要互相通信？要知道对方是谁、有什么能力？错！只要有Registry和Router在中间调度，每个Skill只要做好自己的事，报好自己的家门，剩下的交给"组织"就行。这才是真正的解耦——不是隔绝，而是通过中间层实现的松耦合。</p>
+</blockquote>
+
+<p style="color: #888; font-size: 14px; font-style: italic; margin: 16px 0 24px;">
+💡 如果你看过之前的《客服Agent实战系列》，应该熟悉V1的插件架构。本篇是加强版的第三篇，我们来聊聊 Skill 体系中最核心的两个组件——注册中心和路由器。
+</p>
+
+<h3><span class="icon">1</span><span class="title-text">SkillRegistry：Skill的"人事部"</span></h3>
+
+<p>SkillRegistry 是所有 Skill 的"人事档案管理中心"。每个 Skill 上线第一件事就是到 Registry 里"报到"——登记姓名、能力、触发词、优先级。Registry 把这些信息统一保管，需要的时候随时查。</p>
+
+<p>它的核心操作就三个，跟人事管理一模一样：</p>
+
+<table>
+<tr><th>操作</th><th>方法</th><th>类比</th><th>说明</th></tr>
+<tr><td>注册</td><td><code>register(skill)</code></td><td>新员工入职登记</td><td>把Skill加入字典，记录name→skill的映射</td></tr>
+<tr><td>查找</td><td><code>get_skill(name)</code></td><td>按姓名查工号</td><td>按名称精确查找一个Skill</td></tr>
+<tr><td>注销</td><td><code>unregister(name)</code></td><td>员工离职注销</td><td>从字典移除，同时清理pre_skills列表</td></tr>
+</table>
+
+<pre><div class="code-header"><span class="code-lang">python</span></div><code># SkillRegistry核心实现（精简版）
+class SkillRegistry:
+    def __init__(self):
+        self._skills = {}          # name → skill 的映射
+        self._pre_skills = []      # 前置Skill列表
+
+    def register(self, skill: BaseSkill):
+        self._skills[skill.name] = skill
+        if skill.pre_skill:
+            self._pre_skills.append(skill)
+
+    def unregister(self, name: str):
+        if name in self._skills:
+            skill = self._skills.pop(name)
+            if skill.pre_skill and skill in self._pre_skills:
+                self._pre_skills.remove(skill)
+
+    def get_skill(self, name):
+        return self._skills.get(name)
+
+    def find_by_intent(self, intent):
+        for skill in self._skills.values():
+            if intent in skill.triggers:
+                return skill
+        return None</code></pre>
+
+<blockquote class="highlight">
+<p><strong>设计亮点：</strong>Registry 用一个字典搞定全部存储，查找 O(1)，注册和注销都是 O(1)。更妙的是它支持 <code>pre_skill</code> 概念——某些Skill（比如情感分析、意图识别）需要在主流程前先执行，Registry 会单独维护它们的列表，方便调度器在合适的时机调用。</p>
+</blockquote>
+
+<h3><span class="icon">2</span><span class="title-text">SkillRouter：请求的"调度中枢"</span></h3>
+
+<p>如果说 Registry 是"人事部"，那 Router 就是"调度室"。它的任务很明确：<strong>用户说了一句话，从注册的所有Skill里挑一个最合适的来处理</strong>。</p>
+
+<p>Router 的路由决策分为三个层次，从"最精确"到"最宽松"，层层递进：</p>
+
+<table>
+<tr><th>策略</th><th>触发条件</th><th>路由方式</th><th>示例</th></tr>
+<tr><td>精确匹配</td><td>上下文有明确 intent</td><td>按 intent→skill_name 映射表查找</td><td>context.intent="order_query" → OrderSkill</td></tr>
+<tr><td>模糊匹配</td><td>无明确 intent 或映射未命中</td><td>遍历所有Skill，调用 can_handle 打分</td><td>"我的快递到哪了" → OrderSkill(0.9分)</td></tr>
+<tr><td>兜底策略</td><td>所有Skill打分都 < 0.3</td><td>使用预设的 fallback_skill</td><td>未识别 → GeneralSkill(闲聊)</td></tr>
+</table>
+
+<pre><div class="code-header"><span class="code-lang">python</span></div><code># SkillRouter核心路由逻辑
+class SkillRouter:
+    def route(self, user_input, context, skills):
+        # 策略1：精确匹配（意图→Skill映射）
+        explicit_intent = context.get("intent")
+        if explicit_intent and explicit_intent in self._intent_rules:
+            target = self._intent_rules[explicit_intent]
+            for skill in skills:
+                if skill.name == target:
+                    return skill
+
+        # 策略2：模糊匹配（can_handle打分最高者）
+        best_skill, best_score = None, 0.0
+        for skill in skills:
+            if skill.pre_skill:
+                continue
+            score = skill.can_handle(user_input, context)
+            if score > best_score:
+                best_score = score
+                best_skill = skill
+
+        if best_skill and best_score > 0.3:
+            return best_skill
+
+        # 策略3：兜底策略
+        if self._fallback_skill:
+            for skill in skills:
+                if skill.name == self._fallback_skill:
+                    return skill
+
+        return None</code></pre>
+
+<blockquote class="opinion">
+<p>注意那个 <code>0.3</code> 的阈值——这是路由的"质量底线"。低于0.3分的匹配宁可不用，交给兜底Skill处理，也比让一个"半吊子"Skill硬上强。<strong>宁缺毋滥，是路由的基本素养</strong>。</p>
+</blockquote>
+
+<h3><span class="icon">3</span><span class="title-text">路由决策流程图</span></h3>
+
+<p>下面这张图完整展示了 Router 的决策过程——从接收用户输入到最终选定 Skill 的全部路径：</p>
+
+<div class="diagram-title">图1：SkillRouter 路由决策流程</div>
+<div class="mermaid">
+flowchart TD
+    A[用户输入 + context] --> B{context中有<br/>明确intent?}
+    B -- "是" --> C{intent在映射表中?}
+    C -- "是" --> D[按名称匹配Skill<br/>精确匹配]
+    C -- "否" --> E
+    B -- "否" --> E[遍历所有非pre Skill]
+    E --> F[调用can_handle打分]
+    F --> G{最高分 > 0.3?}
+    G -- "是" --> H[返回得分最高的Skill<br/>模糊匹配]
+    G -- "否" --> I{有兜底Skill?}
+    I -- "是" --> J[返回fallback Skill<br/>兜底策略]
+    I -- "否" --> K[返回None]
+    D --> L[结束]
+    H --> L
+    J --> L
+    K --> L
+
+    style A fill:#e3f2fd
+    style L fill:#c8e6c9
+    style K fill:#ffcdd2
+</div>
+
+<p>整个流程的设计哲学是：<strong>先精确、再模糊、最后兜底</strong>。每一步都比上一步"宽松"，但也比上一步"不靠谱"。就像找人办事——先找指定的人，找不到再找最相关的，实在不行找个万能的。</p>
+
+<h3><span class="icon">4</span><span class="title-text">三个场景的路由实战</span></h3>
+
+<p>光说不练假把式。来看三个真实场景下，Router 是怎么决策的：</p>
+
+<div class="detail-box">
+<div class="detail-title">场景一：用户说"我要修改收货地址"</div>
+<div class="detail-content">
+<strong>路由路径：</strong><br>
+① 意图识别模块先输出 intent = "modify_address"<br>
+② Router 检查映射表："modify_address" → OrderSkill<br>
+③ 精确匹配命中，直接路由到 OrderSkill<br>
+④ OrderSkill.execute() 执行地址修改流程<br>
+<br>
+<em>命中策略：精确匹配</em>
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">场景二：用户说"我的快递到哪了？"</div>
+<div class="detail-content">
+<strong>路由路径：</strong><br>
+① 意图识别无法明确识别（用户没说"订单"也没说"物流"）<br>
+② Router 跳过精确匹配，进入模糊匹配<br>
+③ 遍历所有Skill的 can_handle：<br>
+&nbsp;&nbsp;- GreetingSkill: 0.05<br>
+&nbsp;&nbsp;- OrderSkill: 0.9（"快递"命中触发词，"到哪"也相关）<br>
+&nbsp;&nbsp;- FAQSkill: 0.2<br>
+④ OrderSkill 得分最高，且 > 0.3，命中<br>
+<br>
+<em>命中策略：模糊匹配</em>
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">场景三：用户说"今晚上吃什么好呢？"</div>
+<div class="detail-content">
+<strong>路由路径：</strong><br>
+① 上下文无明确 intent<br>
+② 模糊匹配打分：<br>
+&nbsp;&nbsp;- 所有Skill得分均 < 0.3（这是闲聊，不在业务范围内）<br>
+③ 最高分未达阈值，触发兜底策略<br>
+④ Router 返回 FallbackSkill（通常是 GeneralSkill 或转人工）<br>
+⑤ GeneralSkill 以闲聊方式回应，或礼貌转人工<br>
+<br>
+<em>命中策略：兜底策略</em>
+</div>
+</div>
+
+<h3><span class="icon">5</span><span class="title-text">Registry + Router 的协作全景</span></h3>
+
+<p>Registry 和 Router 是怎么配合的？一句话总结：<strong>Registry 提供"候选池"，Router 做"选择决策"</strong>。</p>
+
+<div class="diagram-title">图2：Registry 与 Router 协作关系</div>
+<div class="mermaid">
+flowchart LR
+    subgraph "注册阶段"
+        S1[OrderSkill] --> R[SkillRegistry]
+        S2[FAQSkill] --> R
+        S3[ComplaintSkill] --> R
+        S4[GreetingSkill] --> R
+    end
+
+    subgraph "路由阶段"
+        U[用户输入] --> Router[SkillRouter]
+        Router -- "读取候选" --> R
+        Router -- "决策" --> Target[目标Skill]
+        Target --> Exec[execute执行]
+    end
+
+    R -- "提供Skill列表" --> Router
+
+    style R fill:#fff3e0
+    style Router fill:#e0f7fa
+    style Target fill:#c8e6c9
+</div>
+
+<p>整个流程可以概括为四步：</p>
+
+<ol>
+<li><strong>启动时</strong>：所有Skill向Registry注册自己</li>
+<li><strong>请求到来</strong>：Router从Registry获取Skill列表作为候选</li>
+<li><strong>决策时</strong>：Router按三策略（精确→模糊→兜底）选出最佳Skill</li>
+<li><strong>执行时</strong>：由Harness调度选出的Skill执行execute()</li>
+</ol>
+
+<blockquote class="highlight">
+<p><strong>一个容易被忽略的细节：</strong>Router 不需要知道 Registry 的存在——它接收的是一个 <code>skills</code> 列表，由外部（Harness）传进来。这意味着你可以轻松替换 Router 实现（比如换成基于机器学习的路由），而完全不需要动 Registry 或任何 Skill。<strong>依赖倒置，才是真正的可扩展</strong>。</p>
+</blockquote>
+
+<h3><span class="icon">6</span><span class="title-text">本篇总结</span></h3>
+
+<blockquote class="highlight">
+<p><strong>核心要点：</strong></p>
+<p>1. <strong>SkillRegistry 是"人事部"</strong>：register / get / unregister 三个核心操作，O(1) 时间复杂度</p>
+<p>2. <strong>SkillRouter 是"调度室"</strong>：三策略路由——精确匹配 → 模糊匹配 → 兜底策略</p>
+<p>3. <strong>0.3 阈值是"质量底线"</strong>：宁缺毋滥，避免半吊子Skill硬上</p>
+<p>4. <strong>依赖倒置是关键</strong>：Router 不依赖 Registry，通过参数注入实现解耦</p>
+<p>5. <strong>协作模式：Registry 供人，Router 选人</strong>——各司其职，互不干涉</p>
+</blockquote>
+
+<p>下一篇，我们来做一个最实战的Skill——<strong>OrderSkill</strong>，用订单查询这个高频场景，完整展示 can_handle 打分机制和 execute 执行流程。</p>
+<hr style="border: none; height: 2px; background: linear-gradient(to right, transparent, #00897B, transparent); margin: 40px 0;">
+
+<p style="text-align: center; color: #00897B; font-size: 16px; font-weight: bold; margin: 20px 0 30px;">━━━ 接下来：别再堆Skill了！Harness编排才是核心 ━━━</p>
+
+<h3><span class="icon">01</span><span class="title-text">编排的分层模型</span></h3>
+
+<p>什么是编排？简单说就是：<strong>用户消息进来后，先让哪些Skill做预处理，再让哪个Skill做主处理，最后要不要做收尾工作</strong>。</p>
+
+<p>Harness的编排模型把Skill分成了三个层级：</p>
+
+<div class="diagram-title">图1：Skill编排分层模型</div>
+<div class="mermaid">
+flowchart TD
+    subgraph "pre_skills 前置层"
+        direction LR
+        A1[情感Skill] --> A2[意图Skill]
+    end
+    
+    subgraph "main_skill 主处理层"
+        direction LR
+        B1[订单Skill] --> B2[FAQ Skill]
+        B2 --> B3[投诉Skill]
+        B3 --> B4[ToolUseSkill]
+    end
+    
+    subgraph "post_skills 后置层"
+        direction LR
+        C1[记忆Skill] --> C2[指标Skill]
+    end
+
+    用户消息 --> pre_skills
+    pre_skills --> main_skill
+    main_skill --> post_skills
+
+    style A1 fill:#fff3e0
+    style A2 fill:#fff3e0
+    style B1 fill:#e3f2fd
+    style B2 fill:#e3f2fd
+    style B3 fill:#e3f2fd
+    style B4 fill:#e3f2fd
+    style C1 fill:#e0f7fa
+    style C2 fill:#e0f7fa
+</div>
+
+<table>
+<tr>
+<th>层级</th>
+<th>职责</th>
+<th>典型Skill</th>
+<th>执行时机</th>
+</tr>
+<tr>
+<td><strong>pre_skill</strong></td>
+<td>前置处理、信息注入</td>
+<td>情感Skill、意图Skill</td>
+<td>主路由之前</td>
+</tr>
+<tr>
+<td><strong>main_skill</strong></td>
+<td>核心业务逻辑</td>
+<td>订单Skill、FAQ Skill、ToolUseSkill</td>
+<td>主路由选中后</td>
+</tr>
+<tr>
+<td><strong>post_skill</strong></td>
+<td>后置处理、状态记录</td>
+<td>记忆Skill、指标Skill</td>
+<td>主处理完成后</td>
+</tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>核心设计思想</strong>：pre_skill负责"看路"——识别情感、判断意图，给main_skill铺路；main_skill负责"走路"——执行核心业务逻辑；post_skill负责"记账"——记录对话、更新指标。三层各司其职，互不干扰。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">02</span><span class="title-text">pre_skill → main_skill → post_skill 三阶段</span></h3>
+
+<p>下面详细拆解每个阶段的职责和执行逻辑。</p>
+
+<p><strong>第一阶段：pre_skill 前置处理</strong></p>
+
+<p>pre_skill的特点是<strong>在主路由之前执行，而且可以有多个</strong>。它们的作用是给context注入关键信息，或者在特殊情况下直接拦截请求。</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+pre_skills = self.registry.get_pre_skills()
+for pre_skill in pre_skills:
+    result = pre_skill.execute(user_input, context)
+    if result.need_handoff:
+        return result.response
+    if result.data.get("sentiment_processed"):
+        context["sentiment"] = result.data.get("sentiment")
+</code>
+</pre>
+
+<p>每个pre_skill的处理结果有两种走向：</p>
+
+<ul>
+<li><strong>need_handoff=True</strong>：比如情感Skill检测到用户暴怒，直接转人工，流程终止</li>
+<li><strong>注入context</strong>：比如意图Skill把识别出的意图写入context，供后续路由使用</li>
+</ul>
+
+<div class="detail-box">
+<div class="detail-title">为什么pre_skill要串行执行？</div>
+<div class="detail-content">
+假设你有情感Skill和意图Skill两个pre_skill。情感Skill先跑，检测到用户是Level 2（不满），把情感信息写入context。然后意图Skill跑，它可以读取context中的情感信息，调整意图识别的策略（比如对愤怒用户更倾向于路由到投诉Skill）。<br><br>串行执行让pre_skill之间可以<strong>通过context传递信息</strong>，实现协同。
+</div>
+</div>
+
+<p><strong>第二阶段：main_skill 主处理</strong></p>
+
+<p>pre_skill执行完后，Harness根据context中的信息（意图、情感等）通过路由器选择一个main_skill执行：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+skill = self.router.route(user_input, context, skills)
+
+if not skill:
+    skill = self.registry.get_skill("general")
+
+if not self.breaker.can_execute(skill_name):
+    skill = self.registry.get_skill("general")
+
+result = skill.execute(user_input, context)
+</code>
+</pre>
+
+<p>main_skill的选择经过三层把关：</p>
+
+<ol>
+<li><strong>路由器选择</strong>：根据意图匹配 + can_handle置信度，选最合适的Skill</li>
+<li><strong>兜底Skill</strong>：如果路由器选不出来，用general Skill兜底</li>
+<li><strong>熔断保护</strong>：如果首选Skill的熔断器已触发（连续失败太多次），切换到兜底Skill</li>
+</ol>
+
+<p><strong>第三阶段：post_skill 后置处理</strong></p>
+
+<p>main_skill执行完后，Harness进行收尾工作——记录对话、更新指标、写入记忆：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+self.dialog.add_message("assistant", response)
+self.memory.record_interaction(
+    user_id, intent, user_input, response
+)
+self._record(user_input, response, skill, start_time,
+             resolved=resolved, handoff=handoff,
+             intent=context.get("intent", "unknown"))
+</code>
+</pre>
+
+<p>post_skill的职责通常由Harness内部的模块承担（DialogManager、UserMemory、MetricsCollector），而不是独立的Skill类。这样做的好处是：<strong>核心业务Skill不需要关心日志、监控这些横切关注点</strong>。</p>
+
+<hr>
+
+<h3><span class="icon">03</span><span class="title-text">chat()方法完整执行时序</span></h3>
+
+<p>下面用一个完整的时序图展示chat()方法从接收用户消息到返回回复的全过程：</p>
+
+<div class="diagram-title">图2：chat()方法完整执行时序图</div>
+<div class="mermaid">
+sequenceDiagram
+    participant U as 用户
+    participant H as Harness
+    participant P as Pre-Skills
+    participant R as Router
+    participant M as Main-Skill
+    participant C as CircuitBreaker
+    participant D as DialogManager
+
+    U->>H: chat(user_input, user_id)
+    H->>H: 限流检查
+    H->>H: 构建context
+    H->>P: 执行pre_skills
+    
+    loop 每个pre_skill
+        P->>P: 情感/意图识别
+        alt need_handoff
+            P-->>H: 返回转人工结果
+            H-->>U: 人工客服已接入
+        end
+        P->>H: 注入context
+    end
+    
+    H->>R: route(user_input, context)
+    R-->>H: 返回目标Skill
+    
+    H->>C: can_execute(skill_name)
+    alt 熔断器触发
+        C-->>H: 切换到兜底Skill
+    end
+    
+    H->>M: execute(user_input, context)
+    M-->>H: SkillResult
+    
+    H->>D: add_message(user)
+    H->>D: add_message(assistant)
+    H->>H: 记录metrics
+    H-->>U: 最终回复
+</div>
+
+<p>这个时序图揭示了几个关键的设计点：</p>
+
+<ul>
+<li><strong>pre_skill可以短路整个流程</strong>：如果情感Skill检测到用户暴怒，直接转人工，后面的路由和main_skill都不会执行</li>
+<li><strong>路由在pre_skill之后</strong>：路由器能拿到pre_skill注入的context信息（意图、情感），做出更精准的路由决策</li>
+<li><strong>熔断保护在main_skill之前</strong>：如果某个Skill连续失败，熔断器会在调用前就切换，不让错误继续放大</li>
+<li><strong>post_skill由Harness承担</strong>：对话记录、指标收集、用户记忆这些横切关注点，由Harness统一处理</li>
+</ul>
+
+<hr>
+
+<h3><span class="icon">04</span><span class="title-text">编排实战：查订单 + 改地址</span></h3>
+
+<p>光说不练假把式。我们用一个复杂场景来演示编排的威力：</p>
+
+<blockquote class="opinion">
+<p>用户说："你好，我叫张三，我的订单20240601001能帮我查一下到哪了吗？另外，我想把收货地址改成北京市朝阳区建国路1号。"<br><br>
+这个请求包含了：<strong>查订单</strong> + <strong>改地址</strong>，两个业务意图。传统路由能处理吗？能，但很别扭。用编排的思路呢？让我们看看。</p>
+</blockquote>
+
+<div class="diagram-title">图3：编排实战流程</div>
+<div class="mermaid">
+flowchart TD
+    A[用户消息进入] --> B[pre_skill: 情感识别]
+    B --> B1{情感等级}
+    B1 -->|Level 0| C[pre_skill: 意图识别]
+    C --> C1{识别意图}
+    C1 -->|order_query + modify_address| D[路由决策]
+    D --> E[main_skill: ToolUseSkill]
+    E --> E1{LLM决策}
+    E1 -->|调用query_order| F[订单查询]
+    E1 -->|调用modify_address| G[地址修改]
+    F --> H[结果汇总]
+    G --> H
+    H --> I[LLM生成回复]
+    I --> J[post_skill: 记录对话]
+    J --> K[返回用户]
+
+    style B fill:#fff3e0
+    style C fill:#fff3e0
+    style E fill:#e3f2fd
+    style K fill:#c8e6c9
+</div>
+
+<p>我们来一步步拆解这个过程中编排是怎么工作的：</p>
+
+<p><strong>步骤1：pre_skill阶段</strong></p>
+
+<p>情感Skill先执行，检测到用户是Level 0（中性），放行。然后意图Skill执行，识别出两个意图：<code>order_query</code> 和 <code>modify_address</code>。</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+# pre_skill执行
+context = {"user_id": "user_001"}
+context["sentiment"] = "Level 0"     # 情感Skill注入
+context["intent"] = "order_query"     # 意图Skill注入（主意图）
+context["intents"] = ["order_query", "modify_address"]  # 多意图
+
+# 路由决策
+skill = router.route(user_input, context, skills)
+# 因为是多意图，传统Skill处理不了，
+# 路由器选择了ToolUseSkill（因为can_handle返回0.6）
+</code>
+</pre>
+
+<p><strong>步骤2：main_skill阶段</strong></p>
+
+<p>路由器选择了ToolUseSkill（因为它支持多工具组合调用）。ToolUseSkill把query_order和modify_address两个工具暴露给LLM，LLM自主决定调用顺序和参数：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+# ToolUseSkill执行
+llm_result = llm.chat(
+    messages=[{"role": "user", "content": "..."}],
+    tools=[query_order, modify_address, ...]
+)
+
+# LLM决定：
+# 先查订单，再改地址
+# tool_calls = [
+#   {"name": "query_order", "args": {"order_id": "20240601001"}},
+#   {"name": "modify_address", "args": {"order_id": "20240601001", "address": "北京市朝阳区..."}}
+# ]
+</code>
+</pre>
+
+<p>LLM连续调用了两个工具：先查询订单状态，再修改收货地址。两个工具的结果都返回给LLM后，它生成了最终回复：<strong>"您的订单20240601001目前正在配送中...收货地址已成功修改为北京市朝阳区建国路1号。"</strong></p>
+
+<p><strong>步骤3：post_skill阶段</strong></p>
+
+<p>对话结束后，Harness自动完成了以下后置工作：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+# post_skill（由Harness内部完成）
+dialog.add_message("user", "查订单+改地址请求")
+dialog.add_message("assistant", "订单配送中+地址已修改")
+memory.record_interaction("user_001", "order_query", 
+                          "用户请求", "LLM回复")
+metrics.log_conversation({
+    "skill": "tool_use",
+    "resolved": True,
+    "response_time_ms": 1250
+})
+</code>
+</pre>
+
+<hr>
+
+<h3><span class="icon">05</span><span class="title-text">为什么编排比Skill本身更重要？</span></h3>
+
+<p>讲完实战，我们回到最开始的问题：<strong>为什么编排比Skill本身更重要？</strong></p>
+
+<div class="detail-box">
+<div class="detail-title">反例：没有编排的Skill堆</div>
+<div class="detail-content">
+• 情感Skill：独立运行，但没人把情感信息传递给订单Skill<br>
+• 订单Skill：能查订单，但不能和地址修改联动<br>
+• FAQ Skill：能回答问题，但不知道用户之前已经问过什么<br>
+• 结果：每个Skill都是孤岛，用户体验割裂
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">正例：有编排的Skill体系</div>
+<div class="detail-content">
+• pre_skill把情感、意图注入context → 所有Skill都能感知<br>
+• main_skill由路由器智能选择 → 复杂场景由ToolUseSkill兜底<br>
+• post_skill统一记录 → 对话历史、用户画像持续积累<br>
+• 结果：Skill协同工作，用户体验流畅
+</div>
+</div>
+
+<blockquote class="opinion">
+<p>我见过很多客服Agent项目，Skill写了20多个，但用户体验还是差。问题出在哪？<strong>不是Skill写得不好，而是没有编排</strong>。每个Skill都是"局部最优"，但没有一个"全局最优"的编排层来协调它们。<br><br>
+Harness就是这个编排层。它不解决具体业务问题，它解决的是<strong>"谁来解决问题"、"按什么顺序解决问题"</strong>的问题。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">06</span><span class="title-text">编排的核心代码</span></h3>
+
+<p>最后看一下Harness.chat()方法的完整代码，理解编排是怎么落地的：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+def chat(self, user_input, user_id="anonymous"):
+    # 1. 限流检查
+    if not self.limiter.is_allowed(user_id):
+        return "请求过于频繁，请稍后再试"
+
+    # 2. 构建context
+    context = self._build_context(user_input)
+
+    # 3. pre_skill：前置处理
+    for pre_skill in self.registry.get_pre_skills():
+        result = pre_skill.execute(user_input, context)
+        if result.need_handoff:
+            return result.response
+        context.update(result.data)
+
+    # 4. 路由决策
+    skill = self.router.route(user_input, context, ...)
+
+    # 5. 熔断保护
+    if not self.breaker.can_execute(skill.name):
+        skill = self.registry.get_skill("general")
+
+    # 6. main_skill执行
+    result = skill.execute(user_input, context)
+
+    # 7. post_skill：后置处理
+    self.dialog.add_message("assistant", result.response)
+    self.memory.record_interaction(user_id, ...)
+    self._record(result)
+
+    return result.response
+</code>
+</pre>
+
+<p>去掉所有细节后，编排的骨架就是7步：<strong>限流 → 构建context → pre_skill → 路由 → 熔断 → main_skill → post_skill</strong>。</p>
+
+<p>每一步都有它的职责，每一步都不可替代：</p>
+
+<table>
+<tr>
+<th>步骤</th>
+<th>职责</th>
+<th>不可替代性</th>
+</tr>
+<tr>
+<td>限流</td>
+<td>保护系统不被刷爆</td>
+<td>没了它，系统会被恶意请求拖垮</td>
+</tr>
+<tr>
+<td>构建context</td>
+<td>准备上下文信息</td>
+<td>没了它，Skill看不到用户历史</td>
+</tr>
+<tr>
+<td>pre_skill</td>
+<td>前置拦截和信息注入</td>
+<td>没了它，愤怒用户直接进main_skill</td>
+</tr>
+<tr>
+<td>路由</td>
+<td>选择最合适的Skill</td>
+<td>没了它，不知道该找谁处理</td>
+</tr>
+<tr>
+<td>熔断</td>
+<td>故障隔离</td>
+<td>没了它，一个Skill挂掉影响所有</td>
+</tr>
+<tr>
+<td>main_skill</td>
+<td>核心业务处理</td>
+<td>没了它，没有实际回复</td>
+</tr>
+<tr>
+<td>post_skill</td>
+<td>状态记录和监控</td>
+<td>没了它，无法追溯和优化</td>
+</tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>总结一下</strong>：Skill是"兵"，Harness是"将"。兵再强，没有好将指挥，也是一盘散沙。<br><br>
+编排的本质是<strong>建立一套执行秩序</strong>——先做什么、后做什么、谁来做、做坏了怎么办。这套秩序让你的客服Agent从"一堆Skill"进化为"一个智能体"。<br><br>
+记住：<strong>别再堆Skill了，多花点时间在编排上</strong>。好的编排，比多写10个Skill更有价值。</p>
+</blockquote>
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent加强版（Harness+Skill架构）</strong><br>
+01 · Harness+Skill架构革命<br>
+02 · BaseSkill标准接口<br>
+03 · 路由与编排：Registry+Router+Harness ← 你在这里<br>
+04 · OrderSkill实战<br>
+05 · FAQ双引擎检索<br>
+06 · 情感Skill+Function Calling<br>
+07 · 槽位填充+用户记忆<br>
+08 · 生产级Harness：防护+监控+热插拔+部署<br>
+<br>
+<strong>前置系列：</strong><a href="../客服Agent实战系列-01.html" style="color: #00897B;">客服Agent实战系列</a>
+</p>
+
+</div>
+</body>
+</html>

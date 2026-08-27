@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生产部署——从开发到上线</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  生产部署
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  从开发到上线
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  本地大模型知识库系列第12篇 | 生产部署
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  这是系列的最后一篇，我们将学习如何将本地大模型知识库部署到生产环境。生产部署需要考虑稳定性、安全性、可扩展性等多个方面。
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/production_deployment.png" alt="生产部署架构" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">使用Docker容器化</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  创建Dockerfile来构建镜像：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">dockerfile</span></div><code><span class="code-comment"># 使用Python 3.11基础镜像</span>
+<span class="code-keyword">FROM</span><span class="code-name"> python:3.11-slim</span>
+
+<span class="code-comment"># 设置工作目录</span>
+<span class="code-keyword">WORKDIR</span><span class="code-name"> /app</span>
+
+<span class="code-comment"># 安装系统依赖</span>
+<span class="code-keyword">RUN</span><span class="code-name"> apt-get update && apt-get install -y \</span>
+<span class="code-name">    build-essential \</span>
+<span class="code-name">    gcc \</span>
+<span class="code-name">    git \</span>
+<span class="code-name">    && rm -rf /var/lib/apt/lists/*</span>
+
+<span class="code-comment"># 复制依赖文件</span>
+<span class="code-keyword">COPY</span><span class="code-name"> requirements.txt .</span>
+
+<span class="code-comment"># 安装Python依赖</span>
+<span class="code-keyword">RUN</span><span class="code-name"> pip install --no-cache-dir -r requirements.txt</span>
+
+<span class="code-comment"># 复制应用代码</span>
+<span class="code-keyword">COPY</span><span class="code-name"> . .</span>
+
+<span class="code-comment"># 设置环境变量</span>
+<span class="code-keyword">ENV</span><span class="code-name"> MODEL_NAME=llama3:8b</span>
+<span class="code-keyword">ENV</span><span class="code-name"> DB_PATH=/app/chroma_db</span>
+
+<span class="code-comment"># 暴露端口</span>
+<span class="code-keyword">EXPOSE</span><span class="code-name"> 7860</span>
+
+<span class="code-comment"># 启动命令</span>
+<span class="code-keyword">CMD</span><span class="code-name"> ["python", "app.py"]</span></code></section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">yaml</span></div><code><span class="code-comment"># docker-compose.yml</span>
+<span class="code-name">version</span><span class="code-operator">:</span><span class="code-string"> '3.8'</span>
+
+<span class="code-name">services</span><span class="code-operator">:</span>
+  <span class="code-name">knowledge-base</span><span class="code-operator">:</span>
+    <span class="code-name">build</span><span class="code-operator">:</span><span class="code-name"> .</span>
+    <span class="code-name">ports</span><span class="code-operator">:</span>
+      <span class="code-operator">-</span><span class="code-string"> "7860:7860"</span>
+    <span class="code-name">volumes</span><span class="code-operator">:</span>
+      <span class="code-operator">-</span><span class="code-string"> ./chroma_db:/app/chroma_db</span>
+      <span class="code-operator">-</span><span class="code-string"> ./documents:/app/documents</span>
+    <span class="code-name">environment</span><span class="code-operator">:</span>
+      <span class="code-operator">-</span><span class="code-string"> MODEL_NAME=llama3:8b</span>
+      <span class="code-operator">-</span><span class="code-string"> LOG_LEVEL=INFO</span>
+    <span class="code-name">restart</span><span class="code-operator">:</span><span class="code-string"> unless-stopped</span>
+    <span class="code-name">deploy</span><span class="code-operator">:</span>
+      <span class="code-name">resources</span><span class="code-operator">:</span>
+        <span class="code-name">reservations</span><span class="code-operator">:</span>
+          <span class="code-name">devices</span><span class="code-operator">:</span>
+            <span class="code-operator">-</span><span class="code-name"> driver</span><span class="code-operator">:</span><span class="code-string"> nvidia</span>
+              <span class="code-name"> count</span><span class="code-operator">:</span><span class="code-number">1</span>
+              <span class="code-name"> capabilities</span><span class="code-operator">:</span><span class="code-operator">[</span><span class="code-string">gpu</span><span class="code-operator">]</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">配置Nginx反向代理</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Nginx提供静态文件服务和反向代理：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">nginx</span></div><code><span class="code-comment"># /etc/nginx/sites-available/knowledge-base</span>
+<span class="code-name">server</span><span class="code-operator">{</span>
+    <span class="code-name">listen</span><span class="code-operator"> 80;</span>
+    <span class="code-name">server_name</span><span class="code-operator"> kb.example.com;</span>
+
+    <span class="code-name">location</span><span class="code-operator"> / {</span>
+        <span class="code-name">proxy_pass</span><span class="code-operator"> http://localhost:7860;</span>
+        <span class="code-name">proxy_set_header</span><span class="code-operator"> Host</span><span class="code-name"> $host;</span>
+        <span class="code-name">proxy_set_header</span><span class="code-operator"> X-Real-IP</span><span class="code-name"> $remote_addr;</span>
+        <span class="code-name">proxy_set_header</span><span class="code-operator"> X-Forwarded-For</span><span class="code-name"> $proxy_add_x_forwarded_for;</span>
+        <span class="code-name">proxy_set_header</span><span class="code-operator"> X-Forwarded-Proto</span><span class="code-name"> $scheme;</span>
+        
+        <span class="code-comment"># WebSocket支持</span>
+        <span class="code-name">proxy_http_version</span><span class="code-operator"> 1.1;</span>
+        <span class="code-name">proxy_set_header</span><span class="code-operator"> Upgrade</span><span class="code-name"> $http_upgrade;</span>
+        <span class="code-name">proxy_set_header</span><span class="code-operator"> Connection</span><span class="code-string"> "upgrade";</span>
+    <span class="code-operator">}</span>
+
+    <span class="code-comment"># 配置SSL（使用Let's Encrypt）</span>
+    <span class="code-name">listen</span><span class="code-operator"> 443 ssl;</span>
+    <span class="code-name">ssl_certificate</span><span class="code-operator"> /etc/letsencrypt/live/kb.example.com/fullchain.pem;</span>
+    <span class="code-name">ssl_certificate_key</span><span class="code-operator"> /etc/letsencrypt/live/kb.example.com/privkey.pem;</span>
+<span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">添加日志和监控</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  添加日志记录和健康检查：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> logging</span>
+<span class="code-keyword">from</span><span class="code-name"> flask </span><span class="code-keyword">import</span><span class="code-name"> Flask</span>
+
+<span class="code-comment"># 配置日志</span>
+<span class="code-name">logging</span><span class="code-operator">.</span><span class="code-function">basicConfig</span><span class="code-operator">(</span>
+    <span class="code-name">level</span><span class="code-operator">=</span><span class="code-name">logging</span><span class="code-operator">.</span><span class="code-name">INFO</span><span class="code-operator">,</span>
+    <span class="code-name">format</span><span class="code-operator">=</span><span class="code-string">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span><span class="code-operator">,</span>
+    <span class="code-name">handlers</span><span class="code-operator">=[</span>
+        <span class="code-name">logging</span><span class="code-operator">.</span><span class="code-function">FileHandler</span><span class="code-operator">(</span><span class="code-string">'app.log'</span><span class="code-operator">),</span>
+        <span class="code-name">logging</span><span class="code-operator">.</span><span class="code-function">StreamHandler</span><span class="code-operator">()</span>
+    <span class="code-operator">]</span>
+<span class="code-operator">)</span>
+
+<span class="code-name">logger</span><span class="code-operator"> = </span><span class="code-name">logging</span><span class="code-operator">.</span><span class="code-function">getLogger</span><span class="code-operator">(</span><span class="code-string">__name__</span><span class="code-operator">)</span>
+
+<span class="code-comment"># 添加健康检查端点</span>
+<span class="code-name">app</span><span class="code-operator"> = </span><span class="code-function">Flask</span><span class="code-operator">(</span><span class="code-string">__name__</span><span class="code-operator">)</span>
+
+<span class="code-name">@app</span><span class="code-operator">.</span><span class="code-function">route</span><span class="code-operator">(</span><span class="code-string">'/health'</span><span class="code-operator">)</span>
+<span class="code-keyword">def</span><span class="code-function"> health_check</span><span class="code-operator">():</span>
+    <span class="code-keyword">try</span><span class="code-operator">:</span>
+        <span class="code-name">qa</span><span class="code-operator"> = </span><span class="code-function">KnowledgeBaseQA</span><span class="code-operator">()</span>
+        <span class="code-keyword">return</span><span class="code-operator"> {</span><span class="code-string">"status"</span><span class="code-operator">: </span><span class="code-string">"healthy"</span><span class="code-operator">}</span>
+    <span class="code-keyword">except</span><span class="code-name"> Exception </span><span class="code-keyword">as</span><span class="code-name"> e</span><span class="code-operator">:</span>
+        <span class="code-name">logger</span><span class="code-operator">.</span><span class="code-function">error</span><span class="code-operator">(</span><span class="code-string">f"Health check failed: {e}"</span><span class="code-operator">)</span>
+        <span class="code-keyword">return</span><span class="code-operator"> {</span><span class="code-string">"status"</span><span class="code-operator">: </span><span class="code-string">"unhealthy"</span><span class="code-operator">}, </span><span class="code-number">500</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">系列总结</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  恭喜你完成了整个系列！让我们回顾一下所学内容：
+</p>
+
+<section style="background: #E8F5E9; border-radius: 8px; padding: 20px; margin: 25px 0;">
+  <p style="margin: 0 0 15px 0; font-weight: bold; color: #2E7D32; font-size: 17px;">📚 系列回顾</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第01篇</strong>：了解了本地大模型知识库的价值和优势</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第02篇</strong>：搭建了Ollama环境并运行了第一个模型</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第03篇</strong>：构建了基于RAG的本地知识库</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第04篇</strong>：使用Gradio创建了Web界面</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第05篇</strong>：学习了系统部署与性能优化</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第06篇</strong>：了解了应用场景与最佳实践</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第07篇</strong>：深入理解了RAG的核心原理</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第08篇</strong>：封装了问答接口</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第09篇</strong>：完善了Web界面功能</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第10篇</strong>：实现了多种性能优化策略</p>
+  <p style="margin: 0 0 10px 0; font-size: 16px; line-height: 1.8;">• <strong>第11篇</strong>：添加了多模态支持</p>
+  <p style="margin: 0; font-size: 16px; line-height: 1.8;">• <strong>第12篇</strong>：完成了生产环境部署</p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  通过这个系列，你已经掌握了从零开始构建一个完整的本地大模型知识库系统的全部技能。希望这些知识能帮助你在实际工作中更好地应用AI技术！
+</p>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. Docker镜像太大：使用多阶段构建减少镜像大小</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. GPU资源不足：考虑使用云GPU或模型量化</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. SSL证书问题：使用Certbot自动管理证书</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 服务宕机：配置自动重启和监控告警</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 系列完结 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  本地大模型知识库系列第12篇（完）<br>
+  感谢您的阅读！
+</p>
+
+</section>
+</body>
+</html>

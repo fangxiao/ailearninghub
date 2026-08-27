@@ -1,0 +1,22 @@
+graph TD
+    subgraph 输入
+        W1["字1: 小明"]
+        W2["字2: 喜欢"]
+        W3["字3: 小红"]
+    end
+
+    subgraph Self-Attention计算
+        Q1["Query"] & Q2["Query"] & Q3["Query"] --> AS["注意力分数矩阵"]
+        K1["Key"] & K2["Key"] & K3["Key"] --> AS
+        AS --> O1["小明的新表示"]
+        AS --> O2["喜欢的新表示"]
+        AS --> O3["小红的新表示"]
+    end
+
+    W1 & W2 & W3 --> Q1 & Q2 & Q3
+    W1 & W2 & W3 --> K1 & K2 & K3
+
+    style Q1 fill:#e8f5e9
+    style Q2 fill:#e8f5e9
+    style Q3 fill:#e8f5e9
+    style AS fill:#fff3e0

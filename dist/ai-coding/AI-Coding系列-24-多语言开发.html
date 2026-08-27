@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专题篇：多语言开发</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">40</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：<span class="key">Python</span>/JavaScript/Go/Rust 跨语言开发技巧</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">为什么需要多语言？</span></h2>
+<p data-tool="mdnice编辑器"><strong>现实场景：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>项目需求多样化：<br/>&nbsp;&nbsp;-&nbsp;Web&nbsp;服务&nbsp;→&nbsp;Python&nbsp;(FastAPI)<br/>&nbsp;&nbsp;-&nbsp;前端界面&nbsp;→&nbsp;JavaScript&nbsp;(Vue/React)<br/>&nbsp;&nbsp;-&nbsp;高性能模块&nbsp;→&nbsp;Go&nbsp;(并发处理)<br/>&nbsp;&nbsp;-&nbsp;系统工具&nbsp;→&nbsp;Rust&nbsp;(安全快速)<br/><br/>全栈开发者挑战：<br/>&nbsp;&nbsp;✅&nbsp;AI&nbsp;Coding&nbsp;助手懂所有语言<br/>&nbsp;&nbsp;✅&nbsp;你只需要描述需求<br/>&nbsp;&nbsp;✅&nbsp;AI&nbsp;生成对应语言的代码<br/>&nbsp;&nbsp;✅&nbsp;跨语言协作更简单</code></pre>
+<p data-tool="mdnice编辑器"><strong>本篇目标：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>掌握多语言开发技巧<br/><br/>内容：<br/>✅&nbsp;Python&nbsp;Web&nbsp;服务<br/>✅&nbsp;JavaScript&nbsp;前端<br/>✅&nbsp;Go&nbsp;高性能模块<br/>✅&nbsp;Rust&nbsp;系统工具<br/>✅&nbsp;跨语言协作</code></pre>
+<p data-tool="mdnice编辑器"><strong>学习要点：</strong></p>
+<ul>
+<li><section>✅ 各语言特点和适用场景</section></li>
+<li><section>✅ AI Coding 的语言切换</section></li>
+<li><section>✅ 跨语言 <span class="key">API</span> 设计</section></li>
+<li><section>✅ 性能对比和选择</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、Python：快速原型</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">Python 特点</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优点：<br/>&nbsp;&nbsp;✅&nbsp;简洁易读<br/>&nbsp;&nbsp;✅&nbsp;生态丰富（PyPI）<br/>&nbsp;&nbsp;✅&nbsp;开发快速<br/>&nbsp;&nbsp;✅&nbsp;AI/ML&nbsp;首选<br/><br/>缺点：<br/>&nbsp;&nbsp;❌&nbsp;性能较慢<br/>&nbsp;&nbsp;❌&nbsp;GIL&nbsp;限制并发<br/>&nbsp;&nbsp;❌&nbsp;部署相对麻烦<br/><br/>适用场景：<br/>&nbsp;&nbsp;-&nbsp;Web&nbsp;API（FastAPI/Django）<br/>&nbsp;&nbsp;-&nbsp;数据分析（Pandas/NumPy）<br/>&nbsp;&nbsp;-&nbsp;机器学习（PyTorch/TensorFlow）<br/>&nbsp;&nbsp;-&nbsp;自动化脚本</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">Python 实战示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>创建 FastAPI 服务：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;main.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;fastapi&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">FastAPI</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;pydantic&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">BaseModel</span><br/><br/><span style="color: #F8F8F2">app</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">FastAPI()</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">Item</span><span style="color: #F8F8F2">(BaseModel):</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">name:</span>&nbsp;<span style="color: #F8F8F2">str</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">price:</span>&nbsp;<span style="color: #F8F8F2">float</span><br/><br/><span style="color: #A6E22E">@app</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><span style="color: #E6DB74">&quot;/items/&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">create_item</span><span style="color: #F8F8F2">(item:</span>&nbsp;<span style="color: #F8F8F2">Item):</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;item&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">item,</span>&nbsp;<span style="color: #E6DB74">&quot;status&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #E6DB74">&quot;created&quot;</span><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #A6E22E">@app</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&quot;/items/{item_id}&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">read_item</span><span style="color: #F8F8F2">(item_id:</span>&nbsp;<span style="color: #F8F8F2">int):</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;item_id&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">item_id}</span><br/><br/><span style="color: #e0e0e0">#&nbsp;运行：uvicorn&nbsp;main:app&nbsp;--reload</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、JavaScript：前端之王</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">JavaScript 特点</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优点：<br/>&nbsp;&nbsp;✅&nbsp;前端标准语言<br/>&nbsp;&nbsp;✅&nbsp;Node.js&nbsp;后端支持<br/>&nbsp;&nbsp;✅&nbsp;npm&nbsp;生态巨大<br/>&nbsp;&nbsp;✅&nbsp;异步编程友好<br/><br/>缺点：<br/>&nbsp;&nbsp;❌&nbsp;类型系统弱（TypeScript&nbsp;可弥补）<br/>&nbsp;&nbsp;❌&nbsp;回调地狱（Promise/async&nbsp;可解决）<br/><br/>适用场景：<br/>&nbsp;&nbsp;-&nbsp;前端应用（Vue/React）<br/>&nbsp;&nbsp;-&nbsp;后端服务（Node.js/Express）<br/>&nbsp;&nbsp;-&nbsp;桌面应用（Electron）<br/>&nbsp;&nbsp;-&nbsp;跨平台（React&nbsp;Native）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">JavaScript 实战示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>Vue 3 组件：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">vue</span></span><code><span style="color: #F8F8F2">&lt;</span><span style="color: #FF4689">template</span><span style="color: #F8F8F2">&gt;</span><br/>&nbsp;&nbsp;<span style="color: #F8F8F2">&lt;</span><span style="color: #FF4689">div</span><span style="color: #F8F8F2">&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">&lt;</span><span style="color: #FF4689">h1</span><span style="color: #F8F8F2">&gt;</span><span style="color: #e0e0e0">{{</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">message</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #e0e0e0">}}</span><span style="color: #F8F8F2">&lt;/</span><span style="color: #FF4689">h1</span><span style="color: #F8F8F2">&gt;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">&lt;</span><span style="color: #FF4689">button</span>&nbsp;<span style="color: #F8F8F2">@</span><span style="color: #A6E22E">click</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;</span><span style="color: #A6E22E">increment</span><span style="color: #E6DB74">&quot;</span><span style="color: #F8F8F2">&gt;</span>点击:&nbsp;<span style="color: #e0e0e0">{{</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">count</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #e0e0e0">}}</span><span style="color: #F8F8F2">&lt;/</span><span style="color: #FF4689">button</span><span style="color: #F8F8F2">&gt;</span><br/>&nbsp;&nbsp;<span style="color: #F8F8F2">&lt;/</span><span style="color: #FF4689">div</span><span style="color: #F8F8F2">&gt;</span><br/><span style="color: #F8F8F2">&lt;/</span><span style="color: #FF4689">template</span><span style="color: #F8F8F2">&gt;</span><br/><br/><span style="color: #F8F8F2">&lt;</span><span style="color: #FF4689">script</span>&nbsp;<span style="color: #A6E22E">setup</span><span style="color: #F8F8F2">&gt;</span><br/><span style="color: #66D9EF">import</span><span style="color: #F8F8F2">&nbsp;{&nbsp;</span><span style="color: #A6E22E">ref</span><span style="color: #F8F8F2">&nbsp;}&nbsp;</span><span style="color: #66D9EF">from</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">&#39;vue&#39;</span><br/><br/><span style="color: #66D9EF">const</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">message</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">ref</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;Hello&nbsp;Vue&nbsp;3!&#39;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">const</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">count</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">ref</span><span style="color: #F8F8F2">(</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #66D9EF">function</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">increment</span><span style="color: #F8F8F2">()&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #A6E22E">count</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">value</span><span style="color: #FF4689">++</span><br/><span style="color: #F8F8F2">}</span><br/><span style="color: #F8F8F2">&lt;/</span><span style="color: #FF4689">script</span><span style="color: #F8F8F2">&gt;</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、Go：高性能并发</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">Go 特点</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优点：<br/>&nbsp;&nbsp;✅&nbsp;性能优秀<br/>&nbsp;&nbsp;✅&nbsp;并发原生支持（goroutine）<br/>&nbsp;&nbsp;✅&nbsp;编译快速<br/>&nbsp;&nbsp;✅&nbsp;部署简单（单二进制）<br/><br/>缺点：<br/>&nbsp;&nbsp;❌&nbsp;语法简单但学习曲线陡<br/>&nbsp;&nbsp;❌&nbsp;错误处理繁琐<br/>&nbsp;&nbsp;❌&nbsp;泛型支持较晚<br/><br/>适用场景：<br/>&nbsp;&nbsp;-&nbsp;微服务<br/>&nbsp;&nbsp;-&nbsp;API&nbsp;网关<br/>&nbsp;&nbsp;-&nbsp;系统工具<br/>&nbsp;&nbsp;-&nbsp;高并发服务</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">Go 实战示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>创建 HTTP 服务：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">go</span></span><code><span style="color: #e0e0e0">//&nbsp;main.go</span><br/><span style="color: #FF4689">package</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">main</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;(</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;encoding/json&quot;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;net/http&quot;</span><br/><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #66D9EF">type</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">Item</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">struct</span><span style="color: #F8F8F2">&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">Name</span><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #66D9EF">string</span><span style="color: #F8F8F2">&nbsp;&nbsp;</span><span style="color: #E6DB74">`json:&quot;name&quot;`</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">Price</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">float64</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #E6DB74">`json:&quot;price&quot;`</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #66D9EF">func</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">createItem</span><span style="color: #F8F8F2">(</span><span style="color: #A6E22E">w</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">http</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">ResponseWriter</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #A6E22E">r</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #FF4689">*</span><span style="color: #A6E22E">http</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">Request</span><span style="color: #F8F8F2">)&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">var</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">item</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">Item</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">json</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">NewDecoder</span><span style="color: #F8F8F2">(</span><span style="color: #A6E22E">r</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">Body</span><span style="color: #F8F8F2">).</span><span style="color: #A6E22E">Decode</span><span style="color: #F8F8F2">(</span><span style="color: #FF4689">&amp;</span><span style="color: #A6E22E">item</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">w</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">Header</span><span style="color: #F8F8F2">().</span><span style="color: #A6E22E">Set</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;Content-Type&quot;</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #E6DB74">&quot;application/json&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">json</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">NewEncoder</span><span style="color: #F8F8F2">(</span><span style="color: #A6E22E">w</span><span style="color: #F8F8F2">).</span><span style="color: #A6E22E">Encode</span><span style="color: #F8F8F2">(</span><span style="color: #66D9EF">map</span><span style="color: #F8F8F2">[</span><span style="color: #66D9EF">string</span><span style="color: #F8F8F2">]</span><span style="color: #66D9EF">interface</span><span style="color: #F8F8F2">{}{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;item&quot;</span><span style="color: #F8F8F2">:&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">item</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;status&quot;</span><span style="color: #F8F8F2">:&nbsp;</span><span style="color: #E6DB74">&quot;created&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;})</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #66D9EF">func</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">main</span><span style="color: #F8F8F2">()&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">http</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">HandleFunc</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;/items&quot;</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #A6E22E">createItem</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">http</span><span style="color: #F8F8F2">.</span><span style="color: #A6E22E">ListenAndServe</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;:8080&quot;</span><span style="color: #F8F8F2">,&nbsp;</span><span style="color: #66D9EF">nil</span><span style="color: #F8F8F2">)</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #e0e0e0">//&nbsp;运行：go&nbsp;run&nbsp;main.go</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、Rust：安全快速</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">Rust 特点</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>优点：<br/>&nbsp;&nbsp;✅&nbsp;内存安全（无&nbsp;GC）<br/>&nbsp;&nbsp;✅&nbsp;性能媲美&nbsp;C/C++<br/>&nbsp;&nbsp;✅&nbsp;类型系统强大<br/>&nbsp;&nbsp;✅&nbsp;错误处理严格<br/><br/>缺点：<br/>&nbsp;&nbsp;❌&nbsp;学习曲线陡峭<br/>&nbsp;&nbsp;❌&nbsp;编译速度慢<br/>&nbsp;&nbsp;❌&nbsp;生态相对小<br/><br/>适用场景：<br/>&nbsp;&nbsp;-&nbsp;系统编程<br/>&nbsp;&nbsp;-&nbsp;WebAssembly<br/>&nbsp;&nbsp;-&nbsp;CLI&nbsp;工具<br/>&nbsp;&nbsp;-&nbsp;安全关键应用</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">Rust 实战示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>创建 <span class="key">CLI</span> 工具：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">rust</span></span><code><span style="color: #e0e0e0">//&nbsp;src/main.rs</span><br/><span style="color: #66D9EF">use</span><span style="color: #F8F8F2">&nbsp;clap::Parser;</span><br/><br/><span style="color: #e0e0e0">#[derive(Parser)]</span><br/><span style="color: #e0e0e0">#[command(name&nbsp;=&nbsp;</span><span style="color: #E6DB74">&quot;myapp&quot;</span><span style="color: #e0e0e0">)]</span><br/><span style="color: #e0e0e0">#[command(about&nbsp;=&nbsp;</span><span style="color: #E6DB74">&quot;A&nbsp;CLI&nbsp;tool&quot;</span><span style="color: #e0e0e0">,&nbsp;long_about&nbsp;=&nbsp;None)]</span><br/><span style="color: #66D9EF">struct</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">Cli</span><span style="color: #F8F8F2">&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">#[arg(short,&nbsp;long)]</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;name:&nbsp;String,</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #e0e0e0">#[arg(short,&nbsp;long,&nbsp;default_value_t&nbsp;=&nbsp;1)]</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;count:&nbsp;</span><span style="color: #66D9EF">u8</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #66D9EF">fn</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">main</span><span style="color: #F8F8F2">()&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">let</span><span style="color: #F8F8F2">&nbsp;cli&nbsp;</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">&nbsp;Cli::parse();</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #66D9EF">for</span><span style="color: #F8F8F2">&nbsp;_&nbsp;</span><span style="color: #66D9EF">in</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #AE81FF">0</span><span style="color: #FF4689">..</span><span style="color: #F8F8F2">cli.count&nbsp;{</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #A6E22E">println!</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;Hello&nbsp;{}!&quot;</span><span style="color: #F8F8F2">,&nbsp;cli.name);</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;}</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #e0e0e0">//&nbsp;运行：cargo&nbsp;run&nbsp;--&nbsp;--name&nbsp;World&nbsp;--count&nbsp;3</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、跨语言协作</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">API 网关模式</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>架构设计：<br/><br/>┌─────────────────────────────────┐<br/>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;API&nbsp;Gateway&nbsp;(Go/Rust)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>│&nbsp;&nbsp;&nbsp;-&nbsp;路由、认证、限流&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>└────────────┬────────────────────┘<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>&nbsp;&nbsp;&nbsp;&nbsp;┌────────┼────────┐<br/>&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>┌───▼──┐&nbsp;┌──▼───┐&nbsp;┌──▼───┐<br/>│Python│&nbsp;│&nbsp;Node&nbsp;│&nbsp;│&nbsp;&nbsp;Go&nbsp;&nbsp;│<br/>│服务A&nbsp;│&nbsp;│服务B&nbsp;│&nbsp;│服务C&nbsp;│<br/>└──────┘&nbsp;└──────┘&nbsp;└──────┘<br/><br/>优势：<br/>&nbsp;&nbsp;✅&nbsp;各服务用最合适的语言<br/>&nbsp;&nbsp;✅&nbsp;独立开发和部署<br/>&nbsp;&nbsp;✅&nbsp;技术栈灵活</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">FFI 调用</span></h3>
+<p data-tool="mdnice编辑器"><strong><span class="key">Python</span> 调用 Rust：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;使用&nbsp;PyO3</span><br/><span style="color: #e0e0e0">#&nbsp;Rust&nbsp;代码</span><br/><span style="color: #F8F8F2">use</span>&nbsp;<span style="color: #F8F8F2">pyo3::prelude::</span><span style="color: #FF4689">*</span><span style="color: #F8F8F2">;</span><br/><br/><span style="color: #e0e0e0">#[pyfunction]</span><br/><span style="color: #F8F8F2">fn</span>&nbsp;<span style="color: #F8F8F2">sum(a:</span>&nbsp;<span style="color: #F8F8F2">i64,</span>&nbsp;<span style="color: #F8F8F2">b:</span>&nbsp;<span style="color: #F8F8F2">i64)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">i64</span>&nbsp;<span style="color: #F8F8F2">{</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">a</span>&nbsp;<span style="color: #FF4689">+</span>&nbsp;<span style="color: #F8F8F2">b</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #e0e0e0">#[pymodule]</span><br/><span style="color: #F8F8F2">fn</span>&nbsp;<span style="color: #F8F8F2">my_rust_lib(_py:</span>&nbsp;<span style="color: #F8F8F2">Python,</span>&nbsp;<span style="color: #F8F8F2">m:</span>&nbsp;<span style="color: #FF4689">&amp;</span><span style="color: #F8F8F2">PyModule)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">PyResult</span><span style="color: #FF4689">&lt;</span><span style="color: #F8F8F2">()</span><span style="color: #FF4689">&gt;</span>&nbsp;<span style="color: #F8F8F2">{</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">m</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add_function(wrap_pyfunction</span><span style="color: #ED007E; background-color: #1E0010">!</span><span style="color: #F8F8F2">(sum,</span>&nbsp;<span style="color: #F8F8F2">m)</span><span style="color: #ED007E; background-color: #1E0010">?</span><span style="color: #F8F8F2">)</span><span style="color: #ED007E; background-color: #1E0010">?</span><span style="color: #F8F8F2">;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">Ok(())</span><br/><span style="color: #F8F8F2">}</span><br/><br/><span style="color: #e0e0e0">#&nbsp;Python&nbsp;代码</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;my_rust_lib</span><br/><br/><span style="color: #F8F8F2">result</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">my_rust_lib</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">sum(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">2</span><span style="color: #F8F8F2">)</span>&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;3</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、性能对比</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">基准测试</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>HTTP&nbsp;服务性能（每秒请求数）：<br/><br/>Rust&nbsp;(Actix):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;700,000<br/>Go&nbsp;(FastHTTP):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500,000<br/>Node.js&nbsp;(Fastify):&nbsp;300,000<br/>Python&nbsp;(FastAPI):&nbsp;&nbsp;&nbsp;50,000<br/><br/>内存占用：<br/><br/>Rust:&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;MB<br/>Go:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15&nbsp;MB<br/>Node.js:&nbsp;50&nbsp;MB<br/>Python:&nbsp;&nbsp;100&nbsp;MB<br/><br/>开发效率：<br/><br/>Python:&nbsp;&nbsp;&nbsp;&nbsp;⭐⭐⭐⭐⭐<br/>JavaScript:&nbsp;⭐⭐⭐⭐<br/>Go:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐⭐⭐<br/>Rust:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⭐⭐</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、选择建议</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">7.1</span><span class="title-text">按场景选择</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Web&nbsp;API&nbsp;服务：<br/>&nbsp;&nbsp;-&nbsp;快速原型&nbsp;→&nbsp;Python&nbsp;(FastAPI)<br/>&nbsp;&nbsp;-&nbsp;生产环境&nbsp;→&nbsp;Go&nbsp;(Gin)<br/>&nbsp;&nbsp;-&nbsp;高性能&nbsp;→&nbsp;Rust&nbsp;(Actix)<br/><br/>前端应用：<br/>&nbsp;&nbsp;-&nbsp;必选&nbsp;JavaScript/TypeScript<br/>&nbsp;&nbsp;-&nbsp;Vue&nbsp;3&nbsp;或&nbsp;React<br/><br/>数据处理：<br/>&nbsp;&nbsp;-&nbsp;数据分析&nbsp;→&nbsp;Python&nbsp;(Pandas)<br/>&nbsp;&nbsp;-&nbsp;实时流处理&nbsp;→&nbsp;Go<br/>&nbsp;&nbsp;-&nbsp;大规模数据&nbsp;→&nbsp;Rust<br/><br/>系统工具：<br/>&nbsp;&nbsp;-&nbsp;CLI&nbsp;工具&nbsp;→&nbsp;Go&nbsp;或&nbsp;Rust<br/>&nbsp;&nbsp;-&nbsp;跨平台&nbsp;→&nbsp;Go<br/>&nbsp;&nbsp;-&nbsp;性能关键&nbsp;→&nbsp;Rust</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：实战08：数据分析 + AI 特性</section></li>
+<li><section>下一篇：团队协作：企业级使用指南</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">24</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-06</p>
+<p data-tool="mdnice编辑器"><strong>语言只是工具，需求才是核心！</strong> 🌍</p>
+</article>
+</div>
+</body>
+</html>

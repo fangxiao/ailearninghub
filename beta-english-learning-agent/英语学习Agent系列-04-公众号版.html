@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阅读理解模块——自适应难度阅读</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 30px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  📖 <strong>系列导航：</strong><br>
+  【本地大模型知识库系列】01-12篇（已完成）| 
+  【英语学习Agent系列】当前第04篇（共8篇）
+</p>
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  阅读理解模块
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  自适应难度阅读
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  英语学习Agent系列第04篇 | 阅读理解
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  阅读理解是英语学习的核心能力之一。传统阅读材料往往难度固定，无法根据学习者水平动态调整。我们将构建一个自适应难度的阅读理解系统，根据学习者的表现自动调整文章难度，并生成针对性的练习题目。
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">文章难度评估与分级</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Flesch-Kincaid可读性指数和词汇难度来评估文章难度：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> textstat</span>
+<span class="code-keyword">import</span><span class="code-name"> re</span>
+
+<span class="code-keyword">class</span><span class="code-function"> DifficultyEvaluator</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cefr_levels</span><span class="code-operator"> = </span><span class="code-operator">{</span>
+            <span class="code-number">1</span><span class="code-operator">: </span><span class="code-string">"A1"</span><span class="code-operator">,</span>
+            <span class="code-number">2</span><span class="code-operator">: </span><span class="code-string">"A2"</span><span class="code-operator">,</span>
+            <span class="code-number">3</span><span class="code-operator">: </span><span class="code-string">"B1"</span><span class="code-operator">,</span>
+            <span class="code-number">4</span><span class="code-operator">: </span><span class="code-string">"B2"</span><span class="code-operator">,</span>
+            <span class="code-number">5</span><span class="code-operator">: </span><span class="code-string">"C1"</span><span class="code-operator">,</span>
+            <span class="code-number">6</span><span class="code-operator">: </span><span class="code-string">"C2"</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> evaluate</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">text</span><span class="code-operator">):</span>
+        <span class="code-name">fk_grade</span><span class="code-operator"> = </span><span class="code-name">textstat</span><span class="code-operator">.</span><span class="code-function">flesch_kincaid_grade</span><span class="code-operator">(</span><span class="code-name">text</span><span class="code-operator">)</span>
+        <span class="code-name">flesch_ease</span><span class="code-operator"> = </span><span class="code-name">textstat</span><span class="code-operator">.</span><span class="code-function">flesch_reading_ease</span><span class="code-operator">(</span><span class="code-name">text</span><span class="code-operator">)</span>
+        <span class="code-name">sentence_count</span><span class="code-operator"> = </span><span class="code-name">textstat</span><span class="code-operator">.</span><span class="code-function">sentence_count</span><span class="code-operator">(</span><span class="code-name">text</span><span class="code-operator">)</span>
+        <span class="code-name">word_count</span><span class="code-operator"> = </span><span class="code-name">textstat</span><span class="code-operator">.</span><span class="code-function">lexicon_count</span><span class="code-operator">(</span><span class="code-name">text</span><span class="code-operator">, </span><span class="code-name">removepunct</span><span class="code-operator">=</span><span class="code-keyword">True</span><span class="code-operator">)</span>
+        
+        <span class="code-name">avg_sentence_length</span><span class="code-operator"> = </span><span class="code-name">word_count</span><span class="code-operator"> / </span><span class="code-name">sentence_count</span> <span class="code-keyword">if</span><span class="code-name"> sentence_count</span><span class="code-operator"> > </span><span class="code-number">0</span> <span class="code-keyword">else</span><span class="code-number">0</span>
+        
+        <span class="code-name">cefr_level</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_map_to_cefr</span><span class="code-operator">(</span><span class="code-name">fk_grade</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"fk_grade"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">fk_grade</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">),</span>
+            <span class="code-string">"flesch_ease"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">flesch_ease</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">),</span>
+            <span class="code-string">"avg_sentence_length"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">avg_sentence_length</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">),</span>
+            <span class="code-string">"word_count"</span><span class="code-operator">: </span><span class="code-name">word_count</span><span class="code-operator">,</span>
+            <span class="code-string">"sentence_count"</span><span class="code-operator">: </span><span class="code-name">sentence_count</span><span class="code-operator">,</span>
+            <span class="code-string">"cefr_level"</span><span class="code-operator">: </span><span class="code-name">cefr_level</span><span class="code-operator">,</span>
+            <span class="code-string">"difficulty_score"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_calculate_difficulty_score</span><span class="code-operator">(</span><span class="code-name">fk_grade</span><span class="code-operator">, </span><span class="code-name">avg_sentence_length</span><span class="code-operator">)</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _map_to_cefr</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">fk_grade</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> fk_grade </span><span class="keyword"><= </span><span class="code-number">3</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-string">"A1"</span>
+        <span class="keyword">elif</span><span class="code-name"> fk_grade </span><span class="keyword"><= </span><span class="code-number">5</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-string">"A2"</span>
+        <span class="keyword">elif</span><span class="code-name"> fk_grade </span><span class="keyword"><= </span><span class="code-number">7</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-string">"B1"</span>
+        <span class="keyword">elif</span><span class="code-name"> fk_grade </span><span class="keyword"><= </span><span class="code-number">9</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-string">"B2"</span>
+        <span class="keyword">elif</span><span class="code-name"> fk_grade </span><span class="keyword"><= </span><span class="code-number">11</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-string">"C1"</span>
+        <span class="keyword">else</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-string">"C2"</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _calculate_difficulty_score</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">fk_grade</span><span class="code-operator">, </span><span class="code-name">avg_sentence_length</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> round</span><span class="code-operator">(</span><span class="code-name">fk_grade</span> <span class="code-operator">* </span><span class="code-number">0.6</span> <span class="code-operator">+ </span><span class="code-name">avg_sentence_length</span> <span class="code-operator">* </span><span class="code-number">0.4</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">)</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">文章库管理与检索</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用向量数据库存储文章，支持按难度检索（关于向量数据库的使用，请参考【本地大模型知识库系列】第03篇）：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> chromadb</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ArticleLibrary</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">persist_directory</span><span class="code-operator">=</span><span class="code-string">"./chroma_db"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">client</span><span class="code-operator"> = </span><span class="code-name">chromadb</span><span class="code-operator">.</span><span class="code-function">PersistentClient</span><span class="code-operator">(</span><span class="code-name">path</span><span class="code-operator">=</span><span class="code-name">persist_directory</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">collection</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">client</span><span class="code-operator">.</span><span class="code-function">get_or_create_collection</span><span class="code-operator">(</span><span class="code-string">"english_articles"</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator"> = </span><span class="code-function">DifficultyEvaluator</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> add_article</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">title</span><span class="code-operator">, </span><span class="code-name">content</span><span class="code-operator">, </span><span class="code-name">category</span><span class="code-operator">=</span><span class="code-string">"general"</span><span class="code-operator">):</span>
+        <span class="code-name">difficulty</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator">.</span><span class="code-function">evaluate</span><span class="code-operator">(</span><span class="code-name">content</span><span class="code-operator">)</span>
+        
+        <span class="code-name">metadata</span><span class="code-operator"> = </span><span class="code-operator">{</span>
+            <span class="code-string">"title"</span><span class="code-operator">: </span><span class="code-name">title</span><span class="code-operator">,</span>
+            <span class="code-string">"category"</span><span class="code-operator">: </span><span class="code-name">category</span><span class="code-operator">,</span>
+            <span class="code-string">"cefr_level"</span><span class="code-operator">: </span><span class="code-name">difficulty</span><span class="code-operator">[</span><span class="code-string">"cefr_level"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"difficulty_score"</span><span class="code-operator">: </span><span class="code-name">difficulty</span><span class="code-operator">[</span><span class="code-string">"difficulty_score"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"word_count"</span><span class="code-operator">: </span><span class="code-name">difficulty</span><span class="code-operator">[</span><span class="code-string">"word_count"</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">collection</span><span class="code-operator">.</span><span class="code-function">add</span><span class="code-operator">(</span>
+            <span class="code-name">documents</span><span class="code-operator">=[</span><span class="code-name">content</span><span class="code-operator">],</span>
+            <span class="code-name">metadatas</span><span class="code-operator">=[</span><span class="code-name">metadata</span><span class="code-operator">],</span>
+            <span class="code-name">ids</span><span class="code-operator">=[</span><span class="code-name">title</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-name"> difficulty</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_articles_by_difficulty</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">cefr_level</span><span class="code-operator">, </span><span class="code-name">limit</span><span class="code-operator">=</span><span class="code-number">5</span><span class="code-operator">):</span>
+        <span class="code-name">results</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">collection</span><span class="code-operator">.</span><span class="code-function">query</span><span class="code-operator">(</span>
+            <span class="code-name">query_texts</span><span class="code-operator">=[</span><span class="code-string">" "</span><span class="code-operator">],</span>
+            <span class="code-name">where</span><span class="code-operator">={</span><span class="code-string">"cefr_level"</span><span class="code-operator">: </span><span class="code-name">cefr_level</span><span class="code-operator">},</span>
+            <span class="code-name">n_results</span><span class="code-operator">=</span><span class="code-name">limit</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">[{</span>
+            <span class="code-string">"title"</span><span class="code-operator">: </span><span class="code-name">meta</span><span class="code-operator">[</span><span class="code-string">"title"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">doc</span><span class="code-operator">,</span>
+            <span class="code-string">"cefr_level"</span><span class="code-operator">: </span><span class="code-name">meta</span><span class="code-operator">[</span><span class="code-string">"cefr_level"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"difficulty_score"</span><span class="code-operator">: </span><span class="code-name">meta</span><span class="code-operator">[</span><span class="code-string">"difficulty_score"</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span> <span class="code-keyword">for</span><span class="code-name"> doc</span><span class="keyword">, </span><span class="code-name"> meta </span><span class="code-keyword">in</span><span class="code-name"> zip</span><span class="code-operator">(</span><span class="code-name">results</span><span class="code-operator">[</span><span class="code-string">"documents"</span><span class="code-operator">][</span><span class="code-number">0</span><span class="code-operator">], </span><span class="code-name">results</span><span class="code-operator">[</span><span class="code-string">"metadatas"</span><span class="code-operator">][</span><span class="code-number">0</span><span class="code-operator">]</span><span class="code-operator">)</span><span class="code-operator">]</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> search_articles</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">query</span><span class="code-operator">, </span><span class="code-name">cefr_level</span><span class="code-operator">=</span><span class="code-keyword">None</span><span class="code-operator">, </span><span class="code-name">limit</span><span class="code-operator">=</span><span class="code-number">5</span><span class="code-operator">):</span>
+        <span class="code-name">where_clause</span><span class="code-operator"> = </span><span class="code-operator">{</span><span class="code-string">"cefr_level"</span><span class="code-operator">: </span><span class="code-name">cefr_level</span><span class="code-operator">}</span> <span class="code-keyword">if</span><span class="code-name"> cefr_level </span><span class="keyword">else</span><span class="code-operator">None</span>
+        
+        <span class="code-name">results</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">collection</span><span class="code-operator">.</span><span class="code-function">query</span><span class="code-operator">(</span>
+            <span class="code-name">query_texts</span><span class="code-operator">=[</span><span class="code-name">query</span><span class="code-operator">],</span>
+            <span class="code-name">where</span><span class="code-operator">=</span><span class="code-name">where_clause</span><span class="code-operator">,</span>
+            <span class="code-name">n_results</span><span class="code-operator">=</span><span class="code-name">limit</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">[{</span>
+            <span class="code-string">"title"</span><span class="code-operator">: </span><span class="code-name">meta</span><span class="code-operator">[</span><span class="code-string">"title"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">doc</span><span class="code-operator">,</span>
+            <span class="code-string">"cefr_level"</span><span class="code-operator">: </span><span class="code-name">meta</span><span class="code-operator">[</span><span class="code-string">"cefr_level"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"difficulty_score"</span><span class="code-operator">: </span><span class="code-name">meta</span><span class="code-operator">[</span><span class="code-string">"difficulty_score"</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span> <span class="code-keyword">for</span><span class="code-name"> doc</span><span class="keyword">, </span><span class="code-name"> meta </span><span class="code-keyword">in</span><span class="code-name"> zip</span><span class="code-operator">(</span><span class="code-name">results</span><span class="code-operator">[</span><span class="code-string">"documents"</span><span class="code-operator">][</span><span class="code-number">0</span><span class="code-operator">], </span><span class="code-name">results</span><span class="code-operator">[</span><span class="code-string">"metadatas"</span><span class="code-operator">][</span><span class="code-number">0</span><span class="code-operator">]</span><span class="code-operator">)</span><span class="code-operator">]</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">阅读理解练习生成</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Ollama根据文章内容生成阅读理解题目：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ReadingComprehensionGenerator</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_questions</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">article_title</span><span class="code-operator">, </span><span class="code-name">article_content</span><span class="code-operator">, </span><span class="code-name">question_count</span><span class="code-operator">=</span><span class="code-number">5</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+你是一位专业的英语老师。请根据以下文章生成{question_count}道阅读理解题目。
+
+文章标题：{article_title}
+
+文章内容：
+{article_content}
+
+题目类型包括：
+1. 主旨大意题（main idea）
+2. 细节理解题（detail）
+3. 推理判断题（inference）
+4. 词义猜测题（vocabulary）
+
+请以JSON格式输出，不要包含其他内容：
+{{
+  "title": "文章标题",
+  "questions": [
+    {{
+      "type": "main idea/detail/inference/vocabulary",
+      "question": "题目内容",
+      "options": ["选项A", "选项B", "选项C", "选项D"],
+      "answer": "正确答案（A/B/C/D）",
+      "explanation": "答案解析"
+    }}
+  ]
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_summary</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">article_content</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请为以下英语文章生成中文摘要（100-150字），并列出5个重点单词：
+
+文章内容：
+{article_content}
+
+请以JSON格式输出：
+{{
+  "summary": "中文摘要",
+  "key_words": ["单词1", "单词2", "单词3", "单词4", "单词5"]
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">None</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">自适应难度调整</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  根据学习者表现动态调整文章难度：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> json</span>
+<span class="code-keyword">import</span><span class="code-name"> os</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ReadingLevelManager</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">file_path</span><span class="code-operator">=</span><span class="code-string">"reading_level.json"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator"> = </span><span class="code-name">file_path</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-string">"B1"</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">_load</span><span class="code-operator">()</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cefr_order</span><span class="code-operator"> = </span><span class="code-operator">[</span><span class="code-string">"A1"</span><span class="code-operator">, </span><span class="code-string">"A2"</span><span class="code-operator">, </span><span class="code-string">"B1"</span><span class="code-operator">, </span><span class="code-string">"B2"</span><span class="code-operator">, </span><span class="code-string">"C1"</span><span class="code-operator">, </span><span class="code-string">"C2"</span><span class="code-operator">]</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _load</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-keyword">if</span><span class="code-name"> os</span><span class="code-operator">.</span><span class="code-function">path</span><span class="code-operator">.</span><span class="code-function">exists</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator">):</span>
+            <span class="code-keyword">with</span><span class="code-name"> open</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator">, </span><span class="code-string">'r'</span><span class="code-operator">, </span><span class="code-name">encoding</span><span class="code-operator">=</span><span class="code-string">'utf-8'</span><span class="code-operator">)</span> <span class="code-keyword">as</span><span class="code-name"> f</span><span class="code-operator">:</span>
+                <span class="code-name">data</span><span class="code-operator"> = </span><span class="code-name">json</span><span class="code-operator">.</span><span class="code-function">load</span><span class="code-operator">(</span><span class="code-name">f</span><span class="code-operator">)</span>
+                <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">data</span><span class="code-operator">.</span><span class="code-function">get</span><span class="code-operator">(</span><span class="code-string">"level"</span><span class="code-operator">, </span><span class="code-string">"B1"</span><span class="code-operator">)</span>
+                <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator"> = </span><span class="code-name">data</span><span class="code-operator">.</span><span class="code-function">get</span><span class="code-operator">(</span><span class="code-string">"accuracy_history"</span><span class="code-operator">, </span><span class="code-operator">[]</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _save</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">data</span><span class="code-operator"> = </span><span class="code-operator">{</span>
+            <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator">,</span>
+            <span class="code-string">"accuracy_history"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span>
+        <span class="code-operator">}</span>
+        <span class="code-keyword">with</span><span class="code-name"> open</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">file_path</span><span class="code-operator">, </span><span class="code-string">'w'</span><span class="code-operator">, </span><span class="code-name">encoding</span><span class="code-operator">=</span><span class="code-string">'utf-8'</span><span class="code-operator">)</span> <span class="code-keyword">as</span><span class="code-name"> f</span><span class="code-operator">:</span>
+            <span class="code-name">json</span><span class="code-operator">.</span><span class="code-function">dump</span><span class="code-operator">(</span><span class="code-name">data</span><span class="code-operator">, </span><span class="code-name">f</span><span class="code-operator">, </span><span class="code-name">ensure_ascii</span><span class="code-operator">=</span><span class="code-keyword">False</span><span class="code-operator">, </span><span class="code-name">indent</span><span class="code-operator">=</span><span class="code-number">2</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> record_score</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">correct_count</span><span class="code-operator">, </span><span class="code-name">total_count</span><span class="code-operator">):</span>
+        <span class="code-name">accuracy</span><span class="code-operator"> = </span><span class="code-name">correct_count</span> <span class="code-operator">/ </span><span class="code-name">total_count</span> <span class="code-keyword">if</span><span class="code-name"> total_count </span><span class="keyword">> </span><span class="code-number">0</span> <span class="code-keyword">else</span><span class="code-number">0</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">(</span><span class="code-name">accuracy</span><span class="code-operator">)</span>
+        
+        <span class="keyword">if</span><span class="code-name"> len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">) </span><span class="keyword">> </span><span class="code-number">10</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">[</span><span class="code-string">-10:</span><span class="code-operator">]</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_adjust_level</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-function">_save</span><span class="code-operator">()</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> _adjust_level</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">) </span><span class="keyword">< </span><span class="code-number">5</span><span class="code-operator">:</span>
+            <span class="keyword">return</span>
+        
+        <span class="code-name">avg_accuracy</span><span class="code-operator"> = </span><span class="code-name">sum</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">[</span><span class="code-string">-5:</span><span class="code-operator">])</span> <span class="code-operator">/ </span><span class="code-number">5</span>
+        <span class="code-name">current_idx</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cefr_order</span><span class="code-operator">.</span><span class="code-function">index</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator">)</span>
+        
+        <span class="keyword">if</span><span class="code-name"> avg_accuracy </span><span class="keyword">>= </span><span class="code-number">0.85</span><span class="code-operator"> and</span><span class="code-name"> current_idx </span><span class="keyword">< </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cefr_order</span><span class="code-operator">)</span><span class="code-operator">-</span><span class="code-number">1</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cefr_order</span><span class="code-operator">[</span><span class="code-name">current_idx</span><span class="code-operator"> + </span><span class="code-number">1</span><span class="code-operator">]</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">f"🎉 升级到 {self.level} 级别！"</span><span class="code-operator">)</span>
+        <span class="keyword">elif</span><span class="code-name"> avg_accuracy </span><span class="keyword">< </span><span class="code-number">0.5</span><span class="code-operator"> and</span><span class="code-name"> current_idx </span><span class="keyword">> </span><span class="code-number">0</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">cefr_order</span><span class="code-operator">[</span><span class="code-name">current_idx</span><span class="code-operator"> - </span><span class="code-number">1</span><span class="code-operator">]</span>
+            <span class="code-name">print</span><span class="code-operator">(</span><span class="code-string">f"📉 降级到 {self.level} 级别"</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_current_level</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level</span><span class="code-operator">,</span>
+            <span class="code-string">"recent_accuracy"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">sum</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">[</span><span class="code-string">-5:</span><span class="code-operator">])</span> <span class="code-operator">/ </span><span class="code-name">max</span><span class="code-operator">(</span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">accuracy_history</span><span class="code-operator">[</span><span class="code-string">-5:</span><span class="code-operator">]), </span><span class="code-number">1</span><span class="code-operator">), </span><span class="code-number">2</span><span class="code-operator">)</span>
+        <span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">阅读学习流程</span>
+  </p>
+</section>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="reading_comprehension_flow.png" alt="阅读学习流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">class</span><span class="code-function"> ReadingComprehensionLearner</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">library</span><span class="code-operator"> = </span><span class="code-function">ArticleLibrary</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">generator</span><span class="code-operator"> = </span><span class="code-function">ReadingComprehensionGenerator</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level_manager</span><span class="code-operator"> = </span><span class="code-function">ReadingLevelManager</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_questions</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_recommended_article</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">current_level</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level_manager</span><span class="code-operator">.</span><span class="code-function">get_current_level</span><span class="code-operator">()</span>
+        <span class="code-name">articles</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">library</span><span class="code-operator">.</span><span class="code-function">get_articles_by_difficulty</span><span class="code-operator">(</span><span class="code-name">current_level</span><span class="code-operator">[</span><span class="code-string">"level"</span><span class="code-operator">], </span><span class="code-number">1</span><span class="code-operator">)</span>
+        
+        <span class="keyword">if</span><span class="code-name"> articles</span><span class="code-operator">:</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator"> = </span><span class="code-name">articles</span><span class="code-operator">[</span><span class="code-number">0</span><span class="code-operator">]</span>
+            <span class="code-name">summary</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">generator</span><span class="code-operator">.</span><span class="code-function">generate_summary</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator">[</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+            
+            <span class="keyword">return</span><span class="code-operator">{</span>
+                <span class="code-string">"article"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator">,</span>
+                <span class="code-string">"summary"</span><span class="code-operator">: </span><span class="code-name">summary</span><span class="code-operator">,</span>
+                <span class="code-string">"current_level"</span><span class="code-operator">: </span><span class="code-name">current_level</span>
+            <span class="code-operator">}</span>
+        <span class="keyword">else</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"该级别暂无文章"</span><span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> start_quiz</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">question_count</span><span class="code-operator">=</span><span class="code-number">5</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"请先获取文章"</span><span class="code-operator">}</span>
+        
+        <span class="code-name">questions</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">generator</span><span class="code-operator">.</span><span class="code-function">generate_questions</span><span class="code-operator">(</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator">[</span><span class="code-string">"title"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_article</span><span class="code-operator">[</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-name">question_count</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_questions</span><span class="code-operator"> = </span><span class="code-name">questions</span>
+        
+        <span class="keyword">return</span><span class="code-name"> questions</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> submit_answers</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">answers</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">current_questions</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"请先开始测验"</span><span class="code-operator">}</span>
+        
+        <span class="code-name">correct_count</span><span class="code-operator"> = </span><span class="code-number">0</span>
+        <span class="code-name">results</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        
+        <span class="keyword">for</span><span class="code-name"> i</span><span class="keyword">, </span><span class="code-name"> question </span><span class="keyword">in</span><span class="code-name"> enumerate</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_questions</span><span class="code-operator">[</span><span class="code-string">"questions"</span><span class="code-operator">]</span><span class="code-operator">):</span>
+            <span class="code-name">user_answer</span><span class="code-operator"> = </span><span class="code-name">answers</span><span class="code-operator">.</span><span class="code-function">get</span><span class="code-operator">(</span><span class="code-name">str</span><span class="code-operator">(</span><span class="code-name">i</span><span class="code-operator">), </span><span class="code-string">""</span><span class="code-operator">)</span>
+            <span class="code-name">is_correct</span><span class="code-operator"> = </span><span class="code-name">user_answer</span><span class="code-operator">.</span><span class="code-function">strip</span><span class="code-operator">()</span><span class="code-operator">.</span><span class="code-function">upper</span><span class="code-operator">()</span> == <span class="code-name">question</span><span class="code-operator">[</span><span class="code-string">"answer"</span><span class="code-operator">]</span><span class="code-operator">.</span><span class="code-function">strip</span><span class="code-operator">()</span><span class="code-operator">.</span><span class="code-function">upper</span><span class="code-operator">()</span>
+            
+            <span class="keyword">if</span><span class="code-name"> is_correct</span><span class="code-operator">:</span>
+                <span class="code-name">correct_count</span><span class="code-operator"> += </span><span class="code-number">1</span>
+            
+            <span class="code-name">results</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">({</span>
+                <span class="code-string">"question"</span><span class="code-operator">: </span><span class="code-name">question</span><span class="code-operator">[</span><span class="code-string">"question"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+                <span class="code-string">"your_answer"</span><span class="code-operator">: </span><span class="code-name">user_answer</span><span class="code-operator">,</span>
+                <span class="code-string">"correct_answer"</span><span class="code-operator">: </span><span class="code-name">question</span><span class="code-operator">[</span><span class="code-string">"answer"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+                <span class="code-string">"correct"</span><span class="code-operator">: </span><span class="code-name">is_correct</span><span class="code-operator">,</span>
+                <span class="code-string">"explanation"</span><span class="code-operator">: </span><span class="code-name">question</span><span class="code-operator">[</span><span class="code-string">"explanation"</span><span class="code-operator">]</span>
+            <span class="code-operator">})</span>
+        
+        <span class="code-name">total_count</span><span class="code-operator"> = </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">current_questions</span><span class="code-operator">[</span><span class="code-string">"questions"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level_manager</span><span class="code-operator">.</span><span class="code-function">record_score</span><span class="code-operator">(</span><span class="code-name">correct_count</span><span class="code-operator">, </span><span class="code-name">total_count</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"correct_count"</span><span class="code-operator">: </span><span class="code-name">correct_count</span><span class="code-operator">,</span>
+            <span class="code-string">"total_count"</span><span class="code-operator">: </span><span class="code-name">total_count</span><span class="code-operator">,</span>
+            <span class="code-string">"accuracy"</span><span class="code-operator">: </span><span class="code-name">round</span><span class="code-operator">(</span><span class="code-name">correct_count</span> <span class="code-operator">/ </span><span class="code-name">total_count</span><span class="code-operator">, </span><span class="code-number">2</span><span class="code-operator">)</span><span class="code-operator">,</span>
+            <span class="code-string">"results"</span><span class="code-operator">: </span><span class="code-name">results</span><span class="code-operator">,</span>
+            <span class="code-string">"level_change"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">level_manager</span><span class="code-operator">.</span><span class="code-function">get_current_level</span><span class="code-operator">()</span>
+        <span class="code-operator">}</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 文章难度评估不准确：可以调整DifficultyEvaluator中的CEFR映射规则</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 题目生成质量不稳定：优化prompt或使用更强大的模型</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 自适应调整过于频繁：增加_adjust_level中的样本数量要求</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 文章库为空：使用ArticleLibrary.add_article添加示例文章</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  📖 <strong>系列导航：</strong><br>
+  • 本地大模型知识库系列（12篇，已完成）<br>
+  • 英语学习Agent系列（8篇，当前第04篇）<br>
+  <br>
+  英语学习Agent系列第04篇<br>
+  下一篇：口语练习模块——对话式口语训练
+</p>
+
+</section>
+</body>
+</html>

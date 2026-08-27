@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从0到1：开发你的第一个自定义 Skill - 公众号预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.8; color: #333; background: #f5f5f5; padding: 20px 0; }
+        .container { max-width: 680px; margin: 0 auto; background: white; padding: 40px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        h1 { font-size: 26px; font-weight: bold; color: #000; margin-bottom: 30px; line-height: 1.4; }
+        h2 { font-size: 20px; font-weight: bold; color: #000; margin: 50px 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+        h3 { font-size: 18px; font-weight: bold; color: #000; margin: 40px 0 18px 0; }
+        h4 { font-size: 16px; font-weight: bold; color: #000; margin: 35px 0 15px 0; }
+        p { margin-bottom: 15px; text-align: justify; }
+        strong { color: #000; font-weight: bold; }
+        blockquote { border-left: 4px solid #42b983; padding: 10px 15px; margin: 15px 0; background: #f8f8f8; color: #555; font-style: normal; line-height: 1.8; }
+        blockquote p { margin-bottom: 10px; }
+        ul, ol { margin: 15px 0; padding-left: 25px; }
+        li { margin-bottom: 8px; }
+        hr { border: none; height: 1px; background: #e0e0e0; margin: 50px 0; }
+        pre, code { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; margin: 15px 0; line-height: 1.6; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+        .highlight { color: #ff6b6b; font-weight: bold; }
+        .key { color: #4facfe; font-weight: bold; }
+        .number { color: #f5a623; font-weight: bold; }
+        .success { color: #42b983; font-weight: bold; }
+        .warning { color: #ff9500; font-weight: bold; }
+        .purple { color: #9b59b6; font-weight: bold; }
+        .blue { color: #3498db; font-weight: bold; }
+        .orange { color: #e67e22; font-weight: bold; }
+        .red { color: #e74c3c; font-weight: bold; }
+        @media (max-width: 768px) { .container { padding: 30px 20px; } h1 { font-size: 22px; } h2 { font-size: 18px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1>从0到1：开发你的第一个自定义 <span class="key">Skill</span></h1>
+
+<p>阅读时间：<span class="number">20</span>分钟</p>
+<p>难度等级：⭐⭐⭐ 进阶入门</p>
+<p>你将收获：开发第一个自定义 skill，打开新世界</p>
+
+
+
+<hr/>
+
+
+
+<h2>为什么要开发自定义 <span class="key">Skill</span>？</h2>
+
+<p>前 <strong>5</strong> 篇你学会了安装、使用、配置和 <span class="key">Skills</span> 管理，但可能还有疑问：</p>
+
+<ul>
+<li>"内置功能不够用怎么办？"</li>
+<li>"<span class="key">Skills</span> 市场找不到想要的 skill？"</li>
+<li>"能开发自己的功能吗？"</li>
+<li>"开发 skill 难吗？"</li>
+</ul>
+<p>答案是：<strong>开发自定义 <span class="key">Skill</span></strong></p>
+
+<p><strong>开发 <span class="key">Skill</span> 后你会发现：</strong></p>
+
+<ul>
+<li>✅ 功能无限扩展</li>
+<li>✅ 完全个性化定制</li>
+<li>✅ 可以分享给他人</li>
+<li>✅ <span class="key">Skill</span> 还能赚钱（<span class="key">Skills</span> 市场）</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>一、什么是 <span class="key">Skill</span>？</h2>
+
+<h3>1.1 概念解释</h3>
+
+<p><strong><span class="key">Skill</span> = 工具 + 流程</strong></p>
+
+<p>就像给 <strong><span class="orange">龙虾</span></strong> 安装新能力：</p>
+
+<ul>
+<li>🔍 <strong>搜索 <span class="key">Skill</span></strong>：搜索网络信息</li>
+<li>📊 <strong>分析 <span class="key">Skill</span></strong>：数据分析可视化</li>
+<li>📧 <strong>邮件 <span class="key">Skill</span></strong>：发送管理邮件</li>
+<li>🌤️ <strong>天气 <span class="key">Skill</span></strong>：查询天气预报</li>
+</ul>
+<h3>1.2 <span class="key">Skill</span> 类型</h3>
+
+<p><strong>官方 <span class="key">Skill</span>：</strong></p>
+
+<ul>
+<li><strong><span class="key">OpenClaw</span></strong> 内置</li>
+<li>经过测试，稳定可靠</li>
+<li>免费使用</li>
+</ul>
+<p><strong>社区 <span class="key">Skill</span>：</strong></p>
+
+<ul>
+<li>开发者分享</li>
+<li>种类丰富</li>
+<li>大部分免费</li>
+</ul>
+<p><strong>自定义 <span class="key">Skill</span>：</strong></p>
+
+<ul>
+<li>自己开发</li>
+<li>完全定制</li>
+<li>可分享或出售</li>
+</ul>
+<h3>1.3 <span class="key">Skill</span> 结构</h3>
+
+<p>一个 skill 包含 <strong>3</strong> 个部分：</p>
+
+<p>> <strong>配置文件（skill.yaml）：</strong></p>
+<p>> 定义 skill 名称、描述、参数</p>
+<p>></p>
+<p>> <strong>代码文件（skill.py）：</strong></p>
+<p>> 实现具体功能的代码</p>
+<p>></p>
+<p>> <strong>文档文件（README.md）：</strong></p>
+<p>> 使用说明和示例</p>
+
+
+
+<hr/>
+
+
+
+<h2>二、开发环境准备</h2>
+
+<h3>2.1 安装Python</h3>
+
+<h4>检查是否已安装：</h4>
+
+<p>打开终端/命令行，输入：</p>
+
+<pre>python --version
+</pre>
+
+<p>如果显示版本号（如 <span class="key">Python</span> <strong>3.9.0</strong>），说明已安装。</p>
+
+<h4>未安装？</h4>
+
+<p><strong><span class="key">Windows</span>：</strong></p>
+
+<ul>
+<li>访问 python.org/downloads/</li>
+<li>下载 <strong><span class="key">Python</span> 3.9+</strong></li>
+<li>安装时勾选"<strong>Add <span class="key">Python</span> to PATH</strong>"</li>
+</ul>
+<p><strong><span class="key">macOS</span>：</strong></p>
+
+<pre>brew install python3
+</pre>
+
+<p><strong><span class="key">Linux</span>：</strong></p>
+
+<pre>sudo apt install python3 python3-pip
+</pre>
+
+<h3>2.2 安装开发工具</h3>
+
+<h4>推荐IDE：</h4>
+
+<p><strong><span class="key">VS Code</span></strong>（推荐新手）：</p>
+
+<ul>
+<li>免费开源</li>
+<li>插件丰富</li>
+<li>易于使用</li>
+</ul>
+<p><strong><span class="key">PyCharm</span></strong>（专业开发）：</p>
+
+<ul>
+<li>功能强大</li>
+<li>智能提示</li>
+<li>社区版免费</li>
+</ul>
+<p><strong><span class="success">Sublime Text</span></strong>（轻量级）：</p>
+
+<ul>
+<li>启动快速</li>
+<li>界面简洁</li>
+<li>适合小项目</li>
+</ul>
+<h3>2.3 创建 <span class="key">Skill</span> 目录</h3>
+
+<h4>标准目录结构：</h4>
+
+<pre>my-weather-skill/（skill 文件夹）
+<p>├── skill.yaml（配置文件）</p>
+<p>├── skill.py（代码文件）</p>
+<p>└── README.md（文档文件）</p>
+</pre>
+
+<h4>创建步骤：</h4>
+
+<p><strong>Step <span class="number">1</span>：打开 <span class="key">OpenClaw</span> <span class="key">Skills</span> 目录</strong></p>
+
+<pre>~/.openclaw/skills/（macOS/Linux）
+<p>C:\Users\用户名\.openclaw\skills\（Windows）</p>
+</pre>
+
+<p><strong>Step <span class="number">2</span>：创建 skill 文件夹</strong></p>
+
+<p>新建文件夹：my-weather-skill</p>
+
+<p><strong>Step <span class="number">3</span>：创建 3 个文件</strong></p>
+
+<ul>
+<li>skill.yaml</li>
+<li>skill.py</li>
+<li>README.md</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>三、实战：开发"天气查询" <span class="key">Skill</span></h2>
+
+<h3>3.1 需求分析</h3>
+
+<h4>功能需求：</h4>
+
+<ul>
+<li><strong>输入</strong>：城市名（如"北京"）</li>
+<li><strong>输出</strong>：天气信息（温度、天气、湿度等）</li>
+<li><strong><span class="key">API</span></strong>：使用免费天气API</li>
+</ul>
+<h4>技术选型：</h4>
+
+<ul>
+<li>语言：<strong><span class="key">Python</span> 3</strong></li>
+<li><span class="key">API</span>：OpenWeatherMap（免费）</li>
+<li>库：requests（HTTP请求）</li>
+</ul>
+<h3>3.2 编写配置文件（skill.yaml）</h3>
+
+<h4>文件内容：</h4>
+
+<pre>name: weather
+<p>version: 1.0.0</p>
+<p>description: 查询城市天气信息</p>
+<p>author: 生活助理</p>
+
+<p>parameters:</p>
+<p>  - name: city</p>
+<p>    type: string</p>
+<p>    description: 城市名称</p>
+<p>    required: true</p>
+<p>    example: "北京"</p>
+
+<p>returns:</p>
+<p>  type: string</p>
+<p>  description: 天气信息文本</p>
+</pre>
+
+<h4>配置说明：</h4>
+
+<ul>
+<li><strong>name</strong>：skill 名称（唯一标识）</li>
+<li><strong>version</strong>：版本号</li>
+<li><strong>description</strong>：skill 描述</li>
+<li><strong>parameters</strong>：输入参数定义</li>
+<li><strong>returns</strong>：返回值定义</li>
+</ul>
+<h3>3.3 编写代码文件（skill.py）</h3>
+
+<h4>代码结构：</h4>
+
+<p>> <strong>第<span class="number">1</span>步：导入库</strong></p>
+<p>> import requests</p>
+<p>> from openclaw import <span class="key">Skill</span></p>
+<p>></p>
+<p>> <strong>第<span class="number">2</span>步：定义 <span class="key">Skill</span> 类</strong></p>
+<p>> class WeatherSkill(<span class="key">Skill</span>):</p>
+<p>>     name = "weather"</p>
+<p>>     description = "查询天气"</p>
+<p>></p>
+<p>> <strong>第<span class="number">3</span>步：实现执行方法</strong></p>
+<p>> def execute(self, city):</p>
+<p>>     # 获取天气数据</p>
+<p>>     weather_data = self.get_weather(city)</p>
+<p>>     # 格式化输出</p>
+<p>>     return self.format_weather(weather_data)</p>
+<p>></p>
+<p>> <strong>第<span class="number">4</span>步：实现辅助方法</strong></p>
+<p>> def get_weather(self, city):</p>
+<p>>     # 调用天气API</p>
+<p>>     # 返回数据</p>
+<p>>     pass</p>
+
+<h4>完整代码（简化版）：</h4>
+
+<p><strong>注意</strong>：这里展示代码结构，实际开发需要完整实现</p>
+
+<p>主要包含：</p>
+
+<ul>
+<li>导入依赖库</li>
+<li>定义 <span class="key">Skill</span> 类</li>
+<li>实现execute方法（主逻辑）</li>
+<li>实现辅助方法（API调用、数据处理）</li>
+<li>错误处理</li>
+</ul>
+<h3>3.4 编写文档文件（README.md）</h3>
+
+<h4>文档内容：</h4>
+
+<pre># 天气查询 Skill
+
+<p>## 功能</p>
+<p>查询指定城市的天气信息</p>
+
+<p>## 使用方法</p>
+<p>输入：天气 北京</p>
+<p>输出：北京今天晴，温度15-25°C</p>
+
+<p>## 参数说明</p>
+<ul>
+<li>city: 城市名称（必填）</li>
+</ul>
+<p>## 示例</p>
+<p>查询上海天气：天气 上海</p>
+<p>查询广州天气：天气 广州</p>
+</pre>
+
+<h4>文档说明：</h4>
+
+<ul>
+<li><strong>功能介绍</strong>：简要说明 skill 用途</li>
+<li><strong>使用方法</strong>：如何调用 skill</li>
+<li><strong>参数说明</strong>：输入参数详解</li>
+<li><strong>示例</strong>：实际使用示例</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>四、测试 <span class="key">Skill</span></h2>
+
+<h3>4.1 本地测试</h3>
+
+<h4>测试步骤：</h4>
+
+<p><strong>Step <span class="number">1</span>：注册 <span class="key">Skill</span></strong></p>
+
+<p>在 <strong><span class="key">OpenClaw</span></strong> 中注册 skill：</p>
+
+<p>设置 → <span class="key">Skills</span> 管理 → 添加 skill → 选择 skill 文件夹</p>
+
+<p><strong>Step <span class="number">2</span>：测试调用</strong></p>
+
+<p>在对话中输入：</p>
+
+<pre>天气 北京
+</pre>
+
+<p><strong>Step <span class="number">3</span>：查看输出</strong></p>
+
+<p>预期输出：</p>
+
+<pre>北京今天晴，温度15-25°C，湿度45%，空气质量良好
+</pre>
+
+<h3>4.2 调试技巧</h3>
+
+<h4>常见问题：</h4>
+
+<p><strong>问题1：<span class="key">Skill</span> 加载失败</strong></p>
+
+<p>原因：配置文件格式错误</p>
+<p>解决：检查 <strong><span class="key">YAML</span></strong> 格式，注意缩进</p>
+
+<p><strong>问题2：API调用失败</strong></p>
+
+<p>原因：网络问题或API Key错误</p>
+<p>解决：检查网络连接和API Key</p>
+
+<p><strong>问题3：返回数据格式错误</strong></p>
+
+<p>原因：数据处理逻辑有问题</p>
+<p>解决：添加调试日志，检查数据结构</p>
+
+<h4>调试方法：</h4>
+
+<ul>
+<li><strong>打印日志</strong>：在关键位置添加print语句</li>
+<li><strong>单元测试</strong>：编写测试用例验证功能</li>
+<li><strong>逐步调试</strong>：分段测试，定位问题</li>
+</ul>
+<h3>4.3 优化改进</h3>
+
+<h4>可以改进的地方：</h4>
+
+<ul>
+<li>✅ 添加更多天气信息（风向、紫外线等）</li>
+<li>✅ 支持多天预报</li>
+<li>✅ 添加天气图标</li>
+<li>✅ 支持语音播报</li>
+<li>✅ 添加错误重试机制</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>五、部署使用</h2>
+
+<h3>5.1 本地部署</h3>
+
+<h4>部署步骤：</h4>
+
+<p><strong>Step <span class="number">1</span>：<span class="key">Skill</span> 已自动加载</strong></p>
+
+<p>注册成功后，<strong><span class="key">OpenClaw</span></strong> 会自动加载 skill</p>
+
+<p><strong>Step <span class="number">2</span>：直接使用</strong></p>
+
+<p>在任意对话中调用 skill</p>
+
+<p><strong>Step <span class="number">3</span>：查看日志</strong></p>
+
+<p>如需查看运行日志：</p>
+
+<pre>~/.openclaw/logs/skills.log
+</pre>
+
+<h3>5.2 分享 <span class="key">Skill</span></h3>
+
+<h4>分享方式：</h4>
+
+<p><strong>方式1：分享给朋友</strong></p>
+
+<ul>
+<li>打包 skill 文件夹为ZIP</li>
+<li>发送给朋友</li>
+<li>朋友解压到 <span class="key">Skills</span> 目录</li>
+<li>注册后即可使用</li>
+</ul>
+<p><strong>方式2：上传到社区</strong></p>
+
+<ul>
+<li>访问 <strong><span class="key">OpenClaw</span></strong> <span class="key">Skills</span> 市场</li>
+<li>点击"发布 <span class="key">Skill</span>"</li>
+<li>上传 skill 文件</li>
+<li>填写 skill 信息</li>
+<li>审核通过后所有人可用</li>
+</ul>
+<p><strong>方式3：开源到 <span class="key">GitHub</span></strong></p>
+
+<ul>
+<li>创建 <strong><span class="key">GitHub</span></strong> 仓库</li>
+<li>上传 skill 代码</li>
+<li>编写详细文档</li>
+<li>分享仓库链接</li>
+</ul>
+<h3>5.3 <span class="key">Skills</span> 市场</h3>
+
+<h4>赚钱机会：</h4>
+
+<p><strong><span class="key">OpenClaw</span></strong> <span class="key">Skills</span> 市场支持：</p>
+
+<ul>
+<li><strong>免费 <span class="key">Skill</span></strong>：完全免费，积累用户</li>
+<li><strong>付费 <span class="key">Skill</span></strong>：设置价格，用户购买</li>
+<li><strong>订阅 <span class="key">Skill</span></strong>：按月收费，持续收入</li>
+</ul>
+<h4>成功案例：</h4>
+
+<p>> <strong>数据分析师小王：</strong></p>
+<p>> 开发了"数据可视化" skill</p>
+<p>> 定价 <strong>¥<span class="number">99</span></strong> /月</p>
+<p>> <strong><span class="number">3</span>个月</strong> 获得 <strong>200+</strong> 付费用户</p>
+<p>> 月收入 <strong>¥<span class="number">2</span>万+</strong></p>
+
+
+
+<hr/>
+
+
+
+<h2>六、<span class="key">Skill</span> 开发规范</h2>
+
+<h3>6.1 命名规范</h3>
+
+<h4><span class="key">Skill</span> 命名：</h4>
+
+<ul>
+<li>使用小写字母</li>
+<li>用连字符分隔单词</li>
+<li>简洁有意义</li>
+</ul>
+<p><strong>✅ 好的命名：</strong></p>
+
+<p>weather-query, pdf-converter, email-sender</p>
+
+<p><strong>❌ 不好的命名：</strong></p>
+
+<p>WeatherQuery, pdf_converter_v2, my-skill</p>
+
+<h3>6.2 错误处理</h3>
+
+<h4>必须处理的错误：</h4>
+
+<ul>
+<li>✅ 网络请求失败</li>
+<li>✅ 参数缺失或错误</li>
+<li>✅ API返回异常</li>
+<li>✅ 数据格式不正确</li>
+</ul>
+<h4>错误处理示例：</h4>
+
+<ul>
+<li>使用try-except捕获异常</li>
+<li>返回友好的错误提示</li>
+<li>记录错误日志</li>
+</ul>
+<h3>6.3 日志记录</h3>
+
+<h4>日志级别：</h4>
+
+<ul>
+<li><strong>DEBUG</strong>：调试信息</li>
+<li><strong>INFO</strong>：正常运行信息</li>
+<li><strong>WARNING</strong>：警告信息</li>
+<li><strong>ERROR</strong>：错误信息</li>
+</ul>
+<h4>日志最佳实践：</h4>
+
+<ul>
+<li>记录关键操作</li>
+<li>记录错误详情</li>
+<li>不要记录敏感信息</li>
+<li>定期清理旧日志</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>七、进阶方向</h2>
+
+<h3>7.1 更复杂的 <span class="key">Skill</span></h3>
+
+<h4>可以尝试开发：</h4>
+
+<ul>
+<li><strong>邮件 <span class="key">Skill</span></strong>：自动发送邮件</li>
+<li><strong>数据库 <span class="key">Skill</span></strong>：查询数据库</li>
+<li><strong>爬虫 <span class="key">Skill</span></strong>：抓取网页数据</li>
+<li><strong>文件处理 <span class="key">Skill</span></strong>：批量处理文件</li>
+<li><strong>数据分析 <span class="key">Skill</span></strong>：可视化分析</li>
+</ul>
+<h3>7.2 <span class="key">Skill</span> 组合</h3>
+
+<h4>多个 skill 协同工作：</h4>
+
+<p>例如"新闻简报"工作流：</p>
+
+<p>> <strong>步骤1</strong>：搜索 <span class="key">Skill</span> → 获取新闻</p>
+<p>> <strong>步骤2</strong>：分析 <span class="key">Skill</span> → 提取要点</p>
+<p>> <strong>步骤3</strong>：写作 <span class="key">Skill</span> → 生成简报</p>
+<p>> <strong>步骤4</strong>：邮件 <span class="key">Skill</span> → 发送邮件</p>
+
+<h3>7.3 学习资源</h3>
+
+<h4>官方文档：</h4>
+
+<p>docs.openclaw.ai（完整开发文档）</p>
+
+<h4>社区论坛：</h4>
+
+<p>community.openclaw.ai（开发者交流）</p>
+
+<h4>视频教程：</h4>
+
+<p>B站搜索"<strong><span class="key">OpenClaw</span></strong> <span class="key">Skill</span> 开发"</p>
+
+<h4>示例代码：</h4>
+
+<p>github.com/openclaw/skills（官方 skill 仓库）</p>
+
+
+
+<hr/>
+
+
+
+<h2>八、小结</h2>
+
+<h3>开发流程回顾</h3>
+
+<p>> <strong>1. 需求分析</strong> → 明确功能需求</p>
+<p>> <strong>2. 环境准备</strong> → 安装工具，创建目录</p>
+<p>> <strong>3. 编写配置</strong> → skill.yaml定义参数</p>
+<p>> <strong>4. 编写代码</strong> → skill.py实现功能</p>
+<p>> <strong>5. 编写文档</strong> → README.md说明用法</p>
+<p>> <strong>6. 测试调试</strong> → 本地测试，修复问题</p>
+<p>> <strong>7. 部署分享</strong> → 本地使用或分享</p>
+
+<h3>关键要点</h3>
+
+<ul>
+<li>✅ <span class="key">Skill</span> = 配置 + 代码 + 文档</li>
+<li>✅ 先简单后复杂</li>
+<li>✅ 充分测试再发布</li>
+<li>✅ 良好的错误处理</li>
+<li>✅ 详细的文档说明</li>
+</ul>
+<h3>成就达成！</h3>
+
+<p><strong>你已经：</strong></p>
+
+<ul>
+<li>✅ 理解 <span class="key">Skill</span> 的概念和结构</li>
+<li>✅ 搭建开发环境</li>
+<li>✅ 完成第一个 skill 开发</li>
+<li>✅ 掌握测试和部署方法</li>
+<li>✅ 了解 <span class="key">Skills</span> 市场机会</li>
+</ul>
+
+
+<hr/>
+
+
+
+<h2>练习题</h2>
+
+<h3>🎯 开发挑战</h3>
+
+<p>完成以下 skill 开发：</p>
+
+<h4>挑战1：汇率查询 <span class="key">Skill</span></h4>
+
+<p>输入货币对（如USD/CNY），返回汇率信息</p>
+
+<h4>挑战2：翻译 <span class="key">Skill</span></h4>
+
+<p>输入文本和目标语言，返回翻译结果</p>
+
+<h4>挑战3：计算器 <span class="key">Skill</span></h4>
+
+<p>输入数学表达式，返回计算结果</p>
+
+<h4>挑战4：二维码生成 <span class="key">Skill</span></h4>
+
+<p>输入文本，生成二维码图片</p>
+
+<p><strong>完成的同学，评论区分享你的 skill！</strong> 🎉</p>
+
+
+
+<hr/>
+
+
+
+<h2>下期预告</h2>
+
+<p><strong>下一篇：</strong>《Agent工作流：让<span class="orange">龙虾</span>自动干活》</p>
+
+<p><strong>你将学到：</strong></p>
+
+<ul>
+<li>✅ 什么是工作流？</li>
+<li>✅ 工作流设计原则</li>
+<li>✅ 实战：自动化日报</li>
+<li>✅ 批量文件处理</li>
+</ul>
+<p><strong>准备好让<span class="orange">龙虾</span>自动干活了吗？</strong> 🚀</p>
+
+
+
+<hr/>
+
+<p><strong>系列导航</strong></p>
+
+<ul>
+<li>上一篇：认识 <span class="key">Skills</span> 系统：默认 <span class="key">Skills</span> 与管理</li>
+<li>下一篇：Agent工作流：让<span class="orange">龙虾</span>自动干活</li>
+</ul>
+
+
+<hr/>
+
+<p>本文是《OpenClaw从入门到精通》系列第<span class="number">6</span>篇</p>
+<p>作者：<span class="purple">生活助理</span> | 发布时间：2026-03-20</p>
+
+    </div>
+</body>
+</html>

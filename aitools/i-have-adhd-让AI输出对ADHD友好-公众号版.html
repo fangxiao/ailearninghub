@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>别把答案埋起来——i-have-adhd 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=focused%20beam%20of%20light%20cutting%20through%20scattered%20thoughts%20ADHD%20friendly%20clean%20layout%20bright%20rainbow%20colors%20minimalist%20illustration%20no%20text&image_size=landscape_16_9" alt="i-have-adhd 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    别把答案埋起来——i-have-adhd 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    让 AI 输出对 ADHD 友好，答案先行
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | 输出风格 Skill 实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你有没有过这样的体验：问 AI 一个问题，它给你写了三段铺垫、五点分析、最后才在结尾的括号里悄悄给出那句"所以答案是 X"。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你盯着屏幕，眼睛扫过一遍又一遍，最后还是只能 ctrl+F 找"答案"两个字。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ "在我开始回答这个问题之前，我们需要先了解一下背景……"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 一段 800 字的回答，关键结论藏在第 3 段第 4 句
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 读完一长串步骤，不知道下一步到底先做哪个
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 你只是想要个"是"或"否"，AI 给你写了篇小论文
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这不是 AI 不聪明，是它默认的输出习惯，和普通人读信息的方式对不上。尤其对注意力容易飘走的人来说，比如 ADHD 患者，这种"答案埋到最后"的回答方式，基本就是劝退。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">i-have-adhd 就是来解这件事的。</strong>它不复杂，10.1k stars，三行命令装上，AI 的回答方式立刻变得"先给结论、再讲怎么做、告诉你下一步干啥"。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>i-have-adhd 是一个让 AI 输出对 ADHD 友好的 Skill，强制 AI "答案先行、分步骤、给下一步行动、不埋答案"，支持 Claude Code、Codex、Gemini CLI 三个主流 Agent。
+    </p>
+  </section>
+
+  <!-- 章节01：i-have-adhd 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">i-have-adhd 是什么</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">i-have-adhd 是一个开源的 Skill</strong>，仓库地址是 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">ayghri/i-have-adhd</code>，目前 GitHub 上 10.1k stars。它干的事只有一件：
+  </p>
+
+  <p style="margin: 25px 0; text-align: center; font-size: 17px; color: #00897B; font-weight: bold;">
+    让 AI 的回答方式变得"对注意力不友好的人也能用"。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它本质上是一个 Skill（如果你还不熟 Skill 是什么，可以看我们之前写的 <a href="anthropics-skills-官方技能库-公众号版.html" style="color: #00897B; text-decoration: none; border-bottom: 1px solid #00897B;">anthropics/skills 官方技能库介绍</a>，里面有完整科普）。Skill 类似于给 AI 加的一套"行为约束说明书"——装上之后，AI 在生成回答时会自动遵循这套规则。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    i-have-adhd 的规则非常具体：第一句给结论、信息按步骤排、给一个明确的下一步行动、不要把答案藏在段落中间。听起来简单，但效果立竿见影。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">📌 关键信息</p>
+    <p style="margin: 0 0 6px 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">• 仓库：<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">https://github.com/ayghri/i-have-adhd</code></p>
+    <p style="margin: 0 0 6px 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">• Stars：<strong style="color: #00897B;">10.1k</strong></p>
+    <p style="margin: 0 0 6px 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">• 支持平台：Claude Code、Codex、Gemini CLI</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">• 激活命令：<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/i-have-adhd</code></p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    为什么要专门为 ADHD 优化？因为 ADHD 不是"不聪明"，而是"注意力难以维持在枯燥信息上"。一段正常 AI 回答对一个普通人可能只是"啰嗦点"，但对 ADHDer 来说可能就是"读到第二段就走神、然后整篇作废"。i-have-adhd 的存在，本质上是把 AI 的输出重新排版成"注意力经济"友好的形态——而这其实对所有用户都是好事，谁不希望先看到答案呢。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：plugin marketplace + 可选常驻</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    i-have-adhd 通过 Claude Code 的 plugin marketplace 安装，两行命令搞定。
+  </p>
+
+  <p style="margin: 20px 0 8px 0; color: #00897B; font-weight: bold; font-size: 16px;">第一步：添加 marketplace</p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 添加 i-have-adhd 的 marketplace 源</span>
+claude plugin marketplace add ayghri/i-have-adhd</p>
+  </section>
+
+  <p style="margin: 20px 0 8px 0; color: #00897B; font-weight: bold; font-size: 16px;">第二步：安装 plugin</p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 安装 i-have-adhd plugin</span>
+claude plugin install i-have-adhd@i-have-adhd</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    装完之后，在 Claude Code 会话里输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/i-have-adhd</code> 就能激活。激活之后，本次会话内 AI 的输出就会自动按 ADHD 友好的规则来排版。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 可选：常驻模式</p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      如果你不希望每次都手动输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/i-have-adhd</code>，可以开启常驻模式——让它默认生效。
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 创建一个空文件，i-have-adhd 就会常驻</span>
+touch ~/.claude/.i-have-adhd-always</p>
+    </section>
+    <p style="margin: 12px 0 0 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      这个文件存在时，AI 会默认遵循 ADHD 友好的输出规则，不需要每次手动激活。删掉文件就恢复默认行为。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    除了 Claude Code，Codex 和 Gemini CLI 也都支持。安装方式类似，具体可以看仓库 README——核心都是把这个 Skill 装到对应 Agent 的 skills 目录下。
+  </p>
+
+  <!-- 章节03：四大规则 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">四大规则：答案先行 / 分步骤 / 给下一步 / 不埋答案</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    i-have-adhd 的全部秘密就四条规则，没什么花活儿，但每一条都正好对着"AI 默认输出习惯"的那些毛病下手。
+  </p>
+
+  <!-- 规则1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      答案先行（Answer First）
+    </p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      回答的第一句，必须是直接结论。不是"让我们先理解一下背景"，不是"这个问题很有意思"，而是用户问的那个"答案"。
+    </p>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8; font-style: italic;">
+      ❌ "这是一个很好的问题。在回答之前，我们需要先了解……"<br>
+      ✅ "答案是用 git rebase。下面解释为什么。"
+    </p>
+  </section>
+
+  <!-- 规则2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      分步骤（Step by Step）
+    </p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      操作类的内容必须拆成清晰的步骤，用编号列表，而不是把所有动作揉在一整段文字里。每一步只做一件事。
+    </p>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8; font-style: italic;">
+      ❌ "你需要先打开配置文件然后修改里面的 timeout 字段接着重启服务最后验证一下日志。"<br>
+      ✅ "1. 打开 config.yaml / 2. 修改 timeout 字段 / 3. 重启服务 / 4. 验证日志"
+    </p>
+  </section>
+
+  <!-- 规则3 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      给下一步行动（Next Action）
+    </p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      回答的最后必须给一个明确的"下一步要做什么"。不是开放式建议，是具体的、可立即执行的下一步动作。
+    </p>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8; font-style: italic;">
+      ❌ "你可以根据实际情况灵活调整。"<br>
+      ✅ "下一步：在终端运行 `git rebase -i HEAD~3`，把第 2 条 pick 改成 squash。"
+    </p>
+  </section>
+
+  <!-- 规则4 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">4</span>
+      不埋答案（No Buried Answers）
+    </p>
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      关键结论不能藏在段落中间，也不能放在长篇分析的尾部。如果一句话是用户要的"答案"，它就必须出现在最显眼的位置——开头或独立成段。
+    </p>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8; font-style: italic;">
+      ❌ 一段 400 字分析的第 5 句才是答案<br>
+      ✅ 答案单独成段加粗，分析放后面
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这四条规则合起来，本质上是把 AI 的回答从"作文模式"切到"工作模式"。作文讲究起承转合，工作讲究先把事说清楚。
+  </p>
+
+  <!-- 章节04：实战对比 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战对比：有 vs 无 i-have-adhd</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    口说无凭，直接看个对比。问题是一样的：
+  </p>
+
+  <section style="margin: 20px 0; padding: 16px 20px; background: #f8f8f8; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">用户提问：</strong>"我用 git commit 提交错了，怎么撤销最近一次提交但保留改动？"
+    </p>
+  </section>
+
+  <p style="margin: 25px 0 8px 0; color: #c62828; font-weight: bold; font-size: 16px;">🔴 没装 i-have-adhd 的回答：</p>
+  <section style="margin: 12px 0; padding: 18px 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.9;">
+      Git 是一个分布式版本控制系统，由 Linus Torvalds 在 2005 年创建。它在软件开发中被广泛用于跟踪代码变更、协作开发以及管理项目历史。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.9;">
+      在 Git 中，每次提交都会创建一个新的快照，这些快照组成了项目的提交历史。当你想要撤销提交时，Git 提供了几种不同的方式，包括 reset、revert 和 checkout 等。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.9;">
+      对于你描述的场景——撤销最近一次提交但保留改动——可以使用 <code style="background: #ffe0e0; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git reset --soft HEAD~1</code> 命令。这会把 HEAD 指针回退一个提交，但保留工作区和暂存区的改动。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.9;">
+      希望这个回答对你有帮助，如果还有其他问题欢迎继续提问。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0 8px 0; color: #00897B; font-weight: bold; font-size: 16px;">🟢 装了 i-have-adhd 的回答：</p>
+  <section style="margin: 12px 0; padding: 18px 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 8px;">
+    <p style="margin: 0 0 14px 0; font-size: 16px; color: #00695C; line-height: 1.9; font-weight: bold;">
+      ✅ 答案：<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git reset --soft HEAD~1</code>
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      这个命令会把 HEAD 回退一个提交，但保留你的代码改动在暂存区。
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #00897B; line-height: 1.9; font-weight: bold;">操作步骤：</p>
+    <p style="margin: 0 0 6px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">1. 在终端执行 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git reset --soft HEAD~1</code></p>
+    <p style="margin: 0 0 6px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">2. 用 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git status</code> 确认改动还在暂存区</p>
+    <p style="margin: 0 0 14px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">3. 修改 commit message 后重新 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git commit</code></p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #00897B; line-height: 1.9; font-weight: bold;">下一步：</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">现在去终端执行第一步，看 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git log</code> 确认最近一次提交已被撤销。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    同样的信息量，第二种回答让你<strong style="color: #00897B;">3 秒内拿到答案</strong>，30 秒内知道怎么做，立刻能动手。第一种回答你得先读完 3 段铺垫，再去第 3 段中间扒拉出那条命令。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这就是 i-have-adhd 的价值。它不是让 AI 变聪明，而是让 AI 输出的东西，更贴合人读信息的方式。
+  </p>
+
+  <!-- 对比表格 -->
+  <p style="margin: 30px 0 12px 0; color: #00897B; font-weight: bold; font-size: 16px;">📊 输出对比一览：</p>
+  <section style="margin: 12px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff;">
+      <thead>
+        <tr>
+          <th style="padding: 12px 10px; background: #00897B; color: #fff; text-align: left; border: 1px solid #00897B;">维度</th>
+          <th style="padding: 12px 10px; background: #00897B; color: #fff; text-align: left; border: 1px solid #00897B;">无 i-have-adhd</th>
+          <th style="padding: 12px 10px; background: #00897B; color: #fff; text-align: left; border: 1px solid #00897B;">有 i-have-adhd</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">答案位置</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #c62828;">第 3 段中间</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B;">第一句</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold; background: #fafafa;">前置铺垫</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #c62828; background: #fafafa;">2 段背景介绍</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; background: #fafafa;">无</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">操作步骤</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #c62828;">揉在段落里</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B;">编号列表</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold; background: #fafafa;">下一步</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #c62828; background: #fafafa;">"希望对你有帮助"</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; background: #fafafa;">具体可执行动作</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">读到答案耗时</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #c62828;">约 30 秒</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B;">约 3 秒</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 章节05：对比 Humanizer -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比 Humanizer：都是输出风格类 Skill</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    写到这，熟悉我们之前文章的读者可能会想到另一个 Skill——<a href="humanizer-skill介绍-公众号版.html" style="color: #00897B; text-decoration: none; border-bottom: 1px solid #00897B;">Humanizer-zh</a>。它俩都属于"输出风格调整"类，但解决的是完全不同的问题。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单说：<strong style="color: #00897B;">Humanizer 管"像不像人写的"，i-have-adhd 管"读不读得进去"</strong>。
+  </p>
+
+  <section style="margin: 20px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff;">
+      <thead>
+        <tr>
+          <th style="padding: 12px 10px; background: #00897B; color: #fff; text-align: left; border: 1px solid #00897B;">对比维度</th>
+          <th style="padding: 12px 10px; background: #00897B; color: #fff; text-align: left; border: 1px solid #00897B;">Humanizer-zh</th>
+          <th style="padding: 12px 10px; background: #00897B; color: #fff; text-align: left; border: 1px solid #00897B;">i-have-adhd</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">核心目标</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f;">去 AI 写作痕迹</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f;">让输出对注意力友好</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold; background: #fafafa;">解决场景</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f; background: #fafafa;">文章读着像机器写的</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f; background: #fafafa;">回答读着抓不住重点</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">改动层面</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f;">用词、句式、语气</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f;">结构、顺序、行动项</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold; background: #fafafa;">典型场景</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f; background: #fafafa;">公众号、营销文案</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #3f3f3f; background: #fafafa;">技术问答、操作指南</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">能否叠加用</td>
+          <td style="padding: 10px; border: 1px solid #e8e8e8; color: #00897B;" colspan="2">✅ 可以——Humanizer 改"语气"，i-have-adhd 改"结构"</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    如果想做更深度的"写作风格迁移"，比如让 AI 模仿某个特定博主的语气，可以看我们之前写的 <a href="khazix-skills-写作风格迁移-公众号版.html" style="color: #00897B; text-decoration: none; border-bottom: 1px solid #00897B;">Khazix-Skills 写作风格迁移</a>。三个 Skill 正好各管一样：Khazix 管"像谁写的"，Humanizer 管"像不像人写的"，i-have-adhd 管"读不读得进去"。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 怎么搭配用</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      写公众号/营销文案 → <strong style="color: #00897B;">Humanizer + Khazix</strong><br>
+      写技术文档/操作指南 → <strong style="color: #00897B;">i-have-adhd</strong><br>
+      既要可读性又要人味 → <strong style="color: #00897B;">三个一起开</strong>
+    </p>
+  </section>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">⚠</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-weight: bold; color: #c62828; font-size: 16px;">坑 1：常驻模式开过头</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <code style="background: #ffe0e0; padding: 2px 6px; border-radius: 4px; font-size: 14px;">.i-have-adhd-always</code> 一开，所有会话都强制 ADHD 友好模式。但有些场景你其实需要 AI 写长文、做深度分析（比如让 AI 写一篇文章草稿），这时候答案先行反而会破坏文章结构。建议：日常会话常驻开，写长文场景临时删文件。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-weight: bold; color: #c62828; font-size: 16px;">坑 2：以为它能让 AI 变聪明</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      i-have-adhd 只改输出格式，不改答案质量。如果 AI 本来就答错了，装上之后只是变成"第一句就告诉你错的答案"——错的更快了。复杂问题还是要靠 prompt 引导 + 多轮追问。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-weight: bold; color: #c62828; font-size: 16px;">坑 3：跟其它 Skill 冲突</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      如果你装了多个输出风格类 Skill（比如 Humanizer），同时激活可能会出现规则打架——Humanizer 想要"自然口语化"，i-have-adhd 想要"答案先行加粗"。建议按场景切换，不要全开。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-weight: bold; color: #c62828; font-size: 16px;">坑 4：Codex / Gemini CLI 安装路径不一样</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <code style="background: #ffe0e0; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude plugin install</code> 是 Claude Code 的命令，Codex 和 Gemini CLI 的安装方式不一样——别照搬命令，去仓库 README 找对应平台的说明。
+    </p>
+  </section>
+
+  <!-- 金句收尾 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      i-have-adhd 这个名字听起来像是"只为 ADHD 患者服务"，但其实它解决的是一个更普遍的问题：AI 默认那种"堆铺垫、埋答案"的输出方式，本来就不符合人看信息的方式。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      先给答案、步骤编号清楚、下一步做什么一目了然，这些不本来就是该有的吗？
+    </p>
+    <p style="margin: 0; font-size: 17px; color: #00897B; line-height: 2.0; text-align: center; font-weight: bold;">
+      所谓 ADHD 友好，说白了就是对所有人都友好。
+    </p>
+  </section>
+
+  <!-- CTA 行动卡 -->
+  <section style="margin: 30px 0; padding: 25px 22px; background: #00897B; border-radius: 12px;">
+    <p style="margin: 0 0 16px 0; font-size: 18px; color: #fff; font-weight: bold; text-align: center;">🚀 三行命令，立刻装上</p>
+    <section style="background: #fff; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333; white-space: pre-wrap;"><span style="color: #7cb342;"># 1. 添加 marketplace</span>
+claude plugin marketplace add ayghri/i-have-adhd
+
+<span style="color: #7cb342;"># 2. 安装 plugin</span>
+claude plugin install i-have-adhd@i-have-adhd
+
+<span style="color: #7cb342;"># 3. 在会话中激活</span>
+/i-have-adhd</p>
+    </section>
+    <p style="margin: 14px 0 0 0; font-size: 14px; color: #B2DFDB; text-align: center; line-height: 1.8;">
+      仓库地址：github.com/ayghri/i-have-adhd · 10.1k ⭐
+    </p>
+  </section>
+
+  <!-- 评论区引导 -->
+  <section style="margin: 30px 0 20px 0; padding: 22px 20px; background: #f8f8f8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">💬 评论区聊聊</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      • 你被 AI 的"长篇大论"坑过吗？最离谱的一次是啥情况？
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      • 除了 i-have-adhd，你还用过哪些"输出风格类"的 Skill？
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      • 你觉得 AI 输出最该改的毛病是什么？欢迎留言。
+    </p>
+  </section>
+
+  <!-- 关联阅读 -->
+  <section style="margin: 30px 0; padding: 22px 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📚 关联阅读</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      → <a href="humanizer-skill介绍-公众号版.html" style="color: #00897B; text-decoration: none; border-bottom: 1px solid #00897B;">Humanizer-zh：去 AI 写作痕迹神器</a>（输出风格类，搭配使用）
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      → <a href="khazix-skills-写作风格迁移-公众号版.html" style="color: #00897B; text-decoration: none; border-bottom: 1px solid #00897B;">Khazix-Skills：写作风格迁移合集</a>（写作风格类）
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      → <a href="anthropics-skills-官方技能库-公众号版.html" style="color: #00897B; text-decoration: none; border-bottom: 1px solid #00897B;">anthropics/skills：官方技能库科普</a>（Skill 入门必读）
+    </p>
+  </section>
+
+  <!-- 分隔线 -->
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- Footer CTA -->
+  <section style="margin: 30px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">觉得有用，点个「在看」转发给被 AI 长回答折磨的朋友</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 编程工具实战</p>
+  </section>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新手总结：从入门到日常使用</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">8</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐ 零基础</p>
+<p data-tool="mdnice编辑器">你将收获：回顾知识点，了解下一步学习方向</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">快速回顾</span></h2>
+<p data-tool="mdnice编辑器"><strong>✅ 你已完成：</strong></p>
+<ul>
+<li><section>第<span class="num">1</span>篇：理解 AI Coding 概念和工具对比</section></li>
+<li><section>第<span class="num">2</span>篇：完成 <span class="key">Claude</span> Code 安装配置</section></li>
+<li><section>第<span class="num">3</span>篇：掌握 <span class="num">5</span>个核心操作（生成、解释、调试、重构、测试）</section></li>
+<li><section>第<span class="num">4</span>篇：学会提示词技巧（黄金公式 + 实战模板）</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>🎯 你现在能：</strong> 解决 80% 的日常编码问题，效率提升 2-3 倍</p>
+<p data-tool="mdnice编辑器"><strong>❓ 接下来：</strong> 进阶篇（代码库理解、多文件编辑、测试驱动等），效率提升 5-20 倍</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、核心概念总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">Coding Agent vs 大模型</span></h3>
+<p data-tool="mdnice编辑器"><strong>Coding <span class="key">Agent</span> = 软件</strong>（Claude Code、通义灵码、Cursor 等）</p>
+<p data-tool="mdnice编辑器"><strong>大模型 = AI 能力</strong>（<span class="key">Claude</span> 4、<span class="key">GPT</span>-4.5、GLM-5 等）</p>
+<p data-tool="mdnice编辑器"><strong>关键区别：</strong> <span class="key">Claude</span> Code 可配置多种模型，其他 <span class="key">Agent</span> 多数固定模型</p>
+<p data-tool="mdnice编辑器"><strong>✅ <span class="key">Claude</span> Code 的优势</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 模型灵活<br/>   - 可配置国内模型（GLM-5、通义千问）<br/>   - 可配置国际模型（Claude 4、GPT-4.5）<br/>   - 根据场景切换<br/><br/>2. 深度理解<br/>   - 上下文窗口 200K tokens<br/>   - 多文件协同<br/>   - 代码库理解<br/><br/>3. 国内友好<br/>   - 配国内模型无需代理<br/>   - 中文支持完美<br/>   - 价格便宜（用国内模型）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">五个核心操作</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 代码生成</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>从无到有，快速实现<br/><br/>示例：<br/>"用 Python 写一个用户注册函数，包含验证和错误处理"</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. 代码解释</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>理解原理，学习提升<br/><br/>示例：<br/>"解释这段代码的原理，指出潜在问题"</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. Bug 修复</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>定位问题，快速解决<br/><br/>示例：<br/>"这个函数报错 ZeroDivisionError，帮我修复"</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 重构优化</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>提升质量，改善性能<br/><br/>示例：<br/>"重构这个函数，提升可读性和性能"</code></pre>
+<p data-tool="mdnice编辑器"><strong>5. 测试生成</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>保证质量，提高可靠性<br/><br/>示例：<br/>"为这个函数生成单元测试，覆盖率 90%+"</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.3</span><span class="title-text">提示词技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>黄金公式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>背景 + 任务 + 要求 + 示例 + 格式</code></pre>
+<p data-tool="mdnice编辑器"><strong>示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>【背景】我在做一个 Django 电商项目<br/><br/>【任务】写一个商品搜索 API<br/><br/>【要求】<br/>- 支持关键词、价格区间筛选<br/>- 支持分页（每页20条）<br/>- 返回 JSON 格式<br/><br/>【示例】<br/>请求：GET /api/products?keyword=iPhone&amp;page=1<br/>响应：{"products": [...], "total": 100}<br/><br/>【格式】<br/>- 遵循 Django REST framework 规范</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、常见问题汇总</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q1：Claude Code 必须用 Claude 模型吗？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>❌ 错误理解：Claude Code 只能用 Claude 模型<br/><br/>✅ 正确理解：<br/>- Claude Code 是 Coding Agent 产品<br/>- 可以配置不同模型<br/>- 推荐国内用户配置 GLM-5 或通义千问</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q2：国内用户怎么用 Claude Code？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>方案1（推荐）：<br/>Claude Code + GLM-5（智谱）<br/>- 注册 open.bigmodel.cn<br/>- 免费 1000万 tokens<br/>- 无需代理<br/><br/>方案2：<br/>Claude Code + 通义千问（阿里）<br/>- 注册 dashscope.aliyun.com<br/>- 价格便宜<br/>- 稳定可靠</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q3：免费吗？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ Claude Code：基础功能免费<br/>✅ GLM-5：1000万 tokens 免费<br/>✅ 通义千问：个人版免费<br/>✅ CodeGeeX：完全免费<br/><br/>推荐免费组合：<br/>Claude Code + GLM-5</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q4：Claude Code vs 通义灵码，选哪个？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>通义灵码：<br/>✅ 开箱即用<br/>✅ 阿里云生态<br/>✅ 企业支持<br/>❌ 只能用通义千问<br/><br/>Claude Code：<br/>✅ 模型灵活<br/>✅ 可配置国内模型<br/>✅ 功能强大<br/>❌ 需要自己配置<br/><br/>建议：<br/>- 想开箱即用：选通义灵码<br/>- 想模型灵活：选 Claude Code</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q5：提示词写不好怎么办？</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>常见错误：<br/>❌ 太简单："写个函数"<br/>❌ 缺上下文：不给项目背景<br/>❌ 矛盾要求：既要快又要省<br/><br/>改进方法：<br/>✅ 用模板（背景+任务+要求+示例+格式）<br/>✅ 分步提问（不要一次问太多）<br/>✅ 提供约束条件<br/>✅ 要求解释和对比</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">工作流建议</span></h3>
+<p data-tool="mdnice编辑器"><strong>日常开发流程：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 快速补全<br/>   用 CodeGeeX 或 通义灵码<br/>   - 行内补全<br/>   - 快速编码<br/><br/>2. 复杂任务<br/>   用 Claude Code + 国内模型<br/>   - 代码生成<br/>   - 重构优化<br/>   - Bug 修复<br/><br/>3. 代码审查<br/>   用 Claude Code<br/>   - 分析代码质量<br/>   - 找潜在问题<br/>   - 优化建议<br/><br/>4. 测试和文档<br/>   用 Claude Code<br/>   - 生成测试用例<br/>   - 生成 API 文档<br/>   - 写 README</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">模型选择策略</span></h3>
+<p data-tool="mdnice编辑器"><strong>根据任务选模型：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>简单补全：<br/>→ GLM-5-Flash（快）<br/>→ 通义千问-Turbo（便宜）<br/><br/>复杂推理：<br/>→ Claude 4 Sonnet（最强）<br/>→ GLM-5（国产最强）<br/>→ 通义千问-Max（阿里最强）<br/><br/>长文本：<br/>→ Claude 4（200K）<br/>→ GLM-5（128K）<br/><br/>预算有限：<br/>→ GLM-5（免费额度大）<br/>→ 通义千问-Turbo（便宜）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">效率提升技巧</span></h3>
+<p data-tool="mdnice编辑器"><strong>技巧1：建立提示词库</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>保存常用提示词模板：<br/><br/>templates/<br/>├── code_generation.md<br/>├── bug_fix.md<br/>├── refactor.md<br/>├── test_generation.md<br/>└── documentation.md<br/><br/>需要时直接套用</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧2：分步骤处理复杂任务</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>不要一次问太多，分步提问：<br/><br/>第1步："设计这个功能的架构"<br/>第2步："实现核心代码"<br/>第3步："添加错误处理"<br/>第4步："写测试用例"<br/>第5步："优化性能"<br/><br/>每步质量更高</code></pre>
+<p data-tool="mdnice编辑器"><strong>技巧3：让 <span class="key">Claude</span> 解释</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>不只是要代码，还要理解：<br/><br/>"写完代码后，请解释：<br/>1. 为什么这样实现<br/>2. 有什么替代方案<br/>3. 优缺点是什么<br/>4. 什么时候不适用"<br/><br/>加深理解，提升能力</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、下一步学习</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">进阶篇（6篇）</span></h3>
+<p data-tool="mdnice编辑器"><strong>接下来学习：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>06. 代码库理解：让 Claude 认识你的项目<br/>    - 项目结构分析<br/>    - 上下文管理<br/>    - 大型项目技巧<br/><br/>07. 多文件编辑：复杂重构不求人<br/>    - 跨文件修改<br/>    - 批量重构<br/>    - 依赖处理<br/><br/>08. 测试驱动：AI 帮你写测试<br/>    - 单元测试<br/>    - 集成测试<br/>    - 测试覆盖率<br/><br/>09. 调试高手：快速定位和修复 Bug<br/>    - 错误分析<br/>    - 日志解读<br/>    - 修复建议<br/><br/>10. 文档生成：自动生成代码文档<br/>    - 注释生成<br/>    - API 文档<br/>    - README<br/><br/>11. 进阶总结：成为 AI 编程高手<br/>    - 技巧汇总<br/>    - 工作流优化<br/>    - 效率提升</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">实践任务</span></h3>
+<p data-tool="mdnice编辑器"><strong>巩固所学：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>任务1：开发命令行工具<br/>- 计算器<br/>- 文件整理工具<br/>- 简单爬虫<br/><br/>任务2：优化现有代码<br/>- 重构一个长函数<br/>- 提升性能<br/>- 增加测试<br/><br/>任务3：学习新技术<br/>- 让 Claude 教你 React<br/>- 生成示例代码<br/>- 解释原理</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">学习资源</span></h3>
+<p data-tool="mdnice编辑器"><strong>官方文档：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Claude Code 文档：<br/>https://docs.anthropic.com<br/><br/>智谱 AI 开放平台：<br/>https://open.bigmodel.cn<br/><br/>阿里云灵积：<br/>https://dashscope.aliyun.com</code></pre>
+<p data-tool="mdnice编辑器"><strong>社区资源：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>GitHub：<br/>- Claude Code 示例项目<br/>- 提示词模板库<br/><br/>论坛：<br/>- 知乎 AI 编程话题<br/>- 掘金技术社区<br/>- V2EX<br/><br/>视频：<br/>- B站 AI 编程教程<br/>- YouTube 官方频道</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、新手检查清单</span></h2>
+<p data-tool="mdnice编辑器"><strong>完成以下任务，就算入门了：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 理解 Coding Agent vs 大模型<br/>✅ 注册至少一个大模型账号<br/>✅ 配置 Claude Code（选好模型）<br/>✅ 完成第一个代码生成示例<br/>✅ 用 Claude 解释一段代码<br/>✅ 让 Claude 修复一个 bug<br/>✅ 重构一个函数<br/>✅ 生成一个测试用例<br/>✅ 写出高质量提示词<br/>✅ 建立自己的工作流</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、系列总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">新手篇回顾</span></h3>
+<p data-tool="mdnice编辑器"><strong><span class="num">5</span>篇文章，你学会了：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第01篇：Claude Code 是什么<br/>✅ 理解概念<br/>✅ 对比产品<br/>✅ 选择方案<br/><br/>第02篇：安装配置<br/>✅ 注册账号<br/>✅ 安装工具<br/>✅ 运行示例<br/><br/>第03篇：基础操作<br/>✅ 代码生成<br/>✅ 代码解释<br/>✅ Bug 修复<br/>✅ 重构优化<br/>✅ 测试生成<br/><br/>第04篇：提示词技巧<br/>✅ 黄金公式<br/>✅ 常见错误<br/>✅ 实战模板<br/><br/>第05篇：新手总结<br/>✅ 知识回顾<br/>✅ 问题汇总<br/>✅ 下一步</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">推荐路径</span></h3>
+<p data-tool="mdnice编辑器"><strong>继续学习：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>如果感觉基础不牢：<br/>→ 重读 03、04 篇<br/>→ 多做练习<br/>→ 积累提示词<br/><br/>如果想快速提升：<br/>→ 直接看进阶篇<br/>→ 做实战项目<br/>→ 边学边用<br/><br/>如果想系统学习：<br/>→ 按顺序学完全系列<br/>→ 理论+实践结合<br/>→ 循序渐进</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：提示词技巧：让 <span class="key">Claude</span> 更懂你</section></li>
+<li><section>下一篇：代码库理解：让 <span class="key">Claude</span> 认识你的项目（进阶篇）</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》新手篇第<span class="num">5</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-03-27</p>
+<p data-tool="mdnice编辑器"><strong>恭喜你完成新手篇！接下来是进阶篇！</strong> 🎉</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">📊 学习进度</span></h2>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>新手篇：✅✅✅✅✅ 5/5 (100%)<br/>进阶篇：⬜⬜⬜⬜⬜ 0/6 (0%)<br/>原理篇：⬜⬜⬜⬜ 0/4 (0%)<br/>实战篇：⬜⬜⬜⬜⬜⬜⬜⬜ 0/8 (0%)<br/>专题篇：⬜⬜ 0/2 (0%)<br/><br/>总进度：5/25 (20%)</code></pre>
+<p data-tool="mdnice编辑器"><strong>继续加油！</strong> 💪</p>
+</article>
+</div>
+</body>
+</html>

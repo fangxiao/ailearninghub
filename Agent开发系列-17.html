@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 17-18</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">任务分解</span></h2>
+
+<p>之前我们说了工具系统。Agent能调用工具了，下一步是让它能处理复杂任务。</p>
+
+<p>复杂任务不能一步完成，需要分解成多个子任务。这一篇，我们来说说任务分解。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>复杂任务 = 多个简单任务的组合。任务分解让Agent能够处理超出单次调用能力范围的工作。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">为什么要任务分解</span></h3>
+
+<p>想象用户说："帮我写一篇关于AI的文章，包括标题、正文，还要配上封面图。"</p>
+
+<p>这个任务至少包含三个子任务：</p>
+
+<ol>
+<li>写标题</li>
+<li>写正文</li>
+<li>生成封面图</li>
+</ol>
+
+<p>如果Agent不分解任务，它可能会：</p>
+
+<ul>
+<li>只写了标题就结束了</li>
+<li>标题和正文混在一起，结构混乱</li>
+<li>忘记配图</li>
+</ul>
+
+<h3><span class="icon">2</span><span class="title-text">自动任务分解</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">TaskDecomposer</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">decompose</span><span style="color: #f8f8f2">(self, task):</span>
+<span style="color: #f8f8f2">        prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"""将以下任务分解成子任务：
+
+任务：{task}
+
+请将任务分解成独立的子任务，每个子任务应该：
+1. 可以独立执行
+2. 有明确的完成标准
+3. 不依赖其他子任务的结果（如果依赖请标注）
+
+以JSON数组格式返回：
+[{{"id": 1, "task": "子任务描述", "depends_on": []}}]"""</span>
+
+<span style="color: #f8f8f2">        response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: prompt}]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.</span><span style="color: #a6e22e">loads</span><span style="color: #f8f8f2">(response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">])</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">依赖分析与并行规划</span></h3>
+
+<p>分解后的子任务，有些可以并行执行，有些必须按顺序执行。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">TaskScheduler</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">create_execution_plan</span><span style="color: #f8f8f2">(self, tasks):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 构建依赖图</span>
+<span style="color: #f8f8f2">        graph = {t[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">]: t.get(</span><span style="color: #e6db74">"depends_on"</span><span style="color: #f8f8f2">, []) </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> t </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> tasks}</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 找出可以并行的任务</span>
+<span style="color: #f8f8f2">        plan = []</span>
+<span style="color: #f8f8f2">        completed = </span><span style="color: #a6e22e">set</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">len</span><span style="color: #f8f8f2">(completed) < </span><span style="color: #a6e22e">len</span><span style="color: #f8f8f2">(tasks):</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a8a8a8; font-style: italic;"># 找出所有依赖都已完成的任务</span>
+<span style="color: #f8f8f2">            ready = []</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> task </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> tasks:</span>
+<span style="color: #f8f8f2">                tid = task[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> tid </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> completed:</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #66d9ef">continue</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">all</span><span style="color: #f8f8f2">(dep </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> completed </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> dep </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> graph[tid]):</span>
+<span style="color: #f8f8f2">                    ready.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(task)</span>
+
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> ready:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">break</span><span style="color: #f8f8f2">  </span><span style="color: #a8a8a8; font-style: italic;"># 环形依赖</span>
+
+<span style="color: #f8f8f2">            plan.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(ready)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> t </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> ready:</span>
+<span style="color: #f8f8f2">                completed.</span><span style="color: #a6e22e">add</span><span style="color: #f8f8f2">(t[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">])</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> plan  </span><span style="color: #a8a8a8; font-style: italic;"># [[task1, task2], [task3]] 表示可并行，执行顺序</span></code></pre>
+
+<blockquote><p>💡 <strong>任务分解的好处：</strong>1) 处理复杂任务 2) 任务可并行执行提高效率 3) 便于追踪进度和错误定位</p></blockquote>
+
+<hr/>
+
+<h2><span class="title-text">执行引擎</span></h2>
+
+<p>任务分解完了，接下来是执行。执行引擎负责按照计划执行每个子任务。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>执行引擎就是任务的"调度中心"，管理任务的执行顺序、状态和结果。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">状态机设计</span></h3>
+
+<div style="text-align: center; margin: 30px 0;">
+<img src="data:image/png;base64,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" alt="Figure: Task State Machine - Pending -> Running -> Completed/Failed" style="max-width: 100%; border-radius: 8px;">
+<p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic;">Figure: Task State Machine - Pending -> Running -> Completed/Failed</p>
+</div>
+
+<p>每个任务都有生命周期：pending → running → completed/failed</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Task</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, task_id, description):</span>
+<span style="color: #f8f8f2">        self.task_id = task_id</span>
+<span style="color: #f8f8f2">        self.description = description</span>
+<span style="color: #f8f8f2">        self.status = </span><span style="color: #e6db74">"pending"</span><span style="color: #f8f8f2">  </span><span style="color: #a8a8a8; font-style: italic;"># pending, running, completed, failed</span>
+<span style="color: #f8f8f2">        self.result = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">        self.error = </span><span style="color: #66d9ef">None</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">任务队列</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">ExecutionEngine</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, agent):</span>
+<span style="color: #f8f8f2">        self.agent = agent</span>
+<span style="color: #f8f8f2">        self.tasks = {}</span>
+<span style="color: #f8f8f2">        self.results = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute_plan</span><span style="color: #f8f8f2">(self, plan):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> batch </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> plan:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a8a8a8; font-style: italic;"># 同一批的任务可以并行执行</span>
+<span style="color: #f8f8f2">            batch_results = []</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> task_spec </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> batch:</span>
+<span style="color: #f8f8f2">                result = self.</span><span style="color: #a6e22e">execute_task</span><span style="color: #f8f8f2">(task_spec)</span>
+<span style="color: #f8f8f2">                batch_results.</span><span style="color: #a6e22e">append</span><span style="color: #f8f8f2">(result)</span>
+
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> result </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> batch_results:</span>
+<span style="color: #f8f8f2">                self.results[result[</span><span style="color: #e6db74">"task_id"</span><span style="color: #f8f8f2">]] = result</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.results</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute_task</span><span style="color: #f8f8f2">(self, task_spec):</span>
+<span style="color: #f8f8f2">        task_id = task_spec[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        task_desc = task_spec[</span><span style="color: #e6db74">"task"</span><span style="color: #f8f8f2">]</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            result = self.agent.</span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(task_desc)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"task_id"</span><span style="color: #f8f8f2">: task_id,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"status"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"completed"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"result"</span><span style="color: #f8f8f2">: result</span>
+<span style="color: #f8f8f2">            }</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"task_id"</span><span style="color: #f8f8f2">: task_id,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"status"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"failed"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"error"</span><span style="color: #f8f8f2">: </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(e)</span>
+<span style="color: #f8f8f2">            }</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">进度跟踪</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">ProgressTracker</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">get_progress</span><span style="color: #f8f8f2">(self, results):</span>
+<span style="color: #f8f8f2">        total = </span><span style="color: #a6e22e">len</span><span style="color: #f8f8f2">(results)</span>
+<span style="color: #f8f8f2">        completed = </span><span style="color: #a6e22e">sum</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> r </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> results.values() </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> r.get(</span><span style="color: #e6db74">"status"</span><span style="color: #f8f8f2">) == </span><span style="color: #e6db74">"completed"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        failed = </span><span style="color: #a6e22e">sum</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> r </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> results.values() </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> r.get(</span><span style="color: #e6db74">"status"</span><span style="color: #f8f8f2">) == </span><span style="color: #e6db74">"failed"</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"total"</span><span style="color: #f8f8f2">: total,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"completed"</span><span style="color: #f8f8f2">: completed,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"failed"</span><span style="color: #f8f8f2">: failed,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"percentage"</span><span style="color: #f8f8f2">: </span><span style="color: #a6e22e">int</span><span style="color: #f8f8f2">(completed / total * </span><span style="color: #ae81ff">100</span><span style="color: #f8f8f2">) </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> total > </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span>
+<span style="color: #f8f8f2">        }</span></code></pre>
+
+<blockquote><p>💡 <strong>执行引擎的核心功能：</strong>1) 按计划执行任务 2) 管理任务状态 3) 收集和存储结果 4) 跟踪执行进度</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>OpenClaw原理篇11：核心循环 <span class="file-tag">{原文件:11-核心循环-公众号版.md}</span></li>
+</ul>
+
+<p>下期预告：Agent开发系列 19-20 — 动态调整 + 协作模式设计</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 05</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">Bot数据模型设计</span></h2>
+
+<p>进入Bot核心篇。这一篇，我们来聊一个看似简单、实则极其重要的问题：<strong>Bot的数据模型应该怎么设计？</strong></p>
+
+<p>很多人觉得Bot不就是"名字+描述+Prompt"吗？但当你真正去做生产级应用，会发现<strong>配置远比想象复杂</strong>——版本管理、变量插值、插件关联、工作流绑定……每一个都是坑。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>Bot数据模型是整个myAgent的核心。一切后续功能——插件、工作流、记忆——都建立在Bot模型之上。模型设计不好，后续扩展全是噩梦。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">Bot实体：最基础的配置</span></h3>
+
+<p>先来看Bot的最基础实体：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># backend/models/bot.py</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> sqlmodel </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> SQLModel, Field</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Optional</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> datetime </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> datetime</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> Bot(SQLModel, table=True):</span>
+<span style="color: #f8f8f2">    __tablename__ = </span><span style="color: #e6db74">"bots"</span>
+
+<span style="color: #f8f8f2">    id: str = Field(primary_key=True, default=</span><span style="color: #66d9ef">lambda</span><span style="color: #f8f8f2">: uuid.uuid4().hex)</span>
+<span style="color: #f8f8f2">    name: str = Field(max_length=100)          </span><span style="color: #a8a8a8; font-style: italic;"># Bot名称</span>
+<span style="color: #f8f8f2">    description: str = Field(default=</span><span style="color: #e6db74">""</span><span style="color: #f8f8f2">)                </span><span style="color: #a8a8a8; font-style: italic;"># 描述</span>
+<span style="color: #f8f8f2">    avatar: Optional[str] = </span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">                 </span><span style="color: #a8a8a8; font-style: italic;"># 头像URL</span>
+
+<span style="color: #f8f8f2">    model: str = Field(default=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">)          </span><span style="color: #a8a8a8; font-style: italic;"># 使用的模型</span>
+<span style="color: #f8f8f2">    temperature: float = Field(default=0.7)   </span><span style="color: #a8a8a8; font-style: italic;"># 温度参数</span>
+<span style="color: #f8f8f2">    max_tokens: int = Field(default=2000)      </span><span style="color: #a8a8a8; font-style: italic;"># 最大token</span>
+
+<span style="color: #f8f8f2">    system_prompt: str = Field(default=</span><span style="color: #e6db74">""</span><span style="color: #f8f8f2">)         </span><span style="color: #a8a8a8; font-style: italic;"># 系统提示词</span>
+<span style="color: #f8f8f2">    prompt_config: dict = Field(default=dict)  </span><span style="color: #a8a8a8; font-style: italic;"># Prompt变量配置</span>
+
+<span style="color: #f8f8f2">    plugin_ids: list[str] = Field(default=list)  </span><span style="color: #a8a8a8; font-style: italic;"># 启用的插件</span>
+<span style="color: #f8f8f2">    workflow_id: Optional[str] = </span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 关联的工作流</span>
+
+<span style="color: #f8f8f2">    status: str = Field(default=</span><span style="color: #e6db74">"draft"</span><span style="color: #f8f8f2">)       </span><span style="color: #a8a8a8; font-style: italic;"># draft | published</span>
+<span style="color: #f8f8f2">    version: int = Field(default=1)             </span><span style="color: #a8a8a8; font-style: italic;"># 当前版本号</span>
+
+<span style="color: #f8f8f2">    owner_id: str = Field(index=True)           </span><span style="color: #a8a8a8; font-style: italic;"># 拥有者</span>
+<span style="color: #f8f8f2">    tenant_id: str = Field(index=True)          </span><span style="color: #a8a8a8; font-style: italic;"># 租户ID</span>
+
+<span style="color: #f8f8f2">    created_at: datetime = Field(default=datetime.utcnow)</span>
+<span style="color: #f8f8f2">    updated_at: datetime = Field(default=datetime.utcnow)</span></code></pre>
+
+<p>这个模型有几个关键设计：</p>
+
+<ul>
+<li><strong>prompt_config</strong>——这是个JSON字段，存Prompt里的变量配置。比如Prompt里有个<code>{"variable": "name", "default": "用户", "type": "string"}</code>，运行时会被替换</li>
+<li><strong>plugin_ids</strong>——Bot启用的插件列表，不是直接存储插件对象，而是存ID，便于解耦</li>
+<li><strong>status</strong>——draft/published状态机，支持先编辑再发布</li>
+</ul>
+
+<h3><span class="icon">2</span><span class="title-text">Bot版本：支持灰度发布和回滚</span></h3>
+
+<p>生产级Bot必须有版本控制。为什么？</p>
+
+<ul>
+<li>你发布了一个新版本，发现有bug，需要<strong>快速回滚</strong></li>
+<li>你想<strong>灰度发布</strong>，先让10%用户用新版本</li>
+<li>你需要<strong>对比两个版本</strong>的效果差异</li>
+</ul>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> BotVersion(SQLModel, table=True):</span>
+<span style="color: #f8f8f2">    __tablename__ = </span><span style="color: #e6db74">"bot_versions"</span>
+
+<span style="color: #f8f8f2">    id: str = Field(primary_key=True, default=</span><span style="color: #66d9ef">lambda</span><span style="color: #f8f8f2">: uuid.uuid4().hex)</span>
+<span style="color: #f8f8f2">    bot_id: str = Field(foreign_key=</span><span style="color: #e6db74">"bots.id"</span><span style="color: #f8f8f2">, index=True)</span>
+<span style="color: #f8f8f2">    version: int = Field(index=True)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 快照：发布时的完整配置</span>
+<span style="color: #f8f8f2">    config_snapshot: dict = Field()</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 发布信息</span>
+<span style="color: #f8f8f2">    status: str = Field(default=</span><span style="color: #e6db74">"draft"</span><span style="color: #f8f8f2">)  </span><span style="color: #a8a8a8; font-style: italic;"># draft | published | deprecated</span>
+<span style="color: #f8f8f2">    rollout_percent: int = Field(default=100)  </span><span style="color: #a8a8a8; font-style: italic;"># 灰度发布比例</span>
+
+<span style="color: #f8f8f2">    changelog: str = Field(default=</span><span style="color: #e6db74">""</span><span style="color: #f8f8f2">)          </span><span style="color: #a8a8a8; font-style: italic;"># 变更说明</span>
+<span style="color: #f8f8f2">    published_at: Optional[datetime] = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">    published_by: Optional[str] = </span><span style="color: #66d9ef">None</span></code></pre>
+
+<p><strong>核心设计：config_snapshot存发布时刻的完整配置快照</strong>。这样回滚时直接用快照恢复，不需要计算diff。</p>
+
+<h3><span class="icon">3</span><span class="title-text">Prompt配置Schema：让Prompt可编程化</span></h3>
+
+<p>上一节提到prompt_config，这里详细说说。</p>
+
+<p>简单Bot只有一个system_prompt就够了，但<strong>企业级Bot通常需要变量</strong>：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 一个客服Bot的Prompt</span>
+<span style="color: #f8f8f2">你是一个{company_name}的客服助手。</span>
+<span style="color: #f8f8f2">公司产品：{product_list}</span>
+<span style="color: #f8f8f2">服务时间：{service_hours}</span>
+<span style="color: #f8f8f2">当前用户：{user_name}</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># {xxx}都是变量，需要在prompt_config里定义</span></code></pre>
+
+<p>prompt_config的Schema设计：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># prompt_config的JSON结构</span>
+<span style="color: #f8f8f2">prompt_config = {</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"variables"</span><span style="color: #f8f8f2">: [</span>
+<span style="color: #f8f8f2">        {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"company_name"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"default"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"某公司"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"公司名称"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        },</span>
+<span style="color: #f8f8f2">        {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"product_list"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"source"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"knowledge_base"</span><span style="color: #f8f8f2">,      </span><span style="color: #a8a8a8; font-style: italic;"># 从知识库动态获取</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"kb_id"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"kb_xxx"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">    ]</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+
+<p>这种设计的优势：<strong>Prompt模板和具体值分离</strong>。同一个Prompt模板，可以给不同租户使用，只需要替换变量值。</p>
+
+<h3><span class="icon">4</span><span class="title-text">对话会话：多轮对话的存储</span></h3>
+
+<p>Bot的另一个核心模型是会话（Session）和消息（Message）：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> Conversation(SQLModel, table=True):</span>
+<span style="color: #f8f8f2">    __tablename__ = </span><span style="color: #e6db74">"conversations"</span>
+
+<span style="color: #f8f8f2">    id: str = Field(primary_key=True)</span>
+<span style="color: #f8f8f2">    bot_id: str = Field(foreign_key=</span><span style="color: #e6db74">"bots.id"</span><span style="color: #f8f8f2">, index=True)</span>
+<span style="color: #f8f8f2">    user_id: str = Field(index=True)</span>
+<span style="color: #f8f8f2">    bot_version_id: str = Field(index=True)     </span><span style="color: #a8a8a8; font-style: italic;"># 使用哪个版本</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 状态</span>
+<span style="color: #f8f8f2">    status: str = Field(default=</span><span style="color: #e6db74">"active"</span><span style="color: #f8f8f2">)  </span><span style="color: #a8a8a8; font-style: italic;"># active | closed</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># Token统计（用于计费）</span>
+<span style="color: #f8f8f2">    total_tokens: int = Field(default=0)</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    created_at: datetime = Field(default=datetime.utcnow)</span>
+<span style="color: #f8f8f2">    updated_at: datetime = Field(default=datetime.utcnow)</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> Message(SQLModel, table=True):</span>
+<span style="color: #f8f8f2">    __tablename__ = </span><span style="color: #e6db74">"messages"</span>
+
+<span style="color: #f8f8f2">    id: str = Field(primary_key=True)</span>
+<span style="color: #f8f8f2">    conversation_id: str = Field(foreign_key=</span><span style="color: #e6db74">"conversations.id"</span><span style="color: #f8f8f2">, index=True)</span>
+
+<span style="color: #f8f8f2">    role: str  </span><span style="color: #a8a8a8; font-style: italic;"># user | assistant | system | tool</span>
+<span style="color: #f8f8f2">    content: str</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># Token统计</span>
+<span style="color: #f8f8f2">    tokens: int = Field(default=0)</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 工具调用信息（如果role=tool）</span>
+<span style="color: #f8f8f2">    tool_call_id: Optional[str] = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">    tool_name: Optional[str] = </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    created_at: datetime = Field(default=datetime.utcnow)</span></code></pre>
+
+<p>几个关键设计点：</p>
+
+<ul>
+<li><strong>bot_version_id</strong>——记录对话使用的是哪个Bot版本，方便追溯和计费</li>
+<li><strong>total_tokens</strong>——会话级别的Token统计，用于计费和监控</li>
+<li><strong>tool_call_id/tool_name</strong>——支持工具调用的完整链路追溯</li>
+</ul>
+
+<blockquote><p>💡 <strong>总结：</strong>Bot数据模型是myAgent的核心。Bot模型存配置，BotVersion存快照支持回滚，prompt_config支持变量插值，Conversation/Message支持多轮对话。模型设计要考虑：可版本化、可变量化、可追溯。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="Agent开发系列-03.html" class="key">Agent开发系列 03：最小可行Agent</a></li>
+<li><a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">OpenClaw原理篇11：核心循环</a></li>
+<li><a href="myAgent开发系列-04.html" class="key">myAgent开发系列 04：项目初始化</a></li>
+</ul>
+
+<p>下期预告：第6篇《Prompt工程：让Bot有灵魂》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

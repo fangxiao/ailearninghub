@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myAgent开发系列 06</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">Prompt工程：让Bot有灵魂</span></h2>
+
+<p>数据模型是骨架，Prompt是灵魂。同一个Bot模型，换一个Prompt，效果可能天差地别。</p>
+
+<p>很多人觉得Prompt就是"随便写几句提示词"。<strong>大错特错。</strong>Prompt工程是AI时代最重要的技能之一。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>Prompt不是越详细越好，也不是越简洁越好。好的Prompt是有结构的、有层次的、能被模型理解的。Prompt工程的核心是"把你脑子里的东西，准确传达给AI"。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">Prompt的四个层次</span></h3>
+
+<p>一个完整的Prompt，通常包含这四个层次：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 第一层：角色定义</span>
+<span style="color: #f8f8f2">你是一个专业的Python后端工程师。</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 第二层：任务定义</span>
+<span style="color: #f8f8f2">你的职责是帮助用户优化代码、解释技术方案、review代码。</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 第三层：约束条件</span>
+<span style="color: #f8f8f2">1. 回答必须基于Python最佳实践</span>
+<span style="color: #f8f8f2">2. 代码必须包含类型注解</span>
+<span style="color: #f8f8f2">3. 复杂问题必须先分析再给出方案</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 第四层：输出格式</span>
+<span style="color: #f8f8f2">用Markdown格式回答，代码块要标注语言。</span></code></pre>
+
+<p><strong>层层递进，缺一不可。</strong>没有角色定义，模型不知道以什么身份回答；没有任务定义，不知道要干什么；没有约束条件，可能跑偏；没有输出格式，可能给你一段没有标点的文字。</p>
+
+<h3><span class="icon">2</span><span class="title-text">myAgent的Prompt模板系统</span></h3>
+
+<p>上一节讲了Bot数据模型里的prompt_config。这节讲具体怎么实现变量替换。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># backend/core/prompt.py</span>
+<span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> re</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Dict, Any</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PromptTemplate:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># Prompt模板类，负责变量插值</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, template: str, config: Dict[str, Any]):</span>
+<span style="color: #f8f8f2">        self.template = template</span>
+<span style="color: #f8f8f2">        self.config = config</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">render</span><span style="color: #f8f8f2">(self, context: Dict[str, Any]) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 用正则匹配 {variable_name} 格式的变量</span>
+<span style="color: #f8f8f2">        result = self.template</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> match </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> re.finditer(</span><span style="color: #e6db74">r'\{(\w+)\}'</span><span style="color: #f8f8f2">, self.template):</span>
+<span style="color: #f8f8f2">            var_name = match.group(1)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a8a8a8; font-style: italic;"># 优先级：context > config > default</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> var_name </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> context:</span>
+<span style="color: #f8f8f2">                value = context[var_name]</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> var_name </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.config:</span>
+<span style="color: #f8f8f2">                value = self.config[var_name]</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">                value = </span><span style="color: #e6db74">f'{{{var_name}}}'</span><span style="color: #a8a8a8; font-style: italic;"> # 保留原样</span>
+<span style="color: #f8f8f2">            result = result.replace(</span><span style="color: #e6db74">f'{{{var_name}}}'</span><span style="color: #f8f8f2">, str(value))</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> result</span></code></pre>
+
+<p>使用示例：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 使用示例</span>
+<span style="color: #f8f8f2">template = </span><span style="color: #e6db74">"你是一个{bot_role}，服务于{company_name}公司。"</span>
+<span style="color: #f8f8f2">config = {</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"bot_role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"客服助手"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"company_name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"某科技有限公司"</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #f8f8f2">prompt = PromptTemplate(template, config)</span>
+<span style="color: #f8f8f2">print(prompt.render({}))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：你是一个客服助手，服务于某科技有限公司公司。</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 运行时覆盖</span>
+<span style="color: #f8f8f2">print(prompt.render({</span><span style="color: #e6db74">"company_name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"新公司"</span><span style="color: #f8f8f2">}))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：你是一个客服助手，服务于新公司。</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">Few-shot示例管理</span></h3>
+
+<p>有时候，纯文字的Prompt不够用，需要<strong>示例</strong>来教模型什么是好的回答。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> Example:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 单个示例</span>
+<span style="color: #f8f8f2">    input: str</span>
+<span style="color: #f8f8f2">    output: str</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> ExampleBank:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 示例库，支持动态选择</span>
+<span style="color: #f8f8f2">    examples: List[Example] = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">select</span><span style="color: #f8f8f2">(self, context: dict, k: int = 2) -> List[Example]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 根据上下文选择最相关的k个示例</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 可以用Embedding相似度，也可以用规则</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.examples[:k]</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">to_prompt</span><span style="color: #f8f8f2">(self, examples: List[Example]) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 转换为Prompt字符串</span>
+<span style="color: #f8f8f2">        lines = []</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> ex </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> examples:</span>
+<span style="color: #f8f8f2">            lines.append(</span><span style="color: #e6db74">f"输入：</span><span style="color: #f8f8f2">{ex.input}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">            lines.append(</span><span style="color: #e6db74">f"输出：</span><span style="color: #f8f8f2">{ex.output}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">\n</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">.join(lines)</span></code></pre>
+
+<p>示例管理的关键是<strong>按需选择</strong>。不是把所有示例都塞进Prompt，而是根据当前对话的上下文，选择最相关的几个。</p>
+
+<h3><span class="icon">4</span><span class="title-text">Prompt版本管理：不只是改文字</span></h3>
+
+<p>很多人忽略了Prompt的版本管理。但Prompt的每一次改动，都可能影响Bot的行为。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> PromptVersion(SQLModel, table=True):</span>
+<span style="color: #f8f8f2">    __tablename__ = </span><span style="color: #e6db74">"prompt_versions"</span>
+
+<span style="color: #f8f8f2">    id: str = Field(primary_key=True)</span>
+<span style="color: #f8f8f2">    bot_id: str = Field(foreign_key=</span><span style="color: #e6db74">"bots.id"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">    version: int</span>
+
+<span style="color: #f8f8f2">    system_prompt: str</span>
+<span style="color: #f8f8f2">    prompt_config: dict</span>
+<span style="color: #f8f8f2">    examples: List[Example] = Field(default=list)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 效果指标</span>
+<span style="color: #f8f8f2">    avg_rating: float = Field(default=0.0)  </span><span style="color: #a8a8a8; font-style: italic;"># 用户平均评分</span>
+<span style="color: #f8f8f2">    usage_count: int = Field(default=0)     </span><span style="color: #a8a8a8; font-style: italic;"># 使用次数</span>
+
+<span style="color: #f8f8f2">    created_at: datetime</span>
+<span style="color: #f8f8f2">    created_by: str</span>
+<span style="color: #f8f8f2">    changelog: str = </span><span style="color: #e6db74">""</span></code></pre>
+
+<p><strong>Prompt不是一次性写完就不管了，而是要持续优化。</strong>通过版本管理和效果追踪，可以量化每个Prompt版本的好坏。</p>
+
+<blockquote><p>💡 <strong>总结：</strong>Prompt是Bot的灵魂。好的Prompt有四个层次：角色、任务、约束、格式。myAgent通过PromptTemplate支持变量插值，通过ExampleBank支持Few-shot，通过PromptVersion支持版本追踪。Prompt工程是AI时代最重要的技能。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-04-提示词技巧-公众号版.md" class="key">AI Coding系列 04：提示词技巧</a></li>
+<li><a href="Agent开发系列-05.html" class="key">Agent开发系列 05：感知</a></li>
+<li><a href="myAgent开发系列-05.html" class="key">myAgent开发系列 05：Bot数据模型</a></li>
+</ul>
+
+<p>下期预告：第7篇《Bot版本控制与发布》</p>
+
+<p style="text-align: center; color: #999;">myAgent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

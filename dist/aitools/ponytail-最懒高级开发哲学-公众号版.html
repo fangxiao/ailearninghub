@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 AI 学会"偷懒"——ponytail 实战指南</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=lazy%20cat%20sitting%20on%20stack%20of%20code%20files%20minimalist%20illustration%20warm%20retro%20poster%20style%20earth%20tones%20no%20text&image_size=landscape_16_9" alt="ponytail 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    让 AI 学会"偷懒"——ponytail 实战指南
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    YAGNI 哲学：最好的代码是你没写的代码
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code 增强实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    让 AI 写代码，你是不是经常遇到这种情况：明明只想读个配置文件，它给你整出一套 ConfigManager + ConfigLoader + ConfigValidator 三件套，还顺手引入了两个新依赖。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 说一句"加个配置读取"，AI 立刻建了 3 个类、4 个接口、1 个工厂模式
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 本来一行 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">JSON.parse</code> 能解决的事，AI 引入了 lodash、dotenv、conf 三个依赖
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ "为将来扩展预留接口"——结果那个将来从来没来过
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 代码越写越多，bug 越改越多，维护成本直线上升
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这不是 AI 模型不够聪明，恰恰相反——它<strong style="color: #00897B;">太勤快了</strong>。它像个刚毕业的初级开发，恨不得把 23 种设计模式全用上证明自己。真正的高级开发是什么样的？<strong style="color: #00897B;">能少写就少写，能不写就不写</strong>。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">ponytail</strong> 就是来干这件事的。它的核心理念是 <strong style="color: #00897B;">YAGNI（You Aren't Gonna Need It）</strong>——让 AI 像最懒的高级开发一样思考，"最好的代码是你没写的代码"。
+    </p>
+  </section>
+
+  <!-- 章节01：ponytail 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">ponytail 是什么：最懒的高级开发</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    ponytail 由 Dietrich Gebert 开源，GitHub 上目前有 <strong style="color: #00897B;">89.4k Star</strong>。它是一个插件，装在 Claude Code、Codex、GitHub Copilot CLI、Gemini CLI、Hermes Agent 这些主流 AI 编程工具上，专门干一件事：拦住 AI 别过度设计。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你可以把它理解成"给 AI 配了一个摸鱼十级、但技术超强的老员工"——能不写代码就不写代码，能用一行解决绝不写两行，能复用现有依赖绝不引入新的。听起来像摆烂，但<strong style="color: #00897B;">这正是软件工程的高级智慧</strong>。
+  </p>
+
+  <!-- 核心理念卡片 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 17px; color: #00897B; font-weight: bold;">核心理念：YAGNI</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      普通 AI：你说啥它写啥，还喜欢多写点"以防万一"
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ponytail 加持的 AI：先问"真的需要写吗"，能省就省
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    装上之后，AI 在写每一段代码前，都会先过一遍"必要性审查"：这个东西真的需要吗？有没有现成的能直接用？是不是过度设计了？只有都通过了，才会动手写。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：两条命令，必须分两次发送</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    通过插件市场安装，一共两条命令。这里有个<strong style="color: #c62828;">必须注意的细节</strong>：两条命令要分开、分两次发送，不能一口气连着发，否则第二条会失败。
+  </p>
+
+  <!-- 步骤1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      先添加官方插件市场
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      第一条命令，发送后等它执行完：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/plugin marketplace add DietrichGebert/ponytail</p>
+    </section>
+  </section>
+
+  <!-- 关键提醒 -->
+  <section style="margin: 20px 0; padding: 18px 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">⚠️ 这里停一下，别急着发第二条</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      等第一条命令返回成功提示后，<strong style="color: #c62828;">再单独发送第二条</strong>。两条一起发会导致市场还没注册完就尝试安装，直接报错。
+    </p>
+  </section>
+
+  <!-- 步骤2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      再安装 ponytail 插件
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      确认市场添加成功后，<strong style="color: #00897B;">单独发送</strong>这条：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">/plugin install ponytail@ponytail</p>
+    </section>
+  </section>
+
+  <!-- 验证安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      验证是否生效
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">"帮我读取 config.json 配置"</code>，如果 AI 没有给你建一堆类，而是直接甩出一行代码，说明装好了。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 支持平台：</strong>Claude Code、Codex、GitHub Copilot CLI、Gemini CLI、Hermes Agent，安装命令通用。
+    </p>
+  </section>
+
+  <!-- 章节03：核心哲学 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心哲学：7 级决策阶梯</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    ponytail 的核心是一套<strong style="color: #00897B;">7 级决策阶梯</strong>。AI 在写代码前，会从第 1 级开始往下找，只有上一级满足不了，才往下一级走。优先级从高到低：
+  </p>
+
+  <!-- 决策阶梯 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 1 级 · 平台原生能力</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      优先用平台、框架、运行时内置的功能。<strong style="color: #00897B;">零代码、零依赖</strong>，能用系统自带的就不写。
+    </p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 2 级 · 已装依赖</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      项目里已经有的库能解决，就直接复用，<strong style="color: #00897B;">绝不引入新依赖</strong>。
+    </p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 3 级 · 标准库</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      没有现成的，就用语言标准库搞定，避免引入第三方包。
+    </p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 4 级 · 一行代码</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      能用单行表达式解决，<strong style="color: #00897B;">就不写多行</strong>，更不包装成函数。
+    </p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 5 级 · 最小可用函数</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      确实要写函数，就写最小实现，<strong style="color: #00897B;">不为"将来可能"预留扩展点</strong>。
+    </p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 6 级 · 必要的模块拆分</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      逻辑确实复杂才拆模块，保持简单，不过度分层。
+    </p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">第 7 级 · 才考虑抽象层 / 框架</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      真的需要复用、确实有多次场景，才建抽象层或框架。<strong style="color: #00897B;">这是最后的手段</strong>。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 记住顺序：</strong>平台原生 &gt; 已装依赖 &gt; 标准库 &gt; 一行代码 &gt; 最小可用 &gt; 模块拆分 &gt; 抽象层。能停在第几级就停在第几级，越往下越"重"。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这套阶梯的精髓在于：<strong style="color: #00897B;">默认假设你不需要</strong>。每一级的"重"都是有成本的：多一行代码，就多一个可能出毛病的地方；多一个依赖，就多一份要日常维护的负担。只有被现实"逼"到下一级，才往下走。
+  </p>
+
+  <!-- 章节04：实战对比 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战对比：同一个需求，代码量差几倍</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    实测下来，装了 ponytail 的 AI 写出的代码量<strong style="color: #00897B;">少 80%–94%</strong>。来看同一个需求"读取并解析 config.json 配置"的对比。
+  </p>
+
+  <!-- 无 ponytail -->
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #c62828; font-weight: bold; font-size: 17px;">
+      ❌ 没装 ponytail：AI 的"杰作"
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      AI 二话不说建了一套配置加载框架，引入了 dotenv 和 conf 两个依赖：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #999;">// config-loader.js — 一个文件不够，还要拆三个</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">class ConfigLoader {</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">  constructor(options = {}) {</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    this.options = { required: true, cache: true, ...options };</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    this.cache = new Map(); // 为将来扩展预留</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">  }</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">  async load(path) {</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    if (this.cache.has(path)) return this.cache.get(path);</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    const raw = await fs.promises.readFile(path, 'utf-8');</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    const config = this.validate(JSON.parse(raw));</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    this.cache.set(path, config);</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">    return config;</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">  }</p>
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">  validate(config) { /* 一堆校验逻辑 */ }</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #333;">}</p>
+      <p style="margin: 8px 0 0 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.7; color: #999;">// 还有 ConfigManager.js、ConfigWatcher.js ...</p>
+    </section>
+    <p style="margin: 10px 0 0 0; font-size: 14px; color: #c62828; line-height: 1.8;">
+      结果：<strong>3 个文件、60+ 行代码、2 个新依赖</strong>，缓存和监听功能从来没用上。
+    </p>
+  </section>
+
+  <!-- 有 ponytail -->
+  <section style="margin: 20px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00695C; font-weight: bold; font-size: 17px;">
+      ✅ 装了 ponytail：直接到第 4 级
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      AI 走了一遍决策阶梯：平台原生能读文件 → 标准库能解析 JSON → 一行代码搞定，停在<strong style="color: #00897B;">第 4 级</strong>：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.7; color: #333; white-space: pre-wrap;">const config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));</p>
+    </section>
+    <p style="margin: 10px 0 0 0; font-size: 14px; color: #00695C; line-height: 1.8;">
+      结果：<strong style="color: #00897B;">1 行代码、0 个新依赖、0 个新文件</strong>。少写约 94%。
+    </p>
+  </section>
+
+  <!-- 对比表 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 16px;">📊 同需求代码量对比</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 25%;">需求</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 25%;">无 ponytail</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 25%;">有 ponytail</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 25%;">减少</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">读取配置</td>
+          <td style="padding: 10px;">60+ 行</td>
+          <td style="padding: 10px;">1 行</td>
+          <td style="padding: 10px; color: #2E7D32; font-weight: bold;">约 94%</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">字符串处理</td>
+          <td style="padding: 10px;">建工具类 40 行</td>
+          <td style="padding: 10px;">3 行</td>
+          <td style="padding: 10px; color: #2E7D32; font-weight: bold;">约 92%</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">日志输出</td>
+          <td style="padding: 10px;">Logger 框架 50 行</td>
+          <td style="padding: 10px;">5 行</td>
+          <td style="padding: 10px; color: #2E7D32; font-weight: bold;">约 90%</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold;">HTTP 请求</td>
+          <td style="padding: 10px;">封装 HttpClient 35 行</td>
+          <td style="padding: 10px;">7 行</td>
+          <td style="padding: 10px; color: #2E7D32; font-weight: bold;">约 80%</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    不是 AI 故意写复杂，是它默认带着"工程师的骄傲"，总想展示设计能力。ponytail 把这个倾向按住了，让它回到"解决问题"这个最朴素的目标。
+  </p>
+
+  <!-- 章节05：对比 Superpowers -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比 Superpowers：两种极端</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    之前介绍过 Superpowers（见 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">superpowers-把AI编程从凭感觉变按流程-公众号版.html</code>），它的思路是<strong style="color: #00897B;">Process over Prompt</strong>——给 AI 套上 5 步工程化流程，强制规划、TDD、代码审查。ponytail 走的是另一个极端：<strong style="color: #00897B;">能少写就少写</strong>。两者几乎是两个方向的极端。
+  </p>
+
+  <!-- 对比表 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 20%;">维度</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 40%;">ponytail</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 40%;">Superpowers</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">哲学</td>
+          <td style="padding: 10px;">YAGNI 极简主义</td>
+          <td style="padding: 10px;">Process over Prompt 工程化</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">核心动作</td>
+          <td style="padding: 10px;">阻止过度设计</td>
+          <td style="padding: 10px;">强制流程纪律</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">代码量取向</td>
+          <td style="padding: 10px;">越少越好</td>
+          <td style="padding: 10px;">按流程产出</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">强制 TDD</td>
+          <td style="padding: 10px; color: #c62828;">❌ 否</td>
+          <td style="padding: 10px; color: #2E7D32;">✅ 是</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">适合场景</td>
+          <td style="padding: 10px;">脚本 / 原型 / 快速迭代</td>
+          <td style="padding: 10px;">团队正式项目 / 严格交付</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold;">能否共存</td>
+          <td style="padding: 10px;" colspan="2" style="color: #00897B; font-weight: bold; text-align: center;">✅ 可以，互补使用</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    打个比方：Superpowers 像个严格的 <strong style="color: #00897B;">Tech Lead</strong>，盯着你按步骤来，必须先规划、写测试、做审查；ponytail 是个<strong style="color: #00897B;">爱摸鱼的老开发</strong>，能不写就不写，能用现成的就用现成的。两者可以共存，写正式项目用 Superpowers 把控流程，写脚本原型用 ponytail 极速出活。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    如果你想要更全的"工具箱"型增强，还可以看看 ECC（见 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">ecc-everything-claude-code-公众号版.html</code>），它是 Agent + Skill + 命令 + Hook 的组合。三者的关系是：ponytail 管"别多写"，Superpowers 管"按流程"，ECC 管"能力全"。挑适合你场景的用就行。
+  </p>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：别把"偷懒"用错地方</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">🚫 坑 1：正式项目别只靠 ponytail</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ponytail 追求极简，<strong style="color: #c62828;">不强制测试、不强制审查</strong>。如果是团队正式项目、需要保证质量，光靠它不够。建议搭配 Superpowers 或 TDD Skills（见 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">tdd-skills-强制AI先写测试-公众号版.html</code>）一起用，让流程和极简两不误。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">🚫 坑 2：两条安装命令必须分两次发</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      这是最容易踩的坑。很多人图省事把 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin marketplace add</code> 和 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin install</code> 一起发，结果第二条失败。<strong style="color: #c62828;">一定要等第一条执行完，再单独发第二条</strong>。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">🚫 坑 3：别把"偷懒"理解成"不验证"</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      ponytail 让你少写代码，不是让你跳过验证。即使是一行 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 14px;">JSON.parse</code>，也该确认配置格式对、文件存在。简单场景也该有最基本的输入检查和运行验证，别让"少写"变成"埋雷"。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">🚫 坑 4：不要在需要扩展的地方硬压</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      YAGNI 不等于"永远不抽象"。当某个逻辑真的被复用了三次以上、真的有多个变体，就该往决策阶梯下一级走。ponytail 是"默认极简"，不是"禁止设计"。识别"真的需要"和"想当然的预留"，是关键。
+    </p>
+  </section>
+
+  <!-- 金句收尾 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      软件工程里一直有句话：<strong style="color: #00897B;">最好的代码，是你没写的代码</strong>。多写一行，就多一个可能藏 bug 的地方，也多一份将来要维护的功夫。ponytail 把这句话塞给 AI，让它在动手之前先问一句，这段真的非写不可吗。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      别急着先把"专业范"放大。能用现成库解决的就别自己造，能跑成一行就别拆成三个文件，省下来的是你的时间和精力。YAGNI 说白了就是：眼下用不上、要先为它留一手的东西，就先不写。
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      分辨"眼下真的需要"和"想当然的预留"其实不难，多半栽在过度设计的坑里一回，自己就长记性了。
+    </p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/DietrichGebert/ponytail</span><br>
+      Star 数：89.4k ⭐<br>
+      安装命令（<strong style="color: #c62828;">分两次发送</strong>）：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin marketplace add DietrichGebert/ponytail</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #c62828;">// ↑ 等这条执行完，再单独发下面这条 ↓</p>
+      <p style="margin: 6px 0 0 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin install ponytail@ponytail</p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #666; line-height: 1.8;">
+      支持平台：Claude Code、Codex、GitHub Copilot CLI、Gemini CLI、Hermes Agent
+    </p>
+  </section>
+
+  <!-- 延伸阅读 -->
+  <section style="background: #E0F2F1; padding: 22px 25px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📖 延伸阅读</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      想给 AI 配工程流程？看 <strong style="color: #00897B;">superpowers-把AI编程从凭感觉变按流程-公众号版.html</strong>
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      想要全套工具箱增强？看 <strong style="color: #00897B;">ecc-everything-claude-code-公众号版.html</strong>
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      想强制 AI 先写测试？看 <strong style="color: #00897B;">tdd-skills-强制AI先写测试-公众号版.html</strong>
+    </p>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你被 AI 过度设计坑过吗？装上 ponytail 后代码量少了多少？欢迎在评论区聊聊你的体验。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

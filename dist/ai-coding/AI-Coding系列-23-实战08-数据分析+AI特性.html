@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实战08：数据分析 + AI 特性</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">35</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：机器学习、<span class="key">LLM</span> 集成、报告生成</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">智能化升级</span></h2>
+<p data-tool="mdnice编辑器"><strong>之前完成：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;实战01-07：完整平台<br/>&nbsp;&nbsp;&nbsp;-&nbsp;CLI&nbsp;工具<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Web&nbsp;API<br/>&nbsp;&nbsp;&nbsp;-&nbsp;MCP&nbsp;集成<br/>&nbsp;&nbsp;&nbsp;-&nbsp;前端界面<br/>&nbsp;&nbsp;&nbsp;-&nbsp;用户系统<br/>&nbsp;&nbsp;&nbsp;-&nbsp;团队协作</code></pre>
+<p data-tool="mdnice编辑器"><strong>当前能力：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;代码统计（基础）<br/>&nbsp;&nbsp;&nbsp;-&nbsp;文件数量<br/>&nbsp;&nbsp;&nbsp;-&nbsp;代码行数<br/>&nbsp;&nbsp;&nbsp;-&nbsp;语言分布<br/><br/>❌&nbsp;缺少智能分析<br/>&nbsp;&nbsp;&nbsp;-&nbsp;代码质量评分<br/>&nbsp;&nbsp;&nbsp;-&nbsp;智能建议<br/>&nbsp;&nbsp;&nbsp;-&nbsp;趋势预测</code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 增强目标：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;机器学习模型<br/>&nbsp;&nbsp;&nbsp;-&nbsp;代码质量评分<br/>&nbsp;&nbsp;&nbsp;-&nbsp;异常检测<br/>&nbsp;&nbsp;&nbsp;-&nbsp;趋势预测<br/><br/>✅&nbsp;LLM&nbsp;集成<br/>&nbsp;&nbsp;&nbsp;-&nbsp;智能分析报告<br/>&nbsp;&nbsp;&nbsp;-&nbsp;改进建议<br/>&nbsp;&nbsp;&nbsp;-&nbsp;代码摘要<br/><br/>✅&nbsp;报告生成<br/>&nbsp;&nbsp;&nbsp;-&nbsp;PDF&nbsp;导出<br/>&nbsp;&nbsp;&nbsp;-&nbsp;Excel&nbsp;导出<br/>&nbsp;&nbsp;&nbsp;-&nbsp;HTML&nbsp;报告</code></pre>
+<p data-tool="mdnice编辑器"><strong>本篇目标：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>添加&nbsp;AI&nbsp;分析能力<br/><br/>内容：<br/>✅&nbsp;机器学习模型训练<br/>✅&nbsp;代码质量评分<br/>✅&nbsp;LLM&nbsp;智能建议<br/>✅&nbsp;报告生成<br/>✅&nbsp;数据导出</code></pre>
+<p data-tool="mdnice编辑器"><strong>学习要点：</strong></p>
+<ul>
+<li><section>✅ 机器学习基础</section></li>
+<li><section>✅ scikit-learn 使用</section></li>
+<li><section>✅ <span class="key">LLM</span> <span class="key">API</span> 集成</section></li>
+<li><section>✅ 报告生成工具</section></li>
+<li><section>✅ 数据可视化</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、代码质量评分</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">特征工程</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;app/ml/feature_extraction.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;typing&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">Dict,</span>&nbsp;<span style="color: #F8F8F2">List</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;numpy&nbsp;</span><span style="color: #66D9EF">as</span><span style="color: #F8F8F2">&nbsp;np</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">FeatureExtractor</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;特征提取器&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">extract_features</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">stats:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">ndarray:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;提取代码质量特征</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;特征：</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;平均函数长度</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;注释比例</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;测试覆盖率</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;圈复杂度</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.&nbsp;代码重复率</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6.&nbsp;文件大小分布</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">features</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">[</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;avg_function_length&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;comment_ratio&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;test_coverage&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;cyclomatic_complexity&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;duplication_rate&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;avg_file_size&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;file_size_std&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;code_files_ratio&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">np</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">array(features)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">calculate_derived_stats</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">project_stats:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">Dict:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;计算派生统计&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">total_lines</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">project_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;total_lines&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">{</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">&#39;comment_ratio&#39;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">project_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;comment_lines&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span>&nbsp;<span style="color: #FF4689">/</span>&nbsp;<span style="color: #F8F8F2">total_lines,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">&#39;code_files_ratio&#39;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">project_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;code_files&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">0</span><span style="color: #F8F8F2">)</span>&nbsp;<span style="color: #FF4689">/</span>&nbsp;<span style="color: #F8F8F2">max(project_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">1</span><span style="color: #F8F8F2">),</span>&nbsp;<span style="color: #AE81FF">1</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">&#39;avg_file_size&#39;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">total_lines</span>&nbsp;<span style="color: #FF4689">/</span>&nbsp;<span style="color: #F8F8F2">max(project_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">1</span><span style="color: #F8F8F2">),</span>&nbsp;<span style="color: #AE81FF">1</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;其他派生统计...</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">}</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">训练模型</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;app/ml/quality_model.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;sklearn.ensemble&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">RandomForestClassifier</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;sklearn.model_selection&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">train_test_split</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;sklearn.metrics&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">accuracy_score,</span>&nbsp;<span style="color: #F8F8F2">classification_report</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;joblib</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">QualityScorer</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;代码质量评分器&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">RandomForestClassifier(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">n_estimators</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">max_depth</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">random_state</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">42</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">feature_extractor</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">FeatureExtractor()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">train</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">X,</span>&nbsp;<span style="color: #F8F8F2">y):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;训练模型</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Args:</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X:&nbsp;特征矩阵</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y:&nbsp;标签&nbsp;(1-5&nbsp;星评分)</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">X_train,</span>&nbsp;<span style="color: #F8F8F2">X_test,</span>&nbsp;<span style="color: #F8F8F2">y_train,</span>&nbsp;<span style="color: #F8F8F2">y_test</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">train_test_split(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">X,</span>&nbsp;<span style="color: #F8F8F2">y,</span>&nbsp;<span style="color: #F8F8F2">test_size</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">0.2</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">random_state</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">42</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">fit(X_train,</span>&nbsp;<span style="color: #F8F8F2">y_train)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;评估</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">y_pred</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict(X_test)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">accuracy</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">accuracy_score(y_test,</span>&nbsp;<span style="color: #F8F8F2">y_pred)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">print(</span><span style="color: #E6DB74">f&quot;模型准确率:&nbsp;{</span><span style="color: #F8F8F2">accuracy</span><span style="color: #E6DB74">:.2f}&quot;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">print(classification_report(y_test,</span>&nbsp;<span style="color: #F8F8F2">y_pred))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;保存模型</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">joblib</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">dump(self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model,</span>&nbsp;<span style="color: #E6DB74">&#39;models/quality_scorer.pkl&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">predict</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">project_stats:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">int:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预测代码质量评分</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns:</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1-5&nbsp;星评分</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">features</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">feature_extractor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">extract_features(project_stats)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">features</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">features</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">reshape(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #FF4689">-</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">score</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict(features)[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">int(score)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">predict_proba</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">project_stats:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">Dict[int,</span>&nbsp;<span style="color: #F8F8F2">float]:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预测各评分的概率</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns:</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{1:&nbsp;0.1,&nbsp;2:&nbsp;0.2,&nbsp;3:&nbsp;0.3,&nbsp;4:&nbsp;0.25,&nbsp;5:&nbsp;0.15}</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">features</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">feature_extractor</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">extract_features(project_stats)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">features</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">features</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">reshape(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #FF4689">-</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">proba</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict_proba(features)[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">{i</span><span style="color: #FF4689">+</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">float(p)</span>&nbsp;<span style="color: #66D9EF">for</span>&nbsp;<span style="color: #F8F8F2">i,</span>&nbsp;<span style="color: #F8F8F2">p</span>&nbsp;<span style="color: #FF4689">in</span>&nbsp;<span style="color: #F8F8F2">enumerate(proba)}</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、LLM 智能建议</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">LLM 集成</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;app/ai/llm_client.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;openai&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">OpenAI</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;typing&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">Dict,</span>&nbsp;<span style="color: #F8F8F2">List</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;os</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">LLMClient</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;LLM&nbsp;客户端&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">client</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">OpenAI(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">api_key</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">os</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">getenv(</span><span style="color: #E6DB74">&quot;OPENAI_API_KEY&quot;</span><span style="color: #F8F8F2">),</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">base_url</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">os</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">getenv(</span><span style="color: #E6DB74">&quot;OPENAI_BASE_URL&quot;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #E6DB74">&quot;https://api.openai.com/v1&quot;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">os</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">getenv(</span><span style="color: #E6DB74">&quot;LLM_MODEL&quot;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #E6DB74">&quot;gpt-4&quot;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">analyze_project</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">stats:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">Dict:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;分析项目并生成建议</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Args:</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats:&nbsp;项目统计数据</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns:</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;summary&quot;:&nbsp;&quot;项目概要&quot;,</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;strengths&quot;:&nbsp;[&quot;优点1&quot;,&nbsp;&quot;优点2&quot;],</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;improvements&quot;:&nbsp;[&quot;改进建议1&quot;,&nbsp;&quot;建议2&quot;],</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;score&quot;:&nbsp;4</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">prompt</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">f&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">你是一个代码质量分析师。请分析以下项目的统计数据，并提供专业建议。</span><br/><br/><span style="color: #E6DB74">项目统计：</span><br/><span style="color: #E6DB74">-&nbsp;总文件数:&nbsp;{</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">-&nbsp;代码文件:&nbsp;{</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;code_files&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">-&nbsp;总代码行数:&nbsp;{</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;total_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">-&nbsp;代码行:&nbsp;{</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;code_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;({</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;code_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;total_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">*</span><span style="color: #AE81FF">100</span><span style="color: #E6DB74">:.1f}%)</span><br/><span style="color: #E6DB74">-&nbsp;注释行:&nbsp;{</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;comment_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;({</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;comment_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;total_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">*</span><span style="color: #AE81FF">100</span><span style="color: #E6DB74">:.1f}%)</span><br/><span style="color: #E6DB74">-&nbsp;语言分布:&nbsp;{</span><span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;language_stats&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">请以&nbsp;JSON&nbsp;格式返回：</span><br/><span style="color: #AE81FF">{{</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&quot;summary&quot;:&nbsp;&quot;1-2句话的项目概要&quot;,</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&quot;strengths&quot;:&nbsp;[&quot;优点1&quot;,&nbsp;&quot;优点2&quot;,&nbsp;&quot;优点3&quot;],</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&quot;improvements&quot;:&nbsp;[&quot;改进建议1&quot;,&nbsp;&quot;建议2&quot;,&nbsp;&quot;建议3&quot;],</span><br/><span style="color: #E6DB74">&nbsp;&nbsp;&quot;score&quot;:&nbsp;1-5的评分</span><br/><span style="color: #AE81FF">}}</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">response</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">client</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">chat</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">completions</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">model</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">model,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">messages</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #E6DB74">&quot;system&quot;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #E6DB74">&quot;你是专业的代码质量分析师&quot;</span><span style="color: #F8F8F2">},</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;role&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #E6DB74">&quot;user&quot;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #E6DB74">&quot;content&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">prompt}</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">],</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">temperature</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">0.7</span><span style="color: #F8F8F2">,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">response_format</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&quot;type&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #E6DB74">&quot;json_object&quot;</span><span style="color: #F8F8F2">}</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;json</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">json</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">loads(response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">choices[</span><span style="color: #AE81FF">0</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">message</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">content)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">generate_report</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">project:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;生成&nbsp;Markdown&nbsp;报告&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">analysis</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #66D9EF">await</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">analyze_project(project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">])</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">report</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">f&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">#&nbsp;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;-&nbsp;代码质量报告</span><br/><br/><span style="color: #E6DB74">##&nbsp;项目概要</span><br/><br/><span style="color: #E6DB74">{</span><span style="color: #F8F8F2">analysis[</span><span style="color: #E6DB74">&#39;summary&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">##&nbsp;统计数据</span><br/><br/><span style="color: #E6DB74">|&nbsp;指标&nbsp;|&nbsp;数值&nbsp;|</span><br/><span style="color: #E6DB74">|------|------|</span><br/><span style="color: #E6DB74">|&nbsp;总文件数&nbsp;|&nbsp;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;|</span><br/><span style="color: #E6DB74">|&nbsp;代码行数&nbsp;|&nbsp;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;code_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">:,}&nbsp;|</span><br/><span style="color: #E6DB74">|&nbsp;注释比例&nbsp;|&nbsp;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;comment_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;total_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">*</span><span style="color: #AE81FF">100</span><span style="color: #E6DB74">:.1f}%&nbsp;|</span><br/><br/><span style="color: #E6DB74">##&nbsp;优点</span><br/><br/><span style="color: #E6DB74">{</span><span style="color: #F8F8F2">chr(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">join(</span><span style="color: #E6DB74">f&#39;-&nbsp;{</span><span style="color: #F8F8F2">s</span><span style="color: #E6DB74">}&#39;</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">for</span><span style="color: #F8F8F2">&nbsp;s&nbsp;</span><span style="color: #FF4689">in</span><span style="color: #F8F8F2">&nbsp;analysis[</span><span style="color: #E6DB74">&#39;strengths&#39;</span><span style="color: #F8F8F2">])</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">##&nbsp;改进建议</span><br/><br/><span style="color: #E6DB74">{</span><span style="color: #F8F8F2">chr(</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">join(</span><span style="color: #E6DB74">f&#39;{</span><span style="color: #F8F8F2">i</span><span style="color: #FF4689">+</span><span style="color: #AE81FF">1</span><span style="color: #E6DB74">}.&nbsp;{</span><span style="color: #F8F8F2">s</span><span style="color: #E6DB74">}&#39;</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #66D9EF">for</span><span style="color: #F8F8F2">&nbsp;i,&nbsp;s&nbsp;</span><span style="color: #FF4689">in</span><span style="color: #F8F8F2">&nbsp;enumerate(analysis[</span><span style="color: #E6DB74">&#39;improvements&#39;</span><span style="color: #F8F8F2">]))</span><span style="color: #E6DB74">}</span><br/><br/><span style="color: #E6DB74">##&nbsp;评分</span><br/><br/><span style="color: #E6DB74">{&#39;⭐&#39;</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #FF4689">*</span><span style="color: #F8F8F2">&nbsp;analysis[</span><span style="color: #E6DB74">&#39;score&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;({</span><span style="color: #F8F8F2">analysis[</span><span style="color: #E6DB74">&#39;score&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}/5)</span><br/><br/><span style="color: #E6DB74">---</span><br/><span style="color: #E6DB74">生成时间:&nbsp;{</span><span style="color: #F8F8F2">datetime</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">now()</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">strftime(</span><span style="color: #E6DB74">&#39;%Y-%m-%d&nbsp;%H:%M:%S&#39;</span><span style="color: #F8F8F2">)</span><span style="color: #E6DB74">}</span><br/><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">report</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、报告生成</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">PDF 报告</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;app/reports/pdf_generator.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;reportlab&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">pdfgen</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;reportlab.lib.pagesizes&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">A4</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;reportlab.lib.styles&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">getSampleStyleSheet</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;reportlab.platypus&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">SimpleDocTemplate,</span>&nbsp;<span style="color: #F8F8F2">Paragraph,</span>&nbsp;<span style="color: #F8F8F2">Spacer,</span>&nbsp;<span style="color: #F8F8F2">Table,</span>&nbsp;<span style="color: #F8F8F2">Image</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;matplotlib.pyplot&nbsp;</span><span style="color: #66D9EF">as</span><span style="color: #F8F8F2">&nbsp;plt</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">PDFReportGenerator</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;PDF&nbsp;报告生成器&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self):</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">styles</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">getSampleStyleSheet()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">generate</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">project:</span>&nbsp;<span style="color: #F8F8F2">Dict,</span>&nbsp;<span style="color: #F8F8F2">output_path:</span>&nbsp;<span style="color: #F8F8F2">str):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;生成&nbsp;PDF&nbsp;报告&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">doc</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">SimpleDocTemplate(output_path,</span>&nbsp;<span style="color: #F8F8F2">pagesize</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">A4)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">[]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;标题</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">title</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">Paragraph(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">f&quot;&lt;h1&gt;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;-&nbsp;代码质量报告&lt;/h1&gt;&quot;</span><span style="color: #F8F8F2">,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">styles[</span><span style="color: #E6DB74">&#39;Heading1&#39;</span><span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(title)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(Spacer(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">12</span><span style="color: #F8F8F2">))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;基本信息</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">info_table</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">Table([</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;总文件数&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">str(project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">])],</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;代码行数&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #E6DB74">f&quot;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;code_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">:,}&quot;</span><span style="color: #F8F8F2">],</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;注释比例&#39;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #E6DB74">f&quot;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;comment_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">/</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;total_lines&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">*</span><span style="color: #AE81FF">100</span><span style="color: #E6DB74">:.1f}%&quot;</span><span style="color: #F8F8F2">],</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">])</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(info_table)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(Spacer(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">12</span><span style="color: #F8F8F2">))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;语言分布图</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">pie_chart</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">_create_language_pie(project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;language_stats&#39;</span><span style="color: #F8F8F2">])</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(Image(pie_chart,</span>&nbsp;<span style="color: #F8F8F2">width</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">400</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">height</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">300</span><span style="color: #F8F8F2">))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;趋势图</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">trend_chart</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">_create_trend_chart(project[</span><span style="color: #E6DB74">&#39;history&#39;</span><span style="color: #F8F8F2">])</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">story</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">append(Image(trend_chart,</span>&nbsp;<span style="color: #F8F8F2">width</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">500</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">height</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">250</span><span style="color: #F8F8F2">))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;生成&nbsp;PDF</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">doc</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">build(story)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">_create_language_pie</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">language_stats:</span>&nbsp;<span style="color: #F8F8F2">Dict)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;创建语言分布饼图&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">figure(figsize</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">(</span><span style="color: #AE81FF">6</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">4.5</span><span style="color: #F8F8F2">))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">labels</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">list(language_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">keys())</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">sizes</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">[s[</span><span style="color: #E6DB74">&#39;code&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #66D9EF">for</span>&nbsp;<span style="color: #F8F8F2">s</span>&nbsp;<span style="color: #FF4689">in</span>&nbsp;<span style="color: #F8F8F2">language_stats</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">values()]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">pie(sizes,</span>&nbsp;<span style="color: #F8F8F2">labels</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">labels,</span>&nbsp;<span style="color: #F8F8F2">autopct</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;%1.1f%%&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">title(</span><span style="color: #E6DB74">&#39;语言分布&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">chart_path</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">&#39;/tmp/language_pie.png&#39;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">savefig(chart_path,</span>&nbsp;<span style="color: #F8F8F2">dpi</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">bbox_inches</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;tight&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">close()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">chart_path</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">_create_trend_chart</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">history:</span>&nbsp;<span style="color: #F8F8F2">List)</span>&nbsp;<span style="color: #FF4689">-&gt;</span>&nbsp;<span style="color: #F8F8F2">str:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;创建趋势折线图&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">figure(figsize</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">(</span><span style="color: #AE81FF">7</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #AE81FF">3.5</span><span style="color: #F8F8F2">))</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">dates</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">[h[</span><span style="color: #E6DB74">&#39;analyzed_at&#39;</span><span style="color: #F8F8F2">][:</span><span style="color: #AE81FF">10</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #66D9EF">for</span>&nbsp;<span style="color: #F8F8F2">h</span>&nbsp;<span style="color: #FF4689">in</span>&nbsp;<span style="color: #F8F8F2">history]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">values</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">[h[</span><span style="color: #E6DB74">&#39;code_lines&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #66D9EF">for</span>&nbsp;<span style="color: #F8F8F2">h</span>&nbsp;<span style="color: #FF4689">in</span>&nbsp;<span style="color: #F8F8F2">history]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">plot(dates,</span>&nbsp;<span style="color: #F8F8F2">values,</span>&nbsp;<span style="color: #F8F8F2">marker</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;o&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">title(</span><span style="color: #E6DB74">&#39;代码行数趋势&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">xlabel(</span><span style="color: #E6DB74">&#39;日期&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">ylabel(</span><span style="color: #E6DB74">&#39;代码行数&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">xticks(rotation</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">45</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">chart_path</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">&#39;/tmp/trend.png&#39;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">savefig(chart_path,</span>&nbsp;<span style="color: #F8F8F2">dpi</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">100</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">bbox_inches</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;tight&#39;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">plt</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">close()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">chart_path</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">Excel 导出</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;app/reports/excel_generator.py</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2">&nbsp;openpyxl</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;openpyxl.styles&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">Font,</span>&nbsp;<span style="color: #F8F8F2">PatternFill</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;openpyxl.chart&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">PieChart,</span>&nbsp;<span style="color: #F8F8F2">LineChart</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">ExcelReportGenerator</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;Excel&nbsp;报告生成器&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">generate</span><span style="color: #F8F8F2">(self,</span>&nbsp;<span style="color: #F8F8F2">project:</span>&nbsp;<span style="color: #F8F8F2">Dict,</span>&nbsp;<span style="color: #F8F8F2">output_path:</span>&nbsp;<span style="color: #F8F8F2">str):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;生成&nbsp;Excel&nbsp;报告&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">wb</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">openpyxl</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">Workbook()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;概览页</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">wb</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">active</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">title</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">&quot;概览&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws[</span><span style="color: #E6DB74">&#39;A1&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">f&quot;{</span><span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #E6DB74">}&nbsp;-&nbsp;代码质量报告&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws[</span><span style="color: #E6DB74">&#39;A1&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">font</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">Font(size</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">16</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">bold</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws[</span><span style="color: #E6DB74">&#39;A3&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">&quot;总文件数&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws[</span><span style="color: #E6DB74">&#39;B3&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;total_files&#39;</span><span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws[</span><span style="color: #E6DB74">&#39;A4&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">&quot;代码行数&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws[</span><span style="color: #E6DB74">&#39;B4&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;code_lines&#39;</span><span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;语言分布页</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws_lang</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">wb</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_sheet(</span><span style="color: #E6DB74">&quot;语言分布&quot;</span><span style="color: #F8F8F2">)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">row</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #AE81FF">1</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">for</span>&nbsp;<span style="color: #F8F8F2">lang,</span>&nbsp;<span style="color: #F8F8F2">stats</span>&nbsp;<span style="color: #FF4689">in</span>&nbsp;<span style="color: #F8F8F2">project[</span><span style="color: #E6DB74">&#39;stats&#39;</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;language_stats&#39;</span><span style="color: #F8F8F2">]</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">items():</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws_lang[</span><span style="color: #E6DB74">f&#39;A{</span><span style="color: #F8F8F2">row</span><span style="color: #E6DB74">}&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">lang</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">ws_lang[</span><span style="color: #E6DB74">f&#39;B{</span><span style="color: #F8F8F2">row</span><span style="color: #E6DB74">}&#39;</span><span style="color: #F8F8F2">]</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">stats[</span><span style="color: #E6DB74">&#39;code&#39;</span><span style="color: #F8F8F2">]</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">row</span>&nbsp;<span style="color: #FF4689">+=</span>&nbsp;<span style="color: #AE81FF">1</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #e0e0e0">#&nbsp;保存</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">wb</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save(output_path)</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、API 集成</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">分析 API</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0">#&nbsp;app/api/analysis.py</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;fastapi&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">APIRouter,</span>&nbsp;<span style="color: #F8F8F2">Depends</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;..ml.quality_model&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">QualityScorer</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;..ai.llm_client&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">LLMClient</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;..reports.pdf_generator&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">PDFReportGenerator</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2">&nbsp;..reports.excel_generator&nbsp;</span><span style="color: #FF4689">import</span>&nbsp;<span style="color: #F8F8F2">ExcelReportGenerator</span><br/><br/><span style="color: #F8F8F2">router</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">APIRouter(prefix</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;/analysis&quot;</span><span style="color: #F8F8F2">,</span>&nbsp;<span style="color: #F8F8F2">tags</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&quot;Analysis&quot;</span><span style="color: #F8F8F2">])</span><br/><br/><span style="color: #F8F8F2">quality_scorer</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">QualityScorer()</span><br/><span style="color: #F8F8F2">llm_client</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">LLMClient()</span><br/><br/><span style="color: #A6E22E">@router</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><span style="color: #E6DB74">&quot;/{project_id}/score&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">get_quality_score</span><span style="color: #F8F8F2">(project_id:</span>&nbsp;<span style="color: #F8F8F2">int):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;获取代码质量评分&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">project</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(Project)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">filter(Project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">id</span>&nbsp;<span style="color: #FF4689">==</span>&nbsp;<span style="color: #F8F8F2">project_id)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">first()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">score</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">quality_scorer</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict(project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">stats)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">proba</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">quality_scorer</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">predict_proba(project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">stats)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">{</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">&quot;project_id&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">project_id,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">&quot;score&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">score,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E6DB74">&quot;probability&quot;</span><span style="color: #F8F8F2">:</span>&nbsp;<span style="color: #F8F8F2">proba</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">}</span><br/><br/><span style="color: #A6E22E">@router</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><span style="color: #E6DB74">&quot;/{project_id}/suggestions&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">get_ai_suggestions</span><span style="color: #F8F8F2">(project_id:</span>&nbsp;<span style="color: #F8F8F2">int):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;获取&nbsp;AI&nbsp;建议&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">project</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(Project)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">filter(Project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">id</span>&nbsp;<span style="color: #FF4689">==</span>&nbsp;<span style="color: #F8F8F2">project_id)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">first()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">analysis</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #66D9EF">await</span>&nbsp;<span style="color: #F8F8F2">llm_client</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">analyze_project(project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">stats)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">analysis</span><br/><br/><span style="color: #A6E22E">@router</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><span style="color: #E6DB74">&quot;/{project_id}/report/pdf&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">generate_pdf_report</span><span style="color: #F8F8F2">(project_id:</span>&nbsp;<span style="color: #F8F8F2">int):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;生成&nbsp;PDF&nbsp;报告&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">project</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(Project)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">filter(Project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">id</span>&nbsp;<span style="color: #FF4689">==</span>&nbsp;<span style="color: #F8F8F2">project_id)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">first()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">generator</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">PDFReportGenerator()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">output_path</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">f&quot;/tmp/project_{</span><span style="color: #F8F8F2">project_id</span><span style="color: #E6DB74">}_report.pdf&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">generator</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(project,</span>&nbsp;<span style="color: #F8F8F2">output_path)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">FileResponse(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">output_path,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">media_type</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;application/pdf&quot;</span><span style="color: #F8F8F2">,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">filename</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">f&quot;{</span><span style="color: #F8F8F2">project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">name</span><span style="color: #E6DB74">}_report.pdf&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/><br/><span style="color: #A6E22E">@router</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><span style="color: #E6DB74">&quot;/{project_id}/report/excel&quot;</span><span style="color: #F8F8F2">)</span><br/><span style="color: #66D9EF">async</span>&nbsp;<span style="color: #66D9EF">def</span><span style="color: #F8F8F2">&nbsp;</span><span style="color: #A6E22E">generate_excel_report</span><span style="color: #F8F8F2">(project_id:</span>&nbsp;<span style="color: #F8F8F2">int):</span><br/><span style="color: #F8F8F2">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #E6DB74">&quot;&quot;&quot;生成&nbsp;Excel&nbsp;报告&quot;&quot;&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">project</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(Project)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">filter(Project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">id</span>&nbsp;<span style="color: #FF4689">==</span>&nbsp;<span style="color: #F8F8F2">project_id)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">first()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">generator</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #F8F8F2">ExcelReportGenerator()</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">output_path</span>&nbsp;<span style="color: #FF4689">=</span>&nbsp;<span style="color: #E6DB74">f&quot;/tmp/project_{</span><span style="color: #F8F8F2">project_id</span><span style="color: #E6DB74">}_report.xlsx&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">generator</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">generate(project,</span>&nbsp;<span style="color: #F8F8F2">output_path)</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #66D9EF">return</span>&nbsp;<span style="color: #F8F8F2">FileResponse(</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">output_path,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">media_type</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;</span><span style="color: #F8F8F2">,</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">filename</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">f&quot;{</span><span style="color: #F8F8F2">project</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">name</span><span style="color: #E6DB74">}_report.xlsx&quot;</span><br/>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #F8F8F2">)</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">完成的功能</span></h3>
+<p data-tool="mdnice编辑器"><strong>机器学习：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;特征提取<br/>✅&nbsp;模型训练<br/>✅&nbsp;质量评分<br/>✅&nbsp;概率预测</code></pre>
+<p data-tool="mdnice编辑器"><strong><span class="key">LLM</span> 集成：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;项目分析<br/>✅&nbsp;智能建议<br/>✅&nbsp;报告生成<br/>✅&nbsp;代码摘要</code></pre>
+<p data-tool="mdnice编辑器"><strong>报告导出：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;PDF&nbsp;报告<br/>✅&nbsp;Excel&nbsp;报告<br/>✅&nbsp;Markdown&nbsp;报告<br/>✅&nbsp;图表嵌入</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">技术栈总结</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>机器学习：scikit-learn,&nbsp;numpy<br/>LLM：OpenAI&nbsp;API,&nbsp;LangChain<br/>图表：matplotlib,&nbsp;seaborn<br/>PDF：ReportLab<br/>Excel：openpyxl</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.3</span><span class="title-text">系列总结</span></h3>
+<p data-tool="mdnice编辑器"><strong>从实战01到实战08：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;实战01：CLI&nbsp;工具<br/>✅&nbsp;实战02：Web&nbsp;API<br/>✅&nbsp;实战03：MCP&nbsp;集成<br/>✅&nbsp;实战04：打包发布<br/>✅&nbsp;实战05：架构设计<br/>✅&nbsp;实战06：后端&nbsp;+&nbsp;Skills<br/>✅&nbsp;实战07：前端界面<br/>✅&nbsp;实战08：AI&nbsp;特性</code></pre>
+<p data-tool="mdnice编辑器"><strong>项目规模：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>代码量：~15,000&nbsp;行<br/>技术栈：15+&nbsp;个技术<br/>功能：30+&nbsp;个功能点<br/>时间：8&nbsp;篇教程</code></pre>
+<p data-tool="mdnice编辑器"><strong>核心收获：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅&nbsp;从&nbsp;CLI&nbsp;到平台<br/>✅&nbsp;从单机到协作<br/>✅&nbsp;从基础到智能<br/>✅&nbsp;从开发到生产</code></pre>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：实战07：前端界面</section></li>
+<li><section>下一篇：专题篇：多语言开发</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">23</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-06</p>
+<p data-tool="mdnice编辑器"><strong>用 AI 赋能，让数据说话！</strong> 🤖</p>
+</article>
+</div>
+</body>
+</html>

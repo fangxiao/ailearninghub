@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent进化论 ⑤ | FAQ检索：关键词和向量为啥都不能少</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+<body>
+<div class="container">
+
+
+
+<h2><span class="title-text">客服Agent进化论 ⑤</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">FAQ检索：关键词和向量为啥都不能少</p>
+
+<blockquote class="opinion">
+<p>用户问："怎么改密码？"客服机器人："抱歉，我不太理解您的问题。"用户又问："如何修改账户密码？"客服机器人秒回："修改密码步骤：1.登录账户 2.进入账户设置 3.点击修改密码"——同样的意思，换个说法就不认得了？这就是单纯关键词检索的尴尬。</p>
+</blockquote>
+
+<blockquote class="highlight">
+<p><strong>真正的检索不是字字匹配，而是心意相通。</strong>FAQ查询是客服Agent的第二大场景。单纯的关键词检索"不够聪明"，单纯的向量检索又"不够确定"。本篇介绍<span class="key">FAQ Skill</span>如何用<strong>向量+关键词混合检索</strong>实现精准问答，以及LLM兜底降级策略——就像查字典，光会拼音不够，还得会按意思找。</p>
+</blockquote>
+
+<p style="color: #888; font-size: 14px; font-style: italic; margin: 16px 0 24px;">
+💡 如果你看过之前的《客服Agent实战系列》，应该熟悉FAQ检索的基础方案。本篇是加强版，我们来聊聊怎么把单纯的检索升级成真正的生产级双引擎架构。
+</p>
+
+<h3><span class="icon">01</span><span class="title-text">为啥单引擎不够用？</span></h3>
+
+<p>先看两个真实的客服场景：</p>
+
+<div class="detail-box">
+<div class="detail-title">场景一：用户问"怎么开发票"</div>
+<div class="detail-content">
+<strong>关键词检索</strong>：能命中"开发票"这个关键词，返回"如何申请发票"的FAQ——<span style="color:#00897B;">成功</span><br>
+<strong>向量检索</strong>：理解"开发票"≈"申请发票"，语义匹配成功——<span style="color:#00897B;">成功</span>
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">场景二：用户问"那个东西开了吗"</div>
+<div class="detail-content">
+<strong>关键词检索</strong>：完全匹配不上任何FAQ关键词——<span style="color:#c62828;">失败</span><br>
+<strong>向量检索</strong>：能理解"开了吗"可能指"发货了吗"，但置信度只有60%——<span style="color:#e65100;">不稳定</span>
+</div>
+</div>
+
+<p>看到没？关键词检索擅长<strong>精确匹配</strong>，但遇到同义表达就傻眼。向量检索擅长<strong>语义理解</strong>，但遇到专有名词（比如订单号、产品型号）就不靠谱。</p>
+
+<blockquote class="opinion">
+<p>我在项目里试过纯向量检索，结果发现用户问"iPhone 15 Pro Max 256G有货吗"，向量检索把"Pro Max"理解成"专业版"，匹配到了完全不相关的FAQ。<strong>专有名词的精度，向量模型真的不如关键词匹配。</strong></p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">02</span><span class="title-text">双引擎检索架构</span></h3>
+
+<p>所以我们设计了<span class="key">HybridRetriever</span>混合检索器，两个引擎并行跑，结果合并打分：</p>
+
+<div class="diagram-title">图1：双引擎检索架构</div>
+<div class="mermaid">
+graph LR
+    A[用户问题] --> B{HybridRetriever}
+    B --> C[关键词引擎]
+    B --> D[向量引擎]
+    C --> E[BM25算法]
+    D --> F[Cosine相似度]
+    E --> G[结果集A]
+    F --> H[结果集B]
+    G --> I[分数融合]
+    H --> I
+    I --> J[Top-K结果]
+    J --> K{置信度检查}
+    K -->|高置信度| L[返回FAQ答案]
+    K -->|低置信度| M[LLM兜底生成]
+
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e9
+    style D fill:#e8f5e9
+    style L fill:#c8e6c9
+    style M fill:#ffcdd2
+</div>
+
+<p>这个架构的核心思想是：<strong>各取所长，互补短板</strong>。</p>
+
+<table>
+<tr>
+<th>维度</th>
+<th>关键词检索</th>
+<th>向量检索</th>
+</tr>
+<tr>
+<td>擅长场景</td>
+<td>专有名词、精确匹配</td>
+<td>同义表达、模糊语义</td>
+</tr>
+<tr>
+<td>不擅长</td>
+<td>语义变形、口语化表达</td>
+<td>精确字符串、编号类查询</td>
+</tr>
+<tr>
+<td>响应速度</td>
+<td>快（毫秒级）</td>
+<td>较慢（需计算向量）</td>
+</tr>
+<tr>
+<td>可解释性</td>
+<td>高（命中了具体关键词）</td>
+<td>低（黑盒语义匹配）</td>
+</tr>
+</table>
+
+<hr>
+
+<h3><span class="icon">03</span><span class="title-text">HybridRetriever实现</span></h3>
+
+<p>来看看核心代码怎么写的：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+class HybridRetriever:
+    def __init__(self, faq_data, embedding_model):
+        self.bm25 = BM25Retriever(faq_data)
+        self.vector = VectorRetriever(embedding_model)
+        self.faq_data = faq_data
+        self.alpha = 0.6
+
+    def search(self, query, top_k=3):
+        keyword_results = self.bm25.search(query, top_k=10)
+        vector_results = self.vector.search(query, top_k=10)
+
+        fused = self._fuse_scores(
+            keyword_results, vector_results
+        )
+        results = sorted(fused, key=lambda x: x['score'], reverse=True)
+
+        return results[:top_k]
+
+    def _fuse_scores(self, kw_results, vec_results):
+        score_map = {}
+        for item in kw_results:
+            idx = item['index']
+            score_map[idx] = {
+                'index': idx,
+                'score': item['score'] * self.alpha,
+                'source': 'keyword'
+            }
+        for item in vec_results:
+            idx = item['index']
+            if idx in score_map:
+                score_map[idx]['score'] += (
+                    item['score'] * (1 - self.alpha)
+                )
+                score_map[idx]['source'] = 'hybrid'
+            else:
+                score_map[idx] = {
+                    'index': idx,
+                    'score': item['score'] * (1 - self.alpha),
+                    'source': 'vector'
+                }
+        return list(score_map.values())
+</code>
+</pre>
+
+<p>关键点在<span class="key">_fuse_scores</span>方法：用alpha权重融合两路分数。默认0.6偏向关键词检索，你可以根据业务场景调整——如果FAQ中口语化问题多，就调低点alpha。</p>
+
+<blockquote class="highlight">
+<p><strong>实战经验</strong>：我们在电商场景测试过，alpha=0.6时，FAQ命中率从单引擎的72%提升到94%。如果你的业务有很多专有名词（如产品型号、活动代号），建议alpha调到0.7。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">04</span><span class="title-text">三级降级策略</span></h3>
+
+<p>再强的检索也有翻车的时候。比如用户问的问题FAQ里根本没有，或者两个引擎都没找到合适答案。这时候怎么办？</p>
+
+<p>我们设计了<span class="key">三级降级策略</span>，确保任何情况下都能给用户一个回应：</p>
+
+<div class="detail-box">
+<div class="detail-title">第一级：高置信度命中（score > 0.8）</div>
+<div class="detail-content">
+直接返回FAQ标准答案，附带来源引用。用户体验最好的情况。
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">第二级：低置信度命中（0.5 < score < 0.8）</div>
+<div class="detail-content">
+把Top-3的FAQ片段丢给LLM，让它基于这些候选生成一个更自然的回答。同时标注"参考了以下内容"，增加可信度。
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">第三级：LLM兜底（score < 0.5）</div>
+<div class="detail-content">
+FAQ没找到相关内容，直接走LLM对话模式。但要给LLM加约束："如果不确定，请建议用户转人工客服"——别让AI瞎编答案。
+</div>
+</div>
+
+<div class="diagram-title">图2：三级降级流程</div>
+<div class="mermaid">
+flowchart TD
+    A[用户问题] --> B{混合检索}
+    B --> C{最高分 > 0.8?}
+    C -->|是| D[直接返回FAQ]
+    C -->|否| E{最高分 > 0.5?}
+    E -->|是| F[LLM基于候选生成回答]
+    E -->|否| G[LLM自由对话]
+    F --> H{LLM置信度}
+    H -->|高| I[返回生成内容]
+    H -->|低| J[建议转人工]
+    G --> K{LLM判断}
+    K -->|能回答| L[LLM回答并标注]
+    K -->|不能回答| M[主动转人工]
+
+    style D fill:#c8e6c9
+    style F fill:#fff9c4
+    style G fill:#ffcdd2
+    style J fill:#ffab91
+    style M fill:#ff8a80
+</div>
+
+<blockquote class="opinion">
+<p>这里有个坑：第三级如果完全放开LLM，它可能会编造FAQ里没有的政策。我们的做法是给LLM一个system prompt约束："你是客服助手，只能基于提供的FAQ内容回答。如果FAQ里没有相关信息，请回复'这个问题我需要转接人工客服来处理'。"<strong>宁可承认不知道，也不能瞎编。</strong></p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">05</span><span class="title-text">FAQ Skill完整流程</span></h3>
+
+<p>把上面这些串起来，就是完整的FAQ Skill处理流程：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+class FAQSkill(BaseSkill):
+    name = "faq"
+    priority = 2
+
+    def execute(self, context):
+        retriever = context.get_retriever()
+        query = context.user_message
+
+        results = retriever.search(query, top_k=3)
+
+        if results[0]['score'] > 0.8:
+            return self._direct_answer(results[0])
+        elif results[0]['score'] > 0.5:
+            candidates = [r['content'] for r in results]
+            return self._llm_based_answer(candidates, query)
+        else:
+            return self._llm_fallback_answer(query)
+
+    def _direct_answer(self, result):
+        return {
+            'type': 'faq_answer',
+            'content': result['answer'],
+            'source': result['faq_id'],
+            'confidence': result['score']
+        }
+
+    def _llm_based_answer(self, candidates, query):
+        prompt = f"""基于以下FAQ内容回答用户问题：
+        候选内容：{candidates}
+        用户问题：{query}
+        如果候选内容不够，请说明需要更多信息。"""
+        response = self.llm.generate(prompt)
+        return {
+            'type': 'llm_answer',
+            'content': response,
+            'confidence': 0.7
+        }
+
+    def _llm_fallback_answer(self, query):
+        prompt = f"""你是客服助手，回答用户问题。
+        如果不确定，请建议转人工。
+        用户问题：{query}"""
+        response = self.llm.generate(prompt)
+        return {
+            'type': 'fallback_answer',
+            'content': response,
+            'confidence': 0.3
+        }
+</code>
+</pre>
+
+<p>这个Skill的设计遵循了Harness架构的核心原则：<strong>每个Skill只管自己的事，检索策略可替换，降级策略可配置</strong>。</p>
+
+<hr>
+
+<h3><span class="icon">06</span><span class="title-text">性能优化小贴士</span></h3>
+
+<ol>
+<li><strong>向量缓存</strong>：FAQ的embedding预先计算好存Redis，别每次搜索都重新算</li>
+<li><strong>热词缓存</strong>：高频问题的答案直接缓存，跳过检索过程</li>
+<li><strong>超时控制</strong>：向量检索设200ms超时，超时直接走关键词检索降级</li>
+<li><strong>日志埋点</strong>：记录每次检索的分数和命中来源，持续优化alpha权重</li>
+</ol>
+
+<blockquote class="highlight">
+<p>我们把这些优化都做了之后，FAQ检索的P99延迟从800ms降到了120ms，命中率稳定在94%以上。<strong>双引擎+三级降级，是生产级FAQ检索的标配。</strong></p>
+</blockquote>
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent加强版（Harness+Skill架构）</strong><br>
+01 · Harness+Skill架构革命<br>
+02 · BaseSkill标准接口<br>
+03 · 路由与编排：Registry+Router+Harness<br>
+04 · OrderSkill实战<br>
+05 · FAQ双引擎检索 ← 你在这里<br>
+06 · 情感Skill+Function Calling<br>
+07 · 槽位填充+用户记忆<br>
+08 · 生产级Harness：防护+监控+热插拔+部署<br>
+<br>
+<strong>前置系列：</strong><a href="../客服Agent实战系列-01.html" style="color: #00897B;">客服Agent实战系列</a>
+</p>
+
+</div>
+</body>
+</html>

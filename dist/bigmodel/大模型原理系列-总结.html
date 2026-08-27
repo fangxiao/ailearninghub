@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型原理系列 · 总结</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #e8f5e9 0%, #fff 100%); border-left-color: #66bb6a; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #fce4ec 0%, #fff 100%); border-left: #e91e63; }
+blockquote.opinion p { color: #5a5a5a; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2b8cc4; font-weight: 500; }
+.series-link { display: inline-block; padding: 4px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 20px; font-size: 12px; margin-right: 8px; }
+.fun-fact { background: linear-gradient(135deg, #e1bee7 0%, #fff 100%); border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+.fun-fact .fact-title { font-size: 14px; font-weight: bold; color: #7b1fa2; margin-bottom: 8px; }
+.roadmap { background: linear-gradient(135deg, #e3f2fd 0%, #fff 100%); border-radius: 12px; padding: 20px; margin: 20px 0; }
+.roadmap .step { margin: 12px 0; padding: 12px; border-left: 3px solid #1976d2; background: rgba(255,255,255,0.5); border-radius: 4px; }
+.roadmap .step-num { font-weight: bold; color: #1976d2; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">大模型原理系列 · 总结</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+<span class="series-link">系列总结</span>
+从Transformer到GPT，8篇文章读懂大模型原理
+</p>
+
+<blockquote class="opinion">
+<p><strong>写在前面：</strong>这个系列从Transformer架构讲起，一路讲到Scaling Law。8篇文章，覆盖了大模型的核心原理。如果你从头看到尾，现在应该能回答这个问题了：<strong>"ChatGPT是怎么工作的？"</strong></p>
+</blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">知识脉络回顾</span></h3>
+
+<p>整个系列的知识结构是这样的：</p>
+
+<div class="roadmap">
+<div class="step">
+<p><span class="step-num">第一层：基础架构</span></p>
+<p>01 Transformer架构 → 为什么不用RNN？并行计算的优势</p>
+</div>
+
+<div class="step">
+<p><span class="step-num">第二层：核心组件</span></p>
+<p>03 位置编码 → 解决"谁在前面"的问题</p>
+<p>04 多头注意力 → 让AI有"多个脑子"同时分析</p>
+</div>
+
+<div class="step">
+<p><span class="step-num">第三层：架构变体</span></p>
+<p>05 Encoder-Decoder → 理解脑 vs 生成脑（BERT vs GPT）</p>
+</div>
+
+<div class="step">
+<p><span class="step-num">第四层：数据与生成</span></p>
+<p>06 Token → AI处理文本的基本单位</p>
+<p>07 GPT生成原理 → 自回归生成，一个字一个字预测</p>
+</div>
+
+<div class="step">
+<p><span class="step-num">第五层：规模效应</span></p>
+<p>08 Scaling Law → 为什么模型越大越聪明</p>
+</div>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">核心概念速查表</span></h3>
+
+<table>
+<tr>
+<th>概念</th>
+<th>一句话理解</th>
+</tr>
+<tr>
+<td><strong>Transformer</strong></td>
+<td>并行处理所有词，不像RNN一个一个读</td>
+</tr>
+<tr>
+<td><strong>Self-Attention</strong></td>
+<td>每个词都能"看到"其他所有词</td>
+</tr>
+<tr>
+<td><strong>位置编码</strong></td>
+<td>给每个词贴个"座位号"，让AI知道顺序</td>
+</tr>
+<tr>
+<td><strong>多头注意力</strong></td>
+<td>多个"小脑子"同时分析，每个抓不同重点</td>
+</tr>
+<tr>
+<td><strong>Encoder</strong></td>
+<td>理解脑，把文字变成"知识"</td>
+</tr>
+<tr>
+<td><strong>Decoder</strong></td>
+<td>生成脑，把知识变成文字</td>
+</tr>
+<tr>
+<td><strong>Token</strong></td>
+<td>AI处理文本的基本单位（"认字"的方式）</td>
+</tr>
+<tr>
+<td><strong>自回归生成</strong></td>
+<td>一个字一个字预测，每次都看前面的内容</td>
+</tr>
+<tr>
+<td><strong>Scaling Law</strong></td>
+<td>模型越大效果越好，而且可以预测</td>
+</tr>
+</table>
+
+<h3><span class="icon">3</span><span class="title-text">现在你能回答这些问题了</span></h3>
+
+<p><strong>Q1：ChatGPT是怎么生成回答的？</strong></p>
+<p>自回归生成——一个字一个字预测，每次都基于前面已经生成的内容。每预测一次，输出所有可能字的概率分布，然后采样选择一个。</p>
+
+<p><strong>Q2：为什么GPT-3有1750亿参数？</strong></p>
+<p>Scaling Law告诉OpenAI：要达到某个效果水平，需要多少参数。1750亿是在当时计算预算下的最优选择。</p>
+
+<p><strong>Q3：BERT和GPT有什么区别？</strong></p>
+<p>BERT只用Encoder，擅长理解（分类、问答）；GPT只用Decoder，擅长生成（写作、对话）。</p>
+
+<p><strong>Q4：为什么AI有时会"复读"？</strong></p>
+<p>可能是某些Token组合特别常见，模型学到了这种重复模式。调整温度参数可以缓解。</p>
+
+<p><strong>Q5：为什么AI算数不行？</strong></p>
+<p>数字的Token切分不符合数学直觉。比如"123"可能被切成"1"和"23"两个Token，AI需要学的是统计规律，不是真正的数学。</p>
+
+<h3><span class="icon">4</span><span class="title-text">学习建议</span></h3>
+
+<div class="fun-fact">
+<p class="fact-title">给不同读者的建议</p>
+<p><strong>如果你想深入理解：</strong></p>
+<p>• 补量自己实现一个迷你Transformer（50行代码）</p>
+<p>• 读原始论文《Attention Is All You Need》</p>
+<p>• 看OpenAI的Scaling Law论文</p>
+
+<p style="margin-top:15px;"><strong>如果你只想应用：</strong></p>
+<p>• 记住：Token、自回归生成、温度参数</p>
+<p>• 理解：为什么大模型要做得这么大</p>
+<p>• 知道：不同任务该用什么模型（BERT vs GPT）</p>
+
+<p style="margin-top:15px;"><strong>如果你想继续学习：</strong></p>
+<p>• 研究方向：高效训练、模型压缩、多模态</p>
+<p>• 实践方向：微调、Prompt Engineering、RAG</p>
+</div>
+
+<h3><span class="icon">5</span><span class="title-text">系列完整目录</span></h3>
+
+<p style="line-height: 2.2;">
+<strong>基础架构层</strong><br>
+01 · Transformer架构原理<br>
+02 · Self-Attention数学原理（待补充）<br><br>
+
+<strong>核心组件层</strong><br>
+03 · 位置编码：让模型知道"谁在前面"<br>
+04 · 多头注意力：让模型从多个角度理解<br><br>
+
+<strong>架构变体层</strong><br>
+05 · Encoder-Decoder架构：大模型的"双脑"结构<br><br>
+
+<strong>数据与生成层</strong><br>
+06 · Token：AI是怎么"认字"的<br>
+07 · GPT生成原理：AI是怎么一个字一个字"写"出来的<br><br>
+
+<strong>进阶原理层</strong><br>
+08 · Scaling Law：为什么模型越大越聪明
+</p>
+
+<hr>
+
+<blockquote class="highlight">
+<p><strong>最后的话：</strong>大模型不是魔法，是工程。理解了原理，你就能更好地使用它、优化它、甚至改进它。希望这个系列对你有帮助！</p>
+</blockquote>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>大模型原理系列 · 完结</strong><br>
+感谢阅读 🙏
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文档生成：自动生成代码文档</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">20</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：掌握 AI 自动生成文档，告别文档焦虑</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：你已经掌握了什么？</span></h2>
+<p data-tool="mdnice编辑器"><strong>新手篇（01-05）：</strong></p>
+<ul>
+<li><section>✅ AI Coding 基础</section></li>
+<li><section>✅ <span class="num">5</span>个核心操作</section></li>
+<li><section>✅ 提示词技巧</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>进阶篇（06-09）：</strong></p>
+<ul>
+<li><section>✅ 代码库理解</section></li>
+<li><section>✅ 多文件编辑</section></li>
+<li><section>✅ 测试驱动</section></li>
+<li><section>✅ 调试高手</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>你已经能够：</strong></p>
+<ul>
+<li><section>理解大型项目</section></li>
+<li><section>批量重构代码</section></li>
+<li><section>生成测试用例</section></li>
+<li><section>快速修复 Bug</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>完整的工作流程：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>理解项目 → 重构代码 → 生成测试 → 修复Bug → 完成！</code></pre>
+<p data-tool="mdnice编辑器"><strong>但还有一个问题：</strong></p>
+<p data-tool="mdnice编辑器">代码写完了，文档怎么办？</p>
+<ul>
+<li><section>不写文档？新人看不懂</section></li>
+<li><section>手写文档？太花时间</section></li>
+<li><section>文档过时？形同虚设</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>这一篇将教你：</strong> 让 AI 自动生成高质量文档，并保持同步。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：文档困境</span></h2>
+<p data-tool="mdnice编辑器"><strong>场景1：不想写文档</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：代码写完了<br/>同事：文档呢？<br/>你：没时间...<br/>（3个月后）<br/>新人：这个函数怎么用？<br/>你：看代码吧...<br/>新人：...（看不懂）</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景2：文档过时</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：看文档说这个函数接受 2 个参数<br/>实际情况：代码已经改成 3 个参数了<br/>你：文档是上个月写的，没更新<br/>结果：用了错误的参数，引入 bug</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景3：文档质量差</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>def process_data(data):<br/>    """处理数据"""<br/>    pass<br/><br/>你：这文档什么都没说...<br/>同事：我写了啊，"处理数据"<br/>你：...</code></pre>
+<p data-tool="mdnice编辑器"><strong>解决方法：</strong> 让 AI 自动生成高质量文档。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、为什么文档这么重要？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">文档的价值</span></h3>
+<p data-tool="mdnice编辑器"><strong>文档 = 代码的使用说明书</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>没有文档：<br/>❌ 新人无从下手<br/>❌ 代码难以维护<br/>❌ 知识无法传承<br/>❌ 团队效率低下<br/><br/>有好文档：<br/>✅ 快速上手项目<br/>✅ 轻松维护代码<br/>✅ 知识沉淀传承<br/>✅ 团队协作高效</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">AI 生成文档的优势</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>方面</th>
+<th>手写文档</th>
+<th>AI 生成</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>速度</td>
+<td><span class="num">1</span>小时/模块</td>
+<td><span class="num">5</span>分钟/模块</td>
+</tr>
+<tr>
+<td>准确性</td>
+<td>容易过时</td>
+<td>自动同步</td>
+</tr>
+<tr>
+<td>完整性</td>
+<td>经常遗漏</td>
+<td>全面覆盖</td>
+</tr>
+<tr>
+<td>格式</td>
+<td>不统一</td>
+<td>自动规范</td>
+</tr>
+<tr>
+<td>维护</td>
+<td>需要手动</td>
+<td>可以自动</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、文档类型与生成</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">代码注释</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 为函数添加 docstring</p>
+<p data-tool="mdnice编辑器"><strong>原始代码：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_discount</span><span style="color: #F8F8F2">(user_level,</span> <span style="color: #F8F8F2">amount):</span><br/>    <span style="color: #F8F8F2">discounts</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.95</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.9</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.85</span><span style="color: #F8F8F2">}</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">amount</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">discounts</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(user_level,</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 生成文档：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_discount</span><span style="color: #F8F8F2">(user_level:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">amount:</span> <span style="color: #F8F8F2">float)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">float:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">    根据用户等级计算折扣价格</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        user_level (str): 用户等级，可选值：</span><br/><span style="color: #E6DB74">            - &#39;normal&#39;: 普通用户（无折扣）</span><br/><span style="color: #E6DB74">            - &#39;silver&#39;: 银牌用户（95折）</span><br/><span style="color: #E6DB74">            - &#39;gold&#39;: 金牌用户（9折）</span><br/><span style="color: #E6DB74">            - &#39;platinum&#39;: 白金用户（85折）</span><br/><span style="color: #E6DB74">        amount (float): 原始金额，必须为正数</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        float: 折扣后的金额</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Raises:</span><br/><span style="color: #E6DB74">        ValueError: 当 amount 为负数时</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Examples:</span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; calculate_discount(&#39;gold&#39;, 100.0)</span><br/><span style="color: #E6DB74">        90.0</span><br/><span style="color: #E6DB74">        </span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; calculate_discount(&#39;platinum&#39;, 200.0)</span><br/><span style="color: #E6DB74">        170.0</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Note:</span><br/><span style="color: #E6DB74">        - 未知等级按普通用户处理</span><br/><span style="color: #E6DB74">        - 金额精度保留2位小数</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">amount</span> <span style="color: #FF4689">&lt;</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;金额不能为负数&quot;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #F8F8F2">discounts</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>        <span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">,</span>      <span style="color: #e0e0e0"># 无折扣</span><br/>        <span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.95</span><span style="color: #F8F8F2">,</span>     <span style="color: #e0e0e0"># 95折</span><br/>        <span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.9</span><span style="color: #F8F8F2">,</span>        <span style="color: #e0e0e0"># 9折</span><br/>        <span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.85</span>    <span style="color: #e0e0e0"># 85折</span><br/>    <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">amount</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">discounts</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(user_level,</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">round(result,</span> <span style="color: #AE81FF">2</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">API 文档</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 为 REST <span class="key">API</span> 生成文档</p>
+<p data-tool="mdnice编辑器"><strong>原始代码：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #A6E22E">@app</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">route(</span><span style="color: #E6DB74">&#39;/api/users&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">methods</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><span style="color: #E6DB74">&#39;POST&#39;</span><span style="color: #F8F8F2">])</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">create_user</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #F8F8F2">data</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">request</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_json()</span><br/>    <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create(data)</span><br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">jsonify(user</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">to_dict()),</span> <span style="color: #AE81FF">201</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>AI 生成文档：</strong></p>
+<p data-tool="mdnice编辑器">你：为这个 <span class="key">API</span> 生成文档</p>
+<p data-tool="mdnice编辑器">AI：</p>
+<p data-tool="mdnice编辑器"># 用户 <span class="key">API</span> 文档</p>
+<h2 data-tool="mdnice编辑器"><span class="title-text">创建用户</span></h2>
+<p data-tool="mdnice编辑器"><strong>接口地址：</strong> <code class="inline">POST /api/users</code></p>
+<p data-tool="mdnice编辑器"><strong>请求头：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>Content-Type: application/json<br/>Authorization: Bearer &lt;token&gt;</code></pre>
+<p data-tool="mdnice编辑器"><strong>请求参数：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>参数名</th>
+<th>类型</th>
+<th>必填</th>
+<th>说明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>是</td>
+<td>用户邮箱</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>是</td>
+<td>用户名（2-50字符）</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>是</td>
+<td>密码（至少8位）</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>string</td>
+<td>否</td>
+<td>手机号</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>请求示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;email&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;user@example.com&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;name&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;张三&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;password&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;password123&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;phone&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;13800138000&quot;</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>响应参数：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>参数名</th>
+<th>类型</th>
+<th>说明</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>用户ID</td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>用户邮箱</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>用户名</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>创建时间</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>响应示例：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code><span style="color: #F8F8F2">{</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;id&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;email&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;user@example.com&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;name&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;张三&quot;</span><span style="color: #F8F8F2">,</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">&quot;created_at&quot;</span><span style="color: #F8F8F2">: </span><span style="color: #E6DB74">&quot;2026-04-03T10:00:00Z&quot;</span><br/><span style="color: #F8F8F2">}</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>错误码：</strong></p>
+<ul>
+<li><section>400: 参数错误</section></li>
+<li><section>401: 未授权</section></li>
+<li><section>409: 邮箱已存在</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>示例代码：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> requests</span><br/><br/><span style="color: #F8F8F2">response</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">requests</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">post(</span><br/>    <span style="color: #E6DB74">&#39;http://api.example.com/api/users&#39;</span><span style="color: #F8F8F2">,</span><br/>    <span style="color: #F8F8F2">json</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><br/>        <span style="color: #E6DB74">&#39;email&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;user@example.com&#39;</span><span style="color: #F8F8F2">,</span><br/>        <span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;张三&#39;</span><span style="color: #F8F8F2">,</span><br/>        <span style="color: #E6DB74">&#39;password&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;password123&#39;</span><br/>    <span style="color: #F8F8F2">},</span><br/>    <span style="color: #F8F8F2">headers</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;Authorization&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;Bearer &lt;token&gt;&#39;</span><span style="color: #F8F8F2">}</span><br/><span style="color: #F8F8F2">)</span><br/><br/><span style="color: #F8F8F2">print(response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">json())</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.3</span><span class="title-text">README 文档</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 为项目生成 README</p>
+<p data-tool="mdnice编辑器">你：为这个项目生成 README</p>
+<p data-tool="mdnice编辑器">AI：</p>
+<p data-tool="mdnice编辑器"># 电商后台系统</p>
+<p data-tool="mdnice编辑器">一个基于 Flask 的电商后台管理系统，提供用户管理、商品管理、订单管理等功能。</p>
+<h2 data-tool="mdnice编辑器"><span class="title-text">功能特性</span></h2>
+<ul>
+<li><section>✅ 用户管理（注册、登录、权限）</section></li>
+<li><section>✅ 商品管理（CRUD、搜索、分类）</section></li>
+<li><section>✅ 订单系统（购物车、支付、物流）</section></li>
+<li><section>✅ 后台管理（数据统计、用户管理）</section></li>
+<li><section>✅ RESTful <span class="key">API</span></section></li>
+<li><section>✅ JWT 认证</section></li>
+<li><section>✅ 异步任务（Celery）</section></li>
+</ul>
+<h2 data-tool="mdnice编辑器"><span class="title-text">技术栈</span></h2>
+<ul>
+<li><section><strong>后端：</strong> Flask 2.3</section></li>
+<li><section><strong>数据库：</strong> PostgreSQL 15</section></li>
+<li><section><strong>缓存：</strong> <span class="key">Redis</span> 7</section></li>
+<li><section><strong>任务队列：</strong> Celery 5</section></li>
+<li><section><strong>ORM：</strong> SQLAlchemy 2.0</section></li>
+</ul>
+<h2 data-tool="mdnice编辑器"><span class="title-text">快速开始</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">环境要求</span></h3>
+<ul>
+<li><section><span class="key">Python</span> 3.10+</section></li>
+<li><section>PostgreSQL 15+</section></li>
+<li><section><span class="key">Redis</span> 7+</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="title-text">安装步骤</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 克隆项目</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>git<span style="color: #F8F8F2"> </span>clone<span style="color: #F8F8F2"> </span>https://github.com/example/ecommerce.git<br/><span style="color: #F8F8F2">cd </span>ecommerce<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>2. 创建虚拟环境</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>python<span style="color: #F8F8F2"> </span>-m<span style="color: #F8F8F2"> </span>venv<span style="color: #F8F8F2"> </span>venv<br/><span style="color: #F8F8F2">source </span>venv/bin/activate<span style="color: #F8F8F2">  </span><span style="color: #e0e0e0"># Linux/Mac</span><br/><span style="color: #e0e0e0"># or</span><br/>venv<span style="color: #AE81FF">\S</span>cripts<span style="color: #AE81FF">\a</span>ctivate<span style="color: #F8F8F2">  </span><span style="color: #e0e0e0"># Windows</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 安装依赖</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>pip<span style="color: #F8F8F2"> </span>install<span style="color: #F8F8F2"> </span>-r<span style="color: #F8F8F2"> </span>requirements.txt<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 配置环境变量</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>cp<span style="color: #F8F8F2"> </span>.env.example<span style="color: #F8F8F2"> </span>.env<br/><span style="color: #e0e0e0"># 编辑 .env 文件，填写数据库配置等</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>5. 初始化数据库</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>flask<span style="color: #F8F8F2"> </span>db<span style="color: #F8F8F2"> </span>upgrade<br/>flask<span style="color: #F8F8F2"> </span>init-db<br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>6. 启动服务</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>flask<span style="color: #F8F8F2"> </span>run<br/></code></pre>
+<p data-tool="mdnice编辑器">访问 http://localhost:5000</p>
+<h2 data-tool="mdnice编辑器"><span class="title-text">项目结构</span></h2>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>ecommerce/<br/>├── app/<br/>│   ├── models/          # 数据模型<br/>│   ├── views/           # 视图层<br/>│   ├── services/        # 业务逻辑<br/>│   ├── utils/           # 工具函数<br/>│   └── __init__.py<br/>├── tests/               # 测试文件<br/>├── config/              # 配置文件<br/>├── migrations/          # 数据库迁移<br/>└── requirements.txt     # 依赖列表</code></pre>
+<h2 data-tool="mdnice编辑器"><span class="title-text">API 文档</span></h2>
+<p data-tool="mdnice编辑器">详见 [<span class="key">API</span>.md](docs/<span class="key">API</span>.md)</p>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开发指南</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">运行测试</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>pytest<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">代码风格检查</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>flake8<span style="color: #F8F8F2"> </span>app/<br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">生成迁移</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">bash</span></span><code>flask<span style="color: #F8F8F2"> </span>db<span style="color: #F8F8F2"> </span>migrate<span style="color: #F8F8F2"> </span>-m<span style="color: #F8F8F2"> </span><span style="color: #E6DB74">&quot;描述&quot;</span><br/>flask<span style="color: #F8F8F2"> </span>db<span style="color: #F8F8F2"> </span>upgrade<br/></code></pre>
+<h2 data-tool="mdnice编辑器"><span class="title-text">部署</span></h2>
+<p data-tool="mdnice编辑器">详见 [DEPLOYMENT.md](docs/DEPLOYMENT.md)</p>
+<h2 data-tool="mdnice编辑器"><span class="title-text">贡献指南</span></h2>
+<ol>
+<li><section>Fork 项目</section></li>
+<li><section>创建分支 (<code class="inline">git checkout -b feature/AmazingFeature</code>)</section></li>
+<li><section>提交更改 (<code class="inline">git commit -m 'Add some AmazingFeature'</code>)</section></li>
+<li><section>推送到分支 (<code class="inline">git push origin feature/AmazingFeature</code>)</section></li>
+<li><section>提交 Pull Request</section></li>
+</ol>
+<h2 data-tool="mdnice编辑器"><span class="title-text">许可证</span></h2>
+<p data-tool="mdnice编辑器">MIT License</p>
+<h2 data-tool="mdnice编辑器"><span class="title-text">联系方式</span></h2>
+<ul>
+<li><section>作者：Your Name</section></li>
+<li><section>Email：your.email@example.com</section></li>
+<li><section>项目地址：https://github.com/example/ecommerce</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、文档维护策略</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">自动同步文档</span></h3>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 代码改了，文档忘记更新</p>
+<p data-tool="mdnice编辑器"><strong>解决方案：</strong> CI/CD 自动检查</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">yaml</span></span><code><span style="color: #e0e0e0"># .github/workflows/doc-check.yml</span><br/><br/><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">Documentation Check</span><br/><br/><span style="color: #FF4689">on</span><span style="color: #F8F8F2">: [push, pull_request]</span><br/><br/><span style="color: #FF4689">jobs</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">  </span><span style="color: #FF4689">check</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">runs-on</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">ubuntu-latest</span><br/><span style="color: #F8F8F2">    </span><span style="color: #FF4689">steps</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">      - </span><span style="color: #FF4689">uses</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">actions/checkout@v2</span><br/><span style="color: #F8F8F2">      </span><br/><span style="color: #F8F8F2">      - </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">Check docstrings</span><br/><span style="color: #F8F8F2">        </span><span style="color: #FF4689">run</span><span style="color: #F8F8F2">: |</span><br/><span style="color: #F8F8F2">          </span><span style="color: #66D9EF">pip install pydocstyle</span><br/><span style="color: #F8F8F2">          </span><span style="color: #66D9EF">pydocstyle app/</span><br/><span style="color: #F8F8F2">      </span><br/><span style="color: #F8F8F2">      - </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">Check API docs</span><br/><span style="color: #F8F8F2">        </span><span style="color: #FF4689">run</span><span style="color: #F8F8F2">: |</span><br/><span style="color: #F8F8F2">          </span><span style="color: #66D9EF">python scripts/check_api_docs.py</span><br/><span style="color: #F8F8F2">      </span><br/><span style="color: #F8F8F2">      - </span><span style="color: #FF4689">name</span><span style="color: #F8F8F2">: </span><span style="color: #AE81FF">Generate docs</span><br/><span style="color: #F8F8F2">        </span><span style="color: #FF4689">run</span><span style="color: #F8F8F2">: |</span><br/><span style="color: #F8F8F2">          </span><span style="color: #66D9EF">pip install sphinx</span><br/><span style="color: #F8F8F2">          </span><span style="color: #66D9EF">cd docs &amp;&amp; make html</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">文档更新提示</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI 自动检测：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：我修改了这个函数<br/><br/>AI：检测到函数签名变化：<br/><br/>    旧版本：<br/>    def calculate_discount(user_level: str, amount: float)<br/>    <br/>    新版本：<br/>    def calculate_discount(user_level: str, amount: float, coupon: str = None)<br/>    <br/>    建议：<br/>    ✅ 更新 docstring<br/>    ✅ 更新 API 文档<br/>    ✅ 更新测试用例<br/>    <br/>    是否自动更新文档？<br/><br/>你：是<br/><br/>AI：✅ 已更新所有相关文档（3个文件）</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、文档最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">文档分层</span></h3>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>第1层：代码注释<br/>- 行内注释<br/>- 函数文档（docstring）<br/>- 类文档<br/><br/>第2层：API 文档<br/>- 接口文档<br/>- 参数说明<br/>- 示例代码<br/><br/>第3层：项目文档<br/>- README<br/>- 架构文档<br/>- 部署文档<br/><br/>第4层：知识库<br/>- 最佳实践<br/>- 常见问题<br/>- 故障排查</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">文档规范</span></h3>
+<p data-tool="mdnice编辑器"><strong>Google 风格 Docstring：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">create_user</span><span style="color: #F8F8F2">(email:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">name:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">User:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;创建新用户</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        email: 用户邮箱地址</span><br/><span style="color: #E6DB74">        name: 用户名，长度2-50字符</span><br/><span style="color: #E6DB74">        password: 密码，至少8位</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        User: 创建的用户对象</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Raises:</span><br/><span style="color: #E6DB74">        ValueError: 邮箱格式无效或密码太短</span><br/><span style="color: #E6DB74">        DuplicateError: 邮箱已被注册</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Example:</span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; user = create_user(&#39;test@example.com&#39;, &#39;张三&#39;, &#39;password123&#39;)</span><br/><span style="color: #E6DB74">        &gt;&gt;&gt; print(user.name)</span><br/><span style="color: #E6DB74">        张三</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">pass</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.3</span><span class="title-text">文档质量检查</span></h3>
+<p data-tool="mdnice编辑器"><strong>AI 检查清单：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 所有公开函数都有文档<br/>✅ 参数说明完整<br/>✅ 返回值说明清晰<br/>✅ 异常情况说明<br/>✅ 包含使用示例<br/>✅ 文档格式统一<br/>✅ 语言简洁明了<br/>✅ 与代码保持同步</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 文档价值</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 帮助理解代码<br/>- 促进团队协作<br/>- 知识沉淀传承<br/>- 降低维护成本</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. AI 生成优势</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 快速（5分钟/模块）<br/>- 准确（自动同步）<br/>- 完整（全面覆盖）<br/>- 规范（格式统一）</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 文档类型</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 代码注释（docstring）<br/>- API 文档<br/>- README<br/>- 架构文档</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. 维护策略</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 自动同步<br/>- CI 检查<br/>- 定期更新</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">效率对比</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>文档类型</th>
+<th>手写</th>
+<th>AI 生成</th>
+<th>提升</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Docstring</td>
+<td><span class="num">10</span>分钟</td>
+<td>30秒</td>
+<td>20倍</td>
+</tr>
+<tr>
+<td><span class="key">API</span> 文档</td>
+<td><span class="num">2</span>小时</td>
+<td><span class="num">10</span>分钟</td>
+<td>12倍</td>
+</tr>
+<tr>
+<td>README</td>
+<td><span class="num">1</span>小时</td>
+<td><span class="num">5</span>分钟</td>
+<td>12倍</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：调试高手：快速定位和修复 Bug</section></li>
+<li><section>下一篇：进阶总结：成为 AI 编程高手</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">10</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-03</p>
+<p data-tool="mdnice编辑器"><strong>AI 自动生成文档，从负担变享受，文档质量提升 10 倍！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

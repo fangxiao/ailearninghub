@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>94 个插件 203 个 Agent——wshobson/agents 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=robot%20army%20formation%20200%20specialized%20AI%20agents%20heraldic%20badge%20navy%20blue%20gold%20illustration%20no%20text&image_size=landscape_16_9" alt="wshobson-agents 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区：双标题 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    94 个插件 203 个 Agent——wshobson/agents 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    生产级 subagent 集合，覆盖全栈开发
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code Subagent 生态全解
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 写复杂项目时，你大概率遇到过这些尴尬时刻：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想做安全审计，自带的通用 Agent 不懂 OWASP Top 10，扫出来的漏洞像在背书
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 让 AI 设计云架构，结果给的方案既不符合 AWS Well-Architected，也没考虑成本
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 数据工程任务交给通用 Agent，写出来的 ETL 既没考虑幂等，也没数据质量校验
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 不同领域要重复教 AI 背景：今天解释 Kubernetes，明天解释 dbt，后天解释 GraphQL
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说到底，Claude Code 自带的 Agent 是<strong style="color: #00897B;">通才</strong>，啥都能聊两句，但落到具体领域就不够专业。你需要的不是更聪明的 AI，而是<strong style="color: #00897B;">领域专家</strong>：懂架构的、懂安全的、懂 ML 的、懂 SEO 的，各司其职。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">wshobson/agents</strong> 就是来解决这个问题的——25k Star、94 个插件、203 个 subagent，覆盖架构、语言、基础设施、安全、数据、ML、文档、业务、SEO 等几乎所有工程领域。一句话：把一整支专家团队装进 Claude Code。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>生产级 subagent 集合，把"通用 AI 助手"升级成"领域专家团队"，每个 Agent 都是某个垂直方向的资深工程师。
+    </p>
+  </section>
+
+  <!-- 章节01：wshobson/agents 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">wshobson/agents 是什么？一整支专家团队</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">wshobson/agents</strong>（<a href="https://github.com/wshobson/agents" style="color: #00897B; text-decoration: none;">github.com/wshobson/agents</a>）是 GitHub 上目前规模最大、覆盖最广的 Claude Code subagent 集合，目前 <strong style="color: #00897B;">25.0k Star</strong>。它不是单一插件，而是一个<strong style="color: #00897B;">插件市场</strong>，里面打包了 94 个垂直领域插件，每个插件又包含若干 subagent、skill 和命令。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    和我们之前介绍过的 <a href="anthropics-skills-官方技能库-公众号版.html" style="color: #00897B; text-decoration: none;">anthropics/skills</a>（官方基石）不同，wshobson/agents 走的是<strong style="color: #00897B;">"广度优先 + 领域深耕"</strong>路线：不追求每个 Skill 都极致简洁，而是把每个垂直领域的完整工作流打包成插件，开箱即用。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🎯 生产级定位</strong>：不是 demo、不是玩具，每个 Agent 都按企业级标准设计，包含职责定义、工具权限、工作流约束
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🌐 全栈覆盖</strong>：架构、语言、基础设施、安全、数据、ML、文档、业务、SEO 九大领域，几乎所有工程方向都有专家
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔌 6 大平台支持</strong>：Claude Code（原生）、Codex CLI、Cursor、OpenCode、Gemini CLI、GitHub Copilot
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📦 marketplace 一键装</strong>：先加市场源，再按需挑插件，精细可控
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单理解：装上它之后，Claude Code 就从"一个全能但平庸的助手"变成"一个有 200 多位专家的咨询公司"。遇到架构问题，调 cloud-architect；遇到安全审计，调 security-auditor；遇到 ETL 设计，调 data-engineer，每个领域都有对口的行家。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：先加市场，再按需选装插件</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    wshobson/agents 的安装思路是<strong style="color: #00897B;">"市场 + 插件"两段式</strong>：先把整个仓库添加为插件市场源，然后从 94 个插件里挑你需要的装。这比一次性全装要合理得多，毕竟你大概率用不到全部 203 个 Agent。
+  </p>
+
+  <!-- 步骤1：添加市场源 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      添加 wshobson/agents 插件市场
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      一行命令把仓库注册为市场源，之后就能浏览所有可用插件：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #00897B; word-break: break-all;">/plugin marketplace add wshobson/agents</p>
+    </section>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8;">
+      执行后用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin list</code> 可以看到全部 94 个插件的清单和说明。
+    </p>
+  </section>
+
+  <!-- 步骤2：选装具体插件 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      按需安装具体插件（93 个可选）
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      看好哪个装哪个，每个插件都是一个独立领域。比如做 Python 开发：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0 0 8px 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #00897B; word-break: break-all;">/plugin install python-development</p>
+      <p style="margin: 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #999;"># 也可以装 security-audit、data-engineering、cloud-infrastructure 等共 94 个</p>
+    </section>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8;">
+      装完会自动激活插件里的 subagent、skill 和命令，下次对话直接调用。
+    </p>
+  </section>
+
+  <!-- 步骤3：验证安装 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      验证安装
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/agents</code> 查看已注册的 subagent 列表，看到对应领域的专家名字就说明装好了。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 平台兼容提示：</strong>wshobson/agents 原生支持 Claude Code。如果你用的是 Cursor、Codex CLI、OpenCode、Gemini CLI 或 GitHub Copilot，需要按各平台的 subagent 加载方式配置，仓库 README 里有详细说明。
+    </p>
+  </section>
+
+  <!-- 章节03：核心数据 94/203/175/109 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心数据：94 / 203 / 175 / 109 详解</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    wshobson/agents 的"含金量"集中体现在四个数字上：<strong style="color: #00897B;">94 个插件、203 个 subagent、175 个 skill、109 个命令</strong>。这四个层级构成了一个完整的领域专家体系。
+  </p>
+
+  <!-- 数据卡片1：94 plugins -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 17px;">📦 94 个插件（Plugins）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      插件是顶层容器，每个插件对应一个垂直领域。比如 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">python-development</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">security-audit</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">data-engineering</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">cloud-infrastructure</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">ml-engineering</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">seo-optimization</code> 等。挑你需要的装，不用全装。
+    </p>
+  </section>
+
+  <!-- 数据卡片2：203 agents -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 17px;">🤖 203 个 subagent</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      subagent 是核心执行单元——有独立 system prompt、专属工具权限、明确职责边界的"小 AI"。203 个 subagent 平均分布在 94 个插件里，每个领域 2-3 个专家。比如 cloud-infrastructure 插件里有 cloud-architect、terraform-engineer、k8s-operator 三个 subagent 协作。
+    </p>
+  </section>
+
+  <!-- 数据卡片3：175 skills -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 17px;">📚 175 个 skill</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      skill 是工作流定义文件（SKILL.md），告诉 AI 在特定场景下"应该怎么做"。和 subagent 不同，skill 是<strong style="color: #00897B;">知识层</strong>，subagent 是<strong style="color: #00897B;">执行层</strong>。一个 subagent 可以挂载多个 skill——比如 security-auditor 同时拥有 OWASP、CWE、CSP 等多个 skill。
+    </p>
+  </section>
+
+  <!-- 数据卡片4：109 commands -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 17px;">⚡ 109 个命令（Commands）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      斜杠命令是用户调用入口，<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/security-audit</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/architect</code>、<code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/data-pipeline</code> 等一键触发对应工作流。不用每次写长 prompt，命令即调用。
+    </p>
+  </section>
+
+  <!-- 数据对比表 -->
+  <section style="margin: 25px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">层级</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">数量</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">本质</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">Plugin</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">94</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">领域容器</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">Subagent</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">203</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">执行单元（带工具权限）</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">Skill</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">175</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">工作流知识</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; color: #00897B; font-weight: bold;">Command</td>
+          <td style="padding: 12px 10px; color: #3f3f3f;">109</td>
+          <td style="padding: 12px 10px; color: #666;">用户调用入口</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这四个层级加起来，相当于<strong style="color: #00897B;">一个完整的虚拟工程团队</strong>：Plugin 是部门、Subagent 是工程师、Skill 是他们的方法论、Command 是你呼叫他们的方式。
+  </p>
+
+  <!-- 章节04：热门插件举例 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">热门插件举例：6 个最值得装的领域专家</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    94 个插件不用全装。下面挑 6 个<strong style="color: #00897B;">使用频率最高、覆盖场景最广</strong>的领域插件详细介绍，帮你判断要不要装。
+  </p>
+
+  <!-- 插件1：python-development -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">🐍 python-development</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      Python 全栈开发插件，涵盖 FastAPI、Django、pytest、asyncio、数据科学栈（pandas/numpy/scikit-learn）。包含 python-architect、python-test-engineer、python-refactorer 等多个 subagent，懂得用 black/ruff/mypy 做格式化和类型检查，写出来的代码符合 PEP 8 和 Google Style。
+    </p>
+  </section>
+
+  <!-- 插件2：security-audit -->
+  <section style="background: #FFEBEE; border-left: 4px solid #C62828; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #B71C1C; font-weight: bold; font-size: 16px;">🔒 security-audit</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      安全审计插件，覆盖 OWASP Top 10、CWE 漏洞库、云安全（IAM/KMS/网络）、密钥管理、依赖漏洞扫描。security-auditor subagent 会按攻击者视角做威胁建模，输出可执行的修复建议，不是泛泛而谈"建议加强安全"那种废话。
+    </p>
+  </section>
+
+  <!-- 插件3：data-engineering -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">📊 data-engineering</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      数据工程插件，涵盖 ETL/ELT 设计、dbt 模型、Airflow DAG、SQL 优化、数据质量校验、湖仓架构（Iceberg/Delta/Hudi）。data-engineer subagent 知道怎么设计幂等 pipeline，会主动考虑 schema 演进和数据血缘，远比通用 Agent 靠谱。
+    </p>
+  </section>
+
+  <!-- 插件4：cloud-infrastructure -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">☁️ cloud-infrastructure</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      云基础设施插件，支持 AWS、Azure、GCP 三大云。cloud-architect 按 Well-Architected Framework 设计方案，terraform-engineer 写符合最佳实践的 IaC，k8s-operator 处理 Helm chart、Operator、CRD。会考虑成本、可靠性、安全三大维度。
+    </p>
+  </section>
+
+  <!-- 插件5：ml-engineering -->
+  <section style="background: #F3E5F5; border-left: 4px solid #6A1B9A; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #4A148C; font-weight: bold; font-size: 16px;">🧠 ml-engineering</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      机器学习工程插件，涵盖 PyTorch、HuggingFace、向量检索、模型评估、MLOps（MLflow/Weights & Biases）。ml-engineer subagent 知道 train/val/test split 的常见陷阱，会主动提示数据泄漏风险，比通用 Agent 写的训练脚本专业一个量级。
+    </p>
+  </section>
+
+  <!-- 插件6：seo-optimization -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">📈 seo-optimization</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      SEO 优化插件，技术 SEO（结构化数据、Core Web Vitals、sitemap、robots.txt）、内容 SEO（关键词聚类、Search Intent、内链策略）、外链建设全覆盖。这个领域通用 Agent 几乎完全帮不上忙，必须有专门的 skill 才靠谱。
+    </p>
+  </section>
+
+  <!-- 其他插件速览 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 17px;">🗂️ 其他高频插件速览</p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">typescript-development</strong>：TS 全栈，Next.js/React/Node 最佳实践
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">devops-automation</strong>：CI/CD、Docker、K8s、GitOps（ArgoCD/Flux）
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">api-design</strong>：RESTful、GraphQL、gRPC、OpenAPI 规范设计
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">documentation</strong>：技术文档、API 文档、教程写作
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">business-analysis</strong>：需求分析、PRD、用户故事、流程图
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    完整 94 个插件清单在仓库 README 里，建议结合自己日常工作挑 3-5 个最相关的装上，不要贪多。
+  </p>
+
+  <!-- 章节05：对比 ECC -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比 ECC：社区广度派 vs 黑客松冠军</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    介绍到这里，熟悉我们系列文章的读者一定会想到 <a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">ECC（Everything Claude Code）</a>。同样是 Claude Code 增强配置，同样是 Agent + Skill + Command 体系，到底该选哪个？还是两个都装？
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单说：<strong style="color: #00897B;">ECC 是 Anthropic 黑客松冠军项目</strong>，主打"工程纪律 + 流程编排"，把规划、TDD、代码审查、安全扫描这些通用工程流程做成强约束；<strong style="color: #00897B;">wshobson/agents 是社区广度派</strong>，主打"领域专家 + 全栈覆盖"，把每个垂直方向的专业知识打包成插件。两者的核心差异如下：
+  </p>
+
+  <!-- 对比表格 -->
+  <section style="margin: 25px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">维度</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">wshobson/agents</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">ECC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">定位</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">领域专家集合</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">工程纪律框架</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">来源</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">社区开源（wshobson）</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">黑客松冠军（affaan-m）</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">Star</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">25.0k</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">较小但增长快</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">核心强项</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">领域覆盖广（94 插件）</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">流程编排强（67 Agent）</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">Hook 自动化</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #c62828;">❌ 较弱</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #2E7D32;">✅ 强（8 事件类型）</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">平台支持</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #2E7D32;">✅ 6 平台</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">4 平台</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; color: #00897B; font-weight: bold;">能否共存</td>
+          <td style="padding: 12px 10px; color: #00897B; font-weight: bold;" colspan="2">✅ 可以，互补使用</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    两者的关系不是"二选一"，而是<strong style="color: #00897B;">互补</strong>。ECC 解决"AI 怎么按流程干活"的问题，它会拦着你不让你跳过测试、忘了审查；wshobson/agents 解决"AI 在具体领域怎么干得专业"的问题，它让 AI 真的懂安全审计、懂数据工程、懂云架构。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 推荐的搭配策略</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">1.</strong> 用 ECC 提供流程纪律（规划 / TDD / 审查 / 安全 Hook）
+    </p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">2.</strong> 用 wshobson/agents 提供领域专家（按需装 cloud/security/data 等）
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">3.</strong> 用 anthropics/skills 提供官方基石（文档处理 / MCP / Skill 创建）
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    想深入了解 ECC 的流程编排能力，可以回顾我们之前的<a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">《给 Claude Code 装个操作系统？ECC 深度测评》</a>；如果想理解 Superpowers 这种"流程经理"型工具的思路，可以看<a href="superpowers-把AI编程从凭感觉变按流程-公众号版.html" style="color: #00897B; text-decoration: none;">《装了这款插件，Claude Code 终于像个正经工程师了》</a>。
+  </p>
+
+  <!-- 避坑指南：红色背景卡片 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #c62828; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">!</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：这些坑别踩</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑1：一次性全装 94 个插件</strong><br>
+      全装会让 Claude Code 启动时加载大量 subagent 元数据，响应变慢，且每次任务前都要过一遍触发判断。<strong style="color: #c62828;">建议按需装 3-5 个最相关的</strong>，需要时再加。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑2：和 ECC 的命令冲突</strong><br>
+      wshobson/agents 和 ECC 都有 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/security-scan</code> 这类重名命令，同时装可能冲突。<strong style="color: #c62828;">建议按领域分工</strong>：通用工程流程用 ECC，垂直领域专业任务用 wshobson/agents。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑3：插件名拼错导致安装失败</strong><br>
+      插件名是 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">python-development</code>，不是 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">python-dev</code> 或 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">python</code>。安装前先用 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin list</code> 确认准确名称。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑4：忘了配置工具权限</strong><br>
+      部分 subagent 需要文件系统、网络或 shell 权限才能干活（比如 security-auditor 要读代码、k8s-operator 要执行 kubectl）。装完插件要按 README 检查权限配置，否则 subagent 会卡在"无权限"上。
+    </p>
+  </section>
+
+  <!-- 金句收尾 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      AI 模型再强，落到具体领域也得有专业知识支撑。Claude Code 自带的通用 Agent 解决的是"能不能干"的问题，wshobson/agents 解决的是"干得专不专业"的问题。前者保底，后者才是真正拉开差距的地方。
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      装上它，你不再需要每次都向 AI 解释 Kubernetes 的命名空间、dbt 的增量模型、OWASP 的注入分类，这些知识已经封装进 203 个 subagent 和 175 个 skill 里。<strong style="color: #00897B;">领域的问题交给懂领域的 Agent，通用的问题交给通才</strong>，是更省心的分工方式。
+    </p>
+  </section>
+
+  <!-- 分隔线 -->
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="margin: 30px 0; padding: 25px 20px; background: #00897B; border-radius: 12px; text-align: center;">
+    <p style="margin: 0 0 15px 0; font-size: 18px; color: #fff; font-weight: bold;">🚀 现在就动手试一试</p>
+    <p style="margin: 0 0 20px 0; font-size: 15px; color: #E0F2F1; line-height: 1.8;">
+      打开 Claude Code，依次执行下面命令，把领域专家团队装上
+    </p>
+    <section style="background: #fff; border-radius: 8px; padding: 14px 16px; margin: 10px 0; text-align: left;">
+      <p style="margin: 0 0 8px 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 13px; color: #00897B; line-height: 1.8; word-break: break-all;">
+        # 1. 添加插件市场<br>
+        /plugin marketplace add wshobson/agents<br><br>
+        # 2. 浏览所有可用插件<br>
+        /plugin list<br><br>
+        # 3. 按需安装（举例）<br>
+        /plugin install python-development<br>
+        /plugin install security-audit<br>
+        /plugin install data-engineering
+      </p>
+    </section>
+    <p style="margin: 15px 0 0 0; font-size: 14px; color: #B2DFDB;">
+      ⭐ GitHub 仓库：github.com/wshobson/agents（25.0k Star）
+    </p>
+  </section>
+
+  <!-- 系列文章关联 -->
+  <section style="margin: 30px 0; padding: 20px; background: #f8f8f8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📚 系列文章推荐</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      📖 <a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">《给 Claude Code 装个操作系统？ECC 深度测评》</a>（黑客松冠军，工程纪律框架）
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      📖 <a href="anthropics-skills-官方技能库-公众号版.html" style="color: #00897B; text-decoration: none;">《Claude Code 官方技能库——Anthropic 出品必属精品》</a>（官方 Skill 基石）
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      📖 <a href="superpowers-把AI编程从凭感觉变按流程-公众号版.html" style="color: #00897B; text-decoration: none;">《装了这款插件，Claude Code 终于像个正经工程师了》</a>（流程经理型工具）
+    </p>
+  </section>
+
+  <!-- 下期预告 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📖 下期预告</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      下一篇我们将聚焦 wshobson/agents 里 security-audit 插件的深度实战，从威胁建模到漏洞修复，手把手教你怎么用 AI 做一次完整的安全审计。如果你的项目有安全审计需求，别错过。
+    </p>
+  </section>
+
+  <!-- Footer CTA：评论区引导 -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">
+      💬 你装了 wshobson/agents 之后，最常用的是哪个插件？有没有遇到和 ECC 冲突的情况？欢迎在评论区聊聊
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 14px; color: #999; line-height: 1.8;">
+      觉得有用就点个"在看"，让更多人看到生产级 subagent 集合
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #999;">
+      📌 关注公众号，获取更多 Claude Code 实战干货
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

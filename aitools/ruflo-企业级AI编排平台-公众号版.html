@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业级 AI 编排平台——RuFlo 实战指南</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=enterprise%20orchestration%20platform%20interconnected%20gears%20and%20agent%20network%20nodes%20isometric%20corporate%20navy%20blue%20illustration%20no%20text&image_size=landscape_16_9" alt="ruflo 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <section style="text-align: center; margin: 0 0 20px 0;">
+    <span style="display: inline-block; font-size: 12px; color: #fff; background: #00897B; padding: 4px 12px; border-radius: 3px; letter-spacing: 1px; margin-bottom: 18px;">AI 工具实战 · 第 X 篇</span>
+    <h1 style="font-size: 24px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 18px 0 12px 0; line-height: 1.4; letter-spacing: 1px;">
+      企业级 AI 编排平台——RuFlo 实战指南
+    </h1>
+    <h2 style="font-size: 17px; font-weight: normal; color: #00897B; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+      100+ Agents · 210+ MCP 工具 · 跨组织联邦协作
+    </h2>
+    <p style="font-size: 13px; color: #999; text-align: center; margin: 0 0 30px 0; padding-bottom: 22px; border-bottom: 1px dashed #e0e0e0;">
+      GitHub 11.4k Stars · 原 Claude-Flow 已重命名 · 支持 Claude/GPT/Gemini/Ollama 多 Provider
+    </p>
+  </section>
+
+  <!-- 痛点开篇 -->
+  <section style="background: #f8f8f8; border-left: 4px solid #00897B; padding: 20px 22px; margin: 0 0 35px 0; border-radius: 4px;">
+    <p style="margin: 0 0 12px 0; font-weight: bold; color: #00897B; font-size: 16px;">痛点开篇</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">
+      你是不是也遇到过这种情况：让 Claude Code 单干一个大项目，让它写前端、写后端、写测试、写文档，结果 Agent 在任务间反复横跳，上下文越来越长，最后要么 token 爆表，要么质量崩盘。<strong style="color: #00897B;">单 Agent 撑不起复杂工程</strong>，这是当下每一个重度 AI Coding 用户都得直面的事实。
+    </p>
+    <p style="margin: 12px 0 0 0; color: #3f3f3f; font-size: 15px; line-height: 1.9;">
+      ECC 提供了命令库（见 <em style="color: #00897B; font-style: normal;">ecc-everything-claude-code-公众号版.html</em>），wshobson/agents 提供了开箱即用的 subagent 集合（见 <em style="color: #00897B; font-style: normal;">wshobson-agents-生产级subagent集合-公众号版.html</em>），但如果你想要的是<strong style="color: #00897B;">企业级的多 Agent 编排 + 跨组织协作</strong>，那今天这篇主角 RuFlo 值得你认真看一遍。
+    </p>
+  </section>
+
+  <!-- 章节 01 -->
+  <section style="margin: 45px 0 20px 0; padding: 18px 0 0 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 18px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 3px; margin-right: 14px; vertical-align: middle;">01</span>
+      <span style="font-size: 19px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">RuFlo 是什么——原 Claude-Flow 重生</span>
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    RuFlo 仓库地址是 <strong style="color: #00897B;">github.com/ruvnet/ruflo</strong>，前身就是圈内小有名气的 <strong style="color: #00897B;">Claude-Flow</strong>。项目作者把品牌从 Claude-Flow 重命名为 RuFlo，背后逻辑很清楚：这个平台早就不再只为 Claude 服务，而是一个<strong style="color: #00897B;">Provider 无关的企业级 AI 编排系统</strong>，可以同时调度 Claude、GPT、Gemini、Cohere、Ollama 多家模型。
+  </p>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    目前 GitHub 已收获 <strong style="color: #00897B;">11.4k Stars</strong>，定位不是又一个"prompt 工具箱"，而是<strong style="color: #00897B;">编排层（Orchestration Layer）</strong>。在你和各家大模型之间，它加一层调度大脑，把任务拆分给多个 Agent 并行或串行处理，再统一汇总结果。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 16px 20px; margin: 22px 0; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 一句话定位</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      RuFlo = Claude Code 原生插件体系 + 多 Agent 编排引擎 + MCP 工具生态 + 联邦协作网络。它不替代 Claude Code，而是<strong style="color: #00897B;">把 Claude Code 变成可被调度的一个执行节点</strong>。
+    </p>
+  </section>
+
+  <!-- 章节 02 -->
+  <section style="margin: 45px 0 20px 0; padding: 18px 0 0 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 18px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 3px; margin-right: 14px; vertical-align: middle;">02</span>
+      <span style="font-size: 19px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">三种安装方式——按场景选</span>
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    RuFlo 提供三种主流安装路径，分别对应<strong style="color: #00897B;">重度集成、轻量试用、MCP 协议接入</strong>三种使用姿势。三种方式不是非此即彼，可以组合使用。
+  </p>
+
+  <p style="margin: 22px 0 0 0; font-weight: bold; color: #00897B; font-size: 16px;">方式一：Claude Code 插件市场（推荐重度用户）</p>
+  <p style="margin: 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+    在 Claude Code 内直接安装原生插件，享受 32 个原生插件带来的深度集成。命令分两步：
+  </p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0 0 8px 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 13px; color: #00897B; font-weight: bold;"># 第 1 步：添加 marketplace</p>
+    <p style="margin: 0 0 12px 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 14px; color: #1a1a1a; line-height: 1.7; word-break: break-all;">/plugin marketplace add ruvnet/ruflo</p>
+    <p style="margin: 0 0 8px 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 13px; color: #00897B; font-weight: bold;"># 第 2 步：安装核心插件包</p>
+    <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 14px; color: #1a1a1a; line-height: 1.7; word-break: break-all;">/plugin install ruflo-core@ruflo</p>
+  </section>
+
+  <p style="margin: 22px 0 0 0; font-weight: bold; color: #00897B; font-size: 16px;">方式二：CLI 向导（推荐新用户）</p>
+  <p style="margin: 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+    想先看看 RuFlo 长什么样，不想深度耦合到 Claude Code 里，用 npx 跑向导最简单：
+  </p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 14px; color: #1a1a1a; line-height: 1.7; word-break: break-all;">npx ruflo@latest init --wizard</p>
+  </section>
+  <p style="margin: 10px 0; color: #666; font-size: 14px; line-height: 1.8;">
+    向导会引导你选 Provider、配置 API Key、决定要不要启用 Worker 和联邦模块，全程交互式完成。
+  </p>
+
+  <p style="margin: 22px 0 0 0; font-weight: bold; color: #00897B; font-size: 16px;">方式三：MCP 接入（推荐已有 MCP 生态的用户）</p>
+  <p style="margin: 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+    如果你已经在用 Claude Code Router 这类多 Provider 路由工具（见 <em style="color: #00897B; font-style: normal;">claude-code-router-公众号版.html</em>），把 RuFlo 作为一个 MCP Server 接入最合适：
+  </p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 14px; color: #1a1a1a; line-height: 1.7; word-break: break-all;">claude mcp add ruflo -- npx -y @claude-flow/cli@latest</p>
+  </section>
+  <p style="margin: 10px 0; color: #666; font-size: 14px; line-height: 1.8;">
+    注意包名仍沿用旧名 <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 13px; color: #00897B;">@claude-flow/cli</code>，这是历史兼容遗留，不影响功能。
+  </p>
+
+  <!-- 章节 03 -->
+  <section style="margin: 45px 0 20px 0; padding: 18px 0 0 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 18px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 3px; margin-right: 14px; vertical-align: middle;">03</span>
+      <span style="font-size: 19px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心能力——四个关键数字</span>
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    RuFlo 真正值钱的不在它有多少命令，而在<strong style="color: #00897B;">这套编排系统背后沉淀的资产规模</strong>。四个数字记住就够：
+  </p>
+
+  <!-- 四宫格数据卡 -->
+  <section style="background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 10px; padding: 20px; margin: 22px 0;">
+    <p style="margin: 0 0 15px 0; padding: 0 0 12px 0; border-bottom: 1px dashed #e0e0e0;">
+      <span style="font-size: 28px; font-weight: bold; color: #00897B;">32</span>
+      <span style="font-size: 14px; color: #666; margin-left: 8px;">个 Claude Code 原生插件</span>
+    </p>
+    <p style="margin: 0 0 15px 0; padding: 0 0 12px 0; border-bottom: 1px dashed #e0e0e0;">
+      <span style="font-size: 28px; font-weight: bold; color: #00897B;">100+</span>
+      <span style="font-size: 14px; color: #666; margin-left: 8px;">个可调度 Agent（覆盖前后端、测试、运维、文档）</span>
+    </p>
+    <p style="margin: 0 0 15px 0; padding: 0 0 12px 0; border-bottom: 1px dashed #e0e0e0;">
+      <span style="font-size: 28px; font-weight: bold; color: #00897B;">210+</span>
+      <span style="font-size: 14px; color: #666; margin-left: 8px;">个 MCP 工具（文件、搜索、数据库、浏览器全覆盖）</span>
+    </p>
+    <p style="margin: 0;">
+      <span style="font-size: 28px; font-weight: bold; color: #00897B;">12</span>
+      <span style="font-size: 14px; color: #666; margin-left: 8px;">个后台 Worker（长任务、定时任务、并行执行）</span>
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这套组合拳最直接的体感是：以前你写一个全栈功能要手动切 5、6 次 Agent，现在<strong style="color: #00897B;">RuFlo 用 GOAP 规划器自动拆任务</strong>，前端 Agent、后端 Agent、测试 Agent 同步开干，12 个 Worker 把长任务丢后台跑，主线 Agent 不阻塞。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 16px 20px; margin: 22px 0; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 GOAP 规划器是什么</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      GOAP（Goal-Oriented Action Planning，目标导向行动规划）源自游戏 AI 领域。RuFlo 用它来<strong style="color: #00897B;">把高层目标反向拆解成可执行 Action 序列</strong>，再分配给最合适的 Agent。和简单链式 prompt 相比，GOAP 能处理依赖关系、并行机会和回滚路径。
+    </p>
+  </section>
+
+  <!-- 章节 04 -->
+  <section style="margin: 45px 0 20px 0; padding: 18px 0 0 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 18px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 3px; margin-right: 14px; vertical-align: middle;">04</span>
+      <span style="font-size: 19px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Agent 联邦——跨组织协作的关键</span>
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这一节是 RuFlo 区别于其他 Agent 框架的<strong style="color: #00897B;">关键功能</strong>。所谓"联邦（Federation）"，换成大白话：<strong style="color: #00897B;">不同组织、不同团队部署的 RuFlo 实例之间，可以让 Agent 互相通信、互相调用</strong>，类似联邦学习的思路，但搬到了 Agent 协作上。
+  </p>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    举个例子：A 公司有个内部代码 Agent，B 公司有个部署运维 Agent，两边互不信任、不能共享代码。但通过 RuFlo 联邦协议，A 公司的编排器可以把"部署到生产"这个 Action 委托给 B 公司的 Agent 执行，<strong style="color: #00897B;">只交换任务输入输出，不交换模型权重和源码</strong>。
+  </p>
+
+  <section style="border-left: 4px solid #00897B; padding: 18px 20px; margin: 22px 0; font-style: italic; color: #555; background: #f8f8f8; border-radius: 4px;">
+    <p style="margin: 0; font-size: 15px; line-height: 1.85; font-style: normal;">
+      "单组织内的 Agent 编排是 2025 年的事，跨组织的 Agent 联邦才是 2026 年的题。RuFlo 是目前把这件事说清楚、做出来的少数项目之一。"
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    当然，联邦功能对个人开发者有点远，<strong style="color: #00897B;">但在企业团队、外包协作、跨厂商集成这些场景下几乎绕不开</strong>。如果你团队已经在用 Claude Code Router 做多 Provider 路由（详见 <em style="color: #00897B; font-style: normal;">claude-code-router-公众号版.html</em>），那么 RuFlo 联邦层是天然的下一步演进。
+  </p>
+
+  <!-- 章节 05 -->
+  <section style="margin: 45px 0 20px 0; padding: 18px 0 0 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 18px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 3px; margin-right: 14px; vertical-align: middle;">05</span>
+      <span style="font-size: 19px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">横向对比——RuFlo vs ECC vs wshobson/agents</span>
+    </p>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这三个项目我都写过公众号文章（见文末引用），定位完全不同，不是替代关系，是<strong style="color: #00897B;">互补栈</strong>。下表把核心差异列清楚：
+  </p>
+
+  <!-- 对比表格 -->
+  <section style="margin: 22px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden;">
+      <thead>
+        <tr style="background: #00897B;">
+          <th style="padding: 12px 10px; color: #fff; font-weight: bold; text-align: left; border-right: 1px solid #B2DFDB;">维度</th>
+          <th style="padding: 12px 10px; color: #fff; font-weight: bold; text-align: left; border-right: 1px solid #B2DFDB;">RuFlo</th>
+          <th style="padding: 12px 10px; color: #fff; font-weight: bold; text-align: left; border-right: 1px solid #B2DFDB;">ECC</th>
+          <th style="padding: 12px 10px; color: #fff; font-weight: bold; text-align: left;">wshobson/agents</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; color: #666; font-weight: bold; border-right: 1px solid #f0f0f0; background: #f8f8f8;">定位</td>
+          <td style="padding: 10px; color: #3f3f3f; border-right: 1px solid #f0f0f0;">企业级编排平台</td>
+          <td style="padding: 10px; color: #3f3f3f; border-right: 1px solid #f0f0f0;">命令库 + 速查手册</td>
+          <td style="padding: 10px; color: #3f3f3f;">开箱即用 subagent 集合</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; color: #666; font-weight: bold; border-right: 1px solid #f0f0f0; background: #f8f8f8;">核心资产</td>
+          <td style="padding: 10px; color: #3f3f3f; border-right: 1px solid #f0f0f0;">100+ Agents + 210+ MCP 工具</td>
+          <td style="padding: 10px; color: #3f3f3f; border-right: 1px solid #f0f0f0;">数百条 slash 命令</td>
+          <td style="padding: 10px; color: #3f3f3f;">数十个细分角色 subagent</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; color: #666; font-weight: bold; border-right: 1px solid #f0f0f0; background: #f8f8f8;">多 Provider</td>
+          <td style="padding: 10px; color: #00897B; font-weight: bold; border-right: 1px solid #f0f0f0;">✓ Claude/GPT/Gemini/Ollama</td>
+          <td style="padding: 10px; color: #999; border-right: 1px solid #f0f0f0;">仅 Claude Code</td>
+          <td style="padding: 10px; color: #999;">仅 Claude Code</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; color: #666; font-weight: bold; border-right: 1px solid #f0f0f0; background: #f8f8f8;">编排能力</td>
+          <td style="padding: 10px; color: #00897B; font-weight: bold; border-right: 1px solid #f0f0f0;">✓ GOAP 规划器 + 12 Worker</td>
+          <td style="padding: 10px; color: #999; border-right: 1px solid #f0f0f0;">无</td>
+          <td style="padding: 10px; color: #999;">无（手动调度）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; color: #666; font-weight: bold; border-right: 1px solid #f0f0f0; background: #f8f8f8;">跨组织协作</td>
+          <td style="padding: 10px; color: #00897B; font-weight: bold; border-right: 1px solid #f0f0f0;">✓ Agent 联邦</td>
+          <td style="padding: 10px; color: #999; border-right: 1px solid #f0f0f0;">无</td>
+          <td style="padding: 10px; color: #999;">无</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; color: #666; font-weight: bold; border-right: 1px solid #f0f0f0; background: #f8f8f8;">适用人群</td>
+          <td style="padding: 10px; color: #3f3f3f; border-right: 1px solid #f0f0f0;">企业 / 重度 AI 工程团队</td>
+          <td style="padding: 10px; color: #3f3f3f; border-right: 1px solid #f0f0f0;">个人开发者 / 速查</td>
+          <td style="padding: 10px; color: #3f3f3f;">个人开发者 / 快速上手</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一句话总结：<strong style="color: #00897B;">ECC 是字典，wshobson/agents 是工具箱，RuFlo 是车间主任</strong>。三者可以叠加使用：用 ECC 查命令、用 wshobson 的 subagent 做单点任务、用 RuFlo 做整体编排。
+  </p>
+
+  <!-- 避坑指南 -->
+  <section style="background: #FFF5F5; border: 1px solid #FFCDD2; border-left: 4px solid #E53935; padding: 20px 22px; margin: 45px 0 20px 0; border-radius: 8px;">
+    <p style="margin: 0 0 14px 0; font-weight: bold; color: #C62828; font-size: 18px;">⚠️ 避坑指南——上手前先看这五条</p>
+
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      <strong style="color: #C62828;">1. 包名混乱别踩坑。</strong>RuFlo 已重命名，但 npm 上部分包仍叫 <code style="background: #fff; padding: 2px 6px; border-radius: 3px; font-size: 13px; color: #C62828;">@claude-flow/cli</code>，MCP 命令里用的还是旧名。安装时认准 GitHub 仓库 <strong>ruvnet/ruflo</strong>，别被旧包名误导。
+    </p>
+
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      <strong style="color: #C62828;">2. 多 Provider 别同时全开。</strong>RuFlo 支持 Claude/GPT/Gemini/Cohere/Ollama，但每个 Provider 都要单独配 API Key 和路由策略。第一次跑<strong style="color: #C62828;">先只配一个 Provider</strong>，跑通再加。否则报错排查极痛苦。
+    </p>
+
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      <strong style="color: #C62828;">3. 12 个 Worker 不是越多越好。</strong>Worker 数量取决于你机器 CPU 和各家 API 的并发限额。<strong style="color: #C62828;">本地开发建议 2-4 个</strong>，云端部署再按需扩。
+    </p>
+
+    <p style="margin: 0 0 10px 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      <strong style="color: #C62828;">4. 联邦功能要先有信任边界。</strong>跨组织 Agent 通信涉及数据外发，<strong style="color: #C62828;">务必先做任务白名单和输出过滤</strong>，别让对方的 Agent 直接拿到你的完整上下文。
+    </p>
+
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.85;">
+      <strong style="color: #C62828;">5. 不要和 ECC、wshobson 二选一。</strong>这三个项目是<strong style="color: #C62828;">互补关系</strong>，不是替代。强行只留一个会丢掉另外两边的资产。
+    </p>
+  </section>
+
+  <!-- 金句收尾 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      单 Agent 做不完的大工程，正在催生<strong style="color: #00897B;">编排、联邦、规划器</strong>这些工具。RuFlo 不是唯一，但它是当前把这三件事一起做完的少数项目之一。
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      别把它当银弹，当车间主任就行。它不会替你写每一行代码，但确实<strong style="color: #00897B;">能让多个 Agent 同时干活，还能跨组织调别的团队</strong>。装之前想清楚自己是不是真需要这么大的编排能力，个人小项目用单个 Agent 也许就够了。
+    </p>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="background: #1a1a1a; border-radius: 12px; padding: 25px 22px; margin: 30px 0;">
+    <p style="margin: 0 0 18px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center; letter-spacing: 1px;">🚀 立即上手——三选一</p>
+
+    <p style="margin: 0 0 6px 0; font-size: 13px; color: #B2DFDB; font-weight: bold;">① Claude Code 插件（推荐）</p>
+    <section style="background: #2a2a2a; border: 1px solid #444; border-radius: 6px; padding: 10px 12px; margin: 0 0 14px 0;">
+      <p style="margin: 0 0 4px 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; color: #00d9a3; word-break: break-all;">/plugin marketplace add ruvnet/ruflo</p>
+      <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; color: #00d9a3; word-break: break-all;">/plugin install ruflo-core@ruflo</p>
+    </section>
+
+    <p style="margin: 0 0 6px 0; font-size: 13px; color: #B2DFDB; font-weight: bold;">② CLI 向导</p>
+    <section style="background: #2a2a2a; border: 1px solid #444; border-radius: 6px; padding: 10px 12px; margin: 0 0 14px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; color: #00d9a3; word-break: break-all;">npx ruflo@latest init --wizard</p>
+    </section>
+
+    <p style="margin: 0 0 6px 0; font-size: 13px; color: #B2DFDB; font-weight: bold;">③ MCP 接入</p>
+    <section style="background: #2a2a2a; border: 1px solid #444; border-radius: 6px; padding: 10px 12px; margin: 0 0 14px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; color: #00d9a3; word-break: break-all;">claude mcp add ruflo -- npx -y @claude-flow/cli@latest</p>
+    </section>
+
+    <p style="margin: 14px 0 0 0; font-size: 12px; color: #888; text-align: center; line-height: 1.7;">
+      仓库地址：github.com/ruvnet/ruflo · 11.4k Stars · MIT License
+    </p>
+  </section>
+
+  <!-- 关联引用 -->
+  <section style="background: #f8f8f8; padding: 20px 22px; border-radius: 10px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #00897B; font-weight: bold;">📖 系列关联阅读</p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.85;">
+      ▸ <strong>ECC Everything Claude Code</strong>：<em style="color: #00897B; font-style: normal;">ecc-everything-claude-code-公众号版.html</em>——命令速查字典
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.85;">
+      ▸ <strong>wshobson/agents</strong>：<em style="color: #00897B; font-style: normal;">wshobson-agents-生产级subagent集合-公众号版.html</em>——生产级 subagent 集合
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.85;">
+      ▸ <strong>Claude Code Router</strong>：<em style="color: #00897B; font-style: normal;">claude-code-router-公众号版.html</em>——多 Provider 路由对比
+    </p>
+  </section>
+
+  <!-- 分隔线 -->
+  <section style="margin: 35px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 评论区引导 -->
+  <section style="margin: 30px 0 20px 0; padding: 22px 0; border-top: 1px dashed #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #1a1a1a; font-weight: bold; line-height: 1.8;">💬 评论区聊聊</p>
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #666; line-height: 1.85;">
+      你在用单 Agent 还是多 Agent 编排？卡在哪一步？<br>
+      留言告诉我，下一篇可能就写你问的问题。
+    </p>
+    <p style="margin: 12px 0 0 0; font-size: 13px; color: #999;">📌 关注公众号 · 回复「RuFlo」获取本文所有命令可复制版</p>
+  </section>
+
+</section>
+
+</body>
+</html>

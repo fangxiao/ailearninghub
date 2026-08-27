@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent开发系列 01-02</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+    .article-header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #00897B 0%, #00695C 100%);
+      color: white;
+      margin: -30px -20px 40px -20px;
+    }
+    .article-header h1 {
+      font-size: 28px;
+      margin: 0 0 10px 0;
+      font-weight: bold;
+    }
+    .article-header h2 {
+      font-size: 16px;
+      font-weight: normal;
+      margin: 0;
+      opacity: 0.9;
+    }
+    .intro-box {
+      background: #f8f9fa;
+      border-left: 4px solid #00897B;
+      padding: 15px 20px;
+      margin: 25px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .key-point {
+      background: #fff8e1;
+      border-left: 4px solid #ffb300;
+      padding: 15px 20px;
+      margin: 25px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .code-block {
+      background: #f8f8f8;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .flow-diagram {
+      background: #f0f7ff;
+      border: 1px solid #b3d4fc;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+      text-align: center;
+    }
+    .flow-diagram span {
+      display: inline-block;
+      background: #00897B;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      margin: 5px;
+      font-size: 14px;
+    }
+    .flow-diagram .arrow {
+      color: #00897B;
+      font-size: 20px;
+      margin: 0 5px;
+    }
+    .section-divider {
+      text-align: center;
+      margin: 40px 0;
+      color: #ccc;
+    }
+    .article-footer {
+      background: #f8f9fa;
+      padding: 25px;
+      margin: 40px -20px -30px -20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .file-tag {
+      display: inline-block;
+      background: #e0e0e0;
+      color: #666;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .inline-link {
+      color: #00897B;
+      text-decoration: none;
+      border-bottom: 1px dashed #00897B;
+    }
+    h3 {
+      font-size: 18px !important;
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+
+<div class="article-header">
+  <h1>Agent开发系列 01-02</h1>
+  <h2>从用户到创造者 · 不是魔法，是四个环节</h2>
+</div>
+
+<section style="max-width: 750px; margin: 0 auto; padding: 0 20px 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.9; letter-spacing: 0.5px; background: #ffffff;">
+
+  <p style="margin: 0 0 30px 0; font-size: 14px; color: #999; text-align: center;">
+    Agent开发系列 · 第1期
+  </p>
+
+  <h3 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 35px 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #00897B;">
+    为什么你值得学Agent开发
+  </h3>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    我的朋友老张，用ChatGPT特别熟练。写邮件、翻译文章、debug代码，样样都行。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    有一天我问他：Agent是怎么工作的？
+
+    他愣了一下，说：什么工作？它就是AI啊，你问它答，没什么工作不工作的。
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    老张不是不懂AI，他每天都用。但他从来没想过，那些看起来像魔法的对话背后，是一行行代码搭起来的系统。
+
+    这个系列，就是写给他的。也写给所有用过Agent、觉得它厉害、但从没想过自己也能造一个的人。
+  </p>
+
+  <div class="intro-box">
+    <p style="margin: 0; font-size: 15px; color: #555; line-height: 1.8;">
+      💡 <strong>先说结论：</strong>学Agent开发，不是为了转行去AI公司。是为了用得更顺手、定制自己的Agent、搞清楚AI的边界。
+    </p>
+  </div>
+
+  <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    大多数人用Agent，遇到答非所问的时候，第一反应是：这个工具不行，换一个。
+  </p>
+
+  <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    但你换个角度想：是你的用法有问题，还是这个Agent的设计有问题？
+  </p>
+
+  <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    懂了点原理，你就知道什么时候该换工具，什么时候该换用法。
+  </p>
+
+  <p style="margin: 0 0 10px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; font-weight: bold;">
+    第一层好处：更好地使用工具
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    第二层好处：定制自己的Agent。市面上的Agent都是通用设计，但你的需求可能很特殊——你想让它知道你家地址、你的日程规律、你的代码风格。<a href="../../../.openclaw/workspace/openclaw-complete-series/01-OpenClaw是什么-公众号版.md" class="inline-link">OpenClaw第01篇</a> 里介绍过Agent是什么，能做什么通用任务。通用Agent做不到的事，你自己搭一个就能做到。
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    第三层好处听起来有点虚，但我觉得挺重要：你会更清楚AI的边界在哪里。知道什么它擅长，什么是它的短板。这比你读任何一篇"AI要取代人类"的焦虑文都管用。
+  </p>
+
+  <h3 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 35px 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #00897B;">
+    这个系列讲什么
+  </h3>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    之前的两个系列，我们讲了怎么用好Agent、怎么用AI工具编程。
+
+    这一次，我们自己动手做一个。不是讲概念，是看代码。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    感知、思考、行动、反思——这四个环节分别怎么实现，代码会告诉你。
+  </p>
+
+  <p style="margin: 0 0 10px 0; font-size: 15px; color: #555;">
+    具体来说，这个系列会讲这些东西：
+  </p>
+
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #555;">
+    · Agent的核心循环是怎么运转的
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #555;">
+    · Agent是怎么"记住"东西的 <span class="file-tag">{关联:12-记忆系统}</span>
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #555;">
+    · Agent调用工具的原理是什么 <span class="file-tag">{关联:09-工具与API集成}</span>
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #555;">
+    · 怎么让多个Agent协作
+  </p>
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #555;">
+    · 怎么把Agent部署到生产环境
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    说完了为什么学，接下来我们来看看Agent到底是什么。
+  </p>
+
+  <div class="section-divider">✦ ✦ ✦</div>
+
+  <h3 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 35px 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #00897B;">
+    重新认识Agent
+  </h3>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    说了这么多，Agent到底是什么？
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    如果你看过 <a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="inline-link">OpenClaw原理篇11：核心循环</a>，应该记得核心循环这四个字。感知、思考、行动、反思——听起来很玄乎，但说白了就是四个步骤。 <span class="file-tag">{关联:11-核心循环}</span>
+  </p>
+
+  <div class="flow-diagram">
+    <span>感知</span>
+    <span class="arrow">→</span>
+    <span>思考</span>
+    <span class="arrow">→</span>
+    <span>行动</span>
+    <span class="arrow">→</span>
+    <span>反思</span>
+  </div>
+
+  <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    <strong>感知：</strong>你跟Agent说"帮我订明天去上海的机票"，Agent得先理解你在说什么——这句话的意图是什么，需要哪些参数，具体是哪天。
+  </p>
+
+  <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    <strong>思考：</strong>理解了你要什么，Agent得决定怎么做。它可能会想：我需要查航班、比比价格、看哪个时间最合适。这个"想"的过程，就是思考。
+  </p>
+
+  <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    <strong>行动：</strong>光想没用，得真的去查。这时候Agent会调用工具——可能是携程的API，可能是某个航班网站。调用工具就是行动。
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    <strong>反思：</strong>行动完了，结果怎么样？航班查到了，价格合适吗？有没有什么问题？Agent需要回头看看自己做得对不对，这就是反思。
+  </p>
+
+  <div class="key-point">
+    <p style="margin: 0; font-size: 15px; color: #555; line-height: 1.8;">
+      💡 感知 → 思考 → 行动 → 反思，然后呢？然后回到感知，听你下一步的反馈。这就是Agent工作的核心循环。
+    </p>
+  </div>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    你可能觉得，这不就是"输入→处理→输出"吗？没错，本质上就是这么简单。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    Agent厉害的地方在于，它把这四个环节串起来了，而且串得很顺。
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    你跟它说一句话，它理解。它思考要不要调用工具。它调用了工具，拿回结果。它看看结果对不对。如果不对，它会调整策略，再来一次。这个循环可以跑很多轮，直到任务完成，或者它确定自己做不到。
+  </p>
+
+  <h3 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 35px 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #00897B;">
+    代码层面长什么样
+  </h3>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    说这么多，不如看代码。最简单的Agent骨架是这样的：
+  </p>
+
+  <div class="code-block">
+    <pre><code class="language-python">class Agent:
+    def run(self, user_input):
+        # 感知
+        context = self.perceive(user_input)
+
+        # 思考 + 行动，循环进行
+        while not self.is_done(context):
+            # 思考
+            thought = self.think(context)
+            # 行动
+            result = self.act(thought)
+            # 反思
+            context = self.reflect(context, result)
+
+        return context.result</code></pre>
+  </div>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    看到了吗？一个while循环，加四个方法。perceive、think、act、reflect。这就是Agent的全部秘密。
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    复杂的地方在于每个方法的具体实现。怎么理解用户输入？怎么决定下一步做什么？怎么调用工具？怎么判断结果对不对？
+
+    但框架就是这样。这个框架你记住了，后面的东西都好说。
+  </p>
+
+  <h3 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 35px 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #00897B;">
+    你需要什么基础
+  </h3>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    不要求你有AI背景。但希望你：
+  </p>
+
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #555;">
+    · 会写Python代码，能看懂基本语法
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #555;">
+    · 用过大语言模型，知道怎么跟它对话
+  </p>
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #555;">
+    · 有好奇心，想知道背后的原理
+  </p>
+
+  <p style="margin: 0 0 30px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    如果你看过 <a href="../../../.openclaw/workspace/openclaw-complete-series/01-OpenClaw是什么-公众号版.md" class="inline-link">OpenClaw第01篇</a> 和 <a href="../../../.openclaw/workspace/openclaw-complete-series/13-架构解析-公众号版.md" class="inline-link">原理篇13：架构解析</a>，对Agent的概念有印象，那就更好了。有些概念我不会重复讲。
+  </p>
+
+  <div class="section-divider">✦ ✦ ✦</div>
+
+  <h3 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 35px 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #00897B;">
+    下一期
+  </h3>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    下一期，我们来做一件很有成就感的事：从零开始，写一个能跑的最简Agent。代码不到100行，但该有的循环都有。
+  </p>
+
+  <p style="margin: 0 0 30px 0; font-size: 16px; color: #3f3f3f; line-height: 1.9; text-indent: 2em;">
+    先跑起来再说。跑起来之后，你心里就有个底了。有问题欢迎留言。
+  </p>
+
+</section>
+
+<div class="article-footer">
+  <p style="margin: 0 0 15px 0; font-size: 14px; color: #00897B; font-weight: bold;">
+    📎 相关系列阅读
+  </p>
+  <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;">
+    本系列是OpenClaw系列的延伸，文中已嵌入相关链接，底部汇总：
+  </p>
+  <p style="margin: 0 0 6px 0; font-size: 13px; color: #666;">
+    · <a href="../../../.openclaw/workspace/openclaw-complete-series/01-OpenClaw是什么-公众号版.md" style="color: #00897B;">OpenClaw第01篇：OpenClaw是什么</a><span class="file-tag">{原文件:01-OpenClaw是什么-公众号版.md}</span>
+  </p>
+  <p style="margin: 0 0 6px 0; font-size: 13px; color: #666;">
+    · <a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" style="color: #00897B;">OpenClaw原理篇11：核心循环</a><span class="file-tag">{原文件:11-核心循环-公众号版.md}</span>
+  </p>
+  <p style="margin: 0 0 6px 0; font-size: 13px; color: #666;">
+    · <a href="../../../.openclaw/workspace/openclaw-complete-series/12-记忆系统-公众号版.md" style="color: #00897B;">OpenClaw原理篇12：记忆系统</a><span class="file-tag">{原文件:12-记忆系统-公众号版.md}</span>
+  </p>
+  <p style="margin: 0 0 6px 0; font-size: 13px; color: #666;">
+    · <a href="../../../.openclaw/workspace/openclaw-complete-series/13-架构解析-公众号版.md" style="color: #00897B;">OpenClaw原理篇13：架构解析</a><span class="file-tag">{原文件:13-架构解析-公众号版.md}</span>
+  </p>
+  <p style="margin: 0 0 6px 0; font-size: 13px; color: #666;">
+    · <a href="../../../.openclaw/workspace/openclaw-complete-series/09-工具与API集成-公众号版.md" style="color: #00897B;">OpenClaw进阶篇09：工具与API集成</a><span class="file-tag">{原文件:09-工具与API集成-公众号版.md}</span>
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 13px; color: #999; text-align: center;">
+    下期预告：Agent开发系列 03-04 — 最小可行Agent + 感知系统
+  </p>
+  <p style="margin: 0; font-size: 12px; color: #999; text-align: center;">
+    Agent开发系列 · 用代码理解AI
+  </p>
+</div>
+
+</section>
+
+</body>
+</html>

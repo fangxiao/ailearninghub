@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 05-06</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+p { padding: 14px 0; color: #3f3f3f; }
+
+h2 {
+  margin: 50px 0 30px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+h3 {
+  margin: 40px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.num { color: #ff6b35; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+.hl { color: #e63946; font-weight: 600; }
+.success { color: #2a9d8f; }
+.tip { color: #7b68ee; }
+.warn { color: #f4a261; }
+
+strong { color: #2c2c2c; font-weight: 600; }
+em { font-style: italic; color: #5a5a5a; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">思考：Agent是怎么"想"的</span></h2>
+
+<p>上一期我们说了感知。用户说了一句话，Agent知道用户想要什么了。</p>
+
+<p>接下来是思考。感知知道了你要什么，思考来决定怎么做。<a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">(见OpenClaw原理篇11)</a></p>
+
+<p>思考听起来很玄乎。但在大模型时代，思考其实就是一次大模型的调用。模型根据你的问题和上下文，决定下一步该做什么。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>所谓的"思考"，本质上是让大模型根据当前情况，决定是调用工具、收集更多信息，还是直接回答。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">ReAct模式</span></h3>
+
+<p>最常用的思考模式叫ReAct——Reasoning + Acting。就是一边推理，一边行动。</p>
+
+<p>举个例子。用户问："帮我查一下上海今天的天气，如果下雨就别出门了。"</p>
+
+<p>Agent的思考过程是这样的：</p>
+
+<ol>
+<li>思考：我需要先查天气，才能回答用户的问题</li>
+<li>行动：调用天气查询工具</li>
+<li>观察：查询结果是今天上海有雨</li>
+<li>思考：用户说下雨就别出门，我应该建议用户今天不要出门</li>
+</ol>
+
+<div style="text-align: center; margin: 30px 0;">
+<img src="data:image/png;base64,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" alt="Figure: ReAct Loop - Thought -> Action -> Observation -> Thought" style="max-width: 100%; border-radius: 8px;">
+<p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic;">Figure: ReAct Loop - Thought -> Action -> Observation -> Thought</p>
+</div>
+
+<pre class="code-block"><span class="code-header"></span><code><span style="color: #66d9ef">思考</span><span style="color: #f8f8f2">：我需要先查天气，才能回答用户的问题</span>
+  <span style="color: #f92672">↓</span>
+<span style="color: #66d9ef">行动</span><span style="color: #f8f8f2">：调用天气查询工具</span>
+  <span style="color: #f92672">↓</span>
+<span style="color: #66d9ef">观察</span><span style="color: #f8f8f2">：查询结果是今天上海有雨</span>
+  <span style="color: #f92672">↓</span>
+<span style="color: #66d9ef">思考</span><span style="color: #f8f8f2">：用户说下雨就别出门，建议用户不要出门</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">代码实现</span></h3>
+
+<p><a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">(参考AI Coding第28篇)</a></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">think</span><span style="color: #f8f8f2">(self, context):</span>
+<span style="color: #f8f8f2">    prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"""当前任务：{context.task}</span>
+<span style="color: #e6db74">已有信息：{context.observations}</span>
+
+<span style="color: #e6db74">请思考：下一步应该做什么？</span>
+<span style="color: #e6db74">选项：</span>
+<span style="color: #e6db74">1. 继续收集信息（调用工具）</span>
+<span style="color: #e6db74">2. 直接回答用户</span>
+<span style="color: #e6db74">3. 任务已完成</span>
+
+<span style="color: #e6db74">请用JSON格式返回你的思考和决定。</span>
+
+<span style="color: #e6db74">{{</span>
+<span style="color: #e6db74">  "thought": "你的思考过程",</span>
+<span style="color: #e6db74">  "action": "下一步行动",</span>
+<span style="color: #e6db74">  "args": "行动参数"</span>
+<span style="color: #e6db74">}}"""</span>
+
+<span style="color: #f8f8f2">    response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">        model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: prompt}]</span>
+<span style="color: #f8f8f2">    )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.</span><span style="color: #a6e22e">loads</span><span style="color: #f8f8f2">(response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">])</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">Chain of Thought</span></h3>
+
+<p>还有一个概念叫Chain of Thought，思维链。就是让模型把思考过程说出来，而不只是给结论。</p>
+
+<blockquote><p>💡 <strong>实践经验：</strong>让模型"解释一下你是怎么想的"，往往能得到更准确的答案。</p></blockquote>
+
+<p>知道了Agent是怎么"想"的，接下来我们来说说它是怎么"做"的——行动。</p>
+
+<hr/>
+
+<h2><span class="title-text">行动：工具是怎么被调用的</span></h2>
+
+<p>思考完了，下一步就是行动。行动就是调用工具。<a href="../../../.openclaw/workspace/openclaw-complete-series/09-工具与API集成-公众号版.md" class="key">(参考OpenClaw进阶篇09)</a></p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>Agent能做什么事，就看它有多少工具。工具越多，能力越强。<a href="../../../.openclaw/workspace/ai-coding-series/AI-29-工具系统-Tool-System-公众号版.md" class="key">(参考AI Coding第29篇)</a></p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">Function Calling</span></h3>
+
+<p>现在主流的Agent都支持Function Calling。就是让模型在生成内容的时候，顺便告诉我"我需要调用某个函数"。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">response</span><span style="color: #f8f8f2"> = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"帮我查一下上海天气"</span><span style="color: #f8f8f2">}],</span>
+<span style="color: #f8f8f2">    tools=[</span>
+<span style="color: #f8f8f2">        {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"get_weather"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"查询天气"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"parameters"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"object"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"properties"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                        </span><span style="color: #e6db74">"city"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">                            </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                            </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"城市名称"</span>
+<span style="color: #f8f8f2">                        }</span>
+<span style="color: #f8f8f2">                    },</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #e6db74">"required"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"city"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">                }</span>
+<span style="color: #f8f8f2">            }</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">    ]</span>
+<span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2"># 检查是否有工具调用</span>
+<span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message.get(</span><span style="color: #e6db74">"tool_calls"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">    tool_call = response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"tool_calls"</span><span style="color: #f8f8f2">][</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">    function_name = tool_call[</span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">    arguments = json.</span><span style="color: #a6e22e">loads</span><span style="color: #f8f8f2">(tool_call[</span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">"arguments"</span><span style="color: #f8f8f2">])</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"需要调用函数：{function_name}"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a6e22e">print</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"参数：{arguments}"</span><span style="color: #f8f8f2">)</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">工具执行</span></h3>
+
+<p>拿到函数名和参数之后，下一步就是执行：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute_tool</span><span style="color: #f8f8f2">(self, tool_name, args):</span>
+<span style="color: #f8f8f2">    tool_func = self.tools.</span><span style="color: #a6e22e">get</span><span style="color: #f8f8f2">(tool_name)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> tool_func </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">is</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"找不到工具：{tool_name}"</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">        result = tool_func(**args)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> result</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">except</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Exception</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> e:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"工具执行出错：{</span><span style="color: #a6e22e">str</span><span style="color: #e6db74">(e)}"</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">结果返回</span></h3>
+
+<p>工具执行完了，要把结果传回给模型，让模型决定下一步怎么做：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #f8f8f2"># 执行工具</span>
+<span style="color: #a6e22e">tool_result</span><span style="color: #f8f8f2"> = self.</span><span style="color: #a6e22e">execute_tool</span><span style="color: #f8f8f2">(function_name, arguments)</span>
+
+<span style="color: #f8f8f2"># 把结果加到消息历史</span>
+<span style="color: #f8f8f2">self.messages.append({</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"tool"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"tool_call_id"</span><span style="color: #f8f8f2">: tool_call[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">],</span>
+<span style="color: #f8f8f2">    </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(tool_result)</span>
+<span style="color: #f8f8f2">})</span>
+
+<span style="color: #f8f8f2"># 再次调用模型，让它处理工具返回的结果</span>
+<span style="color: #a6e22e">response</span><span style="color: #f8f8f2"> = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">    model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">    messages=self.messages</span>
+<span style="color: #f8f8f2">)</span></code></pre>
+
+<blockquote><p>💡 <strong>完整流程：</strong>模型决定调用 → 传递参数 → 执行工具 → 返回结果 → 模型继续处理。</p></blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">常见的内置工具</span></h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>工具</th>
+      <th>作用</th>
+      <th>例子</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>搜索</td>
+      <td>搜索互联网</td>
+      <td>查天气、查股票</td>
+    </tr>
+    <tr>
+      <td>计算</td>
+      <td>执行计算</td>
+      <td>数学运算</td>
+    </tr>
+    <tr>
+      <td>文件</td>
+      <td>读写文件</td>
+      <td>保存结果、读取配置</td>
+    </tr>
+    <tr>
+      <td>API</td>
+      <td>调用外部接口</td>
+      <td>发邮件、发消息</td>
+    </tr>
+    <tr>
+      <td>代码</td>
+      <td>执行代码</td>
+      <td>运行Python脚本</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote><p>⚠️ <strong>注意事项：</strong>工具调用不是越多越好。频繁的上下文切换会影响Agent的工作效率。设计工具时要考虑实用性，避免过度设计。</p></blockquote>
+
+<p>下一步我们来说说反思。工具调用完了，怎么知道结果对不对？这就是反思要解决的问题。</p>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>OpenClaw原理篇11：核心循环 <span class="file-tag">{原文件:11-核心循环-公众号版.md}</span></li>
+<li>OpenClaw进阶篇09：工具与API集成 <span class="file-tag">{原文件:09-工具与API集成-公众号版.md}</span></li>
+<li>AI Coding第28篇：Agent核心实现 <span class="file-tag">{原文件:AI-28-Agent核心实现-公众号版.md}</span></li>
+<li>AI Coding第29篇：工具系统 <span class="file-tag">{原文件:AI-29-工具系统-Tool-System-公众号版.md}</span></li>
+</ul>
+
+<p>下期预告：Agent开发系列 07-08 — 反思 + 记忆系统</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent进化论 ① | 别再写if/else了！</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+<body>
+<div class="container">
+
+
+
+<h2><span class="title-text">客服Agent进化论 ①</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">别再写if/else了！</p>
+
+<blockquote class="opinion">
+<p>我见过太多客服系统，每加一个业务场景就要改核心代码，改到最后没人敢动。<strong>单体插件架构是技术债的重灾区——插件耦合、路由硬编码、改一处动全身</strong>。于是我们彻底重构，引入 <span class="key">Harness</span> 和 <span class="key">Skill</span> 两层抽象。本篇带你从零搭建这套可插拔架构，告别if/else地狱。</p>
+</blockquote>
+
+<p style="color: #888; font-size: 14px; font-style: italic; margin: 16px 0 24px;">
+💡 如果你看过之前的《客服Agent实战系列》，应该熟悉V1插件架构。本篇是加强版开篇，我们来聊聊怎么把那个原型升级成真正的生产级架构。
+</p>
+
+<h3><span class="icon">1</span><span class="title-text">V1的困境：为什么单体插件架构走不通？</span></h3>
+
+<p>先回忆一下V1版本的架构。在《客服Agent实战系列》里，我们用了一个"插件管道"模式：</p>
+
+<p class="diagram-title">图1：V1单体插件架构</p>
+<div class="mermaid">
+graph TB
+    U[用户输入] --> B[Bot核心]
+    B --> P1[意图识别插件]
+    B --> P2[知识库插件]
+    B --> P3[情感分析插件]
+    B --> P4[订单查询插件]
+    B --> P5[工单插件]
+    P1 --> R{路由判断}
+    P2 --> R
+    P3 --> R
+    P4 --> R
+    P5 --> R
+    R --> LLM[LLM生成]
+    LLM --> OUT[响应]
+    
+    style U fill:#e3f2fd
+    style OUT fill:#e8f5e9
+    style B fill:#fff3e0
+    style R fill:#ffcdd2
+</div>
+
+<p>表面上看插件化了，但实际写起来是这样的：</p>
+
+<pre><code># V1 的路由代码 —— 一个巨大的 if/else
+def route(self, user_input):
+    intent = self.intent_plugin.detect(user_input)
+    
+    if intent == "faq_query":
+        return self.knowledge_plugin.handle(user_input)
+    elif intent == "order_query":
+        return self.order_plugin.handle(user_input)
+    elif intent == "complaint":
+        return self.sentiment_plugin.handle(user_input)
+    elif intent == "handoff":
+        return self.ticket_plugin.handle(user_input)
+    # ... 每加一个插件，这里就要改
+    elif intent == "new_scenario":
+        return self.new_plugin.handle(user_input)  # 必须改核心！
+    else:
+        return self.llm.chat(user_input)</code></pre>
+
+<blockquote class="highlight">
+<p><strong>V1的三大痛点：</strong><br><br>
+<strong>痛点1：耦合严重</strong> —— Bot核心直接import每个插件，插件之间互相依赖。改一个插件可能波及核心。<br><br>
+<strong>痛点2：路由硬编码</strong> —— 每加一个业务场景就要改路由函数，违反开闭原则。10个插件还好，50个呢？<br><br>
+<strong>痛点3：无法动态加载</strong> —— 插件写死在代码里，想临时禁用某个插件？注释掉。想热插拔？做不到。</p>
+</blockquote>
+
+<p>这些痛点在Demo阶段不明显，但一旦业务扩展到<strong>电商、金融、教育</strong>等多行业场景，系统就变成了"意大利面条代码"——牵一发而动全身。</p>
+
+<h3><span class="icon">2</span><span class="title-text">Harness+Skill：一套为客服Agent量身定做的架构</span></h3>
+
+<p>我们重新设计了架构，核心理念来自一个比喻：</p>
+
+<table>
+<tr><th>组件</th><th>比喻</th><th>职责</th></tr>
+<tr><td><strong>Harness</strong></td><td>CEO</td><td>统一编排、调度、监控，对外唯一入口</td></tr>
+<tr><td><strong>Skill</strong></td><td>专业员工</td><td>各司其职，FAQ、订单、投诉、问候……</td></tr>
+<tr><td><strong>Registry</strong></td><td>人力资源部</td><td>管理所有Skill的注册、查找、生命周期</td></tr>
+<tr><td><strong>Router</strong></td><td>调度中心</td><td>根据上下文把请求分发给最合适的Skill</td></tr>
+<tr><td><strong>CircuitBreaker</strong></td><td>保险丝</td><td>某个Skill连续失败时自动熔断，防止雪崩</td></tr>
+</table>
+
+<p class="diagram-title">图2：Harness+Skill架构全景</p>
+<div class="mermaid">
+graph TB
+    subgraph Harness["Harness（CEO）"]
+        direction TB
+        REG[Registry<br/>人力资源部]
+        ROT[Router<br/>调度中心]
+        CB[CircuitBreaker<br/>保险丝]
+        LIM[RateLimiter<br/>流量控制]
+    end
+    
+    subgraph Skills["Skills（专业员工）"]
+        direction LR
+        S1[GreetingSkill<br/>问候]
+        S2[FAQSkill<br/>知识库]
+        S3[OrderSkill<br/>订单]
+        S4[ComplaintSkill<br/>投诉]
+        S5[HandoffSkill<br/>转人工]
+        S6[IntentSkill<br/>意图识别]
+        S7[SentimentSkill<br/>情感]
+    end
+    
+    User[用户请求] --> Harness
+    Harness --> REG
+    REG --> ROT
+    ROT --> Skills
+    Skills --> CB
+    CB --> Response[响应输出]
+    
+    style Harness fill:#e1f5fe
+    style Skills fill:#fff3e0
+    style User fill:#e3f2fd
+    style Response fill:#e8f5e9
+    style CB fill:#ffcdd2
+</div>
+
+<blockquote class="opinion">
+<p>关键区别在于：<strong>Harness不关心具体业务</strong>。它不知道FAQ是什么，也不关心订单怎么查。Harness只做三件事：<br>
+1. 从Registry找到所有可用的Skill<br>
+2. 让Router决定用哪个Skill<br>
+3. 执行Skill，记录结果，处理异常</p>
+</blockquote>
+
+<p>这意味着：<strong>加一个新业务场景 = 写一个新Skill + 注册</strong>，核心代码一行不用改。</p>
+
+<h3><span class="icon">3</span><span class="title-text">新旧架构对比：用数据说话</span></h3>
+
+<table>
+<tr><th>维度</th><th>V1 单体插件</th><th>V2 Harness+Skill</th></tr>
+<tr><td><strong>新增业务</strong></td><td>改核心路由 + 写插件（2处改动）</td><td>只写新Skill + 注册（1处改动）</td></tr>
+<tr><td><strong>耦合度</strong></td><td>插件之间可能互相引用</td><td>Skill之间完全隔离，通过Context通信</td></tr>
+<tr><td><strong>路由方式</strong></td><td>if/else硬编码</td><td>Router + can_handle打分机制</td></tr>
+<tr><td><strong>动态加载</strong></td><td>不支持</td><td>支持，Registry可随时register/unregister</td></tr>
+<tr><td><strong>故障隔离</strong></td><td>一个插件挂了全挂</td><td>CircuitBreaker熔断保护</td></tr>
+<tr><td><strong>可观测性</strong></td><td>日志零散</td><td>Metrics统一收集，可导出Dashboard</td></tr>
+<tr><td><strong>代码量</strong></td><td>Bot核心~500行</td><td>Harness~250行，每个Skill~100行</td></tr>
+</table>
+
+<blockquote class="highlight">
+<p>看到没？V2架构用更少的代码，做了更多的事。核心原因就是<strong>职责分离</strong>：Harness只管编排，Skill只管业务。</p>
+</blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">项目结构一览</span></h3>
+
+<p>先看整体目录结构：</p>
+
+<pre><code>customer-service-agent-harness-skill/
+├── config/
+│   ├── base.yaml                    # 基础配置
+│   ├── customer_service.yaml        # 客服专用配置
+│   └── prompts/
+│       └── system_prompt.md         # System Prompt
+├── data/
+│   ├── faq.json                     # FAQ知识库
+│   ├── intents.json                 # 意图定义
+│   ├── sentiments.json             # 情感词典
+│   ├── metrics_log.json             # 指标日志
+│   └── user_memory.json             # 用户记忆
+├── skills/                          # 所有Skill（专业员工）
+│   ├── base.py                      # BaseSkill + SkillResult
+│   ├── greeting_skill.py            # 问候Skill
+│   ├── faq_skill.py                 # FAQ知识库Skill
+│   ├── order_skill.py               # 订单Skill
+│   ├── complaint_skill.py           # 投诉处理Skill
+│   ├── handoff_skill.py             # 转人工Skill
+│   ├── intent_skill.py              # 意图识别Skill
+│   ├── sentiment_skill.py           # 情感分析Skill
+│   ├── memory_skill.py              # 记忆Skill
+│   ├── slot_filling_skill.py        # 槽位填充Skill
+│   ├── tool_use_skill.py            # 工具调用Skill
+│   └── general_skill.py             # 兜底Skill
+├── src/                             # 核心框架
+│   ├── harness.py                   # Harness（CEO）
+│   ├── skill_registry.py            # SkillRegistry（人力资源部）
+│   ├── skill_router.py              # SkillRouter（调度中心）
+│   ├── circuit_breaker.py           # CircuitBreaker（保险丝）
+│   ├── rate_limiter.py              # RateLimiter（限流）
+│   ├── dialog_manager.py            # DialogManager（对话管理）
+│   ├── user_memory.py               # UserMemory（用户记忆）
+│   ├── llm_engine.py                # LLMEngine（大模型引擎）
+│   └── metrics.py                   # MetricsCollector（指标收集）
+├── web/                             # Web接口
+│   ├── app.py
+│   └── templates/
+│       └── index.html
+└── requirements.txt</code></pre>
+
+<p>结构清晰：<strong>skills/</strong>放业务技能，<strong>src/</strong>放框架核心，互不干扰。</p>
+
+<h3><span class="icon">5</span><span class="title-text">Harness实例化流程：从启动到就绪</span></h3>
+
+<p>当你创建一个 <code>CustomerServiceHarness()</code> 时，背后发生了什么？</p>
+
+<p class="diagram-title">图3：Harness初始化流程</p>
+<div class="mermaid">
+graph TB
+    Start["CustomerServiceHarness(config)"] --> Load["加载配置<br/>_load_config()"]
+    Load --> Prompt["加载System Prompt<br/>_load_prompt()"]
+    Prompt --> Init["初始化核心组件"]
+    Init --> Dialog["DialogManager<br/>对话管理器"]
+    Init --> Memory["UserMemory<br/>用户记忆"]
+    Init --> Metrics["MetricsCollector<br/>指标收集"]
+    Init --> LLM["LLMEngine<br/>大模型引擎"]
+    Init --> Registry["SkillRegistry<br/>注册中心"]
+    Init --> Router["SkillRouter<br/>路由器"]
+    Init --> Breaker["CircuitBreaker<br/>熔断器"]
+    Init --> Limiter["RateLimiter<br/>限流器"]
+    Registry --> Register["注册所有Skill<br/>_register_skills()"]
+    Router --> Rules["设置路由规则<br/>_init_router()"]
+    Register --> Done["✅ Harness就绪"]
+    Rules --> Done
+    
+    style Start fill:#e3f2fd
+    style Done fill:#e8f5e9
+    style Init fill:#fff3e0
+</div>
+
+<p>整个初始化过程分三步：</p>
+
+<ol>
+<li><strong>加载配置</strong> —— 读取YAML配置和System Prompt，确定模型、温度等参数</li>
+<li><strong>初始化核心组件</strong> —— 创建LLM引擎、注册中心、路由器、熔断器等</li>
+<li><strong>注册Skill</strong> —— 把所有Skill实例注册到Registry，并配置路由规则</li>
+</ol>
+
+<h3><span class="icon">6</span><span class="title-text">Harness核心代码：一次chat的完整旅程</span></h3>
+
+<p>来看 <code>harness.py</code> 中 <code>chat()</code> 方法的核心逻辑。这是整个架构的心脏：</p>
+
+<pre><code>def chat(self, user_input: str, user_id: str = "anonymous") -> str:
+    start_time = time.time()
+    self.current_user_id = user_id
+    
+    # 1. 记录用户消息
+    self.dialog.add_message("user", user_input)
+    
+    # 2. 限流检查
+    if not self.limiter.is_allowed(user_id):
+        return f"您的请求过于频繁，请稍后再试。"
+    
+    # 3. 构建上下文
+    context = self._build_context(user_input)
+    
+    # 4. 执行前置Skill（情感分析等）
+    pre_skills = self.registry.get_pre_skills()
+    for pre_skill in pre_skills:
+        result = pre_skill.execute(user_input, context)
+        if result.need_handoff:
+            return result.response
+        context["sentiment"] = result.data.get("sentiment")
+    
+    # 5. 意图识别
+    intent_skill = self.registry.get_skill("intent_recognition")
+    intent_result = intent_skill.execute(user_input, context)
+    context["intent"] = intent_result.data.get("intent")
+    
+    # 6. 路由决策
+    skill = self.router.route(user_input, context,
+                              self.registry.get_all_skills())
+    
+    # 7. 熔断检查
+    if not self.breaker.can_execute(skill.name):
+        skill = self.registry.get_skill("general")
+    
+    # 8. 执行Skill
+    result = skill.execute(user_input, context)
+    
+    # 9. 记录结果
+    self.breaker.record_success(skill.name)
+    self.dialog.add_message("assistant", result.response)
+    self.memory.record_interaction(user_id, ...)
+    
+    return result.response</code></pre>
+
+<p>9个步骤，清晰可追踪。每一步的职责都很明确，没有任何if/else判断具体业务。</p>
+
+<p class="diagram-title">图4：一次chat请求的执行流程</p>
+<div class="mermaid">
+graph TD
+    A[用户输入] --> B[限流检查]
+    B --> C[构建上下文]
+    C --> D[前置Skill<br/>情感分析]
+    D --> E[意图识别]
+    E --> F{Router路由}
+    F -->|有明确意图| G[意图对应Skill]
+    F -->|无明确意图| H[can_handle打分]
+    H --> I[得分最高的Skill]
+    G --> J[熔断检查]
+    I --> J
+    J -->|正常| K[执行Skill]
+    J -->|熔断| L[兜底Skill]
+    K --> M[记录结果]
+    L --> M
+    M --> N[返回响应]
+    
+    style A fill:#e3f2fd
+    style N fill:#e8f5e9
+    style F fill:#fff3e0
+    style J fill:#ffcdd2
+</div>
+
+<blockquote class="opinion">
+<p>注意了吗？Harness的代码里<strong>没有任何业务逻辑</strong>。它不知道FAQ是什么，不理解订单查询，甚至不处理"你好"。它只做<strong>编排</strong>——把请求交给合适的Skill，然后把结果返回。<br><br>
+这就是架构的力量：<strong>简单的核心 + 可扩展的Skill</strong>。</p>
+</blockquote>
+
+<h3><span class="icon">7</span><span class="title-text">Skill是怎么注册和发现的？</span></h3>
+
+<p>你可能会问：Harness怎么知道有哪些Skill？Router怎么决定用哪个？</p>
+
+<p>答案是 <strong>SkillRegistry</strong>（注册中心）和 <strong>SkillRouter</strong>（路由器）的配合：</p>
+
+<pre><code># harness.py 中的注册过程
+def _register_skills(self):
+    self.registry.register(SentimentSkill(self.config))
+    self.registry.register(IntentRecognitionSkill(self.config))
+    self.registry.register(GreetingSkill(self.config, self.memory))
+    self.registry.register(FAQSkill(self.config, self.llm))
+    self.registry.register(OrderSkill(self.config))
+    self.registry.register(ComplaintSkill(self.config))
+    self.registry.register(HandoffSkill(self.config))
+    self.registry.register(MemorySkill(self.config, self.memory))
+    self.registry.register(SlotFillingSkill(self.config, self.dialog))
+    self.registry.register(ToolUseSkill(self.config, self.llm))
+    self.registry.register(GeneralSkill(self.config, self.llm))</code></pre>
+
+<p>注册之后，Router通过两种方式选择Skill：</p>
+
+<table>
+<tr><th>路由策略</th><th>实现方式</th><th>适用场景</th></tr>
+<tr><td><strong>意图映射</strong></td><td>intent→skill的硬映射规则</td><td>意图明确的场景，如faq_query→faq</td></tr>
+<tr><td><strong>打分机制</strong></td><td>每个Skill的can_handle()返回0~1分</td><td>意图不明确时的兜底策略</td></tr>
+<tr><td><strong>兜底Skill</strong></td><td>general作为最后防线</td><td>所有Skill都不匹配时</td></tr>
+</table>
+
+<pre><code># skill_router.py 的核心路由逻辑
+def route(self, user_input, context, skills):
+    # 策略1：意图映射
+    explicit_intent = context.get("intent")
+    if explicit_intent in self._intent_rules:
+        target = self._intent_rules[explicit_intent]
+        for skill in skills:
+            if skill.name == target:
+                return skill
+    
+    # 策略2：打分选择
+    best_skill, best_score = None, 0.0
+    for skill in skills:
+        score = skill.can_handle(user_input, context)
+        if score > best_score:
+            best_score = score
+            best_skill = skill
+    
+    if best_score > 0.3:
+        return best_skill
+    
+    # 策略3：兜底
+    return self._skills.get(self._fallback)</code></pre>
+
+<p>三种策略层层递进，既保证了确定性，又提供了灵活性。</p>
+
+<h3><span class="icon">8</span><span class="title-text">本篇总结：架构设计的3个核心思想</span></h3>
+
+<blockquote class="highlight">
+<p><strong>核心思想1：关注点分离</strong><br>
+Harness只管编排，Skill只管业务。核心代码不需要了解任何业务细节。<br><br>
+<strong>核心思想2：可插拔</strong><br>
+新增Skill = 写代码 + register()。不需要改任何已有代码。<br><br>
+<strong>核心思想3：防御性设计</strong><br>
+CircuitBreaker、RateLimiter、兜底Skill——层层保护，确保系统不会因为单个Skill故障而崩溃。</p>
+</blockquote>
+
+<p>下一篇，我们会深入 <strong>BaseSkill 抽象类</strong>——看看Skill的"身份证"和"劳动合同"是怎么设计的。这是整个Harness+Skill架构的基石。</p>
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent加强版（Harness+Skill架构）</strong><br>
+01 · Harness+Skill架构革命 ← 你在这里<br>
+02 · BaseSkill标准接口<br>
+03 · 路由与编排：Registry+Router+Harness<br>
+04 · OrderSkill实战<br>
+05 · FAQ双引擎检索<br>
+06 · 情感Skill+Function Calling<br>
+07 · 槽位填充+用户记忆<br>
+08 · 生产级Harness：防护+监控+热插拔+部署<br>
+<br>
+<strong>前置系列：</strong><a href="../客服Agent实战系列-01.html" style="color: #00897B;">客服Agent实战系列</a>
+</p>
+
+</div>
+</body>
+</html>

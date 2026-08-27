@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 09-10</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+p { padding: 14px 0; color: #3f3f3f; }
+
+h2 {
+  margin: 50px 0 30px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+h3 {
+  margin: 40px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.num { color: #ff6b35; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+.hl { color: #e63946; font-weight: 600; }
+.success { color: #2a9d8f; }
+.tip { color: #7b68ee; }
+.warn { color: #f4a261; }
+
+strong { color: #2c2c2c; font-weight: 600; }
+em { font-style: italic; color: #5a5a5a; }
+
+.card {
+  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+
+.card h4 {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  color: #00897B;
+  font-weight: bold;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  padding: 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">四层记忆架构</span></h2>
+
+<p>上一期我们说了反思。Agent能判断结果对不对，能调整策略。</p>
+
+<p>但还有一个问题没解决：Agent是怎么记住之前说过的话的？<a href="../../../.openclaw/workspace/openclaw-complete-series/12-记忆系统-公众号版.md" class="key">(见OpenClaw原理篇12)</a></p>
+
+<p>这就是记忆系统要解决的问题。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>没有记忆的Agent，每次对话都是"陌生人"。记忆让Agent能认识"回头客"。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">为什么需要记忆</h3>
+
+<p>之前我们写的最小可行Agent，有个问题：每次对话都是从零开始。</p>
+
+<p>你跟它说"帮我写一封邮件"，它写完了。你再说"把语气改得更正式一点"，它不知道你说的是哪封邮件，因为它记不住。</p>
+
+<p>记忆系统就是来解决这个问题的。Agent需要记住之前说过的话、做过的事，这样才能连续对话。</p>
+
+<h3><span class="icon">2</span><span class="title-text">四层记忆架构</span></h3>
+
+<p>一般来说，Agent的记忆分四层：<a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">(参考AI Coding第28篇)</a></p>
+
+<div class="card">
+  <h4>第一层：对话历史（短期记忆）</h4>
+  <p>记录当前对话的内容。对话结束就消失。每次API调用都会带上。</p>
+</div>
+
+<div class="card">
+  <h4>第二层：实体记忆（中期记忆）</h4>
+  记录用户的基本信息，比如姓名、偏好、常驻城市。跨对话保持。
+</div>
+
+<div class="card">
+  <h4>第三层：知识记忆（长期记忆）</h4>
+  <p>Agent从训练中学会的知识，或者从外部检索来的信息。</p>
+</div>
+
+<div class="card">
+  <h4>第四层：技能记忆</h4>
+  <p>Agent学会的技能，比如怎么写代码、怎么分析数据。</p>
+</div>
+
+<h3><span class="icon">3</span><span class="title-text">代码实现</span></h3>
+
+<p>最简单的记忆系统，就是把对话历史存起来，每次调用的时候带上：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">AgentWithMemory</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.messages = []</span>
+<span style="color: #f8f8f2">        self.entities = {}</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(self, role, content):</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: role, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: content})</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add_entity</span><span style="color: #f8f8f2">(self, key, value):</span>
+<span style="color: #f8f8f2">        self.entities[key] = value</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">build_context</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        context = []</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> self.entities:</span>
+<span style="color: #f8f8f2">            entity_prompt = </span><span style="color: #e6db74">"你知道以下关于用户的信息："</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> key, value </span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> self.entities.items():</span>
+<span style="color: #f8f8f2">                entity_prompt += </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"\n- {key}：{value}"</span>
+<span style="color: #f8f8f2">            context.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"system"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: entity_prompt})</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        context.extend(self.messages)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> context</span></code></pre>
+
+<p>用起来是这样的：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a6e22e">agent</span><span style="color: #f8f8f2"> = AgentWithMemory()</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_entity</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"张三"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"帮我订明天去上海的机票"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"assistant"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"好的，张三，我来帮你查..."</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"> </span>
+<span style="color: #f8f8f2">agent.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"改成后天的"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2"># Agent现在知道用户是张三，知道之前订的是上海机票</span></code></pre>
+
+<blockquote><p>💡 <strong>实践要点：</strong>记忆系统让Agent能"记住"用户说过的话，做过的操作。这样它才能真正帮你完成任务，而不是每次都从零开始。</p></blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">记忆的管理</span></h3>
+
+<p>记忆多了会有问题。上下文窗口是有限的，存太多东西API会爆。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>策略</th>
+      <th>做法</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>定期压缩</td>
+      <td>把多轮对话压缩成摘要</td>
+      <td>长对话场景</td>
+    </tr>
+    <tr>
+      <td>重要性筛选</td>
+      <td>只保留重要的信息</td>
+      <td>信息繁多的场景</td>
+    </tr>
+    <tr>
+      <td>向量检索</td>
+      <td>把记忆向量化，需要时检索</td>
+      <td>大规模记忆存储</td>
+    </tr>
+    <tr>
+      <td>分层存储</td>
+      <td>短期记忆放内存，长期记忆放数据库</td>
+      <td>需要持久化的场景</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote><p>⚠️ <strong>注意事项：</strong>不是记忆越多越好。有效的记忆管理比盲目存储更重要。</p></blockquote>
+
+<p>说完四层记忆架构，接下来我们来说说具体怎么管理这些记忆——上下文窗口管理。</p>
+
+<hr/>
+
+<h2><span class="title-text">上下文窗口管理</span></h2>
+
+<p>记忆系统让Agent能记住东西了。但还有一个问题：上下文窗口是有限的。</p>
+
+<p>GPT-4的上下文窗口有128K tokens听起来很大，但实际用起来很快就会塞满。特别是处理长文档、进行多轮对话的时候。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>上下文窗口管理，就是在有限的窗口内塞进最多的有效信息。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">滑动窗口</span></h3>
+
+<p>最简单的方法是滑动窗口。只保留最近N条消息，超出的就丢掉。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SlidingWindowMemory</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, max_messages=</span><span style="color: #ae81ff">10</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        self.messages = []</span>
+<span style="color: #f8f8f2">        self.max_messages = max_messages</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add</span><span style="color: #f8f8f2">(self, role, content):</span>
+<span style="color: #f8f8f2">        self.messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: role, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: content})</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">len</span><span style="color: #f8f8f2">(self.messages) > self.max_messages:</span>
+<span style="color: #f8f8f2">            self.messages = self.messages[-self.max_messages:]</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">get_messages</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> self.messages</span></code></pre>
+
+<p>缺点也很明显：早天的对话会被完全丢掉。如果用户说"接着上次说的继续写"，Agent可能完全不记得上次说了什么。</p>
+
+<h3><span class="icon">2</span><span class="title-text">摘要压缩</span></h3>
+
+<p>更好的方法是摘要压缩。当对话太长时，把之前的对话压缩成摘要。</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SummarizingMemory</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, max_tokens=</span><span style="color: #ae81ff">4000</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        self.summary = </span><span style="color: #e6db74">""</span>
+<span style="color: #f8f8f2">        self.recent_messages = []</span>
+<span style="color: #f8f8f2">        self.max_tokens = max_tokens</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">add</span><span style="color: #f8f8f2">(self, role, content):</span>
+<span style="color: #f8f8f2">        self.recent_messages.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: role, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: content})</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">count_tokens</span><span style="color: #f8f8f2">(self.recent_messages) > self.max_tokens:</span>
+<span style="color: #f8f8f2">            self.</span><span style="color: #a6e22e">compress</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">compress</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"""请把以下对话压缩成一段摘要：</span>
+<span style="color: #e6db74">{self.recent_messages}</span>
+<span style="color: #e6db74">摘要应该包含：1) 主要话题 2) 用户的关键需求 3) 任何重要决定或结论"""</span>
+
+<span style="color: #f8f8f2">        response = openai.ChatCompletion.</span><span style="color: #a6e22e">create</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            messages=[{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: prompt}]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        self.summary = response.choices[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">].message[</span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        self.recent_messages = []</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">get_context</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        context = []</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> self.summary:</span>
+<span style="color: #f8f8f2">            context.append({</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"system"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"之前的对话摘要：</span><span style="color: #f8f8f2">{self.summary}</span><span style="color: #e6db74">"</span><span style="color: #f8f8f2">})</span>
+<span style="color: #f8f8f2">        context.extend(self.recent_messages)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> context</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">Token优化</span></h3>
+
+<p>除了压缩，还有一些小技巧可以节省token：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>技巧</th>
+      <th>做法</th>
+      <th>节省比例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>缩短系统提示</td>
+      <td>把重复性的指示压缩</td>
+      <td>10-20%</td>
+    </tr>
+    <tr>
+      <td>精简返回格式</td>
+      <td>让模型返回更简洁</td>
+      <td>5-15%</td>
+    </tr>
+    <tr>
+      <td>移除冗余</td>
+      <td>删除对话中的客套话</td>
+      <td>5-10%</td>
+    </tr>
+    <tr>
+      <td>使用更短的模型</td>
+      <td>简单任务用GPT-3.5</td>
+      <td>可达50%</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote><p>💡 <strong>实践建议：</strong>先用滑动窗口，效果不好再上摘要压缩。复杂方法不一定带来更好的效果。</p></blockquote>
+
+<p>到这里，记忆系统的核心就讲完了。下一篇我们来说说向量数据库——一种更强大的记忆检索方式。</p>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>OpenClaw原理篇12：记忆系统 <span class="file-tag">{原文件:12-记忆系统-公众号版.md}</span></li>
+<li>AI Coding第28篇：Agent核心实现 <span class="file-tag">{原文件:AI-28-Agent核心实现-公众号版.md}</span></li>
+</ul>
+
+<p>下期预告：Agent开发系列 11-12 — 向量数据库与RAG + 实战：让Agent记住你是谁</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

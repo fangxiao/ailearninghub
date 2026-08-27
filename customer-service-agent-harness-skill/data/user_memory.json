@@ -1,0 +1,194 @@
+{
+  "user_001": {
+    "user_id": "user_001",
+    "created_at": 1785392083.9625962,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 46,
+      "total_orders": 0,
+      "last_interaction": {
+        "time": 1785485931.459305,
+        "intent": "greeting",
+        "user_input": "你好",
+        "bot_response": "您好！有什么可以帮您？"
+      },
+      "common_intents": [
+        "greeting",
+        "order_query",
+        "faq_query",
+        "order",
+        "human_handoff",
+        "unknown"
+      ]
+    },
+    "segments": [],
+    "custom_data": {}
+  },
+  "user_002": {
+    "user_id": "user_002",
+    "created_at": 1785392083.9675388,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 0,
+      "total_orders": 0,
+      "last_interaction": null,
+      "common_intents": []
+    },
+    "segments": [],
+    "custom_data": {}
+  },
+  "anonymous": {
+    "user_id": "anonymous",
+    "created_at": 1785393842.218098,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 0,
+      "total_orders": 0,
+      "last_interaction": null,
+      "common_intents": []
+    },
+    "segments": [],
+    "custom_data": {}
+  },
+  "u1": {
+    "user_id": "u1",
+    "created_at": 1785394017.305553,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 49,
+      "total_orders": 0,
+      "last_interaction": {
+        "time": 1785394441.045027,
+        "intent": "human_handoff",
+        "user_input": "转人工",
+        "bot_response": "正在为您转接人工客服，请稍候。工作时间：9:00-21:00。如需紧急联系，请拨打客服热线：400-xxx-xxxx"
+      },
+      "common_intents": [
+        "greeting",
+        "order",
+        "order_query",
+        "unknown",
+        "faq_query",
+        "human_handoff"
+      ]
+    },
+    "segments": [],
+    "custom_data": {}
+  },
+  "u2": {
+    "user_id": "u2",
+    "created_at": 1785394017.320019,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 0,
+      "total_orders": 0,
+      "last_interaction": null,
+      "common_intents": []
+    },
+    "segments": [],
+    "custom_data": {}
+  },
+  "u3": {
+    "user_id": "u3",
+    "created_at": 1785394067.3958452,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 9,
+      "total_orders": 0,
+      "last_interaction": {
+        "time": 1785394286.6312058,
+        "intent": "order",
+        "user_input": "送到海淀区中关村大街1号",
+        "bot_response": "✅ 订单已确认：52朵 玫瑰花束，配送地址：海淀区中关村大街1号。我们会尽快为您配送！"
+      },
+      "common_intents": [
+        "order"
+      ]
+    },
+    "segments": [],
+    "custom_data": {}
+  },
+  "test_001": {
+    "user_id": "test_001",
+    "created_at": 1785394513.2361019,
+    "profile": {
+      "name": null,
+      "phone": null,
+      "level": "normal",
+      "tags": []
+    },
+    "preferences": {
+      "language": "zh-CN",
+      "notification": true
+    },
+    "history": {
+      "total_conversations": 1,
+      "total_orders": 0,
+      "last_interaction": {
+        "time": 1785394513.239424,
+        "intent": "order",
+        "user_input": "我要订花",
+        "bot_response": "好的，鲜花要多少？（如99朵、52朵）"
+      },
+      "common_intents": [
+        "order"
+      ]
+    },
+    "segments": [],
+    "custom_data": {}
+  }
+}

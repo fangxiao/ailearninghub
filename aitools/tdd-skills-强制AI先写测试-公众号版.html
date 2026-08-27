@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 写代码不写测试？TDD Skills 强制先写测试</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    AI 写代码不写测试？装上这个插件，跳不过去
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    TDD Skills——强制 RED-GREEN-REFACTOR 循环
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code 测试驱动开发实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    让 AI 写代码，你可能遇到过这些崩溃瞬间：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 让 AI 写完功能，一跑发现根本没写测试，覆盖率 0%
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ AI 笑着说"已完成"，结果连测试都没跑过，上线就出 bug
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 催着加测试，AI 随便写两个用例糊弄，质量根本没保障
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 换个对话窗口，AI 又忘了项目的测试规范，重复返工
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    AI 其实会写测试，问题在<strong style="color: #00897B;">没人逼它先写</strong>。<strong style="color: #00897B;">TDD Skills</strong> 就是干这件事的——一个 Claude Code 插件，强制 AI 走 RED-GREEN-REFACTOR 循环，不写测试不让写代码。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>morodomi 开源的 Claude Code 插件，用强制 TDD 流程让 AI 老老实实先写测试，再写实现。
+    </p>
+  </section>
+
+  <!-- 章节01：TDD Skills 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">TDD Skills 是什么</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    TDD Skills 是开发者 <strong style="color: #00897B;">morodomi</strong> 开源的 Claude Code 插件，当前版本 <strong style="color: #00897B;">v5.1.1</strong>。它做的事情很简单，也很硬核——把 TDD（测试驱动开发）流程做成 AI 跳不过去的强制步骤。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🎯 核心理念</strong>：不写测试不让写代码。AI 想动实现代码，必须先有一个失败的测试。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔄 强制循环</strong>：RED（写失败测试）→ GREEN（最小实现通过）→ REFACTOR（重构优化），三阶段顺序不可跳过。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧠 Agent Memory</strong>：审查者角色跨会话积累项目知识，测试规范、架构决策自动沉淀，下次直接复用。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📋 阶段守卫</strong>：每个阶段有明确入口和出口检查，AI 不能自说自话跳到下一步。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    换句话说，它不是"建议"AI 写测试，而是<strong style="color: #00897B;">把测试做成写代码的前置条件</strong>。AI 想"完成"功能，必须先证明测试跑通，否则流程不结束。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    TDD Skills 通过 Claude Code 的插件市场安装，两条命令搞定：
+  </p>
+
+  <!-- 步骤1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      添加插件市场
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin marketplace add morodomi/tdd-skills <span style="color: #999; font-size: 12px;"># 添加插件市场</span></p>
+    </section>
+  </section>
+
+  <!-- 步骤2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      安装 TDD Skills 插件
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; color: #333;">/plugin install tdd-skills@morodomi <span style="color: #999; font-size: 12px;"># 安装插件</span></p>
+    </section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 验证安装</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      装完输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/tdd-skills:start</code> 试试。如果出现 TDD 流程引导，说明安装成功。
+    </p>
+  </section>
+
+  <!-- 章节03：TDD 循环详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">TDD 循环详解：RED → GREEN → REFACTOR</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    TDD Skills 把测试驱动开发拆成三个强制阶段，AI 必须按顺序走完，谁也不能跳步：
+  </p>
+
+  <!-- RED 阶段 -->
+  <section style="background: #FFEBEE; border-left: 4px solid #C62828; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #B71C1C; font-weight: bold; font-size: 17px;">🔴 RED 阶段：先写失败的测试</p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 根据需求生成测试用例，运行后<strong style="color: #C62828;">必须看到测试失败</strong>。这一步证明两件事：测试本身有效，且功能还没实现。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      关键动作：AI 分析需求 → 列出测试用例 → 生成测试代码 → 运行确认失败 → 进入下一阶段。
+    </p>
+  </section>
+
+  <!-- GREEN 阶段 -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 17px;">🟢 GREEN 阶段：写最小实现让测试通过</p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 写<strong style="color: #2E7D32;">最少的实现代码</strong>让测试转绿。注意是"最小"，不是"最优"——这一步禁止过度设计，目标是让测试通过即可。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      关键动作：编写实现代码 → 运行测试 → 全部通过 → 锁定绿态 → 进入下一阶段。
+    </p>
+  </section>
+
+  <!-- REFACTOR 阶段 -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 17px;">🔵 REFACTOR 阶段：重构优化，测试必须仍然通过</p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 优化代码结构、消除重复、提升可读性，但<strong style="color: #1565C0;">测试必须始终是绿的</strong>。一旦测试变红，重构立即停止，回滚到上一步。
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      关键动作：识别坏味道 → 重构代码 → 重跑测试 → 确认仍通过 → 完成循环。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 为什么强制顺序这么重要？</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      不强制的 TDD 等于没有 TDD。AI 一旦被允许"先写代码再补测试"，就会本能地写一些迎合实现代码的弱测试，覆盖率好看但抓不到 bug。强制 RED 在前，逼着 AI 先想清楚"这个功能该满足什么行为"，再动手写实现。
+    </p>
+  </section>
+
+  <!-- 章节04：核心命令 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心命令</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    TDD Skills 提供三个核心命令，对应流程的启动和阶段切换：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      🚀 三个核心命令
+    </p>
+
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">启动 TDD 流程</strong>，告诉 AI 接下来按 TDD 规则干活：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 8px 0 16px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/tdd-skills:start <span style="color: #999; font-size: 12px;"># 启动 TDD 流程</span></p>
+    </section>
+
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #C62828;">进入 RED 阶段</strong>，AI 生成失败测试用例：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 8px 0 16px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/tdd-skills:red <span style="color: #999; font-size: 12px;"># 进入 RED 阶段</span></p>
+    </section>
+
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #2E7D32;">进入 GREEN 阶段</strong>，AI 写最小实现让测试通过：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 8px 0 0 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/tdd-skills:green <span style="color: #999; font-size: 12px;"># 进入 GREEN 阶段</span></p>
+    </section>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用法很简单：先 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/tdd-skills:start</code> 启动流程，然后用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/tdd-skills:red</code> 和 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/tdd-skills:green</code> 切换阶段。AI 会在每个阶段做对应的检查，不通过不让走。
+  </p>
+
+  <!-- 章节05：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：开发一个用户注册功能</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    看一次完整流程最直观。假设要开发一个"用户注册"功能，看看 TDD Skills 怎么接管整个循环：
+  </p>
+
+  <!-- RED 步骤 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #C62828; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #C62828; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      RED：输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/tdd-skills:red</code> 生成失败测试
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      你输入："开发用户注册功能，邮箱+密码"
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 生成测试用例：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>注册成功：合法邮箱+合法密码 → 返回用户 ID</li>
+      <li>邮箱重复：已注册邮箱 → 抛出冲突错误</li>
+      <li>邮箱格式非法：缺 @ → 抛出校验错误</li>
+      <li>密码过短：少于 8 位 → 抛出校验错误</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 14px; color: #C62828; line-height: 1.8;">
+      ▶ 运行测试：<strong>4 个全失败</strong>（功能还没实现）✅ 进入 GREEN
+    </p>
+  </section>
+
+  <!-- GREEN 步骤 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #2E7D32; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #2E7D32; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      GREEN：输入 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/tdd-skills:green</code> 写最小实现
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 写最少的实现代码：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>实现 register 函数：接收 email + password</li>
+      <li>加邮箱格式正则校验</li>
+      <li>加密码长度校验</li>
+      <li>查重：查数据库是否已存在</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 14px; color: #2E7D32; line-height: 1.8;">
+      ▶ 运行测试：<strong>4 个全通过</strong> ✅ 进入 REFACTOR
+    </p>
+  </section>
+
+  <!-- REFACTOR 步骤 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #1565C0; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #1565C0; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      REFACTOR：AI 重构优化，测试必须保持绿
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      AI 识别可优化点并重构：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      <li>把校验逻辑抽成独立的 validateInput 函数</li>
+      <li>错误类型统一为 RegistrationError</li>
+      <li>数据库查询加索引提示</li>
+    </ul>
+    <p style="margin: 10px 0 0 0; font-size: 14px; color: #1565C0; line-height: 1.8;">
+      ▶ 重跑测试：<strong>4 个仍然全通过</strong> ✅ 循环完成
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0; font-weight: bold; color: #00897B; font-size: 16px;">💡 关键点</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      整个过程 AI <strong style="color: #00897B;">没机会跳过测试</strong>。RED 不失败不让进 GREEN，GREEN 不通过不让进 REFACTOR，REFACTOR 测试变红立即回滚。这就是"强制"的含义。
+    </p>
+  </section>
+
+  <!-- 章节06：Agent Memory 功能 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Agent Memory：跨会话知识积累</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    TDD Skills 除了强制流程，还有杀手锏：<strong style="color: #00897B;">Agent Memory</strong>。它内置一个审查者角色，会跨会话积累项目知识。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧠 自动沉淀</strong>：每次 TDD 循环中，审查者会记录项目的测试规范、命名约定、架构决策、常见陷阱。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔄 跨会话复用</strong>：下次打开新对话，审查者带着之前的记忆上岗。你不用再重复说"我们用 Jest""测试文件放 __tests__ 目录"。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">👀 持续审查</strong>：审查者会在每个阶段检查代码是否符合项目历史规范，发现偏离立即提醒。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📈 越用越准</strong>：项目越大、用得越久，审查者积累的知识越丰富，AI 的输出越贴合你的团队习惯。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这解决了 TDD 落地的一个老大难问题：<strong style="color: #00897B;">每个新会话都得重新教 AI 项目规范</strong>。有了 Agent Memory，知识自动积累，AI 不再"失忆"。
+  </p>
+
+  <!-- 章节07：与 Superpowers/ECC 的区别 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">与 Superpowers / ECC 的区别</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    很多人会问：Superpowers 和 ECC 也有 TDD 相关功能，TDD Skills 有什么不一样？一句话——<strong style="color: #00897B;">专注度不同</strong>。
+  </p>
+
+  <!-- 对比卡片 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      ⚖️ 三者对比
+    </p>
+
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">vs Superpowers</strong>
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8; padding-left: 16px; border-left: 3px solid #E0F2F1;">
+      Superpowers 包含 TDD 但更重，是一整套开发方法论。TDD Skills 专注 TDD 这一件事，轻量、专一、即装即用。
+    </p>
+
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">vs ECC 的 /tdd 命令</strong>
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8; padding-left: 16px; border-left: 3px solid #E0F2F1;">
+      ECC 的 <code style="background: #fff; padding: 2px 5px; border-radius: 3px; font-size: 12px;">/tdd</code> 命令是轻量触发，建议 AI 走 TDD 但可绕过。TDD Skills 是强制流程，不写测试不让写代码，跳不过去。
+    </p>
+
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">怎么选？</strong>
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8; padding-left: 16px; border-left: 3px solid #E0F2F1;">
+      想要一站式工程能力 → ECC；想要完整开发方法论 → Superpowers；只想把 TDD 这件事做扎实 → TDD Skills。三者也可以搭配使用。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #E65100; font-weight: bold;">📖 延伸阅读</p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      想了解 Superpowers 的完整开发流程，可以看这篇：<strong>《Superpowers：把 AI 编程从凭感觉变成按流程》</strong>。两者搭配用，流程 + 强制 TDD，效果更好。
+    </p>
+  </section>
+
+  <!-- 章节08：FAQ -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">08</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 个常见疑问</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：强制 TDD 会不会让 AI 变慢？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      会慢一点，但慢在写测试上，省在 debug 上。前期多花 20% 时间写测试，后期少花 80% 时间修 bug。整体看是赚的，尤其在中大型项目里。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：支持什么语言和测试框架？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      语言层面不限制，TypeScript、Python、Go、Rust、Java 都能用。只要项目里有测试框架（Jest、Pytest、Go test、JUnit 等），AI 就能生成对应的测试代码。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：能跳过测试吗？我想快速出原型的时候。</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      可以。不启动 <code style="background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 13px;">/tdd-skills:start</code> 就不会强制。但一旦启动了，就别想跳，这正是它的价值。建议：原型阶段不启动，正式开发阶段必启动。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">AI 写代码快，但不写测试的话，这个快没多大意义。TDD Skills 盯住的是"AI 不愿意先写测试"这个习惯。AI 不是不会写测试，是不肯排在前面写。强制 RED 在前，逼着它先把要满足的行为想清楚再动手，这是它和普通提示词最不一样的地方。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">如果你受够了 AI 说"已完成"却没跑测试，可以装上这个插件试两轮。启动流程后它就按阶段走，想跳也跳不了，测试这道门槛会自动卡住它。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🚀 立即体验</p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #666; line-height: 1.8;">
+      开源作者：morodomi<br>
+      当前版本：v5.1.1<br>
+      安装命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin marketplace add morodomi/tdd-skills <span style="color: #999; font-size: 12px;"># 添加插件市场</span></p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin install tdd-skills@morodomi <span style="color: #999; font-size: 12px;"># 安装插件</span></p>
+    </section>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你试过用 AI 做 TDD 吗？强制流程用着顺手还是别扭？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 编程实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

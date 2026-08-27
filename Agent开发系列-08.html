@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 07-08</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+p { padding: 14px 0; color: #3f3f3f; }
+
+h2 {
+  margin: 50px 0 30px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+h3 {
+  margin: 40px 0 18px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .l { color: #ae81ff }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nb { color: #f8f8f2 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .nt { color: #f92672 }
+pre.code-block .nv { color: #f8f8f2 }
+pre.code-block .il { color: #ae81ff }
+
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.num { color: #ff6b35; font-weight: 600; }
+.key { color: #2b8cc4; font-weight: 500; }
+.hl { color: #e63946; font-weight: 600; }
+.success { color: #2a9d8f; }
+.tip { color: #7b68ee; }
+.warn { color: #f4a261; }
+
+strong { color: #2c2c2c; font-weight: 600; }
+em { font-style: italic; color: #5a5a5a; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">核心循环篇总结：Agent是怎么"思考"的</span></h2>
+
+<p>感知、思考、行动、反思——这四个环节，构成了Agent的核心循环。<a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">(参考OpenClaw原理篇11)</a></p>
+
+<p>这一篇，我们把前几期的内容串起来，画一张完整的全景图。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>Agent不是什么魔法，而是一个"感知→思考→行动→反思"的循环。理解了这个循环，就理解了Agent的本质。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">核心循环全景图</span></h3>
+
+<p>先来看一张完整的流程图：</p>
+
+<div style="text-align: center; margin: 30px 0;">
+<img src="data:image/png;base64,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" alt="Figure: Agent Core Loop - Perception -> Thinking -> Action -> Reflection" style="max-width: 100%; border-radius: 8px;">
+<p style="font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic;">Figure: Agent Core Loop - Perception -> Thinking -> Action -> Reflection</p>
+</div>
+
+<pre class="code-block"><span class="code-header"></span><code><span style="color: #a8a8a8; font-style: italic;"># Agent核心循环</span>
+<span style="color: #f8f8f2">用户输入</span>
+<span style="color: #f8f8f2">    ↓</span>
+<span style="color: #f92672">┌─────────────┐</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> 感知层     </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·意图识别   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·实体提取   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·上下文构建 </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">└─────────────┘</span>
+<span style="color: #f8f8f2">    ↓</span>
+<span style="color: #f92672">┌─────────────┐</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> 思考层     </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·ReAct循环  </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·CoT思维链  </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·决策制定   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">└─────────────┘</span>
+<span style="color: #f8f8f2">    ↓</span>
+<span style="color: #f92672">┌─────────────┐</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> 行动层     </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·Function    </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2">  Calling     </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·工具执行   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·结果返回   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">└─────────────┘</span>
+<span style="color: #f8f8f2">    ↓</span>
+<span style="color: #f92672">┌─────────────┐</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> 反思层     </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·结果校验   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·错误处理   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">│</span><span style="color: #f8f8f2"> ·策略调整   </span><span style="color: #f92672">│</span>
+<span style="color: #f92672">└─────────────┘</span>
+<span style="color: #f8f8f2">    ↓</span>
+<span style="color: #f8f8f2">回答用户 / 继续循环</span></code></pre>
+
+<p>这是一个循环，不是一次性的流程。Agent会不断在思考层和行动层之间循环，直到任务完成或者达到最大循环次数。</p>
+
+<h3><span class="icon">2</span><span class="title-text">四层职责回顾</span></h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>层次</th>
+      <th>输入</th>
+      <th>输出</th>
+      <th>核心问题</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>感知</strong></td>
+      <td>用户原始输入</td>
+      <td>结构化意图+实体</td>
+      <td>用户真正想要什么？</td>
+    </tr>
+    <tr>
+      <td><strong>思考</strong></td>
+      <td>意图+上下文</td>
+      <td>行动决策</td>
+      <td>我应该怎么做？</td>
+    </tr>
+    <tr>
+      <td><strong>行动</strong></td>
+      <td>决策+工具列表</td>
+      <td>执行结果</td>
+      <td>工具返回了什么？</td>
+    </tr>
+    <tr>
+      <td><strong>反思</strong></td>
+      <td>执行结果</td>
+      <td>校验+策略调整</td>
+      <td>结果对吗？需要重试吗？</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3><span class="icon">3</span><span class="title-text">ReAct循环：思考与行动的交替</span></h3>
+
+<p>ReAct是现在最主流的Agent思考模式。<a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">(参考AI Coding第28篇)</a></p>
+
+<p>它的核心是：<strong> Thought → Action → Observation → Thought → Action...</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">async def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">run</span><span style="color: #f8f8f2">(self, user_input: str, max_turns: int = 10):</span>
+<span style="color: #f8f8f2">    messages = [{</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: user_input}]</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> turn </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">range</span><span style="color: #f8f8f2">(max_turns):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 1. 思考：让模型决定下一步</span>
+<span style="color: #f8f8f2">        response = await self.llm.</span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(messages, tools=self.tools)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 2. 如果没有工具调用，直接返回</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> response.tool_calls:</span>
+<span style="color: #f8f8f2">            messages.append(response)</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.content</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 3. 执行工具</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> tool_call </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> response.tool_calls:</span>
+<span style="color: #f8f8f2">            result = await self.llm.</span><span style="color: #a6e22e">execute_tool</span><span style="color: #f8f8f2">(tool_call)</span>
+<span style="color: #f8f8f2">            messages.append({</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"tool"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"tool_call_id"</span><span style="color: #f8f8f2">: tool_call.id,</span>
+<span style="color: #f8f8f2">                </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">(result)</span>
+<span style="color: #f8f8f2">            })</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 4. 反思：检查是否需要继续</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">is_complete</span><span style="color: #f8f8f2">(messages):</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">break</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"已达到最大循环次数"</span></code></pre>
+
+<p>这个循环会一直持续，直到：</p>
+
+<ul>
+<li>模型认为任务完成，不再调用工具</li>
+<li>达到最大循环次数（防止无限循环）</li>
+<li>出现无法恢复的错误</li>
+</ul>
+
+<h3><span class="icon">4</span><span class="title-text">工具调用是桥梁</span></h3>
+
+<p>思考和行动之间，工具调用是桥梁。<a href="../../../.openclaw/workspace/openclaw-complete-series/09-工具与API集成-公众号版.md" class="key">(参考OpenClaw进阶篇09)</a></p>
+
+<p>模型生成<code>tool_calls</code>，我们负责执行，然后把结果传回去。这个设计非常精妙：</p>
+
+<ul>
+<li><strong>模型不需要知道工具怎么执行</strong>——只管"调用"就行</li>
+<li><strong>我们不需要写复杂的决策逻辑</strong>——让模型自己决定</li>
+<li><strong>扩展性极强</strong>——加一个新工具，模型就能用</li>
+</ul>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 工具注册</span>
+<span style="color: #f8f8f2">self.tools = [</span>
+<span style="color: #f8f8f2">    {</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">        </span><span style="color: #e6db74">"function"</span><span style="color: #f8f8f2">: {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"get_weather"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"description"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"查询城市天气"</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"parameters"</span><span style="color: #f8f8f2">: { </span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"object"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"properties"</span><span style="color: #f8f8f2">: {...} }</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">    },</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 更多工具...</span>
+<span style="color: #f8f8f2">]</span></code></pre>
+
+<h3><span class="icon">5</span><span class="title-text">反思让Agent更可靠</span></h3>
+
+<p>没有反思的Agent，就像一个不会复盘的人——犯了错不知道改，同样的错误会一直犯。<a href="../../../.openclaw/workspace/ai-coding-series/AI-29-工具系统-Tool-System-公众号版.md" class="key">(参考AI Coding第29篇)</a></p>
+
+<p>反思层要做的事情：</p>
+
+<ol>
+<li><strong>结果校验</strong>——工具返回的结果是否符合预期？</li>
+<li><strong>错误处理</strong>——出错了是重试还是换策略？</li>
+<li><strong>策略调整</strong>——这个方法不行，要不要试试别的？</li>
+</ol>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">reflect</span><span style="color: #f8f8f2">(self, tool_result, context):</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 检查工具执行是否出错</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">is_error</span><span style="color: #f8f8f2">(tool_result):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">is_retryable</span><span style="color: #f8f8f2">(tool_result):</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"retry"</span><span style="color: #f8f8f2">  </span><span style="color: #a8a8a8; font-style: italic;"># 可重试的错误，重试一次</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"fail"</span><span style="color: #f8f8f2">   </span><span style="color: #a8a8a8; font-style: italic;"># 不可重试的错误，直接失败</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;"># 检查结果是否符合预期</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> self.</span><span style="color: #a6e22e">is_satisfactory</span><span style="color: #f8f8f2">(tool_result, context):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"replan"</span><span style="color: #f8f8f2">  </span><span style="color: #a8a8a8; font-style: italic;"># 结果不满意，需要重新规划</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"continue"</span><span style="color: #f8f8f2">  </span><span style="color: #a8a8a8; font-style: italic;"># 一切正常，继续执行</span></code></pre>
+
+<h3><span class="icon">6</span><span class="title-text">核心循环的意义</span></h3>
+
+<p>理解了核心循环，你能做到很多事情：</p>
+
+<ul>
+<li><strong>调试Agent</strong>——当Agent行为不符合预期，你能定位是哪一层出了问题</li>
+<li><strong>优化Agent</strong>——知道哪层薄弱，就重点优化哪层</li>
+<li><strong>设计新Agent</strong>——不管什么场景，都可以用这个框架来思考</li>
+</ul>
+
+<blockquote><p>💡 <strong>总结：</strong>Agent的核心循环是"感知→思考→行动→反思"的无限循环。ReAct模式让模型自己决定下一步做什么。工具调用是思考和行动的桥梁。反思让Agent能自我纠错。这个循环理解透了，Agent开发就学会了一半。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li><a href="../../../.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" class="key">OpenClaw原理篇11：核心循环</a></li>
+<li><a href="../../../.openclaw/workspace/openclaw-complete-series/09-工具与API集成-公众号版.md" class="key">OpenClaw进阶篇09：工具与API集成</a></li>
+<li><a href="../../../.openclaw/workspace/ai-coding-series/AI-28-Agent核心实现-公众号版.md" class="key">AI Coding第28篇：Agent核心实现</a></li>
+<li><a href="../../../.openclaw/workspace/ai-coding-series/AI-29-工具系统-Tool-System-公众号版.md" class="key">AI Coding第29篇：工具系统</a></li>
+</ul>
+
+<p>下期预告：Agent开发系列 09-10 — 记忆系统篇</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

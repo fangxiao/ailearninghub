@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一篇文档自动出图、发文、发小红书——baoyu-skills 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20ink%20wash%20painting%20style%20content%20pipeline%20turning%20articles%20into%20infographics%20and%20social%20media%20posts%20traditional%20meets%20digital%20teal%20green%20no%20text&image_size=landscape_16_9" alt="baoyu-skills 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    一篇文档自动出图、发文、发小红书——baoyu-skills 实战
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    宝玉开源的中文自媒体全流程技能集
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 自媒体工作流推荐 | Claude Code 中文 Skill 合集
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    做自媒体的人，大概率被这套流程折磨过：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 写完一篇文章，还要手动出封面、做信息图、剪小红书图，整套流程耗半天
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ AI 出的图风格飘忽，第一张和第十张像两个设计师做的，根本没法成系列
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 公众号、微博、X、小红书，每个平台格式不一样，复制粘贴调样式调到崩溃
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 想批量做图文，市面工具要么贵、要么不支持中文、要么得自己写脚本
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题的核心是：<strong style="color: #00897B;">内容生产链路是断的</strong>——写作、出图、排版、分发各干各的，没人把它们串成一条流水线。宝玉（@dotey）开源的 <strong style="color: #00897B;">baoyu-skills</strong>，就是想把这条流水线在 Claude Code 里跑通。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>15 个 Skill 覆盖内容生成、AI 出图、多平台分发，支持 Claude Code、Cursor、Codex，GitHub 6000+ Star。
+    </p>
+  </section>
+
+  <!-- 章节01：baoyu-skills 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">baoyu-skills 是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">baoyu-skills</strong> 是宝玉（Jim Liu，X 账号 @dotey）开源的 Claude Code 技能集。宝玉在国内 AI 圈靠翻译和技术解读出名，这个仓库则是他把自己日常的自媒体工作流打包成了 Skill。截至撰稿，GitHub 累计 <strong style="color: #00897B;">6000+ Star、700+ Fork</strong>，从 2026 年 1 月立项到现在的 v2.2.1，迭代了 690+ 次。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它是 <strong style="color: #00897B;">15 个 Skill 的合集</strong>，按职能分成三个 Plugin：内容生成（Content Skills）、AI 出图后端（AI Generation Skills）、内容处理工具（Utility Skills）。装上之后，Claude Code 就多了出小红书图、做封面、转 Markdown、发公众号这些能力。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    跟之前介绍的 <strong style="color: #00897B;">Khazix-Skills</strong>（写作风格迁移）和 <strong style="color: #00897B;">Humanizer</strong>（去 AI 味）不同，baoyu-skills 不改文字，只把文字变成<strong style="color: #00897B;">图、PPT、漫画、多平台稿件</strong>，覆盖的是内容生产的下游链路。三者完全可以组合使用：Khazix 调风格 → Humanizer 去味 → baoyu-skills 出图分发。
+  </p>
+
+  <!-- 章节02：三大技能包 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">三大技能包：15 个 Skill 全清单</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    baoyu-skills 的 15 个 Skill 按 Plugin 分组，每个 Plugin 可以单独装：
+  </p>
+
+  <!-- 表格1：三大插件 -->
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 500px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">Plugin</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">用途</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">包含 Skill 数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">content-skills</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">内容生成与多平台发布</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">9 个</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">ai-generation-skills</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">AI 绘图后端</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">2 个</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">utility-skills</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">内容处理工具</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">5 个</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">内容技能（Content Skills）</strong>是整个合集的核心，9 个 Skill 覆盖了从信息图到多平台发布的完整链路：
+  </p>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 500px;">
+      <thead>
+        <tr style="background: #00695C; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00695C;">Skill</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00695C;">作用</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-xhs-images</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">小红书信息图系列生成器，9 风格 × 6 布局</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-infographic</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">专业信息图，20 种布局 × 17 种风格</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-cover-image</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">文章封面图生成</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-slide-deck</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">Markdown 转 PPT</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-comic</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">漫画生成</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-article-illustrator</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">为文章自动配插图</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-post-to-x</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">发布到 X / Twitter</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-post-to-wechat</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">发布到微信公众号</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">baoyu-post-to-weibo</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">发布到微博</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    其中 <strong style="color: #00897B;">baoyu-xhs-images</strong> 是核心 Skill。它不是简单生成一张图，而是把一篇文章拆成 1-10 张卡通风格信息图，支持<strong style="color: #00897B;">风格 × 布局</strong>二维系统：
+  </p>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 500px;">
+      <thead>
+        <tr style="background: #00695C; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00695C;">维度</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00695C;">选项</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00695C;">用途</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">风格（9 种）</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">cute / fresh / warm / bold / minimal / retro / pop / notion / chalkboard</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">视觉美学</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">布局（6 种）</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">sparse / balanced / dense / list / comparison / flow</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">信息密度</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    另一个细节是<strong style="color: #00897B;">风格一致性机制</strong>：生成第 2 张及之后的图时，会把第 1 张作为 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">--ref</code> 参考传给底层模型，保证整套图视觉统一，这条细节是手画或单图 AI 工具很难做到的。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">AI 生成技能（AI Generation Skills）</strong>是出图后端，包含 image-gen 和 danger-gemini-web 两个 Skill。image-gen 默认调用 <strong style="color: #00897B;">Nano Banana Pro</strong> 模型（通过 Replicate 平台），content-skills 里所有图像生成 Skill 底层都走它。这层抽象的好处是：换模型只改一处，所有上层 Skill 自动跟新。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">工具技能（Utility Skills）</strong>负责内容处理：url-to-markdown 把网页转 Markdown、compress-image 压图、format-markdown 排版、translate 翻译、danger-x-to-markdown 抓 X 推文。这些是给前面两个 Plugin 当"扳手"用的小工具。
+  </p>
+
+  <!-- 章节03：安装与使用 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装：三种方式任选</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    baoyu-skills 的安装命令都在官方 README 验证过，前置要求只有一条：<strong style="color: #00897B;">已安装 Node.js</strong>，能跑 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npx bun</code>。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式一：npx 一键安装（推荐）</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      npx skills add jimliu/baoyu-skills
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式二：在 Claude Code 中注册插件市场</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /plugin marketplace add jimliu/baoyu-skills
+    </p>
+  </section>
+
+  <p style="margin: 15px 0; font-size: 15px; color: #666; line-height: 1.8;">
+    注册后，在 Claude Code 输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin</code>，选 Browse and install plugins → baoyu-skills → 按需安装三个 Plugin。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式三：直接装指定 Plugin</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /plugin install content-skills@baoyu-skills
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /plugin install ai-generation-skills@baoyu-skills
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /plugin install utility-skills@baoyu-skills
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">方式四：直接告诉 Agent</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      请帮我安装 github.com/JimLiu/baoyu-skills 中的 Skills
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">更新方式：</strong>在 Claude Code 输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin</code> → 切到 Marketplaces 标签 → 选 baoyu-skills → Update marketplace。也可以勾 Enable auto-update，每次启动自动拉新版。
+  </p>
+
+  <!-- 章节04：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战：一篇文章跑通全流程</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    假设你写完了一篇 Markdown 文章 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">posts/ai-future/article.md</code>，下面是完整的发布流程。
+  </p>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">① 出小红书系列图</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 自动选风格和布局
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-xhs-images posts/ai-future/article.md
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 指定 Notion 风格 + 密集布局
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-xhs-images posts/ai-future/article.md --style notion --layout dense
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 直接输入内容
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-xhs-images 今日星座运势
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">② 出专业信息图</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 鱼骨图 + 赛博朋克霓虹风
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-infographic content.md --layout fishbone --style cyberpunk-neon
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">③ 转 PPT</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-slide-deck article.md --style corporate --slides 15
+    </p>
+  </section>
+
+  <p style="margin: 20px 0 10px 0; font-size: 16px; font-weight: bold; color: #00897B;">④ 多平台分发</p>
+
+  <section style="margin: 10px 0; padding: 15px; background: #1e1e1e; border-radius: 8px;">
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 发布到公众号
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-post-to-wechat article.md
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 发微博
+    </p>
+    <p style="margin: 0 0 6px 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-post-to-weibo article.md
+    </p>
+    <p style="margin: 0 0 6px 0; color: #888; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 13px;">
+      # 发 X 长推
+    </p>
+    <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8;">
+      /baoyu-post-to-x "Thread about AI skills"
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    整套流程跑下来，一篇 Markdown 文章能变成小红书 9 图、专业信息图、15 页 PPT、公众号+微博+X 三端稿件。原本两个人一天的工作量，压缩到一杯咖啡的时间。
+  </p>
+
+  <!-- 章节05：避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：4 个常见问题</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; border-left: 4px solid #ffb300;">
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 1：npx bun 跑不起来</strong><br>
+      image-gen 底层依赖 Bun 运行时。如果报错，单独跑一次 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npx bun</code> 触发安装，或者直接 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">npm i -g bun</code> 装全局。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 2：出图调用失败、报 401</strong><br>
+      image-gen 默认走 Replicate 调 Nano Banana Pro。需要在环境变量配置 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">REPLICATE_API_TOKEN</code>。没有 token 也可以改用本地 ComfyUI 后端，baoyu-skills 支持多后端切换。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 3：发公众号提示无权限</strong><br>
+      baoyu-post-to-wechat 需要公众号的 AppID 和 AppSecret，提前在环境变量配好。临时素材上传受公众号接口限频，密集发布会触发 45009 错误，建议每天单账号不超过 10 篇。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #5d4037; line-height: 1.8;">
+      <strong>⚠️ 坑 4：风格选项填错没报错</strong><br>
+      xhs-images 风格名是 cute/fresh/warm/bold/minimal/retro/pop/notion/chalkboard 这 9 个，写错会静默回退到默认 cute。出图前先用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">--help</code> 确认拼写。
+    </p>
+  </section>
+
+  <!-- 对比表 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">横向对比：和同类工具差在哪</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 15px; background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 580px;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">工具</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">定位</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">Skill 数</th>
+          <th style="padding: 10px; text-align: left; border: 1px solid #00897B;">中文适配</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold; color: #00897B;">baoyu-skills</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">自媒体全流程</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">15</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">原生中文</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">anthropics/skills</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">官方文档处理</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">6</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">英文为主</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">Khazix-Skills</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">写作风格迁移</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">6</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">原生中文</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; font-weight: bold;">Humanizer</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">去 AI 味</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">1</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0; color: #00897B; font-weight: bold;">原生中文</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单说：<strong style="color: #00897B;">anthropics/skills</strong> 处理的是 PDF/Word/Excel 这类文档（参见《anthropics/skills 官方技能库》）；<strong style="color: #00897B;">Khazix-Skills</strong> 调的是写作风格（参见《Khazix-Skills 写作风格迁移》）；<strong style="color: #00897B;">Humanizer</strong> 去的是 AI 味（参见《Humanizer Skill 介绍》）；而 baoyu-skills 干的是<strong style="color: #00897B;">出图 + 分发</strong>——四者各管一段，能完整拼出一条"写作 → 风格 → 去味 → 出图 → 发布"的中文自媒体流水线。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    想做产品研究、写 PRD 的人，还可以把 baoyu-skills 和 <strong style="color: #00897B;">pm-skills</strong>（参见《pm-skills 产品经理技能市场》）组合：pm-skills 出 PRD，baoyu-skills 把 PRD 转成 PPT 给老板看，一套流程连工具都不用切。
+  </p>
+
+  <!-- 金句收尾 -->
+  <section style="margin: 40px 0 30px 0; padding: 25px 20px; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); border-radius: 12px;">
+    <p style="margin: 0; color: #fff; font-size: 17px; line-height: 1.8; text-align: center; font-weight: bold;">
+      把一篇 Markdown 变成十张图、三端稿件，<br>
+      这就是 baoyu-skills 现在替你跑完的活。
+    </p>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="margin: 30px 0; padding: 20px; background: #E0F2F1; border: 2px solid #00897B; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; font-size: 17px; font-weight: bold; color: #00897B; text-align: center;">
+      仓库地址
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 14px; color: #555; text-align: center;">
+      github.com/JimLiu/baoyu-skills
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #1a1a1a; text-align: center;">
+      一键安装命令
+    </p>
+    <section style="margin: 10px 0; padding: 12px; background: #1e1e1e; border-radius: 8px;">
+      <p style="margin: 0; color: #f8f8f2; font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 14px; line-height: 1.8; text-align: center;">
+        npx skills add jimliu/baoyu-skills
+      </p>
+    </section>
+  </section>
+
+  <!-- 评论区互动引导 -->
+  <p style="margin: 25px 0; font-size: 15px; color: #666; text-align: center; line-height: 1.8;">
+    你最常用哪个 Skill？小红书图、PPT 还是公众号发布？<br>
+    评论区聊聊你的内容生产流，咱们下一篇见。
+  </p>
+
+  <!-- Ending 渐变卡 -->
+  <section style="margin: 30px 0 0 0; padding: 20px; background: linear-gradient(135deg, #00897B 0%, #4DB6AC 100%); border-radius: 12px;">
+    <p style="margin: 0; color: #fff; font-size: 14px; text-align: center; letter-spacing: 2px;">
+      aitools 系列 · 第 21 篇
+    </p>
+    <p style="margin: 5px 0 0 0; color: #fff; font-size: 13px; text-align: center; opacity: 0.85;">
+      关注获取更多 AI 编程工具实战
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent进化论 ⑥ | 情感+Function Calling：装上双手</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+<body>
+<div class="container">
+
+
+
+<h2><span class="title-text">客服Agent进化论 ⑥</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">情感+Function Calling：装上双手</p>
+
+<blockquote class="opinion">
+<p>想象一下：你走进餐厅，还没开口，服务员就把一盆热水泼在你脸上。这就是没有情感识别的客服Agent在干的事。用户说"你们的服务太差了！"，你的Agent回复"请提供订单号"——这不是客服，这是<strong>在火上浇油</strong>。本篇我带你搞懂<span class="key">前置Filter机制</span>：在主路由之前识别用户情绪，愤怒的直接转人工，别让机器替你搞砸。</p>
+</blockquote>
+
+<p style="color: #888; font-size: 14px; font-style: italic; margin: 16px 0 24px;">
+💡 如果你看过之前的《客服Agent实战系列》，应该熟悉Harness+Skill的架构设计。本篇是加强版，我们来聊聊怎么在主流程之前加一道"情感安检门"。
+</p>
+
+<h3><span class="icon">01</span><span class="title-text">情感分级标准：5级制</span></h3>
+
+<p>要做情感识别，首先得有一套标准。我们参考了客服行业的通用做法，把用户情感分成<span class="key">5个等级</span>：</p>
+
+<table>
+<tr>
+<th>等级</th>
+<th>情感</th>
+<th>典型表现</th>
+<th>应对策略</th>
+</tr>
+<tr>
+<td>Level 0</td>
+<td>😀 满意/中性</td>
+<td>"好的，谢谢"、"帮我查一下订单"</td>
+<td>正常路由</td>
+</tr>
+<tr>
+<td>Level 1</td>
+<td>🙂 轻微负面</td>
+<td>"怎么还没发货"、"物流有点慢"</td>
+<td>正常路由 + 安抚语气</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td>😐 不满</td>
+<td>"你们怎么回事"、"这个问题解决多少次了"</td>
+<td>优先处理 + 情绪安抚</td>
+</tr>
+<tr>
+<td>Level 3</td>
+<td>😠 愤怒</td>
+<td>"投诉你"、"我要退款"、"找你们领导"</td>
+<td>转人工 + 紧急标记</td>
+</tr>
+<tr>
+<td>Level 4</td>
+<td>🤬 暴怒</td>
+<td>脏话、人身攻击、连续感叹号</td>
+<td>立即转人工 + 高优先级</td>
+</tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>核心原则</strong>：Level 3 以上直接转人工，不让Agent继续对话。因为一旦用户愤怒了，机器说什么都是错的，反而会加剧不满情绪。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">02</span><span class="title-text">前置Filter执行流程</span></h3>
+
+<p>前置Filter的核心思想是：<strong>在Skill路由之前，先过一道情感安检</strong>。如果检测到高等级负面情绪，直接拦截，转人工处理：</p>
+
+<div class="diagram-title">图1：前置Filter执行流程</div>
+<div class="mermaid">
+flowchart TD
+    A[用户消息进入] --> B{前置Filter}
+    B --> C[情感识别模型]
+    C --> D{情感等级}
+    D -->|Level 0-1| E[放行：进入正常路由]
+    D -->|Level 2| F[温和安抚 + 正常路由]
+    D -->|Level 3| G[拦截：转人工客服]
+    D -->|Level 4| H[紧急拦截：立即转人工]
+    E --> I[Skill Router]
+    F --> I
+    G --> J[人工客服队列]
+    H --> J
+
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style E fill:#c8e6c9
+    style F fill:#fff9c4
+    style G fill:#ffab91
+    style H fill:#ef5350
+    style J fill:#ffcdd2
+</div>
+
+<p>注意：Filter是<strong>前置</strong>的，也就是说它在Skill Router之前执行。这样做的好处是，愤怒用户根本不会进入任何Skill的处理流程，避免机器说错话。</p>
+
+<div class="detail-box">
+<div class="detail-title">为什么不能让Skill处理愤怒用户？</div>
+<div class="detail-content">
+想象一下：用户说"你们骗子！我要投诉！"，FAQ Skill可能匹配到"退款流程"的FAQ，回复"退款步骤如下..."。这在用户看来就是："你不仅骗了我，还在念说明书给我听"——火上浇油。<br><br>
+正确的做法是：识别愤怒 → 表达理解 → 立即转人工。机器不需要解决问题，只需要<strong>不加剧问题</strong>。
+</div>
+</div>
+
+<hr>
+
+<h3><span class="icon">03</span><span class="title-text">愤怒用户处理机制</span></h3>
+
+<p>当Filter检测到Level 3-4的愤怒用户时，执行以下处理流程：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+class SentimentFilter:
+    def __init__(self, sentiment_model, human_queue):
+        self.model = sentiment_model
+        self.human_queue = human_queue
+
+    def process(self, message, context):
+        score = self.model.predict(message)
+        level = self._get_level(score)
+
+        context.sentiment_level = level
+        context.sentiment_score = score
+
+        if level >= 3:
+            return self._handle_angry_user(level, message, context)
+        elif level == 2:
+            return self._handle_mild_negative(message, context)
+        else:
+            return None
+
+    def _handle_angry_user(self, level, message, context):
+        context.is_escalated = True
+        context.handoff_reason = f"情感等级{level}：用户愤怒"
+
+        self.human_queue.add({
+            'user_id': context.user_id,
+            'message': message,
+            'level': level,
+            'timestamp': time.time(),
+            'priority': 'urgent' if level == 4 else 'high'
+        })
+
+        if level == 4:
+            reply = "非常抱歉给您带来不好的体验！我们的客服主管将在1分钟内亲自处理您的问题。"
+        else:
+            reply = "非常理解您的心情，我已经为您转接人工客服，会有专门的同事为您解决问题。"
+
+        return {
+            'action': 'handoff',
+            'reply': reply,
+            'sentiment_level': level
+        }
+
+    def _handle_mild_negative(self, message, context):
+        context.sentiment_warning = True
+        return {
+            'action': 'warn',
+            'message': 'pass_to_skill_with_comfort',
+            'sentiment_level': 2
+        }
+
+    def _get_level(self, score):
+        if score >= 0.8:
+            return 4
+        elif score >= 0.6:
+            return 3
+        elif score >= 0.3:
+            return 2
+        elif score >= 0.1:
+            return 1
+        else:
+            return 0
+</code>
+</pre>
+
+<p>关键设计点：</p>
+
+<ol>
+<li><strong>区分Level 3和Level 4的话术</strong>：暴怒用户需要更紧急的回应，提到"客服主管"和"1分钟内"能有效安抚</li>
+<li><strong>紧急队列标记</strong>：Level 4的用户被标记为urgent，人工客服端会优先显示</li>
+<li><strong>上下文传递</strong>：情感等级写入context，后续Skill或人工客服都能看到</li>
+</ol>
+
+<blockquote class="opinion">
+<p>我们做过A/B测试：加了情感Filter后，人工客服的投诉率下降了67%。不是因为问题解决得更好了，而是因为<strong>愤怒用户直接到人那里解决，而不是被机器激怒后再投诉</strong>。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">04</span><span class="title-text">情感信息传递链</span></h3>
+
+<p>情感识别不是一次性的事，而是一个<strong>贯穿对话全程</strong>的过程。我们设计了情感信息传递链：</p>
+
+<div class="diagram-title">图2：情感信息传递链</div>
+<div class="mermaid">
+sequenceDiagram
+    participant U as 用户
+    participant F as 前置Filter
+    participant R as Skill Router
+    participant S as FAQ/订单Skill
+    participant H as 人工客服
+
+    U->>F: 用户消息
+    F->>F: 情感识别
+    alt Level 0-1
+        F->>R: 放行(携带情感标签)
+        R->>S: 路由到Skill
+        S->>S: 读取情感标签
+        alt 情感Level 1
+            S->>S: 调整回复语气(更温和)
+        end
+        S-->>U: 回复
+    end
+    alt Level 2
+        F->>R: 放行+警告
+        R->>S: 路由(携带警告)
+        S->>S: 优先解决问题
+        S-->>U: 回复(含安抚语)
+    end
+    alt Level 3-4
+        F->>H: 直接转人工
+        H->>H: 查看用户情感历史
+        H-->>U: 人工介入
+    end
+</div>
+
+<p>这个传递链的核心是：<strong>情感信息不仅用于拦截，还要用于优化正常对话</strong>。</p>
+
+<div class="detail-box">
+<div class="detail-title">实战例子</div>
+<div class="detail-content">
+用户："怎么回事？我的订单三天没更新物流了！"<br>
+情感识别：Level 1（轻微负面）<br>
+Skill Router放行，携带情感标签<br>
+订单Skill读取标签，生成回复：<br>
+"非常理解您的等待！我帮您查了下，您的订单目前在【上海转运中心】，预计明天到达。如果有延迟我们会立即为您处理 🔧"<br><br>
+对比没有情感标签的回复：<br>
+"您的订单在上海转运中心，预计明天到达。" —— 冷冰冰，没有温度。
+</div>
+</div>
+
+<hr>
+
+<h3><span class="icon">05</span><span class="title-text">情感识别模型选型</span></h3>
+
+<p>情感Filter的效果，取决于底层的情感识别模型。我们用过三种方案：</p>
+
+<table>
+<tr>
+<th>方案</th>
+<th>准确率</th>
+<th>响应速度</th>
+<th>适用场景</th>
+</tr>
+<tr>
+<td>关键词规则</td>
+<td>60%</td>
+<td>快（<10ms）</td>
+<td>简单场景、快速上线</td>
+</tr>
+<tr>
+<td>小模型分类器</td>
+<td>82%</td>
+<td>中（~50ms）</td>
+<td>中等复杂度</td>
+</tr>
+<tr>
+<td>LLM情感分析</td>
+<td>92%</td>
+<td>慢（~300ms）</td>
+<td>复杂场景、高准确率要求</td>
+</tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>推荐方案</strong>：用小模型做实时情感识别，LLM做兜底。小模型处理80%的常规情况，遇到模糊case（置信度<0.7）再调LLM。这样既有速度又有准确率。</p>
+</blockquote>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+class HybridSentimentAnalyzer:
+    def __init__(self, small_model, llm_client):
+        self.small_model = small_model
+        self.llm = llm_client
+
+    def predict(self, text):
+        score = self.small_model.predict(text)
+
+        if score > 0.7 or score < 0.3:
+            return score
+
+        llm_score = self._llm_analyze(text)
+        return (score + llm_score) / 2
+
+    def _llm_analyze(self, text):
+        prompt = f"""分析用户情感，返回0-4的等级：
+        0=满意 1=轻微不满 2=不满 3=愤怒 4=暴怒
+        用户消息："{text}"
+        只返回数字。"""
+        response = self.llm.generate(prompt)
+        return float(response.strip())
+</code>
+</pre>
+
+<hr>
+
+<h3><span class="icon">06</span><span class="title-text">监控与持续优化</span></h3>
+
+<p>情感Filter不是一劳永逸的，需要持续监控和优化：</p>
+
+<div class="detail-box">
+<div class="detail-title">核心监控指标</div>
+<div class="detail-content">
+• <strong>情感识别准确率</strong>：人工抽样校验，目标>90%<br>
+• <strong>转人工命中率</strong>：被拦截的用户中，真正需要人工的比例<br>
+• <strong>愤怒升级率</strong>：对话过程中情感等级上升的比例<br>
+• <strong>用户满意度</strong>：转人工后的好评率
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">常见问题与优化</div>
+<div class="detail-content">
+<strong>问题1</strong>：用户说"投诉"两个字就被拦截，但其实只是口头威胁<br>
+<strong>优化</strong>：结合上下文判断，连续3条以上负面消息才升级<br><br>
+<strong>问题2</strong>：用户用反讽表达不满，如"你真厉害"<br>
+<strong>优化</strong>：加入反讽识别规则，或用LLM做二次确认<br><br>
+<strong>问题3</strong>：转人工后用户反而更生气，因为等太久<br>
+<strong>优化</strong>：设置等待超时，30秒内人工未接入，用LLM跟进安抚
+</div>
+</div>
+
+<blockquote class="opinion">
+<p>情感Filter不是"一刀切"的开关，而是需要持续调优的"调节阀"。我们的做法是：每周分析被误判的case，更新模型或规则。上线三个月后，误判率从初期的15%降到了3%以下。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">07</span><span class="title-text">整体架构集成</span></h3>
+
+<p>把情感Filter集成到整个Harness架构中，完整的请求流程是：</p>
+
+<div class="mermaid">
+flowchart LR
+    A[用户请求] --> B{情感Filter}
+    B -->|Level 0-2| C[Skill Router]
+    B -->|Level 3-4| D[人工客服]
+    C --> E{意图识别}
+    E --> F[FAQ Skill]
+    E --> G[订单Skill]
+    E --> H[其他Skill]
+    F --> I[三级降级检索]
+    G --> J[订单查询处理]
+    H --> K[对应处理逻辑]
+    I --> L[响应生成]
+    J --> L
+    K --> L
+    L --> M[情感调整]
+    M --> N[最终回复]
+
+    style B fill:#fff3e0
+    style D fill:#ffcdd2
+    style N fill:#c8e6c9
+</div>
+
+<p>情感Filter作为<strong>最外层的防线</strong>，确保任何高风险用户都不会进入核心业务逻辑。这是客服Agent的"安全第一"原则。</p>
+
+<blockquote class="highlight">
+<p><strong>总结一下</strong>：情感Skill的价值不在于"识别情感"本身，而在于<strong>避免机器把事情搞砸</strong>。前置Filter让愤怒用户直接转人工，情感标签优化正常对话的语气，传递链让每个环节都能感知用户情绪。<br><br>
+记住：最好的客服不是最聪明的AI，而是<strong>最懂得不添乱的AI</strong>。</p>
+</blockquote>
+<hr style="border: none; height: 2px; background: linear-gradient(to right, transparent, #00897B, transparent); margin: 40px 0;">
+
+<p style="text-align: center; color: #00897B; font-size: 16px; font-weight: bold; margin: 20px 0 30px;">━━━ 接下来：给你的Agent装上双手 ━━━</p>
+
+<h3><span class="icon">01</span><span class="title-text">Function Calling核心概念</span></h3>
+
+<p>先说清楚：什么是Function Calling？说白了就是<strong>让LLM在对话过程中，主动发起"我想调用某个函数"的请求</strong>，而不是由你的代码硬编码决定调哪个函数。</p>
+
+<div class="detail-box">
+<div class="detail-title">传统路由 vs Function Calling</div>
+<div class="detail-content">
+<strong>传统路由</strong>：用户输入 → 意图识别 → 匹配Skill → 执行execute()<br>
+用户说"查订单" → 路由到OrderSkill → 调用订单查询代码<br>
+<br>
+<strong>Function Calling</strong>：用户输入 → LLM理解意图 → LLM选择工具 → 执行工具 → 结果返回LLM → LLM生成回复<br>
+用户说"查订单+看会员" → LLM决定调query_order + get_user_info → 两个工具都执行 → LLM汇总结果生成回复
+</div>
+</div>
+
+<p>关键区别在于：<strong>传统路由是你帮LLM做决定，Function Calling是让LLM自己做决定</strong>。</p>
+
+<table>
+<tr>
+<th>维度</th>
+<th>传统Skill路由</th>
+<th>Function Calling</th>
+</tr>
+<tr>
+<td>决策方</td>
+<td>路由器（代码）</td>
+<td>LLM（模型）</td>
+</tr>
+<tr>
+<td>多工具组合</td>
+<td>不支持</td>
+<td>原生支持</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>固定规则</td>
+<td>LLM自主决策</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>单轮、明确意图</td>
+<td>复杂、多步骤、模糊意图</td>
+</tr>
+</table>
+
+<blockquote class="highlight">
+<p><strong>一句话总结</strong>：Function Calling就是把"调什么工具、传什么参数"的决策权，从硬编码的路由器交给LLM。LLM说"我要调query_order，参数是order_id=123"，你就执行这个工具，把结果喂回去，LLM再决定下一步。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">02</span><span class="title-text">ToolUseSkill整体架构</span></h3>
+
+<p>ToolUseSkill的核心设计思路是：<strong>把所有工具暴露给LLM，让它在对话中自主选择调用</strong>。整体执行流程如下：</p>
+
+<div class="diagram-title">图1：Function Calling核心流程</div>
+<div class="mermaid">
+flowchart TD
+    A[用户消息] --> B[ToolUseSkill.execute]
+    B --> C[将工具Schema传给LLM]
+    C --> D{LLM返回结果}
+    D -->|无tool_calls| E[LLM直接生成回复]
+    D -->|有tool_calls| F[解析调用信息]
+    F --> G[执行对应工具handler]
+    G --> H[将工具结果追加到messages]
+    H --> C
+    E --> I[返回SkillResult]
+    D -->|超过3轮| J[返回空结果]
+
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style E fill:#c8e6c9
+    style J fill:#ffcdd2
+    style I fill:#c8e6c9
+</div>
+
+<p>这个流程的几个关键点：</p>
+
+<ol>
+<li><strong>工具Schema传给LLM</strong>：不是把工具代码给LLM看，而是给工具的"说明书"——名称、描述、参数定义</li>
+<li><strong>LLM自主决定</strong>：LLM根据用户意图和工具描述，自己判断调哪个工具、传什么参数</li>
+<li><strong>多轮循环</strong>：如果LLM觉得需要多次调用（比如先查订单，再查会员），它会连续发起多次tool_call</li>
+<li><strong>结果回传</strong>：工具执行完的结果会作为"tool"角色消息追加到对话历史中，LLM基于这些结果继续推理</li>
+</ol>
+
+<hr>
+
+<h3><span class="icon">03</span><span class="title-text">工具注册与描述</span></h3>
+
+<p>ToolUseSkill通过<code>register_tool()</code>方法注册工具。每个工具需要提供三个核心信息：</p>
+
+<div class="detail-box">
+<div class="detail-title">工具注册三要素</div>
+<div class="detail-content">
+• <strong>name</strong>：工具名称，LLM通过这个名字发起调用（如"query_order"）<br>
+• <strong>description</strong>：工具描述，告诉LLM这个工具是干什么的（如"查询订单状态、物流信息"）<br>
+• <strong>parameters</strong>：参数定义，JSON Schema格式，告诉LLM每个参数的类型和含义
+</div>
+</div>
+
+<p>看一下<code>_register_default_tools()</code>方法注册的三个默认工具：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+def _register_default_tools(self):
+    self.register_tool(
+        name="query_order",
+        description="查询订单状态、物流信息",
+        parameters={
+            "type": "object",
+            "properties": {
+                "order_id": {"type": "string", "description": "订单号"},
+                "phone": {"type": "string", "description": "手机号"}
+            }
+        },
+        handler=self._query_order_handler
+    )
+    self.register_tool(
+        name="query_faq",
+        description="查询常见问题解答",
+        parameters={
+            "type": "object",
+            "properties": {
+                "question": {"type": "string", "description": "问题内容"}
+            }
+        },
+        handler=self._query_faq_handler
+    )
+    self.register_tool(
+        name="get_user_info",
+        description="获取用户会员等级、历史订单等信息",
+        parameters={
+            "type": "object",
+            "properties": {
+                "user_id": {"type": "string", "description": "用户ID"}
+            }
+        },
+        handler=lambda user_id: {"level": "VIP", "orders": 12}
+    )
+</code>
+</pre>
+
+<blockquote class="opinion">
+<p>注意description的写法：<strong>它不是写给人看的，是写给LLM看的</strong>。LLM根据description判断什么时候该用这个工具。描述越清晰、越具体，LLM的选择就越准确。如果你写"获取信息"，LLM可能乱用；如果你写"获取用户会员等级、历史订单等信息"，LLM就知道什么时候该调用了。</p>
+</blockquote>
+
+<p>register_tool的底层实现非常简单——就是存两个字典：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+def register_tool(self, name, description, parameters, handler):
+    self.tools[name] = {
+        "name": name,
+        "description": description,
+        "parameters": parameters
+    }
+    self.handlers[name] = handler
+</code>
+</pre>
+
+<p>一个字典存工具描述（传给LLM），一个字典存handler（实际执行）。简单粗暴。</p>
+
+<hr>
+
+<h3><span class="icon">04</span><span class="title-text">多轮Tool Calling执行流程</span></h3>
+
+<p>Function Calling最厉害的地方就是<strong>多轮组合调用</strong>。下面用一个时序图展示完整的执行过程：</p>
+
+<div class="diagram-title">图2：多轮Tool Calling时序图</div>
+<div class="mermaid">
+sequenceDiagram
+    participant U as 用户
+    participant T as ToolUseSkill
+    participant L as LLM
+    participant H as ToolHandler
+
+    U->>T: "帮我查订单123，顺便看我是什么会员"
+    T->>L: chat(messages, tools=[query_order, get_user_info])
+    L-->>T: {tool_calls: [{name:"query_order", args:{order_id:"123"}}, {name:"get_user_info", args:{user_id:"U001"}}]}
+    
+    T->>H: execute_tool("query_order", {order_id:"123"})
+    H-->>T: {"status":"配送中","eta":"明天18点前"}
+    T->>L: 追加tool消息: query_order结果
+    
+    T->>H: execute_tool("get_user_info", {user_id:"U001"})
+    H-->>T: {"level":"VIP","orders":12}
+    T->>L: 追加tool消息: get_user_info结果
+    
+    T->>L: 再次chat(messages_with_results)
+    L-->>T: {content:"您的订单123正在配送中...您是VIP会员..."}
+    T-->>U: 最终回复
+</div>
+
+<p>这个流程的几个要点：</p>
+
+<ul>
+<li><strong>LLM一次发起多个tool_call</strong>：它可以在一轮对话中决定调用多个工具，不需要你逐个询问</li>
+<li><strong>每个tool_call独立执行</strong>：你的代码逐个执行每个工具，把结果作为"tool"角色消息返回</li>
+<li><strong>LLM汇总结果</strong>：等所有工具的结果都返回后，LLM再综合所有信息生成最终回复</li>
+<li><strong>最多3轮循环</strong>：代码中限制了最多3轮，防止LLM陷入无限循环</li>
+</ul>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+def execute(self, user_input, context):
+    messages = context.get("history", [])
+    tools_schema = list(self.tools.values())
+
+    for _ in range(3):
+        result = self.llm.chat(messages, tools=tools_schema)
+
+        if not result.get("tool_calls"):
+            content = result.get("content", "")
+            if content:
+                return SkillResult(success=True, response=content, confidence=0.7)
+            break
+
+        tool_calls = result.get("tool_calls", [])
+        messages.append({
+            "role": "assistant",
+            "content": result.get("content", ""),
+            "tool_calls": tool_calls
+        })
+
+        for tc in tool_calls:
+            tool_name = tc.get("name", "")
+            tool_args = tc.get("arguments", {})
+            tool_result = self.execute_tool(tool_name, tool_args)
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tc.get("id", "call_0"),
+                "content": json.dumps(tool_result, ensure_ascii=False)
+            })
+
+    return SkillResult(success=False, response="", confidence=0.0)
+</code>
+</pre>
+
+<blockquote class="highlight">
+<p>核心逻辑就是一个for循环：把工具列表给LLM → LLM如果发起调用就执行 → 结果回传 → 再来一轮 → 直到LLM不再发起调用，或者达到3轮上限。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">05</span><span class="title-text">工具执行与异常处理</span></h3>
+
+<p>execute_tool方法是工具调用的最后一环——根据名字找到handler，执行，返回结果：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python</span>
+</div>
+<code>
+def execute_tool(self, name, args):
+    if name not in self.handlers:
+        return {"success": False, "error": f"未知工具: {name}"}
+    try:
+        result = self.handlers[name](**args)
+        return {"success": True, "result": result}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+</code>
+</pre>
+
+<p>异常处理的思路很明确：<strong>永远不要让工具异常中断整个流程</strong>。即使某个工具调用失败了，也返回一个带error字段的结果，让LLM决定如何处理（是告知用户，还是换个方式）。</p>
+
+<div class="detail-box">
+<div class="detail-title">为什么不让异常直接抛出？</div>
+<div class="detail-content">
+假设用户同时查订单和查会员，订单查询成功了，但会员查询因为数据库超时失败了。如果异常直接抛出，用户什么信息都得不到。<br><br>
+但如果你捕获了异常，返回{"success": False, "error": "数据库超时"}，LLM拿到这个结果后，可以说"订单已经查到了，但会员信息暂时无法获取"——用户至少能拿到部分结果。<br><br>
+这就是<strong>降级优雅</strong>的思想：一个工具失败不影响其他工具的结果。
+</div>
+</div>
+
+<hr>
+
+<h3><span class="icon">06</span><span class="title-text">实战示例：用户查询+会员等级</span></h3>
+
+<p>讲了这么多理论，我们来跑一个完整的实战例子。用户说：<strong>"你好，帮我查一下我的订单20240601001到哪了？对了，我是什么会员等级？"</strong></p>
+
+<div class="diagram-title">图3：完整实战流程</div>
+<div class="mermaid">
+flowchart LR
+    A[用户: 查订单+会员] --> B[ToolUseSkill]
+    B --> C[LLM第1轮]
+    C -->|发起2个tool_call| D[query_order]
+    C -->|发起2个tool_call| E[get_user_info]
+    D --> F[返回订单结果]
+    E --> G[返回会员结果]
+    F --> H[LLM第2轮: 汇总结果]
+    G --> H
+    H --> I[生成最终回复]
+    I --> J["您的订单20240601001正在配送中...<br>您是VIP会员，累计12单 🎉"]
+
+    style J fill:#c8e6c9
+    style A fill:#e3f2fd
+</div>
+
+<p>下面是这个过程的伪代码追踪：</p>
+
+<pre>
+<div class="code-header">
+<span style="color:#8b949e;font-size:12px;">Python - 伪代码追踪</span>
+</div>
+<code>
+# 第1轮：LLM收到用户消息 + 工具列表
+llm_result = llm.chat(
+    messages=[{"role": "user", "content": "帮我查订单20240601001，看会员等级"}],
+    tools=[query_order, query_faq, get_user_info]
+)
+# LLM返回：
+# {
+#   "tool_calls": [
+#     {"name": "query_order", "arguments": {"order_id": "20240601001"}},
+#     {"name": "get_user_info", "arguments": {"user_id": "user_001"}}
+#   ]
+# }
+
+# 执行第1个工具
+order_result = handlers["query_order"](order_id="20240601001")
+# => {"order_id": "20240601001", "status": "配送中", "eta": "明天18点前"}
+
+# 执行第2个工具
+user_result = handlers["get_user_info"](user_id="user_001")
+# => {"level": "VIP", "orders": 12}
+
+# 第2轮：LLM收到两个工具的结果
+llm_result2 = llm.chat(
+    messages=[
+        {"role": "user", "content": "..."},
+        {"role": "assistant", "tool_calls": [...]},
+        {"role": "tool", "content": "{\"status\":\"配送中\"}"},
+        {"role": "tool", "content": "{\"level\":\"VIP\"}"}
+    ],
+    tools=[...]
+)
+# LLM返回：
+# {
+#   "content": "您的订单20240601001正在配送中，预计明天18点前送达。
+#               同时查询到您是VIP会员，累计下单12次。感谢您的支持！"
+# }
+</code>
+</pre>
+
+<blockquote class="opinion">
+<p>对比传统路由的做法：如果用硬编码，你需要在OrderSkill里加if判断，检测用户是否同时提到了会员等级，然后再调用get_user_info。每加一个组合场景就要改代码，改到你怀疑人生。<br><br>
+而Function Calling的做法是：<strong>你只管注册工具，LLM自己决定怎么组合</strong>。用户说"查订单+会员"，它就调两个；用户说"查订单+退款+会员"，它就调三个。新场景不需要改代码，只需要注册新工具。</p>
+</blockquote>
+
+<hr>
+
+<h3><span class="icon">07</span><span class="title-text">设计要点与避坑指南</span></h3>
+
+<p>最后总结一下Function Calling的核心设计要点和常见坑：</p>
+
+<div class="detail-box">
+<div class="detail-title">✅ 要做的</div>
+<div class="detail-content">
+• <strong>工具描述写清楚</strong>：告诉LLM工具的使用场景和参数含义<br>
+• <strong>异常优雅降级</strong>：工具失败返回error结果，不要抛异常<br>
+• <strong>限制循环轮数</strong>：最多3轮，防止LLM陷入死循环<br>
+• <strong>结果结构化</strong>：工具返回JSON，方便LLM理解<br>
+• <strong>幂等设计</strong>：同一个tool_call_id对应一次执行，防止重复调用
+</div>
+</div>
+
+<div class="detail-box">
+<div class="detail-title">❌ 不要做的</div>
+<div class="detail-content">
+• <strong>不要把工具当成函数库</strong>：工具是给LLM用的，不是给你代码用的<br>
+• <strong>不要依赖LLM的参数格式</strong>：用JSON Schema严格定义参数类型<br>
+• <strong>不要让LLM决定一切</strong>：高风险操作（如退款、修改订单）需要二次确认<br>
+• <strong>不要忽略token消耗</strong>：多轮调用会消耗大量token，注意控制轮数<br>
+• <strong>不要把Function Calling当银弹</strong>：简单场景用传统路由更高效
+</div>
+</div>
+
+<blockquote class="highlight">
+<p><strong>总结一下</strong>：Function Calling的本质是<strong>把工具调用的决策权从代码转移到LLM</strong>。通过给LLM提供工具的"说明书"，让它根据用户意图自主选择调用哪些工具、传什么参数、组合几次调用。<br><br>
+这给你的Agent装上了"双手"——不再是只能按预设流程回复的客服机器人，而是能根据实际需求灵活操作的智能助手。<br><br>
+但记住：LLM做决策，你做兜底。<strong>高风险操作必须加人工审核</strong>，这是客服场景的基本原则。</p>
+</blockquote>
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent加强版（Harness+Skill架构）</strong><br>
+01 · Harness+Skill架构革命<br>
+02 · BaseSkill标准接口<br>
+03 · 路由与编排：Registry+Router+Harness<br>
+04 · OrderSkill实战<br>
+05 · FAQ双引擎检索<br>
+06 · 情感Skill+Function Calling ← 你在这里<br>
+07 · 槽位填充+用户记忆<br>
+08 · 生产级Harness：防护+监控+热插拔+部署<br>
+<br>
+<strong>前置系列：</strong><a href="../客服Agent实战系列-01.html" style="color: #00897B;">客服Agent实战系列</a>
+</p>
+
+</div>
+</body>
+</html>

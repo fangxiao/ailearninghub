@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web界面——让知识库"好用"起来</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  Web界面
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  让知识库"好用"起来
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  本地大模型知识库系列第09篇 | 界面开发
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  上一篇我们封装了问答接口，现在需要一个友好的Web界面让用户能够轻松使用。我们将使用Gradio来快速构建一个美观的聊天界面。
+</p>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="mermaid-img/web_architecture.png" alt="Web界面架构" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">安装Gradio</span>
+  </p>
+</section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">bash</span></div><code><span class="code-comment"># 安装Gradio</span>
+<span class="code-name">pip install gradio</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">创建聊天界面</span>
+  </p>
+</section>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> gradio </span><span class="code-keyword">as</span><span class="code-name"> gr</span>
+<span class="code-keyword">from</span><span class="code-name"> knowledge_base_qa </span><span class="code-keyword">import</span><span class="code-name"> KnowledgeBaseQA</span>
+
+<span class="code-comment"># 初始化问答助手</span>
+<span class="code-name">qa</span><span class="code-operator"> = </span><span class="code-function">KnowledgeBaseQA</span><span class="code-operator">()</span>
+
+<span class="code-keyword">def</span><span class="code-function"> chat</span><span class="code-operator">(</span><span class="code-name">message</span><span class="code-operator">, </span><span class="code-name">history</span><span class="code-operator">):</span>
+    <span class="code-name">result</span><span class="code-operator"> = </span><span class="code-name">qa</span><span class="code-operator">.</span><span class="code-function">answer</span><span class="code-operator">(</span><span class="code-name">message</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">if</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"success"</span><span class="code-operator">]:</span>
+        <span class="code-name">answer</span><span class="code-operator"> = </span><span class="code-name">result</span><span class="code-operator">[</span><span class="code-string">"answer"</span><span class="code-operator">]</span>
+        
+        <span class="code-keyword">if</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"sources"</span><span class="code-operator">]:</span>
+            <span class="code-name">answer</span><span class="code-operator"> += </span><span class="code-string">"\n\n📚 参考来源:"</span>
+            <span class="code-keyword">for</span><span class="code-name"> src </span><span class="code-keyword">in</span><span class="code-name"> result</span><span class="code-operator">[</span><span class="code-string">"sources"</span><span class="code-operator">]:</span>
+                <span class="code-name">answer</span><span class="code-operator"> += </span><span class="code-operator">f</span><span class="code-string">"\n- {src['source']}"</span>
+        
+        <span class="code-name">answer</span><span class="code-operator"> += </span><span class="code-operator">f</span><span class="code-string">"\n\n⏱️ 响应时间: {result['response_time']}秒"</span>
+        <span class="code-keyword">return</span><span class="code-name"> answer</span>
+    <span class="code-keyword">else</span><span class="code-operator">:</span>
+        <span class="code-keyword">return</span><span class="code-string">f"❌ 出错了: {result['error']}"</span>
+
+<span class="code-comment"># 创建Gradio界面</span>
+<span class="code-name">with</span><span class="code-name"> gr</span><span class="code-operator">.</span><span class="code-function">Blocks</span><span class="code-operator">()</span> <span class="code-keyword">as</span><span class="code-name"> demo</span><span class="code-operator">:</span>
+    <span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Markdown</span><span class="code-operator">(</span><span class="code-string">"""
+    # 📖 本地知识库问答
+    基于本地大模型的智能问答系统
+    """</span><span class="code-operator">)</span>
+    
+    <span class="code-name">chatbot</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Chatbot</span><span class="code-operator">(</span>
+        <span class="code-name">height</span><span class="code-operator">=</span><span class="code-number">500</span><span class="code-operator">,</span>
+        <span class="code-name">avatar_images</span><span class="code-operator">=</span><span class="code-operator">(</span><span class="code-keyword">None</span><span class="code-operator">, </span><span class="code-string">"https://img.icons8.com/color/48/000000/bot.png"</span><span class="code-operator">)</span>
+    <span class="code-operator">)</span>
+    
+    <span class="code-name">msg</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span>
+        <span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"输入问题"</span><span class="code-operator">,</span>
+        <span class="code-name">placeholder</span><span class="code-operator">=</span><span class="code-string">"请输入您的问题..."</span><span class="code-operator">, </span>
+        <span class="code-name">lines</span><span class="code-operator">=</span><span class="code-number">2</span>
+    <span class="code-operator">)</span>
+    
+    <span class="code-name">submit_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"发送"</span><span class="code-operator">, </span><span class="code-name">variant</span><span class="code-operator">=</span><span class="code-string">"primary"</span><span class="code-operator">)</span>
+    <span class="code-name">clear_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"清空对话"</span><span class="code-operator">)</span>
+    
+    <span class="code-name">submit_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span><span class="code-name">chat</span><span class="code-operator">, </span><span class="code-name">inputs</span><span class="code-operator">=</span><span class="code-operator">[</span><span class="code-name">msg</span><span class="code-operator">, </span><span class="code-name">chatbot</span><span class="code-operator">], </span><span class="code-name">outputs</span><span class="code-operator">=</span><span class="code-name">chatbot</span><span class="code-operator">)</span>
+    <span class="code-name">msg</span><span class="code-operator">.</span><span class="code-function">submit</span><span class="code-operator">(</span><span class="code-name">chat</span><span class="code-operator">, </span><span class="code-name">inputs</span><span class="code-operator">=</span><span class="code-operator">[</span><span class="code-name">msg</span><span class="code-operator">, </span><span class="code-name">chatbot</span><span class="code-operator">], </span><span class="code-name">outputs</span><span class="code-operator">=</span><span class="code-name">chatbot</span><span class="code-operator">)</span>
+    <span class="code-name">clear_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span><span class="code-keyword">lambda</span><span class="code-name">: </span><span class="code-operator">None</span><span class="code-operator">, </span><span class="code-name">None</span><span class="code-operator">, </span><span class="code-name">chatbot</span><span class="code-operator">, </span><span class="code-name">queue</span><span class="code-operator">=</span><span class="code-keyword">False</span><span class="code-operator">)</span>
+
+<span class="code-comment"># 启动服务</span>
+<span class="code-name">if</span><span class="code-name"> __name__ </span><span class="code-operator">== </span><span class="code-string">"__main__"</span><span class="code-operator">:</span>
+    <span class="code-name">demo</span><span class="code-operator">.</span><span class="code-function">launch</span><span class="code-operator">(</span>
+        <span class="code-name">server_name</span><span class="code-operator">=</span><span class="code-string">"0.0.0.0"</span><span class="code-operator">,</span>
+        <span class="code-name">server_port</span><span class="code-operator">=</span><span class="code-number">7860</span><span class="code-operator">,</span>
+        <span class="code-name">share</span><span class="code-operator">=</span><span class="code-keyword">False</span>
+    <span class="code-operator">)</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">添加文档上传功能</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  让用户可以随时上传新文档到知识库：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">from</span><span class="code-name"> langchain.document_loaders </span><span class="code-keyword">import</span><span class="code-name"> PyPDFLoader</span>
+<span class="code-keyword">from</span><span class="code-name"> langchain.text_splitter </span><span class="code-keyword">import</span><span class="code-name"> RecursiveCharacterTextSplitter</span>
+
+<span class="code-keyword">def</span><span class="code-function"> upload_documents</span><span class="code-operator">(</span><span class="code-name">files</span><span class="code-operator">):</span>
+    <span class="code-name">documents</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+    
+    <span class="code-keyword">for</span><span class="code-name"> file </span><span class="code-keyword">in</span><span class="code-name"> files</span><span class="code-operator">:</span>
+        <span class="code-name">loader</span><span class="code-operator"> = </span><span class="code-function">PyPDFLoader</span><span class="code-operator">(</span><span class="code-name">file</span><span class="code-operator">.</span><span class="code-name">name</span><span class="code-operator">)</span>
+        <span class="code-name">docs</span><span class="code-operator"> = </span><span class="code-name">loader</span><span class="code-operator">.</span><span class="code-function">load</span><span class="code-operator">()</span>
+        <span class="code-name">documents</span><span class="code-operator">.</span><span class="code-function">extend</span><span class="code-operator">(</span><span class="code-name">docs</span><span class="code-operator">)</span>
+    
+    <span class="code-name">text_splitter</span><span class="code-operator"> = </span><span class="code-function">RecursiveCharacterTextSplitter</span><span class="code-operator">(</span>
+        <span class="code-name">chunk_size</span><span class="code-operator">=</span><span class="code-number">500</span><span class="code-operator">,</span>
+        <span class="code-name">chunk_overlap</span><span class="code-operator">=</span><span class="code-number">50</span>
+    <span class="code-operator">)</span>
+    
+    <span class="code-name">splits</span><span class="code-operator"> = </span><span class="code-name">text_splitter</span><span class="code-operator">.</span><span class="code-function">split_documents</span><span class="code-operator">(</span><span class="code-name">documents</span><span class="code-operator">)</span>
+    <span class="code-name">qa</span><span class="code-operator">.</span><span class="code-name">vector_store</span><span class="code-operator">.</span><span class="code-function">add_documents</span><span class="code-operator">(</span><span class="code-name">splits</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">return</span><span class="code-operator">f</span><span class="code-string">""成功上传并处理{len(files)}个文档，共{len(splits)}个片段。""</span>
+
+<span class="code-comment"># 在界面中添加文件上传组件</span>
+<span class="code-name">file_upload</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">File</span><span class="code-operator">(</span>
+    <span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"上传文档"</span><span class="code-operator">,</span>
+    <span class="code-name">file_types</span><span class="code-operator">=</span><span class="code-operator">[</span><span class="code-string">".pdf"</span><span class="code-operator">, </span><span class="code-string">".txt"</span><span class="code-operator">, </span><span class="code-string">".md"</span><span class="code-operator">],</span>
+    <span class="code-name">file_count</span><span class="code-operator">=</span><span class="code-string">"multiple"</span>
+<span class="code-operator">)</span>
+
+<span class="code-name">upload_btn</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Button</span><span class="code-operator">(</span><span class="code-string">"上传到知识库"</span><span class="code-operator">)</span>
+<span class="code-name">upload_status</span><span class="code-operator"> = </span><span class="code-name">gr</span><span class="code-operator">.</span><span class="code-function">Textbox</span><span class="code-operator">(</span><span class="code-name">label</span><span class="code-operator">=</span><span class="code-string">"上传状态"</span><span class="code-operator">, </span><span class="code-name">visible</span><span class="code-operator">=</span><span class="code-keyword">False</span><span class="code-operator">)</span>
+
+<span class="code-name">upload_btn</span><span class="code-operator">.</span><span class="code-function">click</span><span class="code-operator">(</span><span class="code-name">upload_documents</span><span class="code-operator">, </span><span class="code-name">inputs</span><span class="code-operator">=</span><span class="code-name">file_upload</span><span class="code-operator">, </span><span class="code-name">outputs</span><span class="code-operator">=</span><span class="code-name">upload_status</span><span class="code-operator">)</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 界面无法访问：检查防火墙和端口配置</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 上传文件失败：检查文件大小和格式限制</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 内存占用过高：添加文件大小限制和清理机制</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 多人并发问题：启用Gradio的queue机制</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  本地大模型知识库系列第09篇<br>
+  下一篇：性能优化——让知识库更快、更准
+</p>
+
+</section>
+</body>
+</html>

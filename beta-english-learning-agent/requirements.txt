@@ -1,0 +1,11 @@
+langchain==0.1.10
+langchain-community==0.0.25
+langchain-core==0.1.28
+chromadb==0.4.24
+ollama==0.1.14
+gradio==4.25.0
+pydantic==2.6.1
+networkx==3.2.1
+python-dotenv==1.0.1
+scipy==1.12.0
+pandas==2.2.1

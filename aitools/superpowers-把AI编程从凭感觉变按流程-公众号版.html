@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Superpowers 实战：让 AI 编程像个正经工程师</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    装了这款插件，Claude Code 终于像个正经工程师了
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    从"凭感觉写代码"到"按流程交付"——Superpowers 深度测评
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claude Code 增强实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 写代码，你一定遇到过这些情况：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 说一句"加个登录功能"，30 秒后告诉你"搞定了"——密码明文存储、没做输入校验、没写测试
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 复杂功能做到一半，AI 忘了最初的架构约定，代码风格开始混乱
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ AI 声称"完成了"，实际上没跑测试、没处理边界情况、没更新文档
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 代码跑不起来，AI 开始随机改代码碰碰运气，越改越乱
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题不是 AI 模型不够强，而是<strong style="color: #00897B;">缺乏工程纪律</strong>。原生 Claude Code 更像"代码生成器"，你让它干啥它就干啥，不会多想。真正的开发流程应该是先想清楚、再规划、后动手、必验证。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">Superpowers</strong> 就是来解决这个问题的。它是一个 AI 编程工作流框架，核心理念叫 <strong style="color: #00897B;">Process over Prompt（流程大于提示词）</strong>——不是让 AI 变得更聪明，而是让 AI 必须遵守软件工程的纪律。
+    </p>
+  </section>
+
+  <!-- 章节01：Superpowers 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Superpowers 到底是什么？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Superpowers 由 Jesse Vincent（GitHub ID: obra）开源，2025 年 10 月发布，目前 GitHub 上有 <strong style="color: #00897B;">180K+ Star</strong>，安装量近 60 万次。它支持 Claude Code、Cursor、Codex、OpenCode 等主流 AI 编程工具。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你可以把它理解成"给 AI 配了一个资深 Tech Lead"——在关键决策点拦住它，强制走正确的流程。装上之后，Claude Code 会拒绝直接写代码，要求你先规划、先写测试、先审查。
+  </p>
+
+  <!-- 核心理念 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 17px; color: #00897B; font-weight: bold;">核心理念：Process over Prompt</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      普通 AI：你说啥它干啥，写代码快但容易出错
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Superpowers 加持的 AI：必须按流程走，想跳步都不行
+    </p>
+  </section>
+
+  <!-- 章节02：5 步工作流 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">5 步标准工作流</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一个功能从需求到代码，Superpowers 会强制走完下面 5 步：
+  </p>
+
+  <!-- 步骤1 -->
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-weight: bold; font-size: 16px;">① Brainstorming：苏格拉底式问答</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      AI 不会直接开始写代码，而是先跟你讨论：需求是什么？用户是谁？有没有边界情况？会提出 2-3 种方案让你选择，确保大家理解一致。
+    </p>
+  </section>
+
+  <!-- 步骤2 -->
+  <section style="background: #E8F5E9; border-left: 4px solid #2E7D32; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #1B5E20; font-weight: bold; font-size: 16px;">② Writing Plans：拆成小任务</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      把确认的方案拆成 <strong style="color: #00897B;">2-5 分钟</strong>的小任务，保存到 docs/plans/ 目录。每个任务都有明确的输入、输出和验收标准。
+    </p>
+  </section>
+
+  <!-- 步骤3 -->
+  <section style="background: #E3F2FD; border-left: 4px solid #1565C0; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #0D47A1; font-weight: bold; font-size: 16px;">③ Executing Plans：TDD 式执行</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      自动创建 Git Worktree 隔离分支，逐个任务执行。每个任务强制遵循 <strong style="color: #00897B;">RED-GREEN-REFACTOR</strong> 循环：先写失败的测试 → 写最小实现让测试通过 → 重构优化。
+    </p>
+  </section>
+
+  <!-- 步骤4 -->
+  <section style="background: #FFF3E0; border-left: 4px solid #E65100; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #BF360C; font-weight: bold; font-size: 16px;">④ Code Review：任务间审查</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      每完成一个任务，自动发起代码审查。检查命名规范、错误处理、边界条件、性能问题。严重问题会阻塞推进，必须修复才能继续。
+    </p>
+  </section>
+
+  <!-- 步骤5 -->
+  <section style="background: #F3E5F5; border-left: 4px solid #6A1B9A; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; color: #4A148C; font-weight: bold; font-size: 16px;">⑤ Verification：完成前验证</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      所有任务完成后，强制跑全量测试，确认无回归。只有全部通过才允许标记为"完成"，禁止"我觉得没问题"。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 灵活使用：</strong>不是每次都要走完 5 步。简单 bug 修复可以直接从步骤 3 开始，新功能建议完整走一遍流程。
+    </p>
+  </section>
+
+  <!-- 章节03：14+ Skills 详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">14+ Skills：每个场景都有规矩</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Skill 是 Superpowers 的核心，本质是 Markdown 文件，定义特定场景下 AI 必须遵守的规则。装上后自动获得 14+ 个 Skill，覆盖完整开发生命周期：
+  </p>
+
+  <!-- Skills 分类表 -->
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00897B; font-weight: bold; font-size: 16px;">🧭 需求与规划</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 8px; color: #00897B; font-weight: bold; width: 35%;">Skill</th>
+          <th style="padding: 8px; color: #00897B; font-weight: bold;">干啥的</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">brainstorming</td>
+          <td style="padding: 8px;">苏格拉底式问答，理清需求和设计</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">writing-plans</td>
+          <td style="padding: 8px;">把需求拆成 2-5 分钟的小任务</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #2E7D32; font-weight: bold; font-size: 16px;">⚡ 执行与开发</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #2E7D32;">
+          <th style="padding: 8px; color: #2E7D32; font-weight: bold; width: 35%;">Skill</th>
+          <th style="padding: 8px; color: #2E7D32; font-weight: bold;">干啥的</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">executing-plans</td>
+          <td style="padding: 8px;">按计划逐步执行，任务间自动保存</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">test-driven-development</td>
+          <td style="padding: 8px;">强制 TDD：先写测试再写实现</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">subagent-development</td>
+          <td style="padding: 8px;">每个任务用独立子 Agent 执行，避免上下文污染</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">using-git-worktrees</td>
+          <td style="padding: 8px;">自动创建隔离分支，坏了直接丢弃</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #1565C0; font-weight: bold; font-size: 16px;">🔍 调试与质量</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #1565C0;">
+          <th style="padding: 8px; color: #1565C0; font-weight: bold; width: 35%;">Skill</th>
+          <th style="padding: 8px; color: #1565C0; font-weight: bold;">干啥的</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">systematic-debugging</td>
+          <td style="padding: 8px;">4 阶段调试：复现 → 定位 → 修复 → 验证</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">requesting-code-review</td>
+          <td style="padding: 8px;">自动发起代码审查，检查质量和规范</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">verification-before-completion</td>
+          <td style="padding: 8px;">完成前强制跑测试，禁止"我觉得没问题"</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 章节04：实战演示 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实战演示：用 Superpowers 开发一个功能</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说再多不如看一次完整流程。假设要开发一个"邮箱验证"功能，看看 Superpowers 怎么接管：
+  </p>
+
+  <!-- 演示：Brainstorming -->
+  <section style="margin: 20px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #00695C; font-weight: bold; font-size: 17px;">
+      阶段 1：Brainstorming（苏格拉底式问答）
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      你输入："开发一个邮箱验证功能"
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Superpowers <strong style="color: #00897B;">不会直接写代码</strong>，而是问你：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 10px 0;">
+      <p style="margin: 0 0 8px 0; font-size: 14px; line-height: 1.8; color: #333;">这个功能的用户是谁？注册用户还是管理员？</p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; line-height: 1.8; color: #333;">验证规则需要支持哪些格式？RFC 标准还是自定义？</p>
+      <p style="margin: 0 0 8px 0; font-size: 14px; line-height: 1.8; color: #333;">错误提示需要国际化吗？</p>
+      <p style="margin: 0; font-size: 14px; line-height: 1.8; color: #333;">有没有性能要求？比如每秒校验多少个？</p>
+    </section>
+  </section>
+
+  <!-- 演示：Writing Plans -->
+  <section style="margin: 20px 0; padding: 20px; background: #E8F5E9; border: 1px solid #c5e1a5; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #1B5E20; font-weight: bold; font-size: 17px;">
+      阶段 2：Writing Plans（拆分任务）
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      需求确认后，Superpowers 自动产出任务清单：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.9;">
+      <li>Task 1：编写邮箱格式校验的测试用例（RED）</li>
+      <li>Task 2：实现邮箱校验函数让测试通过（GREEN）</li>
+      <li>Task 3：重构代码，添加边界条件</li>
+      <li>Task 4：集成到注册流程</li>
+      <li>Task 5：Code Review + 全量测试</li>
+    </ul>
+  </section>
+
+  <!-- 演示：TDD 执行 -->
+  <section style="margin: 20px 0; padding: 20px; background: #E3F2FD; border: 1px solid #bbdefb; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #0D47A1; font-weight: bold; font-size: 17px;">
+      阶段 3：TDD 执行（RED-GREEN-REFACTOR）
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      每个任务强制走 TDD 循环，<strong style="color: #c62828;">禁止跳过测试</strong>：
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #c62828; line-height: 1.8;">
+      🔴 RED：先写失败的测试
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 14px; margin: 8px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #c62828;">test("valid email passes validation", () => { expect(validateEmail("user@example.com")).toBe(true); });</p>
+    </section>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #2E7D32; line-height: 1.8;">
+      🟢 GREEN：写最小实现让测试通过
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 14px; margin: 8px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #2E7D32;">function validateEmail(email) { return /.+@.+\..+/.test(email); }</p>
+    </section>
+    <p style="margin: 0; font-size: 14px; color: #1565C0; line-height: 1.8;">
+      🔵 REFACTOR：重构优化，添加边界条件
+    </p>
+  </section>
+
+  <!-- 演示：Code Review -->
+  <section style="margin: 20px 0; padding: 20px; background: #FFF3E0; border: 1px solid #ffe0b2; border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; color: #BF360C; font-weight: bold; font-size: 17px;">
+      阶段 4：Code Review（任务间审查）
+    </p>
+    <p style="margin: 0 0 10px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      每完成一个任务，自动审查：
+    </p>
+    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3f3f3f; line-height: 1.9;">
+      <li>✅ 命名规范：validateEmail 是否清晰？</li>
+      <li>✅ 错误处理：无效邮箱是否返回合理的错误信息？</li>
+      <li>✅ 边界条件：空字符串、超长邮箱、特殊字符</li>
+      <li>✅ 安全检查：是否有注入风险？</li>
+    </ul>
+  </section>
+
+  <section style="margin: 25px 0; padding: 18px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 8px; border-left: 4px solid #00897B;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">对比一下：</strong>同样的功能，不用 Superpowers 可能要 30 分钟 + 反复调试；用 Superpowers 走完流程，代码质量更高，几乎不需要返工。
+    </p>
+  </section>
+
+  <!-- 章节05：安装指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 步安装</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    通过插件市场安装，非常简单：
+  </p>
+
+  <!-- 步骤1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      添加官方插件市场
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin marketplace add obra/superpowers-marketplace</p>
+    </section>
+  </section>
+
+  <!-- 步骤2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      安装 Superpowers 插件
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">/plugin install superpowers@superpowers-marketplace</p>
+    </section>
+  </section>
+
+  <!-- 步骤3 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      验证安装
+    </p>
+    <p style="margin: 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      输入 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">"帮我开发一个登录功能"</code>，如果 AI 先问你需求细节而不是直接写代码，说明装好了。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff8e1; border: 1px solid #ffecb3; border-radius: 8px; border-left: 4px solid #f57f17;">
+    <p style="margin: 0; font-size: 14px; color: #e65100; line-height: 1.8;">
+      <strong>💡 最简方式：</strong>也可以直接从 Anthropic 官方市场一键安装：
+    </p>
+    <section style="background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 8px; padding: 12px 14px; margin: 10px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #e65100;">/plugin install superpowers@claude-plugins-official</p>
+    </section>
+  </section>
+
+  <!-- 章节06：和 ECC 的区别 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">和 ECC 有什么区别？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    之前写过 ECC（Everything Claude Code），很多人会问两者的关系。简单说：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 20%;">维度</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 40%;">Superpowers</th>
+          <th style="padding: 10px; color: #00897B; font-weight: bold; width: 40%;">ECC</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">定位</td>
+          <td style="padding: 10px;">工作流框架（流程）</td>
+          <td style="padding: 10px;">工具箱（能力）</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">核心理念</td>
+          <td style="padding: 10px;">Process over Prompt</td>
+          <td style="padding: 10px;">Agent + Skill 增强</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">强制 TDD</td>
+          <td style="padding: 10px; color: #2E7D32;">✅ 是</td>
+          <td style="padding: 10px; color: #c62828;">❌ 否</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">多 Agent 协作</td>
+          <td style="padding: 10px; color: #c62828;">❌ 否</td>
+          <td style="padding: 10px; color: #2E7D32;">✅ 是</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 10px; font-weight: bold;">适合场景</td>
+          <td style="padding: 10px;">严格的团队开发</td>
+          <td style="padding: 10px;">个人/团队效率提升</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold;">能否共存</td>
+          <td style="padding: 10px;" colspan="2" style="text-align: center; color: #00897B; font-weight: bold;">✅ 可以，互补使用</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单理解：Superpowers 是"流程经理"，盯着你按步骤来；ECC 是"工具箱"，给你各种 Agent 和 Skill 用。两者可以搭配：用 Superpowers 的流程执行 ECC 的 Agent。
+  </p>
+
+  <!-- 章节07：常见问题 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 个常见疑问</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q1：会不会变慢？本来让 AI 写代码很快的</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      确实会慢一些，因为多了讨论、规划、测试的环节。但省下来的调试和返工时间远超这点开销。实测同样的功能，总耗时反而更短。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q2：我只是写点小脚本，有必要装吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      没必要。简单脚本、临时调试，直接让 AI 写就行。但如果你经常做正式项目、多人协作、需要保证代码质量，Superpowers 非常值得。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 8px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #c62828; font-weight: bold;">Q3：可以自定义 Skill 吗？</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      可以。每个 Skill 都是 Markdown 文件，按规范写好后放到 skills/ 目录就能用。团队可以把自己的编码规范做成 Skill，统一代码风格。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">最后的话</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">Superpowers 的这套做法其实不新鲜：AI 再强，不约束住也会乱跑。给它套上流程的"紧箍咒"，代码反而更稳、返工更少。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">装上以后，你跟 AI 的对话会从"帮我写这个"变成"先把方案聊清楚再做"。要是你喜欢快速试错的小脚本，这套流程可能嫌啰嗦；但要带正式项目、多人协作，它倒是能省下不少返工的功夫。值不值，跑一两个正式功能就有感觉了。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">立即体验</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/obra/superpowers</span><br>
+      Star 数：180K+ ⭐<br>
+      安装命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #333;">/plugin marketplace add obra/superpowers-marketplace</p>
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #333;">/plugin install superpowers@superpowers-marketplace</p>
+    </section>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">你用过 Superpowers 吗？装上之后感觉怎么样？欢迎在评论区聊聊。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">关注公众号，获取更多 AI 工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>口语练习模块——对话式口语训练</title>
+  <style>
+    .code-block { margin: 25px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .code-block .code-header { height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+    .code-block .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; float: right; line-height: 36px; text-transform: uppercase; }
+    .code-block code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+    .code-keyword { color: #66d9ef; }
+    .code-string { color: #e6db74; }
+    .code-number { color: #ae81ff; }
+    .code-comment { color: #a8a8a8; font-style: italic; }
+    .code-function { color: #a6e22e; }
+    .code-name { color: #f8f8f2; }
+    .code-operator { color: #f8f8f2; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 30px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+  📖 <strong>系列导航：</strong><br>
+  【本地大模型知识库系列】01-12篇（已完成）| 
+  【英语学习Agent系列】当前第05篇（共8篇）
+</p>
+
+<h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+  口语练习模块
+</h1>
+<h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+  对话式口语训练
+</h2>
+<p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+  英语学习Agent系列第05篇 | 口语练习
+</p>
+
+<p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  口语是英语学习中最具挑战性的部分之一。缺乏对话伙伴、害怕犯错、不知道如何改进——这些都是常见的痛点。我们将构建一个对话式口语训练系统，让学习者可以随时随地进行英语对话练习，并获得即时反馈和纠正。
+</p>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">对话场景设计</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  定义各种日常对话场景，让学习者在不同情境下练习口语：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">from</span><span class="code-name"> enum </span><span class="code-keyword">import</span><span class="code-name"> Enum</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ConversationScenario</span><span class="code-operator">(</span><span class="code-name">Enum</span><span class="code-operator">):</span>
+    <span class="code-name">GREETING</span><span class="code-operator"> = </span><span class="code-string">"问候"</span>
+    <span class="code-name">ORDERING_FOOD</span><span class="code-operator"> = </span><span class="code-string">"点餐"</span>
+    <span class="code-name">SHOPPING</span><span class="code-operator"> = </span><span class="code-string">"购物"</span>
+    <span class="code-name">TRAVEL</span><span class="code-operator"> = </span><span class="code-string">"旅行"</span>
+    <span class="code-name">JOB_INTERVIEW</span><span class="code-operator"> = </span><span class="code-string">"面试"</span>
+    <span class="code-name">DISCUSSION</span><span class="code-operator"> = </span><span class="code-string">"讨论"</span>
+    <span class="code-name">APPOINTMENT</span><span class="code-operator"> = </span><span class="code-string">"预约"</span>
+    <span class="code-name">COMPLAINT</span><span class="code-operator"> = </span><span class="code-string">"投诉"</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ScenarioManager</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">scenarios</span><span class="code-operator"> = </span><span class="code-operator">{</span>
+            <span class="code-string">"GREETING"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"日常问候和自我介绍"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-string">"A1"</span><span class="code-operator">,</span>
+                <span class="code-string">"opening"</span><span class="code-operator">: </span><span class="code-string">"Hi! How are you today?"</span><span class="code-operator">,</span>
+                <span class="code-string">"target_expressions"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"Nice to meet you"</span><span class="code-operator">, </span><span class="code-string">"How are you"</span><span class="code-operator">, </span><span class="code-string">"I'm fine, thank you"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"ORDERING_FOOD"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"在餐厅点餐"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-string">"A2"</span><span class="code-operator">,</span>
+                <span class="code-string">"opening"</span><span class="code-string">"Can I take your order?"</span><span class="code-operator">,</span>
+                <span class="code-string">"target_expressions"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"I'd like"</span><span class="code-operator">, </span><span class="code-string">"Could I have"</span><span class="code-operator">, </span><span class="code-string">"With fries"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"SHOPPING"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"购物场景对话"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-string">"B1"</span><span class="code-operator">,</span>
+                <span class="code-string">"opening"</span><span class="code-operator">: </span><span class="code-string">"Welcome to our store! Can I help you?"</span><span class="code-operator">,</span>
+                <span class="code-string">"target_expressions"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"How much is this"</span><span class="code-operator">, </span><span class="code-string">"Do you have"</span><span class="code-operator">, </span><span class="code-string">"Can I try it on"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"TRAVEL"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"旅行相关对话"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-string">"B1"</span><span class="code-operator">,</span>
+                <span class="code-string">"opening"</span><span class="code-operator">: </span><span class="code-string">"Good morning! Where are you heading today?"</span><span class="code-operator">,</span>
+                <span class="code-string">"target_expressions"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"I'd like a ticket"</span><span class="code-operator">, </span><span class="code-string">"How long does it take"</span><span class="code-operator">, </span><span class="code-string">"Where is"</span><span class="code-operator">]</span>
+            <span class="code-operator">},</span>
+            <span class="code-string">"JOB_INTERVIEW"</span><span class="code-operator">: </span><span class="code-operator">{</span>
+                <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-string">"求职面试"</span><span class="code-operator">,</span>
+                <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-string">"C1"</span><span class="code-operator">,</span>
+                <span class="code-string">"opening"</span><span class="code-operator">: </span><span class="code-string">"Good afternoon. Thank you for coming today. Please tell me about yourself."</span><span class="code-operator">,</span>
+                <span class="code-string">"target_expressions"</span><span class="code-operator">: </span><span class="code-operator">[</span><span class="code-string">"I have experience in"</span><span class="code-operator">, </span><span class="code-string">"My strengths are"</span><span class="code-operator">, </span><span class="code-string">"I am proficient in"</span><span class="code-operator">]</span>
+            <span class="code-operator">}</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> get_scenario</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">name</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">scenarios</span><span class="code-operator">.</span><span class="code-function">get</span><span class="code-operator">(</span><span class="code-name">name</span><span class="code-operator">.upper</span><span class="code-operator">(), </span><span class="code-keyword">None</span><span class="code-operator">)</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> list_scenarios</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-operator">[{</span>
+            <span class="code-string">"name"</span><span class="code-operator">: </span><span class="code-name">k</span><span class="code-operator">,</span>
+            <span class="code-string">"description"</span><span class="code-operator">: </span><span class="code-name">v</span><span class="code-operator">[</span><span class="code-string">"description"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"level"</span><span class="code-operator">: </span><span class="code-name">v</span><span class="code-operator">[</span><span class="code-string">"level"</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span> <span class="code-keyword">for</span><span class="code-name"> k</span><span class="keyword">, </span><span class="code-name"> v </span><span class="code-keyword">in</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">scenarios</span><span class="code-operator">.</span><span class="code-function">items</span><span class="code-operator">()</span><span class="code-operator">]</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">对话引擎实现</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  使用Ollama模拟对话伙伴，支持多轮对话：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> ConversationEngine</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">scenario</span><span class="code-operator"> = </span><span class="code-keyword">None</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">turn_count</span><span class="code-operator"> = </span><span class="code-number">0</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> start_conversation</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">scenario</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">scenario</span><span class="code-operator"> = </span><span class="code-name">scenario</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">turn_count</span><span class="code-operator"> = </span><span class="code-number">0</span>
+        
+        <span class="code-name">system_prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+你是一位专业的英语对话练习伙伴。请在"{scenario['description']}"场景下与用户进行自然对话。
+
+要求：
+1. 使用{scenario['level']}级别的英语
+2. 保持对话自然流畅，不要太机械
+3. 根据用户的回答做出合适的回应
+4. 不要主动结束对话，除非用户明确表示结束
+5. 适当引导用户使用目标表达：{scenario['target_expressions']}
+"""</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">({</span>
+            <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"system"</span><span class="code-operator">,</span>
+            <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">system_prompt</span>
+        <span class="code-operator">})
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">({</span>
+            <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"assistant"</span><span class="code-operator">,</span>
+            <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">scenario</span><span class="code-operator">[</span><span class="code-string">"opening"</span><span class="code-operator">]</span>
+        <span class="code-operator">})
+        
+        <span class="keyword">return</span><span class="code-name"> scenario</span><span class="code-operator">[</span><span class="code-string">"opening"</span><span class="code-operator">]</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> respond</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">user_input</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">({</span>
+            <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+            <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">user_input</span>
+        <span class="code-operator">})
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">reply</span><span class="code-operator"> = </span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">({</span>
+            <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"assistant"</span><span class="code-operator">,</span>
+            <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">reply</span>
+        <span class="code-operator">})
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">turn_count</span><span class="code-operator"> += </span><span class="code-number">1</span>
+        
+        <span class="keyword">return</span><span class="code-name"> reply</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> end_conversation</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"scenario"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">scenario</span><span class="code-operator">[</span><span class="code-string">"description"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"turn_count"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">turn_count</span><span class="code-operator">,</span>
+            <span class="code-string">"total_messages"</span><span class="code-operator">: </span><span class="code-name">len</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator">)</span>
+        <span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">口语评估与反馈</span>
+  </p>
+</section>
+
+<p style="margin: 25px 0; text-align: justify; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+  对用户的口语表达进行评估，提供即时反馈和改进建议：
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">import</span><span class="code-name"> ollama</span>
+<span class="code-keyword">import</span><span class="code-name"> json</span>
+
+<span class="code-keyword">class</span><span class="code-function"> SpeakingEvaluator</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">model</span><span class="code-operator">=</span><span class="code-string">"llama3:8b"</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator"> = </span><span class="code-name">model</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> evaluate_response</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">user_input</span><span class="code-operator">, </span><span class="code-name">scenario</span><span class="code-operator">, </span><span class="code-name">target_expressions</span><span class="code-operator">):</span>
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请评估用户在"{scenario}"场景下的英语口语表达：
+
+用户输入：{user_input}
+
+需要评估的维度：
+1. 语法准确性（0-10分）
+2. 词汇丰富度（0-10分）
+3. 表达自然度（0-10分）
+4. 目标表达使用（是否使用了这些表达：{target_expressions}）
+
+请提供：
+1. 综合评分（0-100分）
+2. 具体的语法错误和纠正建议
+3. 更地道的表达方式
+4. 鼓励性反馈
+
+请以JSON格式输出：
+{{
+  "score": 综合评分,
+  "grammar_score": 语法得分,
+  "vocabulary_score": 词汇得分,
+  "fluency_score": 流畅度得分,
+  "grammar_errors": [{{"error": "错误内容", "correction": "纠正后", "explanation": "解释"}}],
+  "improvement_suggestions": ["建议1", "建议2", "建议3"],
+  "better_expressions": ["更好的表达1", "更好的表达2"],
+  "encouragement": "鼓励性话语"
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span>
+                <span class="code-string">"score"</span><span class="code-operator">: </span><span class="code-number">0</span><span class="code-operator">,</span>
+                <span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"评估失败，请重试"</span>
+            <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> generate_summary</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">conversation_history</span><span class="code-operator">, </span><span class="code-name">evaluations</span><span class="code-operator">):</span>
+        <span class="code-name">history_text</span><span class="code-operator"> = </span><span class="code-string">"\n"</span><span class="code-operator">.</span><span class="code-function">join</span><span class="code-operator">(</span>
+            <span class="code-operator">[</span><span class="code-string">f"{m['role']}: {m['content']}"</span> <span class="code-keyword">for</span><span class="code-name"> m </span><span class="code-keyword">in</span><span class="code-name"> conversation_history</span> <span class="code-keyword">if</span><span class="code-name"> m</span><span class="code-operator">[</span><span class="code-string">"role"</span><span class="code-operator">] != </span><span class="code-string">"system"</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">prompt</span><span class="code-operator"> = </span><span class="code-string">f"""
+请为以下对话生成口语练习总结：
+
+对话内容：
+{history_text}
+
+评估记录：
+{json.dumps(evaluations, ensure_ascii=False)}
+
+请以JSON格式输出：
+{{
+  "overall_score": 平均分,
+  "strengths": ["优点1", "优点2"],
+  "weaknesses": ["不足1", "不足2"],
+  "key_improvements": ["重点改进1", "重点改进2"],
+  "practice_suggestions": ["练习建议1", "练习建议2", "练习建议3"],
+  "new_vocabulary": ["新单词1", "新单词2", "新单词3"]
+}}
+"""</span>
+        
+        <span class="code-name">response</span><span class="code-operator"> = </span><span class="code-name">ollama</span><span class="code-operator">.</span><span class="code-function">chat</span><span class="code-operator">(</span>
+            <span class="code-name">model</span><span class="code-operator">=</span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">model</span><span class="code-operator">,</span>
+            <span class="code-name">messages</span><span class="code-operator">=[{</span>
+                <span class="code-string">"role"</span><span class="code-operator">: </span><span class="code-string">"user"</span><span class="code-operator">,</span>
+                <span class="code-string">"content"</span><span class="code-operator">: </span><span class="code-name">prompt</span>
+            <span class="code-operator">}]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="keyword">try</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-function">loads</span><span class="code-operator">(</span><span class="code-name">response</span><span class="code-operator">[</span><span class="code-string">"message"</span><span class="code-operator">][</span><span class="code-string">"content"</span><span class="code-operator">]</span><span class="code-operator">)</span>
+        <span class="keyword">except</span><span class="code-name"> json</span><span class="code-operator">.</span><span class="code-name">JSONDecodeError</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"总结生成失败"</span><span class="code-operator">}</span></code></section>
+
+<section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+  <p style="margin: 0;">
+    <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+    <span style="font-size: 18px; font-weight: bold; color: #1a1a1a;">口语学习流程</span>
+  </p>
+</section>
+
+<p style="margin: 30px 0; text-align: center;">
+  <img src="speaking_practice_flow.png" alt="口语学习流程" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+</p>
+
+<section class="code-block"><div class="code-header"><span class="code-lang">python</span></div><code><span class="code-keyword">class</span><span class="code-function"> SpeakingPractice</span><span class="code-operator">:</span>
+    <span class="code-keyword">def</span><span class="code-function"> __init__</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">scenario_manager</span><span class="code-operator"> = </span><span class="code-function">ScenarioManager</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator"> = </span><span class="code-function">ConversationEngine</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator"> = </span><span class="code-function">SpeakingEvaluator</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluations</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">is_active</span><span class="code-operator"> = </span><span class="code-keyword">False</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> start_practice</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">scenario_name</span><span class="code-operator">):</span>
+        <span class="code-name">scenario</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">scenario_manager</span><span class="code-operator">.</span><span class="code-function">get_scenario</span><span class="code-operator">(</span><span class="code-name">scenario_name</span><span class="code-operator">)</span>
+        
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> scenario</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"场景不存在"</span><span class="code-operator">}</span>
+        
+        <span class="code-name">opening_line</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-function">start_conversation</span><span class="code-operator">(</span><span class="code-name">scenario</span><span class="code-operator">)</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">is_active</span><span class="code-operator"> = </span><span class="code-keyword">True</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluations</span><span class="code-operator"> = </span><span class="code-operator">[]</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"status"</span><span class="code-operator">: </span><span class="code-string">"started"</span><span class="code-operator">,</span>
+            <span class="code-string">"scenario"</span><span class="code-operator">: </span><span class="code-name">scenario</span><span class="code-operator">[</span><span class="code-string">"description"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-string">"opening"</span><span class="code-operator">: </span><span class="code-name">opening_line</span><span class="code-operator">,</span>
+            <span class="code-string">"target_expressions"</span><span class="code-operator">: </span><span class="code-name">scenario</span><span class="code-operator">[</span><span class="code-string">"target_expressions"</span><span class="code-operator">]</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> speak</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">, </span><span class="code-name">user_input</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">is_active</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"请先开始练习"</span><span class="code-operator">}</span>
+        
+        <span class="code-name">reply</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-function">respond</span><span class="code-operator">(</span><span class="code-name">user_input</span><span class="code-operator">)</span>
+        
+        <span class="code-name">evaluation</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator">.</span><span class="code-function">evaluate_response</span><span class="code-operator">(</span>
+            <span class="code-name">user_input</span><span class="code-operator">,</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-name">scenario</span><span class="code-operator">[</span><span class="code-string">"description"</span><span class="code-operator">]</span><span class="code-operator">,</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-name">scenario</span><span class="code-operator">[</span><span class="code-string">"target_expressions"</span><span class="code-operator">]</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluations</span><span class="code-operator">.</span><span class="code-function">append</span><span class="code-operator">(</span><span class="code-name">evaluation</span><span class="code-operator">)</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"reply"</span><span class="code-operator">: </span><span class="code-name">reply</span><span class="code-operator">,</span>
+            <span class="code-string">"evaluation"</span><span class="code-operator">: </span><span class="code-name">evaluation</span><span class="code-operator">,</span>
+            <span class="code-string">"turn"</span><span class="code-operator">: </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-name">turn_count</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> end_practice</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">if</span><span class="code-name"> not</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">is_active</span><span class="code-operator">:</span>
+            <span class="keyword">return</span><span class="code-operator">{</span><span class="code-string">"error"</span><span class="code-operator">: </span><span class="code-string">"没有正在进行的练习"</span><span class="code-operator">}</span>
+        
+        <span class="code-name">summary</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluator</span><span class="code-operator">.</span><span class="code-function">generate_summary</span><span class="code-operator">(</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-name">messages</span><span class="code-operator">,</span>
+            <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">evaluations</span>
+        <span class="code-operator">)</span>
+        
+        <span class="code-name">conversation_info</span><span class="code-operator"> = </span><span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">conversation_engine</span><span class="code-operator">.</span><span class="code-function">end_conversation</span><span class="code-operator">()</span>
+        <span class="code-name">self</span><span class="code-operator">.</span><span class="code-name">is_active</span><span class="code-operator"> = </span><span class="code-keyword">False</span>
+        
+        <span class="keyword">return</span><span class="code-operator">{</span>
+            <span class="code-string">"status"</span><span class="code-operator">: </span><span class="code-string">"ended"</span><span class="code-operator">,</span>
+            <span class="code-string">"conversation_info"</span><span class="code-operator">: </span><span class="code-name">conversation_info</span><span class="code-operator">,</span>
+            <span class="code-string">"summary"</span><span class="code-operator">: </span><span class="code-name">summary</span>
+        <span class="code-operator">}</span>
+    
+    <span class="code-keyword">def</span><span class="code-function"> list_scenarios</span><span class="code-operator">(</span><span class="code-name">self</span><span class="code-operator">):</span>
+        <span class="keyword">return</span><span class="code-name"> self</span><span class="code-operator">.</span><span class="code-name">scenario_manager</span><span class="code-operator">.</span><span class="code-function">list_scenarios</span><span class="code-operator">()</span></code></section>
+
+<section style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+  <p style="margin: 0 0 10px 0; font-weight: bold; color: #E65100; font-size: 17px;">⚠️ 常见问题</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">1. 对话不自然：优化system prompt，让模型更像真人对话</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">2. 评估不准确：增加评估维度或使用更强大的模型</p>
+  <p style="margin: 0 0 8px 0; color: #5d4037; font-size: 16px; line-height: 1.8;">3. 对话过长导致回复变慢：限制对话轮数或启用流式输出（参考【本地大模型知识库系列】第08篇）</p>
+  <p style="margin: 0; color: #5d4037; font-size: 16px; line-height: 1.8;">4. 缺少语音识别：可以集成Whisper实现语音输入（参考【本地大模型知识库系列】第11篇）</p>
+</section>
+
+<p style="margin: 40px 0 20px 0; text-align: center;">
+  <span style="color: #999; font-size: 14px;">—— 未完待续 ——</span>
+</p>
+
+<p style="margin: 20px 0 40px 0; font-size: 14px; color: #666; text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+  📖 <strong>系列导航：</strong><br>
+  • 本地大模型知识库系列（12篇，已完成）<br>
+  • 英语学习Agent系列（8篇，当前第05篇）<br>
+  <br>
+  英语学习Agent系列第05篇<br>
+  下一篇：写作辅助模块——AI写作教练
+</p>
+
+</section>
+</body>
+</html>

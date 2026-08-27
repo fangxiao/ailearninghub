@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>测试驱动：AI 帮你写测试</title>
+<style>
+/* 
+ * 微信公众号排版样式 - 和谐配色版
+ * 主色调：暖橙 + 海蓝 + 森绿
+ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 16px;
+  color: #3f3f3f;
+  line-height: 1.75;
+  background: #f7f7f7;
+  padding: 20px;
+  letter-spacing: 0.5px;
+}
+
+.container {
+  max-width: 677px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ===== 段落 ===== */
+p {
+  padding: 10px 0;
+  color: #3f3f3f;
+  text-align: justify;
+}
+
+/* ===== 二级标题 ===== */
+h2 {
+  margin: 36px 0 20px;
+  text-align: center;
+  position: relative;
+}
+
+h2 .title-text {
+  font-size: 18px;
+  color: #353535;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+h2 .title-text::before,
+h2 .title-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d5d5d5);
+}
+
+h2 .title-text::before {
+  right: 100%;
+  background: linear-gradient(to left, transparent, #d5d5d5);
+}
+
+h2 .title-text::after {
+  left: 100%;
+}
+
+/* ===== 三级标题 ===== */
+h3 {
+  margin: 28px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #353535;
+}
+
+h3 .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+h3 .title-text {
+  color: #353535;
+  vertical-align: middle;
+}
+
+/* ===== 四级标题 ===== */
+h4 {
+  margin: 20px 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+h4 .h4-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #5eb0ef 0%, #3b9de0 100%);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+h4 .h4-text {
+  color: #3f3f3f;
+}
+
+/* ===== 引用块 ===== */
+blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-left: 4px solid #5eb0ef;
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p {
+  color: #5a5a5a;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+pre {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+pre .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 16px;
+  background: #1e2433;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E");
+  background-position: 12px center;
+  background-repeat: no-repeat;
+}
+
+pre .code-lang {
+  color: #8b949e;
+  font-size: 12px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+pre > code {
+  display: block;
+  padding: 16px 20px;
+  color: #e2e8f0;
+  background: #2d3748;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Pygments 语法高亮样式（Monokai 主题） */
+pre.code-block {
+  background: #272822;
+}
+
+pre.code-block .code-header {
+  background: #1e1f1c;
+}
+
+pre.code-block > pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: #272822;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6em;
+  overflow-x: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Pygments 生成的样式 */
+pre.code-block .hll { background-color: #49483e }
+pre.code-block .c { color: #a8a8a8; font-style: italic } /* Comment - 更亮的灰色 */
+pre.code-block .err { color: #ff6b6b; background-color: #3d1a1a } /* Error - 更明显的红色 */
+pre.code-block .k { color: #66d9ef } /* Keyword */
+pre.code-block .l { color: #ae81ff } /* Literal */
+pre.code-block .n { color: #f8f8f2 } /* Name */
+pre.code-block .o { color: #f92672 } /* Operator */
+pre.code-block .p { color: #f8f8f2 } /* Punctuation */
+pre.code-block .ch { color: #a8a8a8; font-style: italic } /* Comment.Hashbang */
+pre.code-block .cm { color: #a8a8a8; font-style: italic } /* Comment.Multiline */
+pre.code-block .cp { color: #a8a8a8; font-style: italic } /* Comment.Preproc */
+pre.code-block .cpf { color: #a8a8a8; font-style: italic } /* Comment.PreprocFile */
+pre.code-block .c1 { color: #a8a8a8; font-style: italic } /* Comment.Single */
+pre.code-block .cs { color: #a8a8a8; font-style: italic } /* Comment.Special */
+pre.code-block .gd { color: #f92672 } /* Generic.Deleted */
+pre.code-block .ge { font-style: italic } /* Generic.Emph */
+pre.code-block .gi { color: #a6e22e } /* Generic.Inserted */
+pre.code-block .gs { font-weight: bold } /* Generic.Strong */
+pre.code-block .gu { color: #75715e } /* Generic.Subheading */
+pre.code-block .kc { color: #66d9ef } /* Keyword.Constant */
+pre.code-block .kd { color: #66d9ef } /* Keyword.Declaration */
+pre.code-block .kn { color: #f92672 } /* Keyword.Namespace */
+pre.code-block .kp { color: #66d9ef } /* Keyword.Pseudo */
+pre.code-block .kr { color: #66d9ef } /* Keyword.Reserved */
+pre.code-block .kt { color: #66d9ef } /* Keyword.Type */
+pre.code-block .ld { color: #e6db74 } /* Literal.Date */
+pre.code-block .m { color: #ae81ff } /* Literal.Number */
+pre.code-block .s { color: #e6db74 } /* Literal.String */
+pre.code-block .na { color: #a6e22e } /* Name.Attribute */
+pre.code-block .nb { color: #f8f8f2 } /* Name.Builtin */
+pre.code-block .nc { color: #a6e22e } /* Name.Class */
+pre.code-block .no { color: #66d9ef } /* Name.Constant */
+pre.code-block .nd { color: #a6e22e } /* Name.Decorator */
+pre.code-block .ni { color: #f8f8f2 } /* Name.Entity */
+pre.code-block .ne { color: #a6e22e } /* Name.Exception */
+pre.code-block .nf { color: #a6e22e } /* Name.Function */
+pre.code-block .nl { color: #f8f8f2 } /* Name.Label */
+pre.code-block .nn { color: #f8f8f2 } /* Name.Namespace */
+pre.code-block .nx { color: #a6e22e } /* Name.Other */
+pre.code-block .py { color: #f8f8f2 } /* Name.Property */
+pre.code-block .nt { color: #f92672 } /* Name.Tag */
+pre.code-block .nv { color: #f8f8f2 } /* Name.Variable */
+pre.code-block .ow { color: #f92672 } /* Operator.Word */
+pre.code-block .w { color: #f8f8f2 } /* Text.Whitespace */
+pre.code-block .mb { color: #ae81ff } /* Literal.Number.Bin */
+pre.code-block .mf { color: #ae81ff } /* Literal.Number.Float */
+pre.code-block .mh { color: #ae81ff } /* Literal.Number.Hex */
+pre.code-block .mi { color: #ae81ff } /* Literal.Number.Integer */
+pre.code-block .mo { color: #ae81ff } /* Literal.Number.Oct */
+pre.code-block .sa { color: #e6db74 } /* Literal.String.Affix */
+pre.code-block .sb { color: #e6db74 } /* Literal.String.Backtick */
+pre.code-block .sc { color: #e6db74 } /* Literal.String.Char */
+pre.code-block .dl { color: #e6db74 } /* Literal.String.Delimiter */
+pre.code-block .sd { color: #e6db74 } /* Literal.String.Doc */
+pre.code-block .s2 { color: #e6db74 } /* Literal.String.Double */
+pre.code-block .se { color: #ae81ff } /* Literal.String.Escape */
+pre.code-block .sh { color: #e6db74 } /* Literal.String.Heredoc */
+pre.code-block .si { color: #e6db74 } /* Literal.String.Interpol */
+pre.code-block .sx { color: #e6db74 } /* Literal.String.Other */
+pre.code-block .sr { color: #e6db74 } /* Literal.String.Regex */
+pre.code-block .s1 { color: #e6db74 } /* Literal.String.Single */
+pre.code-block .ss { color: #e6db74 } /* Literal.String.Symbol */
+pre.code-block .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
+pre.code-block .fm { color: #a6e22e } /* Name.Function.Magic */
+pre.code-block .vc { color: #f8f8f2 } /* Name.Variable.Class */
+pre.code-block .vg { color: #f8f8f2 } /* Name.Variable.Global */
+pre.code-block .vi { color: #f8f8f2 } /* Name.Variable.Instance */
+pre.code-block .vm { color: #f8f8f2 } /* Name.Variable.Magic */
+pre.code-block .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+
+/* ===== 行内代码 ===== */
+code.inline {
+  color: #e85d04;
+  background: rgba(232, 93, 4, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: 14px;
+}
+
+/* ===== 列表 ===== */
+ul, ol {
+  margin: 14px 0;
+  padding-left: 24px;
+}
+
+ul { list-style-type: disc; }
+ol { list-style-type: decimal; }
+
+li {
+  margin: 8px 0;
+  line-height: 1.75;
+}
+
+li section {
+  color: #3f3f3f;
+}
+
+/* 复选框列表 */
+li.task-item {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+li.task-item section {
+  display: flex;
+  align-items: flex-start;
+}
+
+li.task-item .checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+li.task-item .checkbox.checked {
+  background: #2a9d8f;
+  border-color: #2a9d8f;
+  position: relative;
+}
+
+li.task-item .checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+li.task-item.done section {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* ===== 分隔线 ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 36px 0;
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #e8e8e8;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+td {
+  color: #3f3f3f;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 颜色标记 ===== */
+
+/* 数字 - 暖橙色 */
+.num { color: #ff6b35; font-weight: 600; }
+
+/* 关键词 - 海蓝色 */
+.key { color: #2b8cc4; font-weight: 500; }
+
+/* 重点 - 珊瑚红 */
+.hl { color: #e63946; font-weight: 600; }
+
+/* 成功/推荐 - 森绿色 */
+.success { color: #2a9d8f; }
+
+/* 提示/技巧 - 紫罗兰 */
+.tip { color: #7b68ee; }
+
+/* 警告 - 琥珀色 */
+.warn { color: #f4a261; }
+
+/* ===== 粗体和斜体 ===== */
+strong { 
+  color: #2c2c2c; 
+  font-weight: 600; 
+}
+
+em { 
+  font-style: italic; 
+  color: #5a5a5a; 
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 677px) {
+  body { padding: 0; }
+  .container { padding: 20px 16px; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content" data-tool="mdnice编辑器" data-website="https://www.mdnice.com">
+<p data-tool="mdnice编辑器">阅读时间：<span class="num">25</span>分钟</p>
+<p data-tool="mdnice编辑器">难度等级：⭐⭐⭐ 进阶</p>
+<p data-tool="mdnice编辑器">你将收获：掌握 AI 辅助测试技术，测试覆盖率从 0 到 90%</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">回顾：你已经掌握了什么？</span></h2>
+<p data-tool="mdnice编辑器"><strong>新手篇（01-05）你学会了：</strong></p>
+<ul>
+<li><section>✅ AI Coding 的基础使用</section></li>
+<li><section>✅ <span class="num">5</span>个核心操作</section></li>
+<li><section>✅ 提示词技巧</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>进阶篇前<span class="num">2</span>篇：</strong></p>
+<ul>
+<li><section>✅ 第<span class="num">6</span>篇：代码库理解 - 让 AI 认识项目</section></li>
+<li><section>✅ 第<span class="num">7</span>篇：多文件编辑 - 批量重构技巧</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>你已经能够：</strong></p>
+<ul>
+<li><section>理解项目结构</section></li>
+<li><section>批量修改多个文件</section></li>
+<li><section>进行复杂重构</section></li>
+</ul>
+<p data-tool="mdnice编辑器"><strong>但你还缺少一个关键环节：</strong></p>
+<p data-tool="mdnice编辑器">重构后，如何确保代码没有问题？测试！</p>
+<p data-tool="mdnice编辑器"><strong>问题：</strong> 写测试很花时间，很多人不想写、不会写、写不完。</p>
+<p data-tool="mdnice编辑器"><strong>这一篇将教你：</strong> 如何让 AI 帮你写测试，快速、全面、专业。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">开篇：测试的困境</span></h2>
+<p data-tool="mdnice编辑器"><strong>场景1：不想写测试</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：这个功能写完了<br/>同事：测试呢？<br/>你：没时间...以后补...<br/>（3个月后）<br/>你：由于没有测试，重构引入了3个bug</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景2：不会写测试</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：要测试这个函数<br/>问题：<br/>- 不知道测试什么<br/>- 不知道怎么 mock<br/>- 不知道边界条件<br/>- 写出来的测试很脆弱</code></pre>
+<p data-tool="mdnice编辑器"><strong>场景3：测试写不完</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>你：项目有50个函数<br/>问题：<br/>- 手写测试要2天<br/>- 测试代码比业务代码还多<br/>- 每次改功能都要改测试</code></pre>
+<p data-tool="mdnice编辑器"><strong>解决方法：</strong> 让 AI 帮你写测试，快速、全面、专业。</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">一、为什么测试这么重要？</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.1</span><span class="title-text">测试的价值</span></h3>
+<p data-tool="mdnice编辑器"><strong>测试 = 代码的安全网</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>没有测试：<br/>❌ 改代码心惊胆战<br/>❌ 不知道哪里会出错<br/>❌ 重构不敢动<br/>❌ Bug 反复出现<br/><br/>有测试：<br/>✅ 改代码有信心<br/>✅ 立即发现问题<br/>✅ 重构无压力<br/>✅ Bug 一次修复</code></pre>
+<p data-tool="mdnice编辑器"><strong>测试覆盖率与质量的关系：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>覆盖率</th>
+<th>代码质量</th>
+<th>重构难度</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>0%</td>
+<td>⭐⭐</td>
+<td>😱 很难</td>
+</tr>
+<tr>
+<td>30%</td>
+<td>⭐⭐⭐</td>
+<td>😰 较难</td>
+</tr>
+<tr>
+<td>60%</td>
+<td>⭐⭐⭐⭐</td>
+<td>😊 容易</td>
+</tr>
+<tr>
+<td>90%</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>🎉 很容易</td>
+</tr>
+</tbody>
+</table>
+<h3 data-tool="mdnice编辑器"><span class="icon">1.2</span><span class="title-text">AI 写测试的优势</span></h3>
+<p data-tool="mdnice编辑器"><strong>对比：</strong></p>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>方面</th>
+<th>手写测试</th>
+<th>AI 写测试</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>速度</td>
+<td><span class="num">1</span>小时/函数</td>
+<td><span class="num">1</span>分钟/函数</td>
+</tr>
+<tr>
+<td>覆盖率</td>
+<td>60-70%</td>
+<td>90%+</td>
+</tr>
+<tr>
+<td>边界情况</td>
+<td>经常遗漏</td>
+<td>自动识别</td>
+</tr>
+<tr>
+<td>Mock 设置</td>
+<td>手动配置</td>
+<td>自动生成</td>
+</tr>
+<tr>
+<td>维护成本</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr>
+<td>质量一致性</td>
+<td>因人而异</td>
+<td>稳定</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>AI 的特别能力：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>✅ 自动识别边界情况<br/>✅ 生成多种测试场景<br/>✅ 自动 mock 依赖<br/>✅ 发现隐藏 bug<br/>✅ 保持测试代码质量</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">二、快速上手：生成单元测试</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.1</span><span class="title-text">基础示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>被测试的函数：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/services/user_service.py</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">calculate_discount</span><span style="color: #F8F8F2">(user_level:</span> <span style="color: #F8F8F2">str,</span> <span style="color: #F8F8F2">amount:</span> <span style="color: #F8F8F2">float)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">float:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">    根据用户等级计算折扣</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        user_level: 用户等级（normal, silver, gold, platinum）</span><br/><span style="color: #E6DB74">        amount: 原始金额</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        折扣后金额</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Raises:</span><br/><span style="color: #E6DB74">        ValueError: 用户等级无效或金额为负</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">amount</span> <span style="color: #FF4689">&lt;</span> <span style="color: #AE81FF">0</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;金额不能为负&quot;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #F8F8F2">discounts</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">{</span><br/>        <span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1.0</span><span style="color: #F8F8F2">,</span>      <span style="color: #e0e0e0"># 无折扣</span><br/>        <span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.95</span><span style="color: #F8F8F2">,</span>     <span style="color: #e0e0e0"># 95折</span><br/>        <span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.9</span><span style="color: #F8F8F2">,</span>        <span style="color: #e0e0e0"># 9折</span><br/>        <span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">0.85</span>    <span style="color: #e0e0e0"># 85折</span><br/>    <span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">user_level</span> <span style="color: #FF4689">not</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">discounts:</span><br/>        <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">f&quot;无效的用户等级: {</span><span style="color: #F8F8F2">user_level</span><span style="color: #E6DB74">}&quot;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">amount</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">discounts[user_level]</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>生成测试：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># tests/test_user_service.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> pytest</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.services.user_service </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">calculate_discount</span><br/><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TestCalculateDiscount</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试折扣计算函数&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #e0e0e0"># ===== 正常情况测试 =====</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_normal_user</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试普通用户（无折扣）&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">100.0</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_silver_user</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试银牌用户（95折）&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">95.0</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_gold_user</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试金牌用户（9折）&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">90.0</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_platinum_user</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试白金用户（85折）&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">85.0</span><br/>    <br/>    <span style="color: #e0e0e0"># ===== 边界情况测试 =====</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_zero_amount</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试金额为0&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">0.0</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_very_small_amount</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试极小金额&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.01</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">approx(</span><span style="color: #AE81FF">0.009</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">rel</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1e-2</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_very_large_amount</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试极大金额&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">1000000.0</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">850000.0</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_float_precision</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试浮点数精度&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">99.99</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">approx(</span><span style="color: #AE81FF">94.9905</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">rel</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1e-4</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #e0e0e0"># ===== 异常情况测试 =====</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_invalid_user_level</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试无效用户等级&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">match</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;无效的用户等级&quot;</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;diamond&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_negative_amount</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试负数金额&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">match</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;金额不能为负&quot;</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">-</span><span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_empty_user_level</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试空用户等级&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #e0e0e0"># ===== 参数类型测试 =====</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_string_amount</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试字符串金额（应该失败）&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">TypeError</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;100&#39;</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_integer_amount</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试整数金额（应该自动转换）&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">90.0</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>测试覆盖率：100%</strong></p>
+<p data-tool="mdnice编辑器">✅ 覆盖范围：</p>
+<ul>
+<li><section>正常情况：<span class="num">4</span>个测试</section></li>
+<li><section>边界情况：<span class="num">4</span>个测试</section></li>
+<li><section>异常情况：<span class="num">3</span>个测试</section></li>
+<li><section>类型测试：<span class="num">2</span>个测试</section></li>
+<li><section><strong>总计：<span class="num">13</span>个测试用例</strong></section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">2.2</span><span class="title-text">测试类方法</span></h3>
+<p data-tool="mdnice编辑器"><strong>被测试的类：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/services/order_service.py</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">OrderService</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;订单服务&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">__init__</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">db,</span> <span style="color: #F8F8F2">email_service):</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">db</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">email_service</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">email_service</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">create_order</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">user_id:</span> <span style="color: #F8F8F2">int,</span> <span style="color: #F8F8F2">items:</span> <span style="color: #F8F8F2">list)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">Order:</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;创建订单&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 验证用户</span><br/>        <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_user(user_id)</span><br/>        <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">user:</span><br/>            <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;用户不存在&quot;</span><span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 计算总价</span><br/>        <span style="color: #F8F8F2">total</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">sum(item[</span><span style="color: #E6DB74">&#39;price&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">*</span> <span style="color: #F8F8F2">item[</span><span style="color: #E6DB74">&#39;quantity&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">item</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">items)</span><br/>        <br/>        <span style="color: #e0e0e0"># 创建订单</span><br/>        <span style="color: #F8F8F2">order</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Order(</span><br/>            <span style="color: #F8F8F2">user_id</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">user_id,</span><br/>            <span style="color: #F8F8F2">items</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">items,</span><br/>            <span style="color: #F8F8F2">total</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">total,</span><br/>            <span style="color: #F8F8F2">status</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;pending&#39;</span><br/>        <span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 保存订单</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save_order(order)</span><br/>        <br/>        <span style="color: #e0e0e0"># 发送邮件</span><br/>        <span style="color: #F8F8F2">self</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">email_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">send(</span><br/>            <span style="color: #F8F8F2">to</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">user</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">email,</span><br/>            <span style="color: #F8F8F2">subject</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;订单创建成功&quot;</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #F8F8F2">body</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">f&quot;您的订单总额：{</span><span style="color: #F8F8F2">total</span><span style="color: #E6DB74">}&quot;</span><br/>        <span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">order</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>生成测试（带 Mock）：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># tests/test_order_service.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> pytest</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> unittest.mock </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Mock,</span> <span style="color: #F8F8F2">MagicMock,</span> <span style="color: #F8F8F2">patch</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.services.order_service </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">OrderService</span><br/><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TestOrderService</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试订单服务&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">fixture</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">mock_db</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;模拟数据库&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">db</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Mock()</span><br/>        <span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Mock(return_value</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">Mock(</span><br/>            <span style="color: #F8F8F2">id</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span><br/>            <span style="color: #F8F8F2">email</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;test@example.com&quot;</span><br/>        <span style="color: #F8F8F2">))</span><br/>        <span style="color: #F8F8F2">db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save_order</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Mock()</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">db</span><br/>    <br/>    <span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">fixture</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">mock_email_service</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;模拟邮件服务&quot;&quot;&quot;</span><br/>        <span style="color: #F8F8F2">service</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Mock()</span><br/>        <span style="color: #F8F8F2">service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">send</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Mock()</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">service</span><br/>    <br/>    <span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">fixture</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">order_service</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">mock_db,</span> <span style="color: #F8F8F2">mock_email_service):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;创建订单服务实例&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">OrderService(mock_db,</span> <span style="color: #F8F8F2">mock_email_service)</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_order_success</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">order_service,</span> <span style="color: #F8F8F2">mock_db,</span> <span style="color: #F8F8F2">mock_email_service):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试成功创建订单&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 准备数据</span><br/>        <span style="color: #F8F8F2">items</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;price&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">10.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;quantity&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">2</span><span style="color: #F8F8F2">},</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;price&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">5.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;quantity&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">3</span><span style="color: #F8F8F2">}</span><br/>        <span style="color: #F8F8F2">]</span><br/>        <br/>        <span style="color: #e0e0e0"># 执行</span><br/>        <span style="color: #F8F8F2">order</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">order_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_order(user_id</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">items</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">items)</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">user_id</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">1</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">total</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">35.0</span>  <span style="color: #e0e0e0"># 10*2 + 5*3</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">status</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;pending&#39;</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证数据库调用</span><br/>        <span style="color: #F8F8F2">mock_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_user</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assert_called_once_with(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">mock_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">save_order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assert_called_once()</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证邮件发送</span><br/>        <span style="color: #F8F8F2">mock_email_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">send</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">assert_called_once()</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_order_user_not_found</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">order_service,</span> <span style="color: #F8F8F2">mock_db):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试用户不存在&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 设置 mock 返回 None</span><br/>        <span style="color: #F8F8F2">mock_db</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get_user</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">return_value</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">None</span><br/>        <br/>        <span style="color: #e0e0e0"># 执行并验证异常</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">match</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;用户不存在&quot;</span><span style="color: #F8F8F2">):</span><br/>            <span style="color: #F8F8F2">order_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_order(user_id</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">999</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">items</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[])</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_order_empty_items</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">order_service):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试空订单&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 执行</span><br/>        <span style="color: #F8F8F2">order</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">order_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_order(user_id</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">items</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[])</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">total</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">0.0</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_order_email_sent</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">order_service,</span> <span style="color: #F8F8F2">mock_db,</span> <span style="color: #F8F8F2">mock_email_service):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试邮件发送&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 执行</span><br/>        <span style="color: #F8F8F2">order_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_order(user_id</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">items</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">[</span><br/>            <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;price&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;quantity&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1</span><span style="color: #F8F8F2">}</span><br/>        <span style="color: #F8F8F2">])</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证邮件参数</span><br/>        <span style="color: #F8F8F2">call_args</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">mock_email_service</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">send</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">call_args</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">call_args[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;to&#39;</span><span style="color: #F8F8F2">]</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&quot;test@example.com&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #E6DB74">&quot;订单创建成功&quot;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">call_args[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;subject&#39;</span><span style="color: #F8F8F2">]</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #E6DB74">&quot;100&quot;</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">call_args[</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">][</span><span style="color: #E6DB74">&#39;body&#39;</span><span style="color: #F8F8F2">]</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>关键点：</strong></p>
+<ul>
+<li><section>✅ 自动生成 Mock 对象</section></li>
+<li><section>✅ 验证依赖调用</section></li>
+<li><section>✅ 测试异常情况</section></li>
+<li><section>✅ 验证副作用（邮件发送）</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">三、进阶技巧：高级测试场景</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.1</span><span class="title-text">测试异步代码</span></h3>
+<p data-tool="mdnice编辑器"><strong>被测试的异步函数：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/services/async_service.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> aiohttp</span><br/><br/><span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">fetch_user_data</span><span style="color: #F8F8F2">(user_id:</span> <span style="color: #F8F8F2">int)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">dict:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;异步获取用户数据&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">aiohttp</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">ClientSession()</span> <span style="color: #66D9EF">as</span> <span style="color: #F8F8F2">session:</span><br/>        <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><span style="color: #E6DB74">f&#39;https://api.example.com/users/{</span><span style="color: #F8F8F2">user_id</span><span style="color: #E6DB74">}&#39;</span><span style="color: #F8F8F2">)</span> <span style="color: #66D9EF">as</span> <span style="color: #F8F8F2">response:</span><br/>            <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">status</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">404</span><span style="color: #F8F8F2">:</span><br/>                <span style="color: #66D9EF">raise</span> <span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&quot;用户不存在&quot;</span><span style="color: #F8F8F2">)</span><br/>            <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">response</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">json()</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>生成异步测试：</strong></p>
+<p data-tool="mdnice编辑器">你：为 fetch_user_data 生成测试</p>
+<p data-tool="mdnice编辑器">AI：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># tests/test_async_service.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> pytest</span><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> aiohttp</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> aioresponses </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">aioresponses</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.services.async_service </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">fetch_user_data</span><br/><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TestFetchUserData</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试异步获取用户数据&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">mark</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">asyncio</span><br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_fetch_success</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试成功获取数据&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 模拟 API 响应</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">aioresponses()</span> <span style="color: #66D9EF">as</span> <span style="color: #F8F8F2">m:</span><br/>            <span style="color: #F8F8F2">m</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><br/>                <span style="color: #E6DB74">&#39;https://api.example.com/users/1&#39;</span><span style="color: #F8F8F2">,</span><br/>                <span style="color: #F8F8F2">payload</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;id&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;Alice&#39;</span><span style="color: #F8F8F2">}</span><br/>            <span style="color: #F8F8F2">)</span><br/>            <br/>            <span style="color: #e0e0e0"># 执行</span><br/>            <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">fetch_user_data(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span><br/>            <br/>            <span style="color: #e0e0e0"># 验证</span><br/>            <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #F8F8F2">{</span><span style="color: #E6DB74">&#39;id&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">1</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;name&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #E6DB74">&#39;Alice&#39;</span><span style="color: #F8F8F2">}</span><br/>    <br/>    <span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">mark</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">asyncio</span><br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_user_not_found</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试用户不存在&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">aioresponses()</span> <span style="color: #66D9EF">as</span> <span style="color: #F8F8F2">m:</span><br/>            <span style="color: #F8F8F2">m</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><br/>                <span style="color: #E6DB74">&#39;https://api.example.com/users/999&#39;</span><span style="color: #F8F8F2">,</span><br/>                <span style="color: #F8F8F2">status</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">404</span><br/>            <span style="color: #F8F8F2">)</span><br/>            <br/>            <span style="color: #e0e0e0"># 执行并验证异常</span><br/>            <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">match</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&quot;用户不存在&quot;</span><span style="color: #F8F8F2">):</span><br/>                <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">fetch_user_data(</span><span style="color: #AE81FF">999</span><span style="color: #F8F8F2">)</span><br/>    <br/>    <span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">mark</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">asyncio</span><br/>    <span style="color: #66D9EF">async</span> <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_network_error</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试网络错误&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">aioresponses()</span> <span style="color: #66D9EF">as</span> <span style="color: #F8F8F2">m:</span><br/>            <span style="color: #F8F8F2">m</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">get(</span><br/>                <span style="color: #E6DB74">&#39;https://api.example.com/users/1&#39;</span><span style="color: #F8F8F2">,</span><br/>                <span style="color: #F8F8F2">exception</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">aiohttp</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">ClientError()</span><br/>            <span style="color: #F8F8F2">)</span><br/>            <br/>            <span style="color: #e0e0e0"># 执行并验证异常</span><br/>            <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(aiohttp</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">ClientError):</span><br/>                <span style="color: #66D9EF">await</span> <span style="color: #F8F8F2">fetch_user_data(</span><span style="color: #AE81FF">1</span><span style="color: #F8F8F2">)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>关键点：</strong></p>
+<ul>
+<li><section>✅ 使用 <code class="inline">@pytest.mark.asyncio</code></section></li>
+<li><section>✅ Mock 异步 HTTP 请求</section></li>
+<li><section>✅ 测试网络错误</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.2</span><span class="title-text">测试数据库操作</span></h3>
+<p data-tool="mdnice编辑器"><strong>被测试的数据库操作：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/models/user.py</span><br/><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> sqlalchemy </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Column,</span> <span style="color: #F8F8F2">Integer,</span> <span style="color: #F8F8F2">String</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.db.base </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Base</span><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">User</span><span style="color: #F8F8F2">(Base):</span><br/>    <span style="color: #F8F8F2">__tablename__</span> <span style="color: #FF4689">=</span> <span style="color: #E6DB74">&#39;users&#39;</span><br/>    <br/>    <span style="color: #F8F8F2">id</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Column(Integer,</span> <span style="color: #F8F8F2">primary_key</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #F8F8F2">email</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Column(String,</span> <span style="color: #F8F8F2">unique</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">True</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">nullable</span><span style="color: #FF4689">=</span><span style="color: #66D9EF">False</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #F8F8F2">name</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Column(String)</span><br/>    <br/>    <span style="color: #A6E22E">@classmethod</span><br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">find_by_email</span><span style="color: #F8F8F2">(cls,</span> <span style="color: #F8F8F2">session,</span> <span style="color: #F8F8F2">email:</span> <span style="color: #F8F8F2">str):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;根据邮箱查找用户&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(cls)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">filter(cls</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">email</span> <span style="color: #FF4689">==</span> <span style="color: #F8F8F2">email)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">first()</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>生成数据库测试：</strong></p>
+<p data-tool="mdnice编辑器">你：为 User.find_by_email 生成测试</p>
+<p data-tool="mdnice编辑器">AI：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># tests/test_user_model.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> pytest</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> sqlalchemy </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">create_engine</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> sqlalchemy.orm </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">sessionmaker</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.models.user </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">User</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.db.base </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">Base</span><br/><br/><br/><span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">fixture</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">db_session</span><span style="color: #F8F8F2">():</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;创建测试数据库会话&quot;&quot;&quot;</span><br/>    <span style="color: #e0e0e0"># 使用内存数据库</span><br/>    <span style="color: #F8F8F2">engine</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">create_engine(</span><span style="color: #E6DB74">&#39;sqlite:///:memory:&#39;</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #F8F8F2">Base</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">metadata</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">create_all(engine)</span><br/>    <br/>    <span style="color: #F8F8F2">Session</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">sessionmaker(bind</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">engine)</span><br/>    <span style="color: #F8F8F2">session</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">Session()</span><br/>    <br/>    <span style="color: #66D9EF">yield</span> <span style="color: #F8F8F2">session</span><br/>    <br/>    <span style="color: #F8F8F2">session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">close()</span><br/><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TestUserModel</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试用户模型&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_find_by_email_success</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">db_session):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试成功查找用户&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 准备数据</span><br/>        <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User(email</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;test@example.com&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">name</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;Test User&#39;</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(user)</span><br/>        <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">commit()</span><br/>        <br/>        <span style="color: #e0e0e0"># 执行</span><br/>        <span style="color: #F8F8F2">found</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_by_email(db_session,</span> <span style="color: #E6DB74">&#39;test@example.com&#39;</span><span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">found</span> <span style="color: #FF4689">is</span> <span style="color: #FF4689">not</span> <span style="color: #66D9EF">None</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">found</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">email</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;test@example.com&#39;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">found</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">name</span> <span style="color: #FF4689">==</span> <span style="color: #E6DB74">&#39;Test User&#39;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_find_by_email_not_found</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">db_session):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试用户不存在&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 执行</span><br/>        <span style="color: #F8F8F2">found</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_by_email(db_session,</span> <span style="color: #E6DB74">&#39;notexist@example.com&#39;</span><span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">found</span> <span style="color: #FF4689">is</span> <span style="color: #66D9EF">None</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_find_by_email_case_sensitive</span><span style="color: #F8F8F2">(self,</span> <span style="color: #F8F8F2">db_session):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试邮箱大小写敏感&quot;&quot;&quot;</span><br/>        <span style="color: #e0e0e0"># 准备数据</span><br/>        <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User(email</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;Test@Example.com&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">name</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;Test&#39;</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(user)</span><br/>        <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">commit()</span><br/>        <br/>        <span style="color: #e0e0e0"># 执行</span><br/>        <span style="color: #F8F8F2">found_lower</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_by_email(db_session,</span> <span style="color: #E6DB74">&#39;test@example.com&#39;</span><span style="color: #F8F8F2">)</span><br/>        <span style="color: #F8F8F2">found_upper</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">find_by_email(db_session,</span> <span style="color: #E6DB74">&#39;Test@Example.com&#39;</span><span style="color: #F8F8F2">)</span><br/>        <br/>        <span style="color: #e0e0e0"># 验证</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">found_lower</span> <span style="color: #FF4689">is</span> <span style="color: #66D9EF">None</span>  <span style="color: #e0e0e0"># 小写查不到</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">found_upper</span> <span style="color: #FF4689">is</span> <span style="color: #FF4689">not</span> <span style="color: #66D9EF">None</span>  <span style="color: #e0e0e0"># 原样可以查到</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>关键点：</strong></p>
+<ul>
+<li><section>✅ 使用内存数据库</section></li>
+<li><section>✅ 测试 fixture 隔离</section></li>
+<li><section>✅ 测试边界情况</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">3.3</span><span class="title-text">参数化测试</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 测试多个输入组合</p>
+<p data-tool="mdnice编辑器">你：为折扣函数生成参数化测试</p>
+<p data-tool="mdnice编辑器">AI：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># tests/test_discount.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> pytest</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.services.user_service </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">calculate_discount</span><br/><br/><br/><span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">mark</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">parametrize(</span><span style="color: #E6DB74">&quot;level,amount,expected&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">[</span><br/>    <span style="color: #e0e0e0"># 正常情况</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">95.0</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">90.0</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">85.0</span><span style="color: #F8F8F2">),</span><br/>    <br/>    <span style="color: #e0e0e0"># 边界情况</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.0</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.01</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">0.009</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;platinum&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">1000000.0</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">850000.0</span><span style="color: #F8F8F2">),</span><br/>    <br/>    <span style="color: #e0e0e0"># 特殊值</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;silver&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">99.99</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">94.9905</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;gold&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">3.333</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">2.9997</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">])</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_calculate_discount_normal</span><span style="color: #F8F8F2">(level,</span> <span style="color: #F8F8F2">amount,</span> <span style="color: #F8F8F2">expected):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;参数化测试：正常情况&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">calculate_discount(level,</span> <span style="color: #F8F8F2">amount)</span><br/>    <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">result</span> <span style="color: #FF4689">==</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">approx(expected,</span> <span style="color: #F8F8F2">rel</span><span style="color: #FF4689">=</span><span style="color: #AE81FF">1e-4</span><span style="color: #F8F8F2">)</span><br/><br/><br/><span style="color: #A6E22E">@pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">mark</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">parametrize(</span><span style="color: #E6DB74">&quot;level,amount,error_match&quot;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">[</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;diamond&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;无效的用户等级&quot;</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;无效的用户等级&quot;</span><span style="color: #F8F8F2">),</span><br/>    <span style="color: #F8F8F2">(</span><span style="color: #E6DB74">&#39;normal&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #FF4689">-</span><span style="color: #AE81FF">100.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&quot;金额不能为负&quot;</span><span style="color: #F8F8F2">),</span><br/><span style="color: #F8F8F2">])</span><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_calculate_discount_error</span><span style="color: #F8F8F2">(level,</span> <span style="color: #F8F8F2">amount,</span> <span style="color: #F8F8F2">error_match):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;参数化测试：异常情况&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">with</span> <span style="color: #F8F8F2">pytest</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">raises(</span><span style="color: #A6E22E">ValueError</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">match</span><span style="color: #FF4689">=</span><span style="color: #F8F8F2">error_match):</span><br/>        <span style="color: #F8F8F2">calculate_discount(level,</span> <span style="color: #F8F8F2">amount)</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>优点：</strong></p>
+<ul>
+<li><section>✅ 一个测试函数，多个测试用例</section></li>
+<li><section>✅ 代码简洁，易维护</section></li>
+<li><section>✅ 覆盖全面</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">四、测试驱动开发（TDD）</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.1</span><span class="title-text">TDD 流程</span></h3>
+<p data-tool="mdnice编辑器"><strong>传统开发：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 写代码<br/>2. 写测试<br/>3. 测试失败<br/>4. 修改代码<br/>5. 测试通过</code></pre>
+<p data-tool="mdnice编辑器"><strong>TDD 开发：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 写测试（先失败）<br/>2. 写代码（让测试通过）<br/>3. 重构（优化代码）<br/>4. 重复</code></pre>
+<p data-tool="mdnice编辑器"><strong>TDD with AI：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 告诉 AI 需求 → AI 生成测试（10秒）<br/>2. AI 生成代码（20秒）<br/>3. 运行测试（5秒）<br/>4. 重构优化（可选）</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">4.2</span><span class="title-text">TDD 实战示例</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 开发一个密码验证函数</p>
+<p data-tool="mdnice编辑器"><strong>步骤1：告诉 AI 需求</strong></p>
+<p data-tool="mdnice编辑器">你：我要写一个密码验证函数，要求：</p>
+<ul>
+<li><section>至少<span class="num">8</span>个字符</section></li>
+<li><section>包含大小写字母</section></li>
+<li><section>包含数字</section></li>
+<li><section>包含特殊字符</section></li>
+<li><section>返回布尔值</section></li>
+</ul>
+<p data-tool="mdnice编辑器">AI：我将先生成测试：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># tests/test_password_validator.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> pytest</span><br/><span style="color: #FF4689">from</span><span style="color: #F8F8F2"> app.utils.password </span><span style="color: #FF4689">import</span> <span style="color: #F8F8F2">validate_password</span><br/><br/><br/><span style="color: #66D9EF">class</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">TestPasswordValidator</span><span style="color: #F8F8F2">:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试密码验证&quot;&quot;&quot;</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_valid_password</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试有效密码&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;Passw0rd!&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">True</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;MyP@ss123&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">True</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_too_short</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试太短的密码&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;Pass0!&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_no_uppercase</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试没有大写字母&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;passw0rd!&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_no_lowercase</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试没有小写字母&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;PASSW0RD!&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_no_digit</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试没有数字&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;Password!&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_no_special_char</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试没有特殊字符&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;Passw0rd&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_empty_password</span><span style="color: #F8F8F2">(self):</span><br/><span style="color: #F8F8F2">        </span><span style="color: #E6DB74">&quot;&quot;&quot;测试空密码&quot;&quot;&quot;</span><br/>        <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">validate_password(</span><span style="color: #E6DB74">&quot;&quot;</span><span style="color: #F8F8F2">)</span> <span style="color: #FF4689">==</span> <span style="color: #66D9EF">False</span><br/></code></pre>
+<p data-tool="mdnice编辑器">现在运行测试（应该失败，因为函数不存在）</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code><br/>**步骤2：AI 生成代码**<br/></code></pre>
+<p data-tool="mdnice编辑器">AI：现在生成实现代码：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># app/utils/password.py</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> re</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">validate_password</span><span style="color: #F8F8F2">(password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;</span><br/><span style="color: #E6DB74">    验证密码强度</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    要求：</span><br/><span style="color: #E6DB74">    - 至少8个字符</span><br/><span style="color: #E6DB74">    - 包含大小写字母</span><br/><span style="color: #E6DB74">    - 包含数字</span><br/><span style="color: #E6DB74">    - 包含特殊字符</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Args:</span><br/><span style="color: #E6DB74">        password: 待验证的密码</span><br/><span style="color: #E6DB74">    </span><br/><span style="color: #E6DB74">    Returns:</span><br/><span style="color: #E6DB74">        bool: 是否通过验证</span><br/><span style="color: #E6DB74">    &quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(password)</span> <span style="color: #FF4689">&lt;</span> <span style="color: #AE81FF">8</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(</span><span style="color: #E6DB74">r&#39;[a-z]&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">password):</span>  <span style="color: #e0e0e0"># 小写字母</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(</span><span style="color: #E6DB74">r&#39;[A-Z]&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">password):</span>  <span style="color: #e0e0e0"># 大写字母</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(</span><span style="color: #E6DB74">r&#39;\d&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">password):</span>     <span style="color: #e0e0e0"># 数字</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">if</span> <span style="color: #FF4689">not</span> <span style="color: #F8F8F2">re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(</span><span style="color: #E6DB74">r&#39;[!@#$%^&amp;*(),.?&quot;:{}|&lt;&gt;]&#39;</span><span style="color: #F8F8F2">,</span> <span style="color: #F8F8F2">password):</span>  <span style="color: #e0e0e0"># 特殊字符</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">True</span><br/></code></pre>
+<p data-tool="mdnice编辑器">现在运行测试（应该通过）</p>
+<p data-tool="mdnice编辑器"><strong>步骤3：运行测试</strong></p>
+<p data-tool="mdnice编辑器">AI：✅ 所有测试通过（8/8）</p>
+<p data-tool="mdnice编辑器">你：优化一下代码</p>
+<p data-tool="mdnice编辑器">AI：</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #e0e0e0"># 优化版本</span><br/><br/><span style="color: #FF4689">import</span><span style="color: #F8F8F2"> re</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">validate_password</span><span style="color: #F8F8F2">(password:</span> <span style="color: #F8F8F2">str)</span> <span style="color: #FF4689">-&gt;</span> <span style="color: #F8F8F2">bool:</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;验证密码强度&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">if</span> <span style="color: #F8F8F2">len(password)</span> <span style="color: #FF4689">&lt;</span> <span style="color: #AE81FF">8</span><span style="color: #F8F8F2">:</span><br/>        <span style="color: #66D9EF">return</span> <span style="color: #66D9EF">False</span><br/>    <br/>    <span style="color: #F8F8F2">patterns</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[</span><br/>        <span style="color: #E6DB74">r&#39;[a-z]&#39;</span><span style="color: #F8F8F2">,</span>        <span style="color: #e0e0e0"># 小写字母</span><br/>        <span style="color: #E6DB74">r&#39;[A-Z]&#39;</span><span style="color: #F8F8F2">,</span>        <span style="color: #e0e0e0"># 大写字母</span><br/>        <span style="color: #E6DB74">r&#39;\d&#39;</span><span style="color: #F8F8F2">,</span>           <span style="color: #e0e0e0"># 数字</span><br/>        <span style="color: #E6DB74">r&#39;[!@#$%^&amp;*(),.?&quot;:{}|&lt;&gt;]&#39;</span>  <span style="color: #e0e0e0"># 特殊字符</span><br/>    <span style="color: #F8F8F2">]</span><br/>    <br/>    <span style="color: #66D9EF">return</span> <span style="color: #F8F8F2">all(re</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">search(pattern,</span> <span style="color: #F8F8F2">password)</span> <span style="color: #66D9EF">for</span> <span style="color: #F8F8F2">pattern</span> <span style="color: #FF4689">in</span> <span style="color: #F8F8F2">patterns)</span><br/></code></pre>
+<p data-tool="mdnice编辑器">更简洁，易读</p>
+<p data-tool="mdnice编辑器">你：好的，再运行一次测试</p>
+<p data-tool="mdnice编辑器">AI：✅ 所有测试通过（8/8）</p>
+<p data-tool="mdnice编辑器">✅ 重构后功能不变</p>
+<p data-tool="mdnice编辑器"><strong>时间对比：</strong></p>
+<ul>
+<li><section>手动 TDD：30-<span class="num">60</span>分钟</section></li>
+<li><section>AI TDD：5-<span class="num">10</span>分钟</section></li>
+<li><section>提升：6-10倍</section></li>
+</ul>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">五、测试覆盖率</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.1</span><span class="title-text">什么是覆盖率？</span></h3>
+<p data-tool="mdnice编辑器"><strong>定义：</strong> 测试覆盖的代码行数 / 总代码行数</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>示例：<br/><br/>def add(a, b):      # 第1行<br/>    return a + b    # 第2行<br/><br/>def multiply(a, b): # 第3行<br/>    return a * b    # 第4行<br/><br/>测试：<br/>def test_add():<br/>    assert add(1, 2) == 3<br/><br/>覆盖率：<br/>- 测试了第1、2行<br/>- 没有测试第3、4行<br/>- 覆盖率 = 2/4 = 50%</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.2</span><span class="title-text">覆盖率目标</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>项目类型</th>
+<th>推荐覆盖率</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>个人项目</td>
+<td>60-70%</td>
+</tr>
+<tr>
+<td>团队项目</td>
+<td>70-80%</td>
+</tr>
+<tr>
+<td>企业项目</td>
+<td>80-90%</td>
+</tr>
+<tr>
+<td>金融/医疗</td>
+<td>90%+</td>
+</tr>
+</tbody>
+</table>
+<p data-tool="mdnice编辑器"><strong>关键：</strong></p>
+<ul>
+<li><section>✅ 核心逻辑要 90%+</section></li>
+<li><section>✅ 工具函数可以低一些</section></li>
+<li><section>⚠️ 不要为了覆盖率而测试</section></li>
+</ul>
+<h3 data-tool="mdnice编辑器"><span class="icon">5.3</span><span class="title-text">使用 AI 提高覆盖率</span></h3>
+<p data-tool="mdnice编辑器"><strong>场景：</strong> 当前覆盖率 60%，提升到 90%</p>
+<p data-tool="mdnice编辑器">你：分析覆盖率报告，帮我提升到 90%</p>
+<p data-tool="mdnice编辑器">AI：分析覆盖率报告：</p>
+<p data-tool="mdnice编辑器">未覆盖的代码：</p>
+<ol>
+<li><section>app/services/user_service.py:25-30（异常处理）</section></li>
+<li><section>app/utils/validators.py:15-20（边界检查）</section></li>
+<li><section>app/models/order.py:40-50（状态转换）</section></li>
+</ol>
+<p data-tool="mdnice编辑器">生成测试补充这些部分？</p>
+<p data-tool="mdnice编辑器">你：生成</p>
+<p data-tool="mdnice编辑器">AI：已生成 <span class="num">15</span>个新测试用例：</p>
+<ul>
+<li><section>tests/test_user_service_exception.py（<span class="num">5</span>个）</section></li>
+<li><section>tests/test_validators_edge.py（<span class="num">5</span>个）</section></li>
+<li><section>tests/test_order_state.py（<span class="num">5</span>个）</section></li>
+</ul>
+<p data-tool="mdnice编辑器">运行测试？</p>
+<p data-tool="mdnice编辑器">你：运行</p>
+<p data-tool="mdnice编辑器">AI：✅ 所有测试通过（新+旧：58/58）</p>
+<p data-tool="mdnice编辑器">✅ 覆盖率提升：60% → 92%</p>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">六、最佳实践</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.1</span><span class="title-text">测试命名</span></h3>
+<p data-tool="mdnice编辑器"><strong>好的命名：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_order_with_empty_items_should_return_zero_total</span><span style="color: #F8F8F2">():</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试：创建空订单应该返回0总价&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">pass</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_login_with_invalid_password_should_raise_error</span><span style="color: #F8F8F2">():</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;测试：无效密码登录应该抛出异常&quot;&quot;&quot;</span><br/>    <span style="color: #66D9EF">pass</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>不好的命名：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_order</span><span style="color: #F8F8F2">():</span>  <span style="color: #e0e0e0"># 太模糊</span><br/>    <span style="color: #66D9EF">pass</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_1</span><span style="color: #F8F8F2">():</span>      <span style="color: #e0e0e0"># 无意义</span><br/>    <span style="color: #66D9EF">pass</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.2</span><span class="title-text">测试结构</span></h3>
+<p data-tool="mdnice编辑器"><strong>AAA 模式：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_order</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #e0e0e0"># Arrange（准备）</span><br/>    <span style="color: #F8F8F2">user_id</span> <span style="color: #FF4689">=</span> <span style="color: #AE81FF">1</span><br/>    <span style="color: #F8F8F2">items</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">[{</span><span style="color: #E6DB74">&#39;price&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">10.0</span><span style="color: #F8F8F2">,</span> <span style="color: #E6DB74">&#39;quantity&#39;</span><span style="color: #F8F8F2">:</span> <span style="color: #AE81FF">2</span><span style="color: #F8F8F2">}]</span><br/>    <br/>    <span style="color: #e0e0e0"># Act（执行）</span><br/>    <span style="color: #F8F8F2">order</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">create_order(user_id,</span> <span style="color: #F8F8F2">items)</span><br/>    <br/>    <span style="color: #e0e0e0"># Assert（验证）</span><br/>    <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">order</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">total</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">20.0</span><br/></code></pre>
+<h3 data-tool="mdnice编辑器"><span class="icon">6.3</span><span class="title-text">测试独立性</span></h3>
+<p data-tool="mdnice编辑器"><strong>好的测试：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_user</span><span style="color: #F8F8F2">(db_session):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;每个测试独立&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User(email</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;test@example.com&#39;</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(user)</span><br/>    <span style="color: #66D9EF">assert</span> <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">query(User)</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">count()</span> <span style="color: #FF4689">==</span> <span style="color: #AE81FF">1</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_delete_user</span><span style="color: #F8F8F2">(db_session):</span><br/><span style="color: #F8F8F2">    </span><span style="color: #E6DB74">&quot;&quot;&quot;不依赖上一个测试&quot;&quot;&quot;</span><br/>    <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User(email</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;test2@example.com&#39;</span><span style="color: #F8F8F2">)</span><br/>    <span style="color: #F8F8F2">db_session</span><span style="color: #FF4689">.</span><span style="color: #F8F8F2">add(user)</span><br/>    <span style="color: #e0e0e0"># ...</span><br/></code></pre>
+<p data-tool="mdnice编辑器"><strong>不好的测试：</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #66D9EF">None</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_create_user</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #66D9EF">global</span> <span style="color: #F8F8F2">user</span><br/>    <span style="color: #F8F8F2">user</span> <span style="color: #FF4689">=</span> <span style="color: #F8F8F2">User(email</span><span style="color: #FF4689">=</span><span style="color: #E6DB74">&#39;test@example.com&#39;</span><span style="color: #F8F8F2">)</span>  <span style="color: #e0e0e0"># 依赖全局变量</span><br/>    <span style="color: #e0e0e0"># ...</span><br/><br/><span style="color: #66D9EF">def</span><span style="color: #F8F8F2"> </span><span style="color: #A6E22E">test_delete_user</span><span style="color: #F8F8F2">():</span><br/>    <span style="color: #F8F8F2">delete_user(user)</span>  <span style="color: #e0e0e0"># 依赖上一个测试</span><br/>    <span style="color: #e0e0e0"># ...</span><br/></code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">七、常见问题</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q1：测试太慢怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> 优化策略</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 使用内存数据库<br/>2. Mock 外部依赖<br/>3. 并行运行测试<br/>4. 只运行相关测试</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q2：测试太脆弱怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> 提高测试质量</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 不要测试实现细节<br/>2. 只测试公开接口<br/>3. 使用稳定的测试数据<br/>4. Mock 外部依赖</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">Q3：旧代码没有测试怎么办？</span></h3>
+<p data-tool="mdnice编辑器"><strong>答：</strong> 渐进式补充</p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>1. 先测试核心功能<br/>2. 修改时补充测试<br/>3. 重构时补充测试<br/>4. 不要一次性补全</code></pre>
+<hr/>
+<h2 data-tool="mdnice编辑器"><span class="title-text">八、总结</span></h2>
+<h3 data-tool="mdnice编辑器"><span class="title-text">核心要点</span></h3>
+<p data-tool="mdnice编辑器"><strong>1. 测试的价值</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 代码的安全网<br/>- 重构的信心来源<br/>- 文档的作用</code></pre>
+<p data-tool="mdnice编辑器"><strong>2. AI 写测试的优势</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 快速（1分钟/函数）<br/>- 全面（90%+ 覆盖率）<br/>- 专业（自动识别边界）</code></pre>
+<p data-tool="mdnice编辑器"><strong>3. 测试类型</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 单元测试<br/>- 集成测试<br/>- 端到端测试</code></pre>
+<p data-tool="mdnice编辑器"><strong>4. TDD with AI</strong></p>
+<pre data-tool="mdnice编辑器" class="code-block"><span class="code-header"></span><code>- 先写测试（AI 生成）<br/>- 再写代码（AI 生成）<br/>- 重构优化</code></pre>
+<h3 data-tool="mdnice编辑器"><span class="title-text">效率对比</span></h3>
+<table data-tool="mdnice编辑器">
+<thead><tr>
+<th>任务</th>
+<th>手动</th>
+<th>AI 辅助</th>
+<th>提升</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>写测试</td>
+<td><span class="num">1</span>小时</td>
+<td><span class="num">5</span>分钟</td>
+<td>12倍</td>
+</tr>
+<tr>
+<td>提高覆盖率</td>
+<td><span class="num">1</span>天</td>
+<td><span class="num">2</span>小时</td>
+<td>4倍</td>
+</tr>
+<tr>
+<td>TDD 一个功能</td>
+<td><span class="num">30</span>分钟</td>
+<td><span class="num">5</span>分钟</td>
+<td>6倍</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p data-tool="mdnice编辑器"><strong>系列导航</strong></p>
+<ul>
+<li><section>上一篇：多文件编辑：复杂重构不求人</section></li>
+<li><section>下一篇：调试高手：快速定位和修复 Bug</section></li>
+</ul>
+<hr/>
+<p data-tool="mdnice编辑器">本文是《AI Coding 从入门到精通》系列第<span class="num">8</span>篇</p>
+<p data-tool="mdnice编辑器">作者：生活助理 | 发布时间：2026-04-03</p>
+<p data-tool="mdnice编辑器"><strong>让 AI 帮你写测试，从噩梦变享受，测试覆盖率从 0 到 90%！</strong> 🚀</p>
+</article>
+</div>
+</body>
+</html>

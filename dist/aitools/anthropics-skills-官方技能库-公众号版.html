@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 官方技能库——Anthropic 出品必属精品</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modular%20toolkit%20with%20skill%20blocks%20stacked%20neatly%20Anthropic%20orange%20beige%20professional%20illustration%20clean%20no%20text&image_size=landscape_16_9" alt="anthropics-skills 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    Claude Code 官方技能库——Anthropic 出品必属精品
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    从文档处理到技能创建，一站式官方基石
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 工具实战 | Claude Code 官方 Skill 生态全解
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 越久，越能体会到 Skill 的好处：把工作流封装成可复用的能力包，装上即用，自动激活，省去每次重复教 AI 的麻烦。但当你打开 GitHub 搜 "claude code skill"，会发现一个尴尬的现实：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 第三方 skill 质量参差不齐：有的写得糙，触发条件乱七八糟，装上反而让 Claude 乱跑偏
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 维护断更严重：作者一忙起来就丢一边，Claude Code 升级一次就失效
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 来源不明，不敢装：scope 写得不清不楚，谁知道会不会乱改文件
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 文档处理这种刚需场景，自己写 skill 又太重，反复造轮子
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    说白了，生态里缺一个<strong style="color: #00897B;">稳定的官方基石</strong>，能扛住基础场景、跟 Claude Code 同步升级、维护有保障。这就是 <strong style="color: #00897B;">anthropics/skills</strong> 的价值：Anthropic 官方维护、37.5k Star、覆盖文档处理、前端设计、MCP 搭建、Skill 创建等核心场景，是整个 Skill 生态的"地基"。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">一句话总结：</strong>Anthropic 官方出品的 Skill 库，提供文档处理、前端设计、MCP 搭建、Skill 创建等核心能力，是 Claude Code Skill 生态的官方基石。
+    </p>
+  </section>
+
+  <!-- 章节01：anthropics/skills 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">anthropics/skills 是什么？官方出品的生态标杆</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">anthropics/skills</strong> 是 Anthropic 官方在 GitHub 上维护的 Skill 仓库（<a href="https://github.com/anthropics/skills" style="color: #00897B; text-decoration: none;">github.com/anthropics/skills</a>），目前 Star 数已经突破 <strong style="color: #00897B;">37.5k</strong>。它是一个<strong style="color: #00897B;">官方技能集合</strong>，不是某个单一 Skill，把 Claude Code 用得最多的几个场景做成了高质量、长期维护的基础能力包。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它的核心定位是<strong style="color: #00897B;">"生态标杆"</strong>，既是开箱即用的能力库，也是 Skill 写作的范例库。所有 Skill 都遵循统一的规范：清晰的触发条件、明确的 scope、可读的工作流定义，第三方作者完全可以照着学。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🏢 官方出品</strong>：Anthropic 自己维护，跟 Claude Code 同步迭代，不存在断更风险
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">⭐ 37.5k Star</strong>：社区高度认可，是被验证过的高质量代码
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📦 两个插件包</strong>：document-skills（文档处理）+ example-skills（示例技能），按需安装
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔌 marketplace 一键装</strong>：通过插件市场命令安装，无需手动 clone 仓库
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📖 写作范例</strong>：每个 Skill 都是规范范例，可以拿来学怎么写
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    简单理解：它是 Claude Code Skill 生态里的"标准库"，你不需要从零写 Skill 来处理 PDF/DOCX，也不需要自己研究怎么搭 MCP Server，官方已经把轮子造好，装上就用。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">三种安装方式，从市场到插件包</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    anthropics/skills 提供三种安装入口，<strong style="color: #00897B;">推荐先装 marketplace 再按需装插件包</strong>，精细可控。
+  </p>
+
+  <!-- 方式1：marketplace -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      方式一：通过插件市场安装（推荐）
+    </p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      把 anthropics/skills 仓库添加为插件市场源，之后就能在里面挑具体 Skill 装。等于一次配置，长期可用：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 14px; color: #00897B; line-height: 1.8; word-break: break-all;">
+        /plugin marketplace add anthropics/skills
+      </p>
+    </section>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8;">
+      执行后会拉取仓库元信息，之后用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin list</code> 就能看到所有可用 Skill。
+    </p>
+  </section>
+
+  <!-- 方式2：document-skills -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      方式二：安装文档处理技能包 document-skills
+    </p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      只想要文档处理能力（PDF/DOCX/PPTX/XLSX + 文档协作）？直接装这个包：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 14px; color: #00897B; line-height: 1.8; word-break: break-all;">
+        /plugin install document-skills@anthropic-agent-skills
+      </p>
+    </section>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8;">
+      一行命令拉取 pdf、docx、pptx、xlsx、doc-coauthoring 五个 Skill，自动激活，遇到对应文件类型就启动。
+    </p>
+  </section>
+
+  <!-- 方式3：example-skills -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      方式三：安装示例技能包 example-skills（含 skill-creator）
+    </p>
+    <p style="margin: 0 0 12px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      想要前端设计、Web Artifact、Webapp 测试、MCP 搭建，甚至自己造 Skill？装这个包：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 14px; color: #00897B; line-height: 1.8; word-break: break-all;">
+        /plugin install example-skills@anthropic-agent-skills
+      </p>
+    </section>
+    <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.8;">
+      包含 frontend-design、web-artifacts-builder、webapp-testing、mcp-builder、<strong style="color: #00897B;">skill-creator</strong> 五个 Skill，后面重点讲。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    两种插件包按需安装就行，<strong style="color: #00897B;">不需要全装</strong>。平时处理文档多就装 document-skills，做前端/MCP/Skill 开发就装 example-skills。
+  </p>
+
+  <!-- 章节03：document-skills 详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">document-skills 详解：文档处理一套搞定</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    document-skills 是 anthropics/skills 里<strong style="color: #00897B;">最实用的一个包</strong>，把办公场景下最常碰到的文档格式全覆盖了。装上之后，Claude Code 就像多了个文档处理助手，你扔给它一个 PDF，它能读、能改、能生成；扔个 XLSX，它能算、能填、能输出图表。
+  </p>
+
+  <!-- 对比表格 -->
+  <section style="margin: 25px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">Skill</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">支持能力</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">典型场景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">pdf</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">读取、提取文本/表格、生成 PDF</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">合同分析、报表抽取、生成报告</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">docx</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">读取、修改、生成 Word 文档</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">改合同模板、批量出方案、生成文档</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">pptx</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">读取、生成 PowerPoint 演示</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">从 Markdown 出 PPT、批量改样式</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">xlsx</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">读取、写入、公式计算、图表生成</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">数据分析、财务建模、报表自动化</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; color: #00897B; font-weight: bold;">doc-coauthoring</td>
+          <td style="padding: 12px 10px; color: #3f3f3f;">文档协作写作，多轮迭代修改</td>
+          <td style="padding: 12px 10px; color: #666;">长文写作、多人协作、版本对比</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这五个 Skill 最大的价值是<strong style="color: #00897B;">把"读 + 写 + 转换"打通了</strong>。比如你有一堆 PDF 报告，想让 Claude 提取关键数据汇总到 XLSX，再生成一份 DOCX 总结，以前要装三个工具写三段 prompt，现在装一个包就够了，Claude 自己会按文件类型激活对应 Skill。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 doc-coauthoring 的特别之处</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      其他四个 Skill 都是"处理一个文件"，doc-coauthoring 不一样，它封装的是<strong style="color: #00897B;">多轮协作写作工作流</strong>，包括起草、审阅、修订、定稿。适合写长文档（比如产品 PRD、技术方案）时用，比直接让 Claude"帮我写一份"更有结构。
+    </p>
+  </section>
+
+  <!-- 章节04：example-skills 详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">example-skills 详解：含"元技能" skill-creator</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    example-skills 是另一个插件包，听名字像"示例"，但其实是<strong style="color: #00897B;">开发场景必备</strong>：前端设计、Web 应用、MCP Server、Skill 创建，开发者天天用得到的能力都在这里。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🎨 frontend-design</strong>：前端设计 Skill，按设计稿/需求生成高质量前端代码，注重可访问性和最佳实践
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🌐 web-artifacts-builder</strong>：Web Artifact 构建器，把想法快速落地成可运行的单文件 Web 应用，适合原型验证
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧪 webapp-testing</strong>：Web 应用测试 Skill，自动生成测试用例并执行，覆盖 E2E 测试场景
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔌 mcp-builder</strong>：10 分钟搭一个 MCP Server，4 阶段工作流（研究→实现→测试→评估），支持 TS/Python 双语言
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🛠️ skill-creator</strong>：用来创建新 Skill 的"元技能"，让你自己造 Skill
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    其中 <strong style="color: #00897B;">mcp-builder 我们之前专门写过一篇</strong>（<a href="mcp-builder-10分钟搭MCP-Server-公众号版.html" style="color: #00897B; text-decoration: none;">《10 分钟搭一个 MCP Server——MCP Builder 实战》</a>），感兴趣的可以回头看，这里不重复。
+  </p>
+
+  <!-- 重点：skill-creator 元技能 -->
+  <section style="margin: 30px 0 20px 0; padding: 20px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 18px; color: #00897B; font-weight: bold;">
+      ✨ 重点：skill-creator 是"造 Skill 的 Skill"
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #3f3f3f; line-height: 1.8;">
+      在所有 example-skills 里，最特别的是 <strong style="color: #00897B;">skill-creator</strong>，它本身是一个 Skill，作用是<strong style="color: #00897B;">帮你创建新的 Skill</strong>。这是真正的"元技能"（meta-skill），相当于 Skill 生态的"编译器"。
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 1.8;">
+      你只要描述"我想造一个干 XX 事的 Skill"，它就按照官方规范生成 SKILL.md、配置触发条件、写好工作流定义，最后还能自检质量。第三方 Skill 作者基本都是用它起步的。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    举个例子：你想造一个"代码风格迁移 Skill"，比如把任意代码改成 Google Style，传统的做法是手写 SKILL.md、查文档、反复调试。用 skill-creator，只要说一句"帮我造一个把 Python 代码风格迁移到 Google Style 的 Skill"，它会引导你确认触发条件、生成完整结构、检查 scope 是否合理，几分钟就能交付一个可用的 Skill。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这就是 example-skills 包的真正价值：<strong style="color: #00897B;">给你工具用，也给你造工具的能力</strong>。
+  </p>
+
+  <!-- 章节05：与其他 skill 的关系 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">与其他 Skill 的关系：官方基石 + 第三方扩展</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    anthropics/skills 不是要取代第三方 Skill，而是<strong style="color: #00897B;">当生态的地基</strong>。理解它的定位，要把它放到整个 Skill 生态里看：
+  </p>
+
+  <!-- 关系对比表 -->
+  <section style="margin: 25px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden;">
+      <thead>
+        <tr style="background: #00897B; color: #fff;">
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">层级</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">代表</th>
+          <th style="padding: 12px 10px; text-align: left; font-weight: bold; border: none;">定位</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">官方基石</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">anthropics/skills</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">文档处理、MCP、Skill 创建等基础能力</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #00897B; font-weight: bold;">第三方扩展</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #3f3f3f;">ECC、Humanizer 等</td>
+          <td style="padding: 12px 10px; border-bottom: 1px solid #e8e8e8; color: #666;">覆盖更细分场景，社区驱动创新</td>
+        </tr>
+        <tr style="background: #fafafa;">
+          <td style="padding: 12px 10px; color: #00897B; font-weight: bold;">自定义</td>
+          <td style="padding: 12px 10px; color: #3f3f3f;">用 skill-creator 造的</td>
+          <td style="padding: 12px 10px; color: #666;">团队/个人专属工作流</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">ECC（Everything Claude Code）</strong>是第三方扩展的代表，67 个 Agent、281 个 Skill、94 个斜杠命令，覆盖企业级开发全流程（详见<a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">《给 Claude Code 装个操作系统？ECC 深度测评》</a>）。它和 anthropics/skills 不冲突：ECC 提供广度，官方库提供稳定基石。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Humanizer-zh</strong>则是另一个第三方 Skill 的典型，专注"去 AI 写作痕迹"这件细分事，写得专业、用得趁手（详见<a href="humanizer-skill介绍-公众号版.html" style="color: #00897B; text-decoration: none;">《AI 写的东西一眼识破？Humanizer 实战指南》</a>）。它解决的是 anthropics/skills 没覆盖的场景，两者互补。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border-left: 4px solid #00897B; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 推荐的安装顺序</p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">1.</strong> 先装 anthropics/skills，把官方基石打牢
+    </p>
+    <p style="margin: 0 0 8px 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">2.</strong> 按需装第三方 Skill（ECC 拓宽能力，Humanizer 补细分场景）
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      <strong style="color: #00897B;">3.</strong> 用 skill-creator 把团队工作流沉淀成自定义 Skill
+    </p>
+  </section>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">06</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：这些坑别踩</span>
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑1：用错安装命令</strong><br>
+      有人会直接 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git clone</code> 仓库然后手动复制文件，这是早期做法，现在已经过时。正确方式是用 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin marketplace add</code> 或 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin install</code> 命令，自动处理依赖和路径。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑2：插件包名拼错</strong><br>
+      插件包名是 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">document-skills@anthropic-agent-skills</code> 和 <code style="background: #ffebee; padding: 2px 6px; border-radius: 4px; font-size: 14px;">example-skills@anthropic-agent-skills</code>，<strong>注意是 anthropic-agent-skills 不是 anthropics/skills</strong>。市场源名（anthropics/skills）和包名（anthropic-agent-skills）不一样，别搞混。
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑3：全装反而拖慢响应</strong><br>
+      两个包加起来 10 个 Skill，全装会让 Claude 在每次任务前都过一遍触发判断。建议按需，做文档就只装 document-skills，做开发就只装 example-skills。
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      <strong>⚠️ 坑4：忘了 skill-creator 是用来造 Skill 的</strong><br>
+      很多人装完 example-skills 之后忽略 skill-creator，觉得"我又不写 Skill"。其实只要你有任何重复操作（每周生成报告、每次写 PRD 都重复说背景），都可以用 skill-creator 沉淀成一个 Skill，下次自动调用，省心得多。
+    </p>
+  </section>
+
+  <!-- 实操建议 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">07</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">实操建议：从这 3 步开始</span>
+    </p>
+  </section>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 建议1：先加市场源，再决定装哪个包</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      先执行 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin marketplace add anthropics/skills</code>，然后 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin list</code> 看一眼所有 Skill 列表，确认自己确实需要哪些再装。
+    </p>
+  </section>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 建议2：文档党先装 document-skills</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      如果你日常要处理 PDF 合同、Word 方案、Excel 报表，直接 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin install document-skills@anthropic-agent-skills</code>。装完扔个 PDF 给 Claude，让它抽个数据看看效果，再决定要不要继续。
+    </p>
+  </section>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 建议3：开发党装 example-skills，重点玩 skill-creator</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">
+      做前端的、做 MCP 的、做测试的，装 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">/plugin install example-skills@anthropic-agent-skills</code>。装完先试用 skill-creator 造一个最简单的 Skill（比如"格式化 JSON"），跑通整个流程，再扩展到团队工作流。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      Skill 生态现在最大的问题是"装了不放心"。第三方 Skill 质量参差，断更严重，scope 不清。anthropics/skills 把这个问题解决了：官方维护、长期更新、写作规范，让你至少在文档处理、MCP 搭建、Skill 创建这些核心场景上，能有一个<strong style="color: #00897B;">不踩雷的稳定地基</strong>。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      它不替代第三方扩展，ECC 给你广度，Humanizer 给你深度，skill-creator 让你自己造轮子。但文档处理、MCP 搭建这些最基础的能力，还是得靠官方这个库来托底。
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      Anthropic 官方维护，至少更新和文档不用自己操心。<strong style="color: #00897B;">先把官方这套基础能力装上、跑通，再慢慢扩展其他的</strong>，一步步来，不容易一上来就踩坑。
+    </p>
+  </section>
+
+  <!-- CTA 行动号召卡 -->
+  <section style="margin: 30px 0; padding: 25px 20px; background: #00897B; border-radius: 12px; text-align: center;">
+    <p style="margin: 0 0 15px 0; font-size: 18px; color: #fff; font-weight: bold;">🚀 现在就动手试一试</p>
+    <p style="margin: 0 0 20px 0; font-size: 15px; color: #E0F2F1; line-height: 1.8;">
+      打开 Claude Code，依次执行下面三行命令，把官方技能库装上
+    </p>
+    <section style="background: #fff; border-radius: 8px; padding: 14px 16px; margin: 10px 0; text-align: left;">
+      <p style="margin: 0; font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace; font-size: 13px; color: #00897B; line-height: 1.8; word-break: break-all;">
+        # 1. 添加官方插件市场<br>
+        /plugin marketplace add anthropics/skills<br><br>
+        # 2. 安装文档处理技能包<br>
+        /plugin install document-skills@anthropic-agent-skills<br><br>
+        # 3. 安装示例技能包（含 skill-creator）<br>
+        /plugin install example-skills@anthropic-agent-skills
+      </p>
+    </section>
+    <p style="margin: 15px 0 0 0; font-size: 14px; color: #B2DFDB;">
+      ⭐ GitHub 仓库：github.com/anthropics/skills（37.5k Star）
+    </p>
+  </section>
+
+  <!-- 系列文章关联 -->
+  <section style="margin: 30px 0; padding: 20px; background: #f8f8f8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📚 系列文章推荐</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      📖 <a href="mcp-builder-10分钟搭MCP-Server-公众号版.html" style="color: #00897B; text-decoration: none;">《10 分钟搭一个 MCP Server——MCP Builder 实战》</a>（example-skills 里的核心组件）
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      📖 <a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">《给 Claude Code 装个操作系统？ECC 深度测评》</a>（第三方扩展的代表）
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      📖 <a href="humanizer-skill介绍-公众号版.html" style="color: #00897B; text-decoration: none;">《AI 写的东西一眼识破？Humanizer 实战指南》</a>（第三方 Skill 的例子）
+    </p>
+  </section>
+
+  <!-- 分隔线 -->
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 下期预告 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📖 下期预告</p>
+    <p style="margin: 0; font-size: 16px; color: #666; line-height: 1.8;">
+      下一篇我们将聚焦 skill-creator 的深度实战：从需求拆解到 SKILL.md 生成，手把手教你造第一个自定义 Skill。如果你有想造但不知道怎么下手的 Skill，欢迎在评论区告诉我。
+    </p>
+  </section>
+
+  <!-- Footer CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">
+      💬 你装了 anthropics/skills 之后，最常用的是哪个 Skill？有没有遇到什么坑？欢迎在评论区聊聊
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 14px; color: #999; line-height: 1.8;">
+      觉得有用就点个"在看"，让更多人看到 Anthropic 官方技能库
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #999;">
+      📌 关注公众号，获取更多 Claude Code 实战干货
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

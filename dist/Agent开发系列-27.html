@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent开发系列 27-28</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > pre { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+pre.code-block .k { color: #66d9ef }
+pre.code-block .n { color: #f8f8f2 }
+pre.code-block .o { color: #f92672 }
+pre.code-block .p { color: #f8f8f2 }
+pre.code-block .m { color: #ae81ff }
+pre.code-block .s { color: #e6db74 }
+pre.code-block .nc { color: #a6e22e }
+pre.code-block .nf { color: #a6e22e }
+pre.code-block .il { color: #ae81ff }
+pre.code-block .a8a8a8 { color: #a8a8a8; font-style: italic }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="container">
+<article id="js_content">
+
+<h2><span class="title-text">实战01：个人助手Agent</span></h2>
+
+<p>前面讲了这么多理论，这一篇开始实战。从零构建一个完整的个人助手Agent，功能包括：日程管理、信息查询、任务提醒。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>实战项目的价值在于把知识点串联起来。做一遍，比看十遍都有用。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">项目结构</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">text</span></span><code><span style="color: #a8a8a8; font-style: italic;">personal-assistant/
+</span><span style="color: #f8f8f2">├── main.py              </span><span style="color: #a8a8a8; font-style: italic;"># 入口文件</span>
+<span style="color: #f8f8f2">├── agent/
+</span><span style="color: #f8f8f2">│   ├── __init__.py</span>
+<span style="color: #f8f8f2">│   ├── core.py          </span><span style="color: #a8a8a8; font-style: italic;"># Agent核心</span>
+<span style="color: #f8f8f2">│   ├── memory.py        </span><span style="color: #a8a8a8; font-style: italic;"># 记忆系统</span>
+<span style="color: #f8f8f2">│   └── tools.py         </span><span style="color: #a8a8a8; font-style: italic;"># 工具定义</span>
+<span style="color: #f8f8f2">├── services/
+</span><span style="color: #f8f8f2">│   ├── calendar.py      </span><span style="color: #a8a8a8; font-style: italic;"># 日历服务</span>
+<span style="color: #f8f8f2">│   ├── reminder.py      </span><span style="color: #a8a8a8; font-style: italic;"># 提醒服务</span>
+<span style="color: #f8f8f2">│   └── search.py        </span><span style="color: #a8a8a8; font-style: italic;"># 搜索服务</span>
+<span style="color: #f8f8f2">└── config.py           </span><span style="color: #a8a8a8; font-style: italic;"># 配置文件</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">Agent核心实现</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># agent/core.py</span>
+<span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> os</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing import </span><span style="color: #a6e22e">List</span><span style="color: #f8f8f2">, Dict, Any</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">PersonalAssistantAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.memory = </span><span style="color: #a6e22e">ConversationMemory</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.tools = </span><span style="color: #a6e22e">ToolRegistry</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.llm = </span><span style="color: #a6e22e">OpenAI</span><span style="color: #f8f8f2">(model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">, api_key=os.</span><span style="color: #a6e22e">getenv</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"OPENAI_API_KEY"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #f8f8f2">        self.</span><span style="color: #a6e22e">_register_tools</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_register_tools</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.tools.</span><span style="color: #a6e22e">register</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">CalendarTool</span><span style="color: #f8f8f2">())</span>
+<span style="color: #f8f8f2">        self.tools.</span><span style="color: #a6e22e">register</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">ReminderTool</span><span style="color: #f8f8f2">())</span>
+<span style="color: #f8f8f2">        self.tools.</span><span style="color: #a6e22e">register</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">SearchTool</span><span style="color: #f8f8f2">())</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">process</span><span style="color: #f8f8f2">(self, user_input: </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">) -> </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">        context = self.memory.</span><span style="color: #a6e22e">get_context</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        available_tools = self.tools.</span><span style="color: #a6e22e">get_tools_for_llm</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">        response = self.llm.</span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            messages=[</span>
+<span style="color: #f8f8f2">                {</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"system"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"你是一个贴心的个人助手..."</span><span style="color: #f8f8f2">},</span>
+<span style="color: #f8f8f2">                {</span><span style="color: #e6db74">"role"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"content"</span><span style="color: #f8f8f2">: user_input}</span>
+<span style="color: #f8f8f2">            ],</span>
+<span style="color: #f8f8f2">            tools=available_tools</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">        self.memory.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"user"</span><span style="color: #f8f8f2">, user_input)</span>
+<span style="color: #f8f8f2">        self.memory.</span><span style="color: #a6e22e">add_message</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">"assistant"</span><span style="color: #f8f8f2">, response.content)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.content</span></code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">工具实现</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># agent/tools.py</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> abc </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> ABC, abstractmethod</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing import </span><span style="color: #a6e22e">Dict</span><span style="color: #f8f8f2">, Any</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">BaseTool</span><span style="color: #f8f8f2">(ABC):</span>
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">abstract</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self) -> </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">pass</span>
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">abstract</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self) -> </span><span style="color: #a6e22e">str</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">pass</span>
+<span style="color: #f8f8f2">    @abstractmethod</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, **kwargs) -> </span><span style="color: #a6e22e">Any</span><span style="color: #f8f8f2">: </span><span style="color: #66d9ef">pass</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">CalendarTool</span><span style="color: #f8f8f2">(</span><span style="color: #a6e22e">BaseTool</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">name</span><span style="color: #f8f8f2">(self): </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"calendar"</span>
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">description</span><span style="color: #f8f8f2">(self): </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"查询或添加日历事件"</span>
+<span style="color: #f8f8f2">    @property</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parameters</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"action"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"enum"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"add"</span><span style="color: #f8f8f2">]},</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"date"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">},</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"event"</span><span style="color: #f8f8f2">: {</span><span style="color: #e6db74">"type"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"string"</span><span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">execute</span><span style="color: #f8f8f2">(self, action, date, event=</span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> action == </span><span style="color: #e6db74">"query"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> calendar_service.</span><span style="color: #a6e22e">get_events</span><span style="color: #f8f8f2">(date)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> action == </span><span style="color: #e6db74">"add"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> calendar_service.</span><span style="color: #a6e22e">add_event</span><span style="color: #f8f8f2">(date, event)</span></code></pre>
+
+<blockquote><p>💡 <strong>实战要点：</strong>模块化设计让代码清晰、工具注册机制让扩展容易、记忆系统让Agent变得"聪明"。</p></blockquote>
+
+<hr/>
+
+<h2><span class="title-text">实战02：多Agent客服系统</span></h2>
+
+<p>第二个实战项目：构建一个多Agent客服系统。包含接待Agent、客服Agent、售后Agent，通过消息总线协作。</p>
+
+<blockquote><p>💡 <strong>核心观点：</strong>多Agent系统的核心是协调机制。消息总线、任务分发、结果聚合——这三件事做好，多Agent系统就跑起来了。</p></blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">系统架构</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># customer_service_system.py</span>
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">CustomerServiceSystem</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self):</span>
+<span style="color: #f8f8f2">        self.message_bus = </span><span style="color: #a6e22e">MessageBus</span><span style="color: #f8f8f2">()</span>
+<span style="color: #f8f8f2">        self.orchestrator = </span><span style="color: #a6e22e">TeamOrchestrator</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 初始化三个Agent</span>
+<span style="color: #f8f8f2">        self.reception = </span><span style="color: #a6e22e">ReceptionAgent</span><span style="color: #f8f8f2">(self.message_bus)</span>
+<span style="color: #f8f8f2">        self.support = </span><span style="color: #a6e22e">SupportAgent</span><span style="color: #f8f8f2">(self.message_bus)</span>
+<span style="color: #f8f8f2">        self.after_sales = </span><span style="color: #a6e22e">AfterSalesAgent</span><span style="color: #f8f8f2">(self.message_bus)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 注册到编排器</span>
+<span style="color: #f8f8f2">        self.orchestrator.</span><span style="color: #a6e22e">add_member</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            self.reception, </span><span style="color: #a6e22e">AgentRole</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">COORDINATOR</span><span style="color: #f8f8f2">, [</span><span style="color: #e6db74">"reception"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        )</span>
+<span style="color: #f8f8f2">        self.orchestrator.</span><span style="color: #a6e22e">add_member</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            self.support, </span><span style="color: #a6e22e">AgentRole</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">EXECUTOR</span><span style="color: #f8f8f2">, [</span><span style="color: #e6db74">"support"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        )</span>
+<span style="color: #f8f8f2">        self.orchestrator.</span><span style="color: #a6e22e">add_member</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            self.after_sales, </span><span style="color: #a6e22e">AgentRole</span><span style="color: #f8f8f2">.</span><span style="color: #a6e22e">EXECUTOR</span><span style="color: #f8f8f2">, [</span><span style="color: #e6db74">"after_sales"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        )</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">handle_customer</span><span style="color: #f8f8f2">(self, message):</span>
+<span style="color: #f8f8f2">        ticket = self.message_bus.</span><span style="color: #a6e22e">create_ticket</span><span style="color: #f8f8f2">(message)</span>
+<span style="color: #f8f8f2">        category = self.reception.</span><span style="color: #a6e22e">classify</span><span style="color: #f8f8f2">(message)</span>
+
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> category == </span><span style="color: #e6db74">"support"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            result = self.orchestrator.</span><span style="color: #a6e22e">assign_task</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">                {</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">: ticket.id, </span><span style="color: #e6db74">"task"</span><span style="color: #f8f8f2">: message, </span><span style="color: #e6db74">"capabilities"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"support"</span><span style="color: #f8f8f2">]},</span>
+<span style="color: #f8f8f2">                self.support_member</span>
+<span style="color: #f8f8f2">            )</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            result = self.orchestrator.</span><span style="color: #a6e22e">assign_task</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">                {</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">: ticket.id, </span><span style="color: #e6db74">"task"</span><span style="color: #f8f8f2">: message, </span><span style="color: #e6db74">"capabilities"</span><span style="color: #f8f8f2">: [</span><span style="color: #e6db74">"after_sales"</span><span style="color: #f8f8f2">]},</span>
+<span style="color: #f8f8f2">                self.after_sales_member</span>
+<span style="color: #f8f8f2">            )</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> result</span></code></pre>
+
+<h3><span class="icon">2</span><span class="title-text">Agent实现</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">ReceptionAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, message_bus):</span>
+<span style="color: #f8f8f2">        self.message_bus = message_bus</span>
+<span style="color: #f8f8f2">        self.llm = </span><span style="color: #a6e22e">OpenAI</span><span style="color: #f8f8f2">(model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">classify</span><span style="color: #f8f8f2">(self, message):</span>
+<span style="color: #f8f8f2">        prompt = </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"""将客户问题分类：
+</span>
+<span style="color: #e6db74">{message}
+
+类别：support（技术支持）/ after_sales（售后）/ billing（账单）"""</span>
+<span style="color: #f8f8f2">        response = self.llm.</span><span style="color: #a6e22e">generate</span><span style="color: #f8f8f2">(prompt)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response.strip().</span><span style="color: #a6e22e">lower</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SupportAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, message_bus):</span>
+<span style="color: #f8f8f2">        self.message_bus = message_bus</span>
+<span style="color: #f8f8f2">        self.llm = </span><span style="color: #a6e22e">OpenAI</span><span style="color: #f8f8f2">(model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        self.kb = </span><span style="color: #a6e22e">KnowledgeBase</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">handle</span><span style="color: #f8f8f2">(self, ticket):</span>
+<span style="color: #f8f8f2">        solution = self.kb.</span><span style="color: #a6e22e">search</span><span style="color: #f8f8f2">(ticket.message)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if not</span><span style="color: #f8f8f2"> solution:</span>
+<span style="color: #f8f8f2">            solution = self.llm.</span><span style="color: #a6e22e">generate</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">                </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"作为技术支持回答：{ticket.message}"</span>
+<span style="color: #f8f8f2">            )</span>
+<span style="color: #f8f8f2">        self.message_bus.</span><span style="color: #a6e22e">send_response</span><span style="color: #f8f8f2">(ticket.id, solution)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> solution</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">AfterSalesAgent</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self, message_bus):</span>
+<span style="color: #f8f8f2">        self.message_bus = message_bus</span>
+<span style="color: #f8f8f2">        self.llm = </span><span style="color: #a6e22e">OpenAI</span><span style="color: #f8f8f2">(model=</span><span style="color: #e6db74">"gpt-4"</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">handle</span><span style="color: #f8f8f2">(self, ticket):</span>
+<span style="color: #f8f8f2">        response = self.llm.</span><span style="color: #a6e22e">generate</span><span style="color: #f8f8f2">(</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a6e22e">f</span><span style="color: #e6db74">"作为售后客服回答：{ticket.message}"</span>
+<span style="color: #f8f8f2">        )</span>
+<span style="color: #f8f8f2">        self.message_bus.</span><span style="color: #a6e22e">send_response</span><span style="color: #f8f8f2">(ticket.id, response)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response</span></code></pre>
+
+<blockquote><p>💡 <strong>多Agent客服优势：</strong>专业分工、7x24不间断、并发处理。三个Agent各司其职，客服效率翻倍。</p></blockquote>
+
+<p>有问题欢迎留言。</p>
+
+<hr/>
+
+<p><strong>📎 相关系列阅读</strong></p>
+<ul>
+<li>Agent开发系列 25-26：可观测性 + 生产部署</li>
+</ul>
+
+<p>下期预告：Agent开发系列 29-30 — 框架对比 + 终极总结</p>
+
+<p style="text-align: center; color: #999;">Agent开发系列 · 用代码理解AI</p>
+
+</article>
+</div>
+</body>
+</html>

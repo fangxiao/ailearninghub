@@ -1,0 +1,10 @@
+graph TD
+    A["User Message"] --> B["Session Management"]
+    B --> C["Memory Retrieval"]
+    C --> D["Prompt Rendering"]
+    D --> E["LLM Call"]
+    E --> F{"Tool Call?"}
+    F -->|Yes| G["Execute Tool"]
+    F -->|No| H["Memory Storage"]
+    G --> H
+    H --> I["Return Response"]

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型原理系列 07 · GPT生成原理</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #e8f5e9 0%, #fff 100%); border-left-color: #66bb6a; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.feynman { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.feynman p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #fce4ec 0%, #fff 100%); border-left: #e91e63; }
+blockquote.opinion p { color: #5a5a5a; }
+.quiz-box { background: linear-gradient(135deg, #ffe0b2 0%, #fff 100%); border: 2px dashed #ff9800; border-radius: 12px; padding: 20px; margin: 24px 0; }
+.quiz-box .quiz-title { font-size: 15px; font-weight: bold; color: #e65100; margin-bottom: 12px; }
+.quiz-box .quiz-answer { background: #fff8e1; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 14px; }
+.dialogue { background: #f0f4ff; border-radius: 10px; padding: 16px; margin: 20px 0; }
+.dialogue .teacher { font-weight: bold; color: #667eea; }
+.dialogue .student { font-weight: bold; color: #ff9800; }
+.dialogue p { margin: 8px 0; font-size: 14px; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2b8cc4; font-weight: 500; }
+.series-link { display: inline-block; padding: 4px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 20px; font-size: 12px; margin-right: 8px; }
+.img-block { text-align: center; margin: 30px 0; }
+.img-block img { max-width: 100%; border-radius: 8px; }
+.img-caption { font-size: 12px; color: #888; text-align: center; margin-top: 8px; font-style: italic; }
+.fun-fact { background: linear-gradient(135deg, #e1bee7 0%, #fff 100%); border-left: 4px solid #9c27b0; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+.fun-fact .fact-title { font-size: 14px; font-weight: bold; color: #7b1fa2; margin-bottom: 8px; }
+.math-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px 18px; margin: 16px 0; border-left: 4px solid #667eea; }
+.math-card .card-title { font-size: 15px; font-weight: bold; color: #353535; margin: 0 0 6px; }
+.math-card .card-content { font-size: 14px; color: #5a5a5a; line-height: 1.8; margin: 0 0 6px; }
+.math-card .analogy { background: #e8f5e9; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 13px; color: #2e7d32; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">大模型原理系列 07</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+<span class="series-link">系列七</span>
+GPT生成原理 —— AI是怎么一个字一个字"写"出来的
+</p>
+
+<blockquote class="opinion">
+<p><strong>我的观点：</strong>很多人以为GPT是"一次性生成整段话"，其实不是。GPT是"一个字一个字"地生成——每次只预测下一个字是什么，然后把预测出来的字加到输入里，继续预测下一个。这个过程叫"自回归生成"，是理解ChatGPT工作原理的关键。</p>
+</blockquote>
+
+<section class="quiz-box">
+<p class="quiz-title">先问大家一个问题</p>
+<p>你在ChatGPT里输入："请写一首关于春天的诗"</p>
+<p>ChatGPT开始输出：</p>
+<p style="font-size: 16px; text-align: center; padding: 12px 0; color: #333;">
+"春风吹绿了柳枝，<br>
+桃花朵朵笑开颜..."
+</p>
+<p>这些字是怎么出来的？</p>
+<section class="quiz-answer">
+<p>不是一次性想好整首诗，而是一个字一个字地"猜"出来的。每猜一个字，都要看前面已经写了什么，然后决定下一个字该写什么。</p>
+</section>
+</section>
+
+<h3><span class="icon">0</span><span class="title-text">上期回顾：Token是什么</span></h3>
+
+<p>上期我们讲了Token——AI处理文本的基本单位。不管是输入还是输出，AI都在处理Token。</p>
+
+<p>但Token是怎么变成输出的？这就是今天要讲的：<strong>GPT的生成过程</strong>。</p>
+
+<h3><span class="icon">1</span><span class="title-text">自回归生成：一个字一个字地"猜"</span></h3>
+
+<p>GPT的核心工作方式是<strong>自回归生成（Autoregressive Generation）</strong>。</p>
+
+<p>简单说就是：</p>
+
+<ul>
+<li>输入一段文字</li>
+<li>预测下一个字是什么</li>
+<li>把预测的字加到输入后面</li>
+<li>继续预测下一个字</li>
+<li>重复这个过程，直到生成结束</li>
+</ul>
+
+<div class="fun-fact">
+<p class="fact-title">生活中的类比</p>
+<p>就像你写作文：</p>
+<p>• 写完"今天"，想下一个字该写什么</p>
+<p>• 写了"天气"，继续想下一个字</p>
+<p>• 写了"很好"，再想下一个字...</p>
+<p style="margin-top:8px;">你不是先把整篇作文想好再写，而是一边写一边想。GPT也是这样。</p>
+</div>
+
+<h3><span class="icon">2</span><span class="title-text">具体过程演示</span></h3>
+
+<p>假设你输入："今天天气"</p>
+
+<p>GPT的生成过程是这样的：</p>
+
+<table>
+<tr>
+<th>步骤</th>
+<th>当前输入</th>
+<th>预测下一个字</th>
+<th>选择</th>
+</tr>
+<tr>
+<td>1</td>
+<td>"今天天气"</td>
+<td>可能是：很(0.3)、不错(0.2)、真好(0.15)...</td>
+<td>"很"</td>
+</tr>
+<tr>
+<td>2</td>
+<td>"今天天气很"</td>
+<td>可能是：好(0.4)、热(0.2)、冷(0.1)...</td>
+<td>"好"</td>
+</tr>
+<tr>
+<td>3</td>
+<td>"今天天气很好"</td>
+<td>可能是：，(0.3)、。(0.2)、！(0.1)...</td>
+<td>"，"</td>
+</tr>
+<tr>
+<td>4</td>
+<td>"今天天气很好，"</td>
+<td>可能是：适合(0.2)、我们(0.15)、出门(0.1)...</td>
+<td>"适合"</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</table>
+
+<p>每一步，GPT都会计算<strong>所有可能的下一个字</strong>的概率，然后选择一个。</p>
+
+<div class="img-block">
+<img src="data:image/png;base64,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">
+<p class="img-caption">图1：自回归生成过程——每一步都基于前面已生成的内容预测下一个字</p>
+</div>
+
+<h3><span class="icon">3</span><span class="title-text">为什么叫"自回归"？</span></h3>
+
+<p>"自回归"这个词听起来很高级，其实意思很简单：</p>
+
+<div class="math-card">
+<p class="card-title">自回归的含义</p>
+<p class="card-content"><strong>自</strong>：自己生成的输出，又成为下一轮的输入</p>
+<p class="card-content"><strong>回归</strong>：回到自己身上，用自己之前的结果来预测新的结果</p>
+<p class="analogy"><strong>类比：</strong>就像滚雪球——雪球越滚越大，因为它把自己滚过的雪都带上了。GPT也是，每生成一个字，这个字就加入"记忆"，用来生成下一个字。</p>
+</div>
+
+<div class="dialogue">
+<p class="teacher">老师：为什么GPT要用自回归方式生成？</p>
+<p class="student">小明：因为语言就是这样——每个字都和前面的字有关系？</p>
+<p class="teacher">老师：没错！语言是"序列数据"，有天然的顺序。"今天天气很好"和"很好天气今天"意思完全不同。自回归生成正是利用了这个顺序——每次只看前面的内容来预测下一个。</p>
+</div>
+
+<h3><span class="icon">4</span><span class="title-text">概率分布：AI是怎么"选择"的？</span></h3>
+
+<p>每一步，GPT输出的不是一个字，而是一个<strong>概率分布</strong>——所有可能的下一个字，每个都有一个概率值。</p>
+
+<p>比如输入"今天天气"，GPT可能输出：</p>
+
+<ul>
+<li>"很"：30%</li>
+<li>"不错"：20%</li>
+<li>"真好"：15%</li>
+<li>"晴朗"：10%</li>
+<li>...（其他几万个字，每个都有概率）</li>
+</ul>
+
+<p>然后，GPT会根据这个概率分布<strong>采样</strong>一个字。采样方式有几种：</p>
+
+<table>
+<tr>
+<th>采样方式</th>
+<th>说明</th>
+<th>特点</th>
+</tr>
+<tr>
+<td><strong>贪心采样</strong></td>
+<td>永远选概率最高的</td>
+<td>输出最"安全"，但可能重复、无聊</td>
+</tr>
+<tr>
+<td><strong>随机采样</strong></td>
+<td>按概率随机选</td>
+<td>输出多样，但可能不连贯</td>
+</tr>
+<tr>
+<td><strong>Top-k采样</strong></td>
+<td>只从前k个概率最高的里选</td>
+<td>平衡多样性和连贯性</td>
+</tr>
+<tr>
+<td><strong>温度采样</strong></td>
+<td>调整概率分布的"陡峭程度"</td>
+<td>温度高=更有创意，温度低=更保守</td>
+</tr>
+</table>
+
+<h3><span class="icon">5</span><span class="title-text">温度参数：控制AI的"创意度"</span></h3>
+
+<p>你可能见过ChatGPT有个"temperature"参数。这是干什么的？</p>
+
+<p>温度（Temperature）控制概率分布的形状：</p>
+
+<ul>
+<li><strong>温度 = 0</strong>：永远选概率最高的字（最保守，最确定）</li>
+<li><strong>温度 = 0.7</strong>：稍微有点随机（平衡，ChatGPT默认值）</li>
+<li><strong>温度 = 1.0</strong>：完全按原始概率（更有创意，但也更可能出错）</li>
+<li><strong>温度 > 1</strong>：非常随机（可能胡言乱语）</li>
+</ul>
+
+<div class="math-card">
+<p class="card-title">温度的数学原理</p>
+<p class="card-content">原始概率分布经过温度调整后：</p>
+<p class="card-content">新的概率 = exp(原始分数 / 温度) / 归一化常数</p>
+<p class="analogy"><strong>类比：</strong>温度就像"放大镜"。温度低，放大镜把高概率的字放得更大，低概率的字几乎看不见；温度高，所有字的概率都变得差不多，选择就更随机。</p>
+</div>
+
+<h3><span class="icon">6</span><span class="title-text">生成结束：什么时候停止？</span></h3>
+
+<p>GPT不会一直生成下去，它需要知道什么时候该停。</p>
+
+<p>停止条件有几种：</p>
+
+<ul>
+<li><strong>遇到结束符</strong>：GPT训练时学过一个特殊的"结束Token"，生成到这个Token就停</li>
+<li><strong>达到最大长度</strong>：比如限制最多生成1000个字</li>
+<li><strong>用户中断</strong>：用户点击"停止生成"按钮</li>
+</ul>
+
+<h3><span class="icon">7</span><span class="title-text">为什么GPT能"续写"？</span></h3>
+
+<p>理解了自回归生成，你就明白了为什么GPT擅长"续写"任务。</p>
+
+<p>因为续写本质上就是：<strong>给定前面的内容，预测后面的内容</strong>——这正是自回归生成在做的事！</p>
+
+<p>不管是：</p>
+<ul>
+<li>写代码（给定函数名，续写函数体）</li>
+<li>写文章（给定标题，续写正文）</li>
+<li>对话（给定问题，续写回答）</li>
+</ul>
+
+<p>都是同一个原理：<strong>把已有内容当输入，预测下一个字，循环往复</strong>。</p>
+
+<h3><span class="icon">8</span><span class="title-text">总结</span></h3>
+
+<blockquote class="highlight">
+<p><strong>GPT生成的核心原理：</strong></p>
+<p>1. 自回归生成：一个字一个字地预测</p>
+<p>2. 每次预测输出概率分布，然后采样选择</p>
+<p>3. 生成的字加入输入，继续预测下一个</p>
+<p>4. 温度参数控制"创意度"（保守 vs 随机）</p>
+<p>5. 遇到结束符或达到长度限制时停止</p>
+</blockquote>
+
+<p>理解了自回归生成，你就理解了ChatGPT是怎么"说话"的——它不是一次性想好整段话，而是一边说一边想，每说一个字都要看前面说了什么。</p>
+
+<section class="fun-fact">
+<p class="fact-title">📖 下篇预告</p>
+<p>下期我们会讲：<strong>为什么模型越大越聪明</strong>——Scaling Law（缩放定律）。为什么GPT-3有1750亿参数？为什么参数越多效果越好？这背后有什么规律？</p>
+</section>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>系列七：大模型原理系列</strong><br>
+01 · Transformer架构原理<br>
+02 · Self-Attention数学原理<br>
+03 · 位置编码：让模型知道"谁在前面"<br>
+04 · 多头注意力：让模型从多个角度理解<br>
+05 · Encoder-Decoder架构：大模型的"双脑"结构<br>
+06 · Token：AI是怎么"认字"的<br>
+07 · GPT生成原理：AI是怎么一个字一个字"写"出来的 ← 你在这里<br>
+08 · Scaling Law：为什么模型越大越聪明
+</p>
+
+</div>
+</body>
+</html>

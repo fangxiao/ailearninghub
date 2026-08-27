@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>让 AI 写出 Production Ready 的 React 代码——Vercel Agent Skills 实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=black%20triangle%20logo%20morphing%20into%20react%20components%20monochrome%20geometric%20minimalist%20white%20background%20modern%20web%20no%20text&image_size=landscape_16_9" alt="vercel-agent-skills 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    让 AI 写出 Production Ready 的 React 代码
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    Vercel Agent Skills 实战：45 条规则约束 AI
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Vercel 官方技能库实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    让 AI 写 React 代码，你大概率经历过下面这种"实习生式交付"：
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 一句话需求丢过去，AI 默默甩出一个 800 行的 <strong>page.tsx</strong>，客户端组件、服务端组件、数据获取、UI 全揉一起
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 本来该用 Server Component 取数，AI 全部加上 <strong>'use client'</strong>，瀑布请求、JS 包爆炸
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ Image 组件不会用，直接 <strong>&lt;img src&gt;</strong>，首屏 LCP 4 秒起步
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #c62828; line-height: 1.8;">
+      ❌ 代码"能跑就行"，看着像 demo，离 Production Ready 还差三条街
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这些问题不是模型不够聪明，而是<strong style="color: #00897B;">没人告诉它"Vercel 团队是怎么写 React 的"</strong>。Prompt 里写一句"遵循最佳实践"太虚了，AI 听不懂，依然按训练数据里的老套路来。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong style="color: #00897B;">Vercel Agent Skills</strong> 就是来填这个坑的。Vercel 官方团队把自己的 React/Next.js 工程经验整理成可被 Agent 加载的技能集，最硬核的 <strong style="color: #00897B;">vercel-react-best-practices</strong> 里有 <strong style="color: #00897B;">45 条以上分级规则</strong>，从 CRITICAL 到 LOW，把"最佳实践"翻译成 AI 必须遵守的指令。
+    </p>
+  </section>
+
+  <!-- 章节01：vercel-labs/agent-skills 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">vercel-labs/agent-skills 是什么</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">vercel-labs/agent-skills</strong> 是 Vercel 官方 Labs 团队开源的 Agent Skills 集合，仓库地址 <strong style="color: #00897B;">https://github.com/vercel-labs/agent-skills</strong>。注意是 <strong>vercel-labs</strong>，不是某个个人开发者，也就是说里面的规则来自 <strong style="color: #00897B;">Next.js、React、Vercel 平台</strong> 一线团队的工程沉淀。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它和我们之前介绍的 <strong style="color: #00897B;">anthropics/skills 官方技能库</strong>（参见《anthropics-skills-官方技能库》）思路一致，都是把"专家经验"打包成 Agent 能加载的 Skill 文件。差别在于：Anthropic 偏通用，Vercel 专攻<strong style="color: #00897B;">前端 + 全栈部署</strong>这一垂直场景。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🎯 定位</strong>：Vercel 官方出品的 Agent Skills 集合，让 AI 按照一线团队的方式写前端代码
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">📦 包含技能</strong>：vercel-react-best-practices、vercel-optimize、view-transition、deploy-to-vercel 等
+    </p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🔧 安装方式</strong>：通过官方 <strong>npx skills</strong> CLI 一行命令拉取
+    </p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      <strong style="color: #00897B;">🧠 适用场景</strong>：Next.js / React 项目开发、性能优化、生产部署
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一句话概括：<strong style="color: #00897B;">把 Vercel 团队多年的工程纪律，压缩成 AI 能直接执行的指令集</strong>。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：npx skills add 一行搞定</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    安装非常简单，Vercel 提供了官方的 <strong style="color: #00897B;">skills</strong> CLI 工具。打开终端，在你的项目根目录执行下面这行：
+  </p>
+
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">npx skills add vercel-labs/agent-skills</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这行命令会做三件事：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      拉取技能文件
+    </p>
+    <p style="margin: 0 0 18px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">从 GitHub 仓库下载 vercel-labs/agent-skills 里的所有 Skill 定义文件</p>
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      写入项目
+    </p>
+    <p style="margin: 0 0 18px 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">把 Skills 放到你的项目里（通常是 <strong>.skills/</strong> 或约定的目录）</p>
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 16px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      自动加载
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">支持 skills 的 AI 编程工具（Claude Code、Cursor、Codex 等）会自动识别并应用这些规则</p>
+  </section>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 重要提醒</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 15px; line-height: 1.8;">
+      <strong>npx skills add</strong> 是官方推荐的安装方式，不要手动 git clone 或者复制粘贴。Skill 文件有版本和依赖关系，CLI 会处理这些细节。装完之后，AI 在你项目里写代码时，会自动参考这些规则。
+    </p>
+  </section>
+
+  <!-- 章节03：vercel-react-best-practices 详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">核心技能：vercel-react-best-practices 详解</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    整个仓库里最值钱的就是 <strong style="color: #00897B;">vercel-react-best-practices</strong> 这个 Skill。它把 React/Next.js 的工程实践拆成了 <strong style="color: #00897B;">45 条以上分级规则</strong>，按严重程度从 <strong>CRITICAL</strong> 到 <strong>LOW</strong> 排列。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 17px; color: #00897B; font-weight: bold;">规则分级体系</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 8px; color: #00897B; font-weight: bold; width: 25%;">等级</th>
+          <th style="padding: 8px; color: #00897B; font-weight: bold;">含义</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold; color: #c62828;">CRITICAL</td>
+          <td style="padding: 8px;">违反就崩：SSR 失效、安全问题、严重性能坑</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold; color: #ef6c00;">HIGH</td>
+          <td style="padding: 8px;">强烈建议：影响生产可用性和可维护性</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold; color: #f9a825;">MEDIUM</td>
+          <td style="padding: 8px;">推荐遵守：常见反模式，影响代码质量</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold; color: #00897B;">LOW</td>
+          <td style="padding: 8px;">风格偏好：团队一致性、可读性</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这种分级很关键：AI 看到 CRITICAL 会优先遵守、明确报错；看到 LOW 则在权衡时可以跳过。这比"all or nothing"的规则集要合理得多。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    规则覆盖四大主题，我挑核心的说：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 16px;">📦 组件拆分</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      强制单一职责，一个组件只做一件事。容器组件与展示组件分离，大组件按区域拆 sub-component，文件超过 200 行触发拆分提示。
+    </p>
+    <p style="margin: 0 0 18px 0; font-size: 14px; color: #666; line-height: 1.8;">示例：一个 800 行的 <strong>page.tsx</strong> 会被规则识别为"反模式"，AI 会主动拆成 Header / Sidebar / Content / Footer 子组件。</p>
+
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 16px;">⚖️ Server / Client 分离</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      默认 Server Component，只有需要交互、状态、浏览器 API 时才加 <strong>'use client'</strong>。禁止把整个页面标成 client component，禁止在 server component 里直接 import client-only 的库。
+    </p>
+    <p style="margin: 0 0 18px 0; font-size: 14px; color: #666; line-height: 1.8;">这是 Next.js App Router 项目里 AI 最容易踩的坑，规则会强制 AI 把 client 边界推到叶子组件。</p>
+
+    <p style="margin: 0 0 12px 0; color: #00897B; font-weight: bold; font-size: 16px;">⚡ 性能优化</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      必须用 <strong>next/image</strong>、<strong>next/font</strong>、<strong>next/link</strong>，禁止原生 <strong>&lt;img&gt;</strong>、CSS @import 字体、原生 <strong>&lt;a&gt;</strong>。Suspense 包裹异步数据，避免瀑布请求。
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #666; line-height: 1.8;">这些规则直接对应 Next.js 性能最佳实践，AI 装上之后写出来的代码自带这些优化。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    还有<strong style="color: #00897B;">状态管理</strong>（Server vs Client State、何时用 URL State、何时用 Context）、<strong style="color: #00897B;">数据获取</strong>（Server Component 取数 vs Client Fetch、Cache 策略）等。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一个典型的 CRITICAL 规则大致长这样（示意）：
+  </p>
+
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #c62828;">[CRITICAL] use-client-boundary</p>
+    <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #333;">When a component needs interactivity, mark ONLY that</p>
+    <p style="margin: 0 0 6px 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #333;">leaf component with 'use client'. Never push the boundary</p>
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.8; color: #333;">up to a container / page component.</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    AI 看到这条规则后，再也不会随手把 <strong>'use client'</strong> 加到 <strong>page.tsx</strong> 顶部了。
+  </p>
+
+  <!-- 章节04：其他技能 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">其他技能：性能优化、视图过渡、一键部署</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    除了 react-best-practices，仓库里还有几个很有针对性的技能：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 8px; color: #00897B; font-weight: bold; width: 32%;">Skill</th>
+          <th style="padding: 8px; color: #00897B; font-weight: bold;">解决什么问题</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">vercel-optimize</td>
+          <td style="padding: 8px;">性能优化：Bundle 分析、LCP/TBT 改善、图片/字体优化建议</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">view-transition</td>
+          <td style="padding: 8px;">View Transitions API：让页面切换有原生 App 般过渡动画</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">deploy-to-vercel</td>
+          <td style="padding: 8px;">部署流程：环境变量、构建配置、域名绑定、生产环境验证</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">其他技能</td>
+          <td style="padding: 8px;">仓库持续更新中，关注 GitHub 跟踪最新技能</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">⚡ vercel-optimize</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      性能是前端永远的话题。这个 Skill 教 AI 怎么识别性能瓶颈，比如什么场景该用 dynamic import、什么时候该 code split、什么时候该用 React.lazy、Suspense 怎么配 fallback。AI 不再"能跑就行"，而是会主动考虑 LCP、TBT、CLS 这三大核心 Web Vitals。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🎬 view-transition</p>
+    <p style="margin: 0 0 12px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      View Transitions API 是浏览器新特性，让 SPA 路由切换有原生过渡动画。但 API 还很新，文档散落，AI 经常不用或乱用。这个 Skill 把最佳实践封装好，什么时候该用、跨文档过渡怎么写、SSR 兼容怎么处理，AI 都门儿清。
+    </p>
+  </section>
+
+  <section style="margin: 25px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🚀 deploy-to-vercel</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      从"代码写完"到"线上能访问"还有一段距离。这个 Skill 覆盖部署全流程，从 Vercel 项目配置、环境变量管理、Preview Deployment 验证、生产域名绑定，到上线后健康检查。AI 不再只负责写代码，还能帮你把项目送到生产环境。
+    </p>
+  </section>
+
+  <!-- 章节05：对比无规则约束的 AI 编程 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比：无规则约束 vs 装上 Vercel Skills</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    光说规则没用，看实测对比。同样一个需求：<strong style="color: #00897B;">"做一个商品列表页，带筛选和分页"</strong>，分别在两个项目里跑：
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 8px; color: #00897B; font-weight: bold; width: 30%;">对比项</th>
+          <th style="padding: 8px; color: #c62828; font-weight: bold; width: 35%;">无规则约束</th>
+          <th style="padding: 8px; color: #00897B; font-weight: bold;">装上 Vercel Skills</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">组件结构</td>
+          <td style="padding: 8px;">单文件 600+ 行，全部 'use client'</td>
+          <td style="padding: 8px;">Server Component 取数 + 多个 Client 子组件</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">数据获取</td>
+          <td style="padding: 8px;">useEffect 里 fetch，客户端瀑布流</td>
+          <td style="padding: 8px;">Server 端取数 + Suspense 流式渲染</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">图片</td>
+          <td style="padding: 8px;">原生 &lt;img&gt;，未优化</td>
+          <td style="padding: 8px;">next/image 自动 WebP + 响应式</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">分页交互</td>
+          <td style="padding: 8px;">useState + 客户端跳转，全量加载</td>
+          <td style="padding: 8px;">URL searchParams，可分享可刷新</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 8px; font-weight: bold;">首屏 LCP</td>
+          <td style="padding: 8px; color: #c62828;">~2.8s</td>
+          <td style="padding: 8px; color: #00897B;">~0.9s（提升 ~600ms）</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">代码质量评分</td>
+          <td style="padding: 8px; color: #c62828;">基准线</td>
+          <td style="padding: 8px; color: #00897B;">提升约 40%</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    最直观的两个数据：<strong style="color: #00897B;">消除瀑布流减少约 600ms 等待</strong>，<strong style="color: #00897B;">代码质量整体提升约 40%</strong>。这不是模型变聪明了，而是规则把"正确做法"提前注入了 AI 的决策链路。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这和我们之前讲的 <strong style="color: #00897B;">Superpowers</strong>（参见《superpowers-把AI编程从凭感觉变按流程》）算是同一类思路，都是<strong style="color: #00897B;">约束 AI 行为，让它照专家的方式来工作</strong>。差别在于：Superpowers 管的是<strong style="color: #00897B;">流程</strong>（先规划、先写测试），Vercel Skills 管的是<strong style="color: #00897B;">技术细节</strong>（怎么写 React 才 Production Ready）。两者完全可以叠加使用。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    再换个方向，对比另一派"懒"的哲学：<strong style="color: #00897B;">ponytail</strong>（参见《ponytail-最懒高级开发哲学》），它讲究"少写代码、能不写就不写"，而 Vercel Skills 是"要写就写到位"。两者并不冲突：能复用就别造轮子（ponytail），但真要自己写的时候，按 Vercel 的规则来。
+  </p>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">避坑</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">使用避坑指南</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑1：把 Skills 当万能钥匙</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      Skills 不是替你思考，而是给 AI 提供决策依据。如果你的需求本身就模糊，AI 加了规则也写不出好代码。<strong style="color: #c62828;">先把需求想清楚，再让 AI 按规则实现</strong>。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑2：盲目遵守 CRITICAL 规则</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      有些 CRITICAL 规则基于 App Router 假设。如果你项目用的是 Pages Router、Remix、甚至 CRA，需要先评估规则适用性。Vercel Skills 是为<strong style="color: #c62828;">现代 Next.js App Router 项目</strong>设计的，不是所有 React 项目都适用。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑3：装完不验证</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      装上之后，让 AI 写一个简单组件，看它有没有照规则来，比如是不是默认 Server Component？是不是用了 next/image？如果 AI 没遵守规则，检查 Skill 文件是否正确加载，或者工具是否支持 skills 协议。
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 12px; border-left: 4px solid #e57373;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #c62828; font-weight: bold;">⚠️ 坑4：以为只是 React 专用</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+      虽然主推 React/Next.js，但 deploy-to-vercel、view-transition 这些技能对 Vue、Svelte 项目也有参考价值。<strong style="color: #c62828;">关键是看规则背后的原理</strong>，而不是只盯着语法。
+    </p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      AI 写的代码"能跑"和"能上线"之间，隔着一整本工程手册。Vercel Agent Skills 把这本书里的精华规整成 45 条规则，让 AI 一上来就照着成熟的方式写。
+    </p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      这些规则看着是一条条规矩，其实是给你省事。<strong style="color: #00897B;">把领域专家踩过的坑提前喂给 AI，它写出来的代码才更接近"能直接上线"</strong>，而不是只能拿来做演示。
+    </p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">
+      下一篇文章我们会聊聊另一个方向的"约束"：<strong style="color: #00897B;">anthropics/skills 官方技能库</strong>，看看 Anthropic 自己是怎么把 Claude 训练成"懂规矩"的 Agent 的。
+    </p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🚀 立即体验</p>
+    <p style="margin: 0 0 8px 0; font-size: 15px; color: #666; line-height: 1.8;">
+      GitHub 仓库：<span style="color: #00897B;">https://github.com/vercel-labs/agent-skills</span><br>
+      出品方：Vercel Labs（官方）<br>
+      安装命令：
+    </p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; color: #333;">npx skills add vercel-labs/agent-skills</p>
+    </section>
+    <p style="margin: 8px 0 0 0; font-size: 14px; color: #999; line-height: 1.8;">
+      在你的 Next.js / React 项目根目录执行，装完让 AI 写个组件试试效果。
+    </p>
+  </section>
+
+  <!-- 相关文章推荐 -->
+  <section style="background: #E0F2F1; padding: 20px 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📚 系列相关文章</p>
+    <p style="margin: 0 0 6px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      ▸ <strong>Superpowers</strong>：把 AI 编程从凭感觉变按流程（流程层约束）
+    </p>
+    <p style="margin: 0 0 6px 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      ▸ <strong>ponytail</strong>：最懒高级开发哲学（少写代码的方向约束）
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f3f; line-height: 1.8;">
+      ▸ <strong>anthropics/skills</strong>：官方技能库（通用约束标杆）
+    </p>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">
+      💬 你装上 Vercel Skills 之后，AI 写的 React 代码变样了吗？欢迎评论区聊聊实测效果。
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 编程工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>给 Claude Code 穿上 GUI 外衣——Claudia 实战指南</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 头图 -->
+  <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sleek%20dashboard%20GUI%20floating%20above%20terminal%20code%20dark%20mode%20interface%20teal%20accents%20modern%20SaaS%20illustration%20no%20text&image_size=landscape_16_9" alt="claudia 头图" style="width: 100%; border-radius: 12px; margin: 0 0 25px 0; display: block;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    给 Claude Code 穿上 GUI 外衣——Claudia 实战指南
+  </h1>
+  <h2 style="font-size: 19px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    终端恐惧症的福音，可视化管会话 / Agent / 费用
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 编程工具推荐 | Claudia 桌面 GUI 实战
+  </p>
+
+  <!-- 开篇：痛点场景 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    用 Claude Code 的，大概都有过这样的瞬间：
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    开了三四个会话窗口，想找昨天那段还没改完的代码，结果在 <strong style="color: #00897B;">~/.claude/projects</strong> 里翻了一通目录树，记不清哪个 session ID 对应哪个项目；想看本周烧了多少 token、估算一下月底账单，只能手动去 Anthropic 控制台对账；想给团队新来的实习生配一个能自动跑测试的 Agent，发现要写一堆 markdown 和子代理配置文件，他听完直接劝退。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">问题不在 Claude Code 本身，而在"纯终端"这种交互形态对人类不够友好。</strong>命令行强是强，但它天生没有时间轴、没有图表、没有可点击的回滚点。对一个跑了几十轮会话、用过十几个 Agent、还要看月度预算的人来说，光靠 CLI 真的扛不住。
+  </p>
+
+  <section style="border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; font-style: italic; color: #666; background: #f8f8f8; border-radius: 4px;">
+    <p style="margin: 0; font-size: 16px; line-height: 1.8;">"我用 Claude Code 写代码没问题，但让我在终端里管 30 个会话、看月度账单、配 5 个 Agent……还是给我个图形界面吧。"</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    于是就有了今天的主角，<strong style="color: #00897B;">Claudia</strong>，一个把 Claude Code 整个塞进桌面 GUI 的开源应用，目前在 GitHub 已经收获 <strong style="color: #00897B;">19.9k Star</strong>。
+  </p>
+
+  <!-- 章节01：Claudia 是什么 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Claudia 是什么：给 Claude Code 的一件 GUI 外衣</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    <strong style="color: #00897B;">Claudia 是一款基于 Tauri 2 + React 构建的桌面端 GUI 应用，它把 Claude Code 的所有能力封装成可视化界面。</strong>它不是 Claude Code 的"替代品"，而是"配套外壳"——底层依然调用你本地的 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude</code> CLI，所有会话、文件改动、权限校验都走的原生命令，只是把交互从黑底白字的终端搬到了带时间轴、按钮和图表的窗口里。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    之所以选择 <strong style="color: #00897B;">Tauri 2</strong> 而不是 Electron，是因为 Tauri 用 Rust 做后端、系统自带的 WebView 做前端，包体积小（通常只有 Electron 的 1/5）、内存占用低、启动快。对于一个要常驻在桌面随时接管 Claude Code 会话的工具来说，这个选择非常合理。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">📋 一句话定位</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Claudia = Claude Code 的可视化驾驶舱，让你的会话、Agent、MCP、账单都长出一双可点击的眼睛。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    协议方面采用 <strong style="color: #00897B;">AGPL-3.0</strong>，这意味着你可以自由使用、修改，但如果你把它做成网络服务对外提供，需要开源你的衍生代码。对个人开发者和内部团队来说，完全无障碍。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它和我们之前推荐过的几个工具有明确的定位差异：<a href="ccswitch搭配claude-code-01-公众号版.html" style="color: #00897B; text-decoration: none;">cc-switch</a> 管的是"切换模型 / Provider 配置"，<a href="claude-code-router-公众号版.html" style="color: #00897B; text-decoration: none;">Claude Code Router</a> 管的是"路由分发 / 多供应商负载均衡"，<a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">ECC</a> 偏 CLI 增强。而 Claudia 干的是另一件事：<strong style="color: #00897B;">把 Claude Code 的运行时数据全部可视化</strong>。
+  </p>
+
+  <!-- 章节02：安装方式 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">安装方式：git clone + bun，三步跑起来</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Claudia 目前没有发布预编译二进制，需要从源码构建。<strong style="color: #00897B;">前置条件只有一个：本机已经能正常使用 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude</code> CLI</strong>（也就是 Claude Code 已安装并完成认证）。另外需要本机有 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git</code>、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">bun</code>、以及 Tauri 2 所需的系统依赖。
+  </p>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">第一步：克隆仓库</p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">git clone https://github.com/getAsterisk/claudia.git
+cd claudia</p>
+  </section>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">第二步：安装依赖</p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">bun install</p>
+  </section>
+
+  <p style="margin: 15px 0 5px 0; color: #00897B; font-weight: bold; font-size: 16px;">第三步：启动开发模式</p>
+  <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+    <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">bun run tauri dev</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    第一次启动会比较慢，因为 Tauri 要编译 Rust 后端，期间会下载一堆 crate。编译完成后会自动弹出一个桌面窗口，这就是你的 Claudia 主界面了。后续启动会快很多，因为增量编译只动你改动过的部分。
+  </p>
+
+  <section style="background: #E0F2F1; border-left: 4px solid #00897B; padding: 18px 20px; margin: 25px 0; border-radius: 4px;">
+    <p style="margin: 0 0 10px 0; font-weight: bold; color: #00897B; font-size: 17px;">💡 为什么是 bun 而不是 npm？</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Claudia 的项目脚本和 lockfile 都是按 bun 写的，用 npm/yarn/pnpm 装可能出现依赖版本漂移。如果没装 bun，一行命令搞定：<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">curl -fsSL https://bun.sh/install | bash</code>。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    平台支持方面，<strong style="color: #00897B;">macOS / Windows / Linux 三端全覆盖</strong>。Windows 用户需要确保装了 Microsoft Visual Studio C++ Build Tools；Linux 用户需要 webkit2gtk 等系统库；macOS 最省事，Xcode Command Line Tools 装好就行。
+  </p>
+
+  <!-- 章节03：五大核心功能详解 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">五大核心功能详解</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Claudia 的功能不少，但真正值得动手用的就这五个。我们一个一个看。
+  </p>
+
+  <!-- 功能1 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">1</span>
+      Session Timeline & Checkpoints：会话时间线 + 快照回滚
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">这是 Claudia 最杀的功能。它把 Claude Code 每一轮对话、每一次文件改动都铺成一条可视化的时间轴，每个关键节点都可以打"快照"。一旦 Claude 改错了文件、或者你后悔某轮改动，点一下快照就能回滚到那个时刻，不用 git reset、不用翻 reflog，比纯 CLI 体验好太多。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    实测在长会话场景下价值最大：一个跑了 80 轮的重构任务，Claude 在第 53 轮把测试文件删错了，CLI 模式下你只能 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">git checkout</code> 或者重跑，而在 Claudia 里直接定位到第 52 轮的快照点回滚，前后 5 秒搞定。
+  </p>
+
+  <!-- 功能2 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">2</span>
+      CC Agents：自定义 AI Agent，图形化创建
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Claude Code 原生的 sub-agent 需要手写 markdown 配置，新手很容易写错缩进。Claudia 把这件事做成了图形表单：填名字、选工具权限、写 system prompt、绑定允许访问的目录，点保存就生成 Agent。还可以直接在 UI 里测试 Agent 的响应，不用切回终端。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    对比之前推荐过的 <a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">ECC（Everything Claude Code）</a>，ECC 走的是"命令行 + 预设 Agent 库"的路线，适合喜欢脚本化、批量化管理的高阶用户；Claudia 则是"图形化 + 自由创建"，更适合需要快速搭建、可视化调试的场景。两者并不冲突，甚至可以配合使用，ECC 写配置，Claudia 看运行结果。
+  </p>
+
+  <!-- 功能3 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">3</span>
+      Usage Analytics Dashboard：费用仪表盘，token 统计
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">这个功能对你的钱包最友好。Claudia 会读取 Claude Code 的本地会话日志，把每次调用消耗的 input/output token、对应成本、按天 / 按项目 / 按 Agent 维度统计成图表。一眼就能看出哪个项目最烧钱、哪个 Agent 性价比最低。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    对团队负责人来说尤其有用，以前要估算团队月度 Claude Code 开销，只能去 Anthropic 控制台对账，没法按项目拆分；现在 Claudia 直接给你按项目聚合的柱状图，预算审批时拿这个截图就够了。
+  </p>
+
+  <!-- 功能4 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">4</span>
+      MCP Server Management：MCP 服务器管理
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">MCP（Model Context Protocol）服务器是 Claude Code 连接外部工具的桥梁，但它的 JSON 配置写在 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">~/.claude.json</code> 里，手改容易出错。Claudia 提供了一个表格视图：每个 MCP 服务器一行，可以看运行状态、启停、改参数、看日志。配错了一目了然。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    和 <a href="ccswitch搭配claude-code-01-公众号版.html" style="color: #00897B; text-decoration: none;">cc-switch</a> 的 MCP 管理相比，cc-switch 偏"跨工具同步 MCP 配置"（一份配置喂给 Claude Code / Codex / Gemini），Claudia 则偏"运行时监控和调试"。如果你的 MCP 服务器经常掉线或者参数调不通，Claudia 的实时状态视图会省你大量排查时间。
+  </p>
+
+  <!-- 功能5 -->
+  <section style="margin: 20px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px;">
+    <p style="margin: 0 0 10px 0; color: #00897B; font-weight: bold; font-size: 17px;">
+      <span style="display: inline-block; width: 26px; height: 26px; background: #00897B; color: #fff; border-radius: 50%; text-align: center; line-height: 26px; font-size: 14px; margin-right: 8px;">5</span>
+      CLAUDE.md Management：CLAUDE.md 文件管理
+    </p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">CLAUDE.md 是 Claude Code 的"项目说明书"，告诉它这个仓库的规范、构建命令、注意事项。但这个文件可能同时存在于项目根目录、<code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">~/.claude/CLAUDE.md</code>（全局）、子目录里，管理起来很乱。Claudia 把这些层级在 UI 里树状展开，可视化编辑、即时生效，不用再 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">find . -name "CLAUDE.md"</code>。</p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    对于在多个项目间反复切换的程序员，这个功能省时间，也省脑子，你再也不用记"这个项目的 CLAUDE.md 是写在根目录还是写在 src 下"。
+  </p>
+
+  <!-- 章节04：典型使用场景 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">典型使用场景：谁最该装上 Claudia？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    Claudia 不是"必装"工具——纯 CLI 用户也能活得很好。但下面四类人，装完之后体感差异最大。
+  </p>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">👤 场景一：个人开发者（多项目并行）</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">同时维护 3 个以上仓库的人，CLAUDE.md 管理和会话切换是高频痛点。Claudia 的多项目视图让你在一个窗口里切换上下文，每个项目的会话历史都独立保留，找"上周在 A 项目里改的那个 bug"再也不用切终端。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">👥 场景二：小团队（5-20 人）技术负责人</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">需要给团队统一配 Agent、需要按项目核算 AI 开销、需要给新人展示 Claude Code 怎么用，这三件事 Claudia 都能可视化搞定。Usage Analytics 直接当月报截图发群里，比口述"这个月大约烧了 200 美元"有说服力得多。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">🏢 场景三：企业内部 AI 平台团队</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">要给非研发岗（产品、测试、运营）提供 AI 编程能力的团队，纯 CLI 是劝退利器。Claudia 的 GUI 降低了使用门槛，让产品同学也能在受控的 Agent 范围内调用 Claude Code 改一些模板代码、生成数据脚本。AGPL-3.0 协议下，企业内网使用没问题，但要注意不要把它做成对外 SaaS 而不开源。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">🌱 场景四：Claude Code 新手 / 终端恐惧症患者</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">刚从 Cursor / Copilot 迁移过来、对 CLI 还不适应的同学，Claudia 是一个友好的过渡层。你依然在用 Claude Code 的全部能力，但交互更像传统 IDE，能显著降低学习曲线。</p>
+  </section>
+
+  <!-- 章节05：对比纯 CLI 的 Claude Code -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">Claudia vs 纯 CLI：什么时候用哪个？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    先说结论：<strong style="color: #00897B;">Claudia 不是来取代 CLI 的，而是来补 CLI 的短板的。</strong>很多场景下，两者搭配使用反而最高效。下表是几轮实战之后的对比，供参考：
+  </p>
+
+  <!-- 对比表格 -->
+  <section style="margin: 30px 0; padding: 20px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 15px; text-align: left;">
+      <thead>
+        <tr style="border-bottom: 2px solid #00897B;">
+          <th style="padding: 12px 10px; color: #00897B; font-weight: bold; width: 25%;">对比维度</th>
+          <th style="padding: 12px 10px; color: #3f3f3f; font-weight: bold; width: 37.5%; text-align: center;">纯 CLI (claude)</th>
+          <th style="padding: 12px 10px; color: #00897B; font-weight: bold; width: 37.5%; text-align: center;">Claudia (GUI)</th>
+        </tr>
+      </thead>
+      <tbody style="color: #3f3f3f;">
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">启动速度</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">秒开</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">需启动桌面应用</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">多会话切换</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">需记 session ID</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">时间轴可视化</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">回滚错误改动</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">git reset 手动</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">快照一键回滚</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">费用统计</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">无（需去控制台）</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">本地仪表盘</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">Agent 创建</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">手写 markdown</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">图形化表单</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">SSH / 远程服务器</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">完美适配</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">需本机 GUI，不适合</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #e8e8e8;">
+          <td style="padding: 12px 10px; font-weight: bold;">资源占用</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">极低</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">桌面应用级</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 10px; font-weight: bold;">非技术成员</td>
+          <td style="padding: 12px 10px; text-align: center; color: #d32f2f;">门槛高</td>
+          <td style="padding: 12px 10px; text-align: center; color: #388e3c;">友好</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    一个比较顺手的搭配是：<strong style="color: #00897B;">本地桌面用 Claudia 处理需要可视化的工作（会话管理、Agent 调试、看账单），SSH 到服务器时退回纯 CLI</strong>。两者读的是同一份 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">~/.claude</code> 配置，数据完全互通，不会有割裂感。
+  </p>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    另外可以和 <a href="claude-code-router-公众号版.html" style="color: #00897B; text-decoration: none;">Claude Code Router</a> 配合：Router 负责把请求路由到不同的供应商（官方 / GLM / DeepSeek），Claudia 负责可视化展示这些请求的执行情况和成本，一个管"流量走向"，一个管"运行时观察"，分工清晰。
+  </p>
+
+  <!-- 实用技巧 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">★</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">进阶技巧：让 Claudia 用得更顺手</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    装完只是第一步，下面这几条实操经验能帮你把 Claudia 的价值榨干。
+  </p>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 技巧 1：每个项目独立配 CLAUDE.md</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">不要把所有项目规范都堆到全局 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">~/.claude/CLAUDE.md</code> 里，会让 Claude 的上下文被无关项目信息污染。用 Claudia 的 CLAUDE.md 管理功能给每个项目根目录单独配一份，构建命令、测试命令、目录约定都写清楚，Claude 的回答准确率会显著提升。</p>
+  </section>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 技巧 2：长会话务必打快照</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Session Timeline 的快照功能不是装饰。养成"每完成一个稳定阶段就打一个快照"的习惯，比如"重构完成"、"测试通过"、"文档补完"各打一个。这样一旦后续 Claude 改崩了，你能精准回滚到最近的稳定态，而不是回到 30 轮对话之前。</p>
+  </section>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 技巧 3：用 Usage Analytics 找出"烧钱 Agent"</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">每周扫一次费用仪表盘，重点关注"成本高但调用次数少"的 Agent，这种通常是 system prompt 写得太啰嗦，导致每次调用都消耗大量 input token。优化 prompt 后再观察一周，省下的钱够你充几个月 Claude Pro。</p>
+  </section>
+
+  <section style="background: #ffffff; border-radius: 12px; padding: 22px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #00897B;">
+    <p style="margin: 0 0 12px 0; color: #00897B; font-size: 17px; font-weight: bold;">💡 技巧 4：MCP 服务器配好后立即在 Claudia 里测一遍</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">每加一个新的 MCP 服务器，别急着用它干活，先在 Claudia 的 MCP 管理面板里看运行状态是否绿色、日志有没有报错。很多"调用 MCP 工具失败"的坑，其实在配置阶段就能被发现，比等你写到一半才发现要省心得多。</p>
+  </section>
+
+  <!-- 避坑指南 -->
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 22px; font-weight: bold; color: #fff; background: #00897B; padding: 8px 16px; border-radius: 4px; margin-right: 15px; vertical-align: middle;">⚠️</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">避坑指南：装之前先看这四条</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 8px;">
+    <p style="margin: 0 0 10px 0; color: #d32f2f; font-size: 16px; font-weight: bold;">坑 1：忘记先装好 claude CLI</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Claudia 启动后会去调用本机的 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude</code> 命令。如果你 Claude Code 本身还没装、或者没完成登录认证，Claudia 跑起来也是空壳一个。先在终端跑一遍 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude --version</code> 确认能用，再启动 Claudia。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 8px;">
+    <p style="margin: 0 0 10px 0; color: #d32f2f; font-size: 16px; font-weight: bold;">坑 2：用 npm/yarn 替代 bun</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">项目用的是 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">bun.lockb</code>，用其他包管理器装会出现依赖版本不一致，最常见的问题是 Tauri 编译时报 "webkit2gtk not found" 或者运行时白屏。老老实实装 bun，2 分钟的事。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 8px;">
+    <p style="margin: 0 0 10px 0; color: #d32f2f; font-size: 16px; font-weight: bold;">坑 3：第一次构建卡在 Rust 编译</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">首次 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">bun run tauri dev</code> 会下载几百个 crate 并编译，网络不好的同学可能卡十几分钟甚至超时。建议提前配好 cargo 国内镜像（中科大、清华源），或者挂代理。这不是 Claudia 的锅，所有 Tauri 项目都这样。</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #ffebee; border-left: 4px solid #d32f2f; border-radius: 8px;">
+    <p style="margin: 0 0 10px 0; color: #d32f2f; font-size: 16px; font-weight: bold;">坑 4：AGPL-3.0 协议别误用</p>
+    <p style="margin: 0; color: #3f3f3f; font-size: 16px; line-height: 1.8;">Claudia 是 AGPL-3.0，比 MIT 严格得多。个人本地用、公司内网用都没问题；但如果你打算基于它做一个"AI 编程助手 SaaS"对外提供服务，必须开源你的衍生代码。商用前先找法务过一遍协议。</p>
+  </section>
+
+  <!-- 写在最后 -->
+  <section style="margin: 50px 0 30px 0; padding: 30px 25px; background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border-radius: 12px;">
+    <p style="margin: 0 0 15px 0; font-size: 17px; color: #00897B; font-weight: bold; text-align: center;">✨ 写在最后</p>
+    <p style="margin: 0 0 15px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">GUI 还是 CLI，本质是"为不同人群提供不同入口"的问题。Claude Code 的强大不会因为 CLI 形态而打折，但它的覆盖率会因为 CLI 形态而被限制在工程师圈子里。Claudia 干的事，就是把这道门再开宽一些，让会话、Agent、账单这些"本该被看见"的东西，真的被看见。</p>
+    <p style="margin: 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-align: justify; text-indent: 2em;">19.9k Star 也不算小数目。<strong style="color: #00897B;">如果你已经在重度用 Claude Code，Claudia 基本绕不开。</strong>终端留给 SSH 和远程服务器，桌面留给可视化，两件事各干各的，顺手就行。</p>
+  </section>
+
+  <section style="margin: 40px 0; text-align: center;">
+    <span style="display: inline-block; width: 60px; height: 3px; background: #00897B; border-radius: 2px;"></span>
+  </section>
+
+  <!-- 资料 & 行动号召 -->
+  <section style="background: #f8f8f8; padding: 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">📦 立即体验</p>
+    <p style="margin: 0 0 10px 0; font-size: 16px; color: #666; line-height: 1.8;">
+      项目地址：<span style="color: #00897B;">https://github.com/getAsterisk/claudia</span><br>
+      协议：AGPL-3.0<br>
+      技术栈：Tauri 2 + React<br>
+      平台：macOS / Windows / Linux
+    </p>
+    <p style="margin: 12px 0 5px 0; font-size: 15px; color: #00897B; font-weight: bold;">一键启动命令：</p>
+    <section style="background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px 18px; margin: 12px 0;">
+      <p style="margin: 0; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #333; white-space: pre-wrap;">git clone https://github.com/getAsterisk/claudia.git
+cd claudia
+bun install
+bun run tauri dev</p>
+    </section>
+    <p style="margin: 12px 0 0 0; font-size: 14px; color: #999; line-height: 1.8;">前置条件：本机已安装并认证 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">claude</code> CLI；已安装 <code style="background: #e8e8e8; padding: 2px 6px; border-radius: 4px; font-size: 14px;">bun</code>。</p>
+  </section>
+
+  <!-- 关联阅读 -->
+  <section style="background: #E0F2F1; padding: 22px 25px; border-radius: 12px; margin: 25px 0;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #00897B; font-weight: bold;">🔗 关联阅读（Claude Code 增强工具全家桶）</p>
+    <p style="margin: 0; font-size: 15px; color: #3f3f3f; line-height: 1.9;">
+      · <a href="ccswitch搭配claude-code-01-公众号版.html" style="color: #00897B; text-decoration: none;">cc-switch：一键切换 Claude Code 模型与供应商</a><br>
+      · <a href="claude-code-router-公众号版.html" style="color: #00897B; text-decoration: none;">Claude Code Router：多供应商路由分发</a><br>
+      · <a href="ecc-everything-claude-code-公众号版.html" style="color: #00897B; text-decoration: none;">ECC：命令行 Agent 管理增强</a>
+    </p>
+  </section>
+
+  <!-- 页脚 CTA -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 0; border-top: 1px solid #e0e0e0; text-align: center;">
+    <p style="margin: 0 0 12px 0; font-size: 16px; color: #666; line-height: 1.8;">💬 你平时是用纯 CLI 还是 GUI 类工具管 Claude Code？装了 Claudia 之后最惊艳你的是哪个功能？欢迎在评论区聊聊你的实战体验。</p>
+    <p style="margin: 0; font-size: 14px; color: #999;">📌 关注公众号，获取更多 AI 编程工具实战干货</p>
+  </section>
+
+</section>
+
+</body>
+</html>

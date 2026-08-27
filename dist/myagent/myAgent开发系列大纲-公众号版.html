@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>myAgent开发系列大纲</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <h1 style="font-size: 26px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 15px 0; line-height: 1.5;">
+    myAgent开发系列
+  </h1>
+  <h2 style="font-size: 18px; font-weight: normal; color: #666; text-align: center; margin: 0 0 15px 0; line-height: 1.5;">
+    从零构建一个类似OpenClaw的智能体平台 · 第四系列 · 预计40篇文章
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-indent: 2em;">
+    前面三个系列，我们一起走过了从用户到创造者的旅程：
+  </p>
+
+  <p style="margin: 0 0 15px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8; padding-left: 2em;">
+    · <strong>一步一步学习OpenClaw</strong>（<a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/00-系列导航.md" style="color: #00897B;">系列1</a>）—— 学会用OpenClaw，从部署到自定义开发<br/>
+    · <strong>一步一步学习AI Coding</strong>（<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" style="color: #00897B;">系列2</a>）—— 用AI做完整的项目级开发<br/>
+    · <strong>Agent开发系列</strong>（<a href="Agent开发系列-01.html" style="color: #00897B;">系列3</a>）—— 从用户到创造者，用代码理解Agent原理
+  </p>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-indent: 2em;">
+    现在，我们要挑战一个真正的大工程：从零构建一个<strong>myAgent</strong>这样的智能体平台。
+  </p>
+
+  <p style="margin: 0 0 40px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-indent: 2em;">
+    这不是教你用OpenClaw，是教你<strong>造一个myAgent</strong>。学完这个系列，你就知道Coze/扣子、Dify这些平台背后的实现原理了。
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 40px 0;">
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    架构设计篇：从顶层看OpenClaw
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    先把蓝图画清楚。复杂系统的第一步是架构设计，而不是写代码。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    01 OpenClaw核心架构解析
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    用户层、能力层、执行层、存储层——四层架构如何协同工作。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-13.html" style="color: #00897B;">Agent开发系列 13：Tool接口设计</a>、<a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/13-架构解析-公众号版.md" style="color: #00897B;">OpenClaw原理篇13：架构解析</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    02 模块边界与通信机制
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Bot管理、插件系统、工作流引擎、记忆存储——各模块如何解耦又协作。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-21.html" style="color: #00897B;">Agent开发系列 21：消息总线 + 团队编排</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    03 技术选型：为什么用现在的技术栈
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Next.js + TypeScript + PostgreSQL + Redis + Python——每个选择的理由。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-14-AI-Coding架构-公众号版.md" style="color: #00897B;">AI Coding系列 14：AI-Coding架构</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    04 项目初始化与目录结构
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    monorepo架构、前后端分离、共享包设计。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-16-实战01-开发命令行工具-公众号版.md" style="color: #00897B;">AI Coding系列 16-26：项目结构设计</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    Bot核心篇：如何定义一个Bot
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    Bot是OpenClaw的核心实体。这一篇，我们来实现Bot的数据模型和核心逻辑。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    05 Bot数据模型设计
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Bot实体、版本管理、配置schema——怎么让Bot的配置既灵活又可控。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-03.html" style="color: #00897B;">Agent开发系列 03：最小可行Agent</a>、<a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/11-核心循环-公众号版.md" style="color: #00897B;">OpenClaw原理篇11：核心循环</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    06 Prompt工程：让Bot有灵魂
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    System Prompt模板、变量插值、示例管理——Prompt是Bot的灵魂。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-04-提示词技巧-公众号版.md" style="color: #00897B;">AI Coding系列 04：提示词技巧</a>、<a href="Agent开发系列-05.html" style="color: #00897B;">Agent开发系列 05：感知</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    07 Bot版本控制与发布
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+   Draft/Published状态机、版本回滚、灰度发布——生产级Bot的版本管理。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-19.html" style="color: #00897B;">Agent开发系列 19：动态调整</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    08 Bot执行引擎
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    会话管理、消息路由、限流控制——一个请求进来，Bot是怎么处理的。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-17.html" style="color: #00897B;">Agent开发系列 17：执行引擎</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    插件系统篇：给Bot装上翅膀
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    插件系统是OpenClaw最强大的能力之一。这一篇，我们来实现一个灵活的插件框架。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    09 插件架构设计
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    插件接口定义、生命周期管理、依赖注入——像VSCode插件一样灵活。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-13.html" style="color: #00897B;">Agent开发系列 13：Tool接口设计 + 内置工具实现</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    10 内置插件实现
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Search、DALLE、Browser——内置插件怎么写。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-15.html" style="color: #00897B;">Agent开发系列 15：Function Calling + 工具安全</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    11 插件市场与发布
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    插件注册、审核流程、版本管理——怎么做一个插件市场。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-17-实战02-开发Web-API-公众号版.md" style="color: #00897B;">AI Coding系列 17：前后端交互设计</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    12 插件沙箱与安全
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    资源限制、权限控制、恶意代码检测——插件安全是生命线。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-15.html" style="color: #00897B;">Agent开发系列 15：工具安全</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    13 插件调试与日志
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    插件执行日志、错误追踪、性能分析——怎么调试线上插件。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-25.html" style="color: #00897B;">Agent开发系列 25：可观测性</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    工作流引擎篇：用可视化编排复杂逻辑
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    工作流是OpenClaw的核心能力。这一篇，我们来实现一个可视化工作流引擎。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    14 工作流数据模型
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    节点、边、变量、执行状态——工作流的四个核心概念。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-17.html" style="color: #00897B;">Agent开发系列 17：任务分解</a>（子任务依赖图）
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    15 内置节点类型
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    LLM节点、Condition节点、Loop节点、Tool节点——每个节点的实现。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-13.html" style="color: #00897B;">Agent开发系列 13：Tool接口设计</a>、<a href="Agent开发系列-07.html" style="color: #00897B;">Agent开发系列 07：ReAct循环</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    16 工作流执行引擎
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    DAG执行、状态持久化、断点恢复——怎么让工作流稳定执行。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-17.html" style="color: #00897B;">Agent开发系列 17：执行引擎</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    17 工作流版本控制
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    版本历史、Diff对比、一键回滚——生产环境必备。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-07.html" style="color: #00897B;">Agent开发系列 07：反思</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    18 可视化编辑器
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    React Flow集成、拖拽布局、属性面板——怎么做工作流可视化编辑器。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-27-Claude-Code架构概览-公众号版.md" style="color: #00897B;">AI Coding系列 27：架构概览</a>、<a href="Agent开发系列-27.html" style="color: #00897B;">Agent开发系列 27：实战02</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    记忆系统篇：让Bot记住一切
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    OpenClaw的记忆系统比普通Agent复杂得多。这一篇，我们来实现企业级的记忆系统。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    19 多层记忆架构
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Session Memory、Bot Knowledge、User Profile、Global Context——四层记忆的设计。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-09.html" style="color: #00897B;">Agent开发系列 09：四层记忆架构 + 上下文窗口管理</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    20 向量数据库集成
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Embedding生成、相似度检索、pgvector集成——知识库的底层实现。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-11.html" style="color: #00897B;">Agent开发系列 11：向量数据库与RAG</a>、<a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/12-记忆系统-公众号版.md" style="color: #00897B;">OpenClaw原理篇12：记忆系统</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    21 知识库管理后台
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    文档上传、切片策略、索引管理——怎么做一个好用的知识库后台。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-11.html" style="color: #00897B;">Agent开发系列 11：实战记忆系统</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    22 记忆召回优化
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Rerank策略、混合检索、上下文窗口管理——怎么让记忆召回更准确。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-09.html" style="color: #00897B;">Agent开发系列 09：上下文窗口管理</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    23 隐私与权限控制
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    数据隔离、访问控制、合规存储——企业级记忆的安全设计。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-15.html" style="color: #00897B;">Agent开发系列 15：工具安全</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    多租户与权限篇：企业级架构
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    要做OpenClaw这样的平台，多租户和权限系统是必须的。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    24 多租户架构设计
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Schema隔离 vs Row隔离、租户识别、资源配额——企业级多租户怎么做。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-20-实战05-设计全栈应用架构-公众号版.md" style="color: #00897B;">AI Coding系列 20：全栈应用架构</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    25 RBAC权限模型
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Role、Permission、Resource——怎么做一个灵活的权限系统。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-21.html" style="color: #00897B;">Agent开发系列 21：团队编排</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    26 API Key与访问控制
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    API Key生成、Quota控制、调用审计——怎么做API网关。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-17-实战02-开发Web-API-公众号版.md" style="color: #00897B;">AI Coding系列 17：API设计最佳实践</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    27 组织架构管理
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    团队、部门、项目组——怎么支持复杂的组织架构。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-23.html" style="color: #00897B;">Agent开发系列 23：内容生产团队</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    前端工程篇：打造OpenClaw级别的UI
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    OpenClaw的UI是它成功的关键之一。这一篇，我们来实现专业级的前端。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    28 Next.js App Router架构
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Server Components、Route Groups、Layout布局——现代React架构。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" style="color: #00897B;">AI Coding系列：现代前端工程化</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    29 Bot创建与配置页面
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    多Tab配置面板、实时预览、配置校验——怎么做专业的Bot编辑器。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-27.html" style="color: #00897B;">Agent开发系列 27：实战01</a>（个人助手Agent）
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    30 对话调试面板
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    消息树、Token统计、插件调用链——怎么做一个好用的调试工具。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-25.html" style="color: #00897B;">Agent开发系列 25：可观测性</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    31 数据看板
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    使用统计、对话质量、Cost分析——怎么做数据看板。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-23-实战08-数据分析+AI特性-公众号版.md" style="color: #00897B;">AI Coding系列 23：数据可视化</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    32 响应式设计与主题
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    深色模式、i18n、CSS Variables——怎么做主题系统。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-09-前端样式设计-公众号版.md" style="color: #00897B;">AI Coding系列 09：前端样式设计</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    实时通信篇：像ChatGPT一样流畅
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    现代AI应用离不开实时通信。这一篇，我们来实现流式输出和实时更新。
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    33 Server-Sent Events实现
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    SSE协议、流式响应、断连重连——怎么实现ChatGPT那样的流式输出。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-23.html" style="color: #00897B;">Agent开发系列 23：性能优化</a>（流式输出）
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    34 WebSocket实时通信
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    在线状态、消息同步、协作编辑——怎么实现实时协作功能。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-21.html" style="color: #00897B;">Agent开发系列 21：消息总线</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    35 前端流式渲染
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Markdown渲染、代码高亮、逐步显示——怎么让流式输出更美观。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-18-实战03-开发React组件库-公众号版.md" style="color: #00897B;">AI Coding系列 18：前端渲染优化</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    36 长连接管理与监控
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    连接池、心跳检测、自动重连——怎么保证连接的稳定性。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-25.html" style="color: #00897B;">Agent开发系列 25：可观测性</a>
+  </p>
+
+  <h2 style="font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 0 0 25px 0; padding-bottom: 10px; border-bottom: 2px solid #e53935;">
+    部署运维篇：生产环境指南
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; font-style: italic;">
+    代码写完了，怎么部署到生产环境？
+  </p>
+
+  <p style="margin: 0 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    37 Docker Compose部署
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    PostgreSQL、Redis、Nginx、Next.js——怎么用Docker Compose快速部署。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" style="color: #00897B;">AI Coding系列：DevOps实践</a>、<a href="Agent开发系列-25.html" style="color: #00897B;">Agent开发系列 25：生产部署</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    38 Kubernetes生产部署
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    HPA自动伸缩、PDB保护、ConfigMap管理——怎么在K8s上跑生产环境。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-25.html" style="color: #00897B;">Agent开发系列 25：生产部署</a>
+  </p>
+
+  <p style="margin: 25px 0 20px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    39 CI/CD自动化流水线
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    GitHub Actions、自动测试、镜像构建、CD部署——怎么做到一键发布。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" style="color: #00897B;">AI Coding系列：自动化部署</a>
+  </p>
+
+  <p style="margin: 25px 0 40px 0; font-size: 16px; color: #e53935; font-weight: bold;">
+    40 监控告警与日志
+  </p>
+  <p style="margin: 0 0 8px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    Prometheus、Grafana、Loki——怎么监控生产环境的健康状态。
+  </p>
+  <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">
+    📎 前置知识：<a href="Agent开发系列-25.html" style="color: #00897B;">Agent开发系列 25：可观测性</a>
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 50px 0;">
+
+  <h2 style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 0 0 20px 0;">
+    四大系列知识图谱
+  </h2>
+
+  <p style="margin: 0 0 25px 0; font-size: 15px; color: #3f3f3f; line-height: 1.8;">
+    这个系列会把前面三个系列学到的知识全部整合起来，加上企业级架构的新知识，从0到1构建一个生产级的智能体平台。
+  </p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;">
+    <tr>
+      <th style="border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; background: #fafafa; font-weight: 600; color: #2c2c2c;">系列</th>
+      <th style="border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; background: #fafafa; font-weight: 600; color: #2c2c2c;">核心贡献</th>
+      <th style="border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; background: #fafafa; font-weight: 600; color: #2c2c2c;">在龙虾开发中应用</th>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;"><a href="file:///Users/admin/.openclaw/workspace/openclaw-complete-series/00-系列导航.md" style="color: #00897B;">一步一步学习OpenClaw</a></td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">OpenClaw使用、部署、自定义开发</td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">Bot设计、插件开发</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;"><a href="file:///Users/admin/.openclaw/workspace/ai-coding-series/AI-01-AI-Coding是什么-公众号版.md" style="color: #00897B;">一步一步学习AI Coding</a></td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">项目开发、前端工程</td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">前端架构、UI组件</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;"><a href="Agent开发系列-01.html" style="color: #00897B;">Agent开发系列</a></td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">核心循环、记忆、工具</td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">执行引擎、记忆系统</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;"><a href="myAgent开发系列-01.html" style="color: #00897B;">myAgent开发系列</a></td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">平台架构、企业级能力</td>
+      <td style="border: 1px solid #e8e8e8; padding: 12px 14px;">多租户、工作流、插件市场</td>
+    </tr>
+  </table>
+
+  <p style="margin: 0 0 25px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-indent: 2em;">
+    这是一个前所未有的系列。从用户到开发者，从会用工具到会造工具——四个系列走完，你已经是真正的AI平台专家了。
+  </p>
+
+  <p style="margin: 0 0 30px 0; font-size: 16px; color: #3f3f3f; line-height: 2.0; text-indent: 2em;">
+    《myAgent开发系列》预计40篇文章，近期开始更新。
+  </p>
+
+  <p style="margin: 0; font-size: 14px; color: #999; text-align: center;">
+    下期预告：第2篇《myAgent核心架构解析》
+  </p>
+
+</section>
+
+</body>
+</html>
