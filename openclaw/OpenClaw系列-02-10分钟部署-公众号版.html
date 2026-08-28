@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10分钟在电脑上跑起你的第一个 AI 智能体：OpenClaw 本地部署实操指南</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    10分钟在电脑上跑起你的第一个 AI 智能体：OpenClaw 本地部署实操指南
+  </h1>
+  <h2 style="font-size: 17px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+    零基础上手 · 从软件安装到执行第一个自动化任务，不卡壳避坑全流程
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 35px 0; padding-bottom: 18px; border-bottom: 1px solid #e0e0e0;">
+    AI 智能体上手指南 | 宝玉风格通俗复盘 | 大前端工程师
+  </p>
+
+  <!-- 痛点开篇 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    很多朋友想在自己的电脑上体验真正的 AI 智能体（Agent），但在网上一搜教程，常常被一堆专有名词劝退：
+  </p>
+  <section style="margin: 20px 0; padding: 20px; background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; border-radius: 8px;">
+    <p style="margin: 0 0 10px 0; color: #c62828; font-size: 15px; line-height: 1.8;">
+      ❌ “先配置 Python 虚拟环境与 Conda 依赖”<br>
+      ❌ “拉取 Docker 镜像并修改 Nginx 反向代理”<br>
+      ❌ “编译 C++ 运行库与 Node.js 环境变量”
+    </p>
+  </section>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    其实，体验一个能帮你干活的 AI 智能体，根本不需要这么折腾。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    今天我们用最通俗的大白话，拆解如何用 10 分钟在 Windows 或 Mac 电脑上把开源智能体框架 <strong style="color: #00897B;">OpenClaw（代号：小龙虾）</strong> 跑起来，并让它帮你完成第一个实战任务。
+  </p>
+
+  <!-- 章节01 -->
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">电脑配置要求（普通办公本都能跑）</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    因为智能体的“大脑思考”主要是通过云端大模型接口完成的，所以它对你本地电脑的硬件要求非常亲民：
+  </p>
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897B; border-radius: 8px;">
+    <p style="margin: 0 0 10px 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      • <strong>操作系统</strong>：Windows 10 / 11、macOS 10.14+ 均可；
+    </p>
+    <p style="margin: 0 0 10px 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      • <strong>内存要求</strong>：4GB 内存就能跑，8GB 以上更流畅；
+    </p>
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      • <strong>硬盘空间</strong>：预留 2GB 可用空间即可（不需要独立显卡！）。
+    </p>
+  </section>
+
+  <!-- 章节02 -->
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">3 种安装方式怎么选？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    OpenClaw 提供了三种使用形态，大家可以根据自己的需求对号入座：
+  </p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13.5px; line-height: 1.6;">
+    <thead>
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 10px; border: 1px solid #cbd5e1; color: #0f172a; text-align: left;">安装形态</th>
+        <th style="padding: 10px; border: 1px solid #cbd5e1; color: #0f172a; text-align: left;">适合人群</th>
+        <th style="padding: 10px; border: 1px solid #cbd5e1; color: #0f172a; text-align: left;">核心优势</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155; font-weight: bold;">1. 微信小程序版</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">新手尝鲜、手机临时使用</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">0 门槛免安装，微信扫码即用</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155; font-weight: bold;">2. 桌面客户端 (推荐)</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">日常办公、需要处理本地文件</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">可视化界面，能读写本地文件夹并执行自动化</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155; font-weight: bold;">3. 开源源码部署</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">开发者二次开发与深度定制</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">可自由修改源码、扩展私有插件</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 章节03 -->
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">桌面客户端安装实操（只需 3 步）</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这里我们以绝大多数人日常最需要的<strong>桌面客户端</strong>为例：
+  </p>
+  <section style="margin: 20px 0; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px;">
+    <p style="margin: 0 0 12px 0; color: #334155; font-size: 15px; line-height: 1.8;">
+      <strong>第一步 · 下载安装包</strong>：进入官方发布页面，Windows 用户下载 <code>.exe</code> 安装包，Mac 用户下载 <code>.dmg</code> 安装包；
+    </p>
+    <p style="margin: 0 0 12px 0; color: #334155; font-size: 15px; line-height: 1.8;">
+      <strong>第二步 · 双击安装与启动</strong>：像安装日常软件一样点击“下一步”完成安装，首次启动会看到一个干净的智能体控制台；
+    </p>
+    <p style="margin: 0; color: #334155; font-size: 15px; line-height: 1.8;">
+      <strong>第三步 · 填入大模型 Key</strong>：在设置里填入你常用的大模型 API Key（支持 DeepSeek、Kimi、Claude 或通义千问，几十块钱能用好几个月）。
+    </p>
+  </section>
+
+  <!-- 章节04 -->
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">跑通你的第一个自动化任务</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    装好之后，它和普通 Chat 聊天机器人最大的区别是：<strong>智能体可以调用工具帮你实际操作电脑</strong>。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    你可以直接在对话框输入一条实际指令进行测试：
+  </p>
+
+    <!-- Mac 风格指令提示框 -->
+  <section style="margin: 25px 0; background: #1e293b; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+    <section style="background: #0f172a; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+      <section style="display: flex; align-items: center; gap: 6px;">
+        <span style="display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #ff5f56;"></span>
+        <span style="display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #ffbd2e;"></span>
+        <span style="display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #27c93f;"></span>
+      </section>
+      <span style="color: #94a3b8; font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 600;">Agent 实战指令 Prompt</span>
+      <span style="width: 30px;"></span>
+    </section>
+    <section style="padding: 16px 18px; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 13.5px; line-height: 1.7; color: #f8fafc; overflow-x: auto; white-space: pre-wrap; word-break: break-all;">
+<span style="color: #6ee7b7; font-style: italic;"># 智能体任务指令示范（直接粘贴到对话框）</span>
+<span style="color: #fde047;">“帮我检查 ~/Downloads 文件夹，把里面所有的 PDF 电子书移动到 ~/Documents/Ebooks 目录，并按文件大小生成一份 Markdown 归档清单。”</span></section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px;">
+    <p style="margin: 0; color: #92400e; font-size: 15px; line-height: 1.8;">
+      💡 <strong>你会看到它一步一步执行</strong>：感知任务 ➔ 列出下载文件夹文件 ➔ 过滤出 PDF ➔ 创建目标目录 ➔ 批量归档移动 ➔ 输出统计表格。整个过程完全不需要你手动拖拽！
+    </p>
+  </section>
+
+  <!-- 总结 -->
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">05</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">写在最后</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    AI 智能体不是只有大厂工程师才能玩的黑科技。通过像 OpenClaw 这样优秀的轻量开源工具，每个人都能在 10 分钟内拥有一位常驻电脑桌面的 24 小时数字助手。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    后续我们还会继续更新如何给智能体装上<strong>网络搜索、微信提醒、数据抓取</strong>等高级技能包，欢迎持续关注！
+  </p>
+
+  <!-- 底部公众号卡片 -->
+  <section style="margin: 50px 0 20px 0; padding: 25px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 12px; text-align: center;">
+    <p style="margin: 0 0 6px 0; font-size: 18px; font-weight: bold; color: #1a1a1a;">⚡ 大前端工程师</p>
+    <p style="margin: 0 0 15px 0; font-size: 13.5px; color: #666;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</p>
+    <p style="margin: 0 0 15px 0;">
+      <img src="https://ailearning.top/assets/qrcode.jpg" alt="公众号二维码" style="width: 140px; height: 140px; border-radius: 8px; display: inline-block;">
+    </p>
+    <p style="margin: 0; font-size: 13px; color: #666;">
+      微信扫码关注公众号，回复 <strong style="color: #00897B;">Agent</strong> 获取 OpenClaw 客户端与大模型配置包
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

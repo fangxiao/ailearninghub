@@ -653,9 +653,14 @@ CMD ["nginx", "-g", "daemon off;"]
             f.write(min_html)
         min_stats.append(("index.html", len(orig_html), len(min_html)))
 
-    for name, orig_len, new_len in min_stats:
-        saved_pct = ((orig_len - new_len) / orig_len) * 100 if orig_len > 0 else 0
-        print(f"    ✓ {name:<18}: {format_size(orig_len):>8} -> {format_size(new_len):>8} (体积缩减 {saved_pct:.1f}%)")
+    # 5.5 Copy SEO files & root verification txt files
+    import glob
+    for txt_file in glob.glob("*.txt"):
+        shutil.copy2(txt_file, os.path.join(DIST_DIR, txt_file))
+    if os.path.exists("sitemap.xml"):
+        shutil.copy2("sitemap.xml", os.path.join(DIST_DIR, "sitemap.xml"))
+    if os.path.exists("robots.txt"):
+        shutil.copy2("robots.txt", os.path.join(DIST_DIR, "robots.txt"))
 
     # 6. Create zip bundle
     zip_path = "ai_learning_hub_dist.zip"
