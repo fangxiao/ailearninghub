@@ -454,14 +454,6 @@ def build_dist():
     if p_quant:
         process_article("quant-agent", p_quant, "量化交易 Agent 01 · 架构设计与自动化交易系统", "01 架构", 1)
 
-    # 15. Ebooks
-    for idx, f in enumerate(sorted(glob.glob("*.pdf")), 1):
-        meta = extract_meta(f)
-        badge = "精装全本"
-        if "AI Coding" in f: badge = "85MB典藏"
-        elif "openclaw" in f: badge = "OpenClaw"
-        process_article("ebooks", f, meta['title'], badge, idx)
-
     # 4. Copy image assets (mermaid images, diagrams, etc.) referenced by articles
     for img_dir in ["mermaid", "bigmodel/mermaid", "customer-service-agent/mermaid-img", "aitools/diagram", "local-llm-knowledge-base/mermaid-img"]:
         if os.path.exists(img_dir):
@@ -482,16 +474,14 @@ def build_dist():
 
     active_cat_ids = {c['id'] for c in active_categories}
     final_articles = [a for a in all_published_articles if a['categoryId'] in active_cat_ids]
-    final_pdfs = [a for a in final_articles if a['format'] == 'pdf' or a['categoryId'] == 'ebooks']
 
     # Write dist/assets/data.json and dist/assets/data.js
     dist_site_data = {
         "siteTitle": "AI 全系列学习智库 · 体系化知识库",
-        "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG)、AI 编程工具链与精装全套电子书",
+        "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
         "stats": {
             "totalCategories": len(active_categories),
-            "totalArticles": len(final_articles),
-            "totalEbooks": len(final_pdfs)
+            "totalArticles": len(final_articles)
         },
         "categories": active_categories,
         "articles": final_articles

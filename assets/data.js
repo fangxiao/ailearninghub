@@ -1,10 +1,9 @@
 window.SITE_DATA = {
   "siteTitle": "AI 全系列学习智库 · 体系化知识库",
-  "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG)、AI 编程工具链与精装全套电子书",
+  "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
   "stats": {
-    "totalCategories": 10,
-    "totalArticles": 173,
-    "totalEbooks": 7
+    "totalCategories": 9,
+    "totalArticles": 166
   },
   "categories": [
     {
@@ -176,24 +175,6 @@ window.SITE_DATA = {
         "企业部署"
       ],
       "count": 19
-    },
-    {
-      "id": "ebooks",
-      "name": "精装全套电子书专区 (PDF)",
-      "icon": "📖",
-      "badge": "整本合集",
-      "desc": "精选 14 部完整版深度电子书与专栏合集（含 85MB 高清 AI Coding 从入门到精通）",
-      "theme": "fuchsia",
-      "accent": "#c026d3",
-      "color": "fuchsia",
-      "difficulty": "全套典藏",
-      "tags": [
-        "电子书",
-        "PDF合集",
-        "离线阅读",
-        "全本下载"
-      ],
-      "count": 7
     }
   ],
   "articles": [
@@ -4291,118 +4272,6 @@ window.SITE_DATA = {
         "风险与应对",
         "总结"
       ]
-    },
-    {
-      "id": "AI Coding 从入门到精通_pdf",
-      "categoryId": "ebooks",
-      "path": "AI Coding 从入门到精通.pdf",
-      "filename": "AI Coding 从入门到精通.pdf",
-      "format": "pdf",
-      "title": "AI Coding 从入门到精通",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 697 页",
-      "sizeStr": "81.7 MB",
-      "sizeBytes": 85654778,
-      "badge": "85MB典藏",
-      "sortOrder": 1,
-      "toc": []
-    },
-    {
-      "id": "Agent开发系列_电子书_pdf",
-      "categoryId": "ebooks",
-      "path": "Agent开发系列-电子书.pdf",
-      "filename": "Agent开发系列-电子书.pdf",
-      "format": "pdf",
-      "title": "Agent开发系列-电子书",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 106 页",
-      "sizeStr": "12.4 MB",
-      "sizeBytes": 12981272,
-      "badge": "精装全本",
-      "sortOrder": 2,
-      "toc": []
-    },
-    {
-      "id": "myAgent开发系列_电子书_pdf",
-      "categoryId": "ebooks",
-      "path": "myAgent开发系列-电子书.pdf",
-      "filename": "myAgent开发系列-电子书.pdf",
-      "format": "pdf",
-      "title": "myAgent开发系列-电子书",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 12 页",
-      "sizeStr": "264.7 KB",
-      "sizeBytes": 271023,
-      "badge": "精装全本",
-      "sortOrder": 10,
-      "toc": []
-    },
-    {
-      "id": "openclaw_ebook_pdf",
-      "categoryId": "ebooks",
-      "path": "openclaw-ebook.pdf",
-      "filename": "openclaw-ebook.pdf",
-      "format": "pdf",
-      "title": "openclaw-ebook",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 138 页",
-      "sizeStr": "16.2 MB",
-      "sizeBytes": 16978464,
-      "badge": "OpenClaw",
-      "sortOrder": 11,
-      "toc": []
-    },
-    {
-      "id": "大模型原理系列_电子书_pdf",
-      "categoryId": "ebooks",
-      "path": "大模型原理系列-电子书.pdf",
-      "filename": "大模型原理系列-电子书.pdf",
-      "format": "pdf",
-      "title": "大模型原理系列-电子书",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 12 页",
-      "sizeStr": "283.4 KB",
-      "sizeBytes": 290233,
-      "badge": "精装全本",
-      "sortOrder": 12,
-      "toc": []
-    },
-    {
-      "id": "客服Agent实战系列_电子书_pdf",
-      "categoryId": "ebooks",
-      "path": "客服Agent实战系列-电子书.pdf",
-      "filename": "客服Agent实战系列-电子书.pdf",
-      "format": "pdf",
-      "title": "客服Agent实战系列-电子书",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 12 页",
-      "sizeStr": "320.9 KB",
-      "sizeBytes": 328576,
-      "badge": "精装全本",
-      "sortOrder": 13,
-      "toc": []
-    },
-    {
-      "id": "本地大模型知识库系列_电子书_pdf",
-      "categoryId": "ebooks",
-      "path": "本地大模型知识库系列-电子书.pdf",
-      "filename": "本地大模型知识库系列-电子书.pdf",
-      "format": "pdf",
-      "title": "本地大模型知识库系列-电子书",
-      "subtitle": "PDF 完整版电子书",
-      "summary": "包含全套完整章节的高清 PDF 电子书，支持离线阅读与全本查阅。",
-      "readTime": "约 12 页",
-      "sizeStr": "236.1 KB",
-      "sizeBytes": 241773,
-      "badge": "精装全本",
-      "sortOrder": 14,
-      "toc": []
     }
   ]
 };

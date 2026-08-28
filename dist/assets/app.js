@@ -11,12 +11,11 @@
     activeCategory: 'all',
     searchQuery: '',
     difficultyFilter: 'all',
-    viewMode: 'roadmap', // 'roadmap' (default) | 'grid' | 'shelf' | 'tree' | 'list'
+    viewMode: 'roadmap', // 'roadmap' (default) | 'grid' | 'tree' | 'list'
     theme: localStorage.getItem('ai_hub_theme') || 'dark',
     readerTheme: localStorage.getItem('ai_hub_reader_theme') || 'default',
     readerFontSize: parseInt(localStorage.getItem('ai_hub_reader_fontsize') || '16', 10),
     currentArticle: null,
-    pdfUnlocked: localStorage.getItem('ai_hub_pdf_unlocked') === 'true',
     bookmarks: JSON.parse(localStorage.getItem('ai_hub_bookmarks') || '[]'),
     history: JSON.parse(localStorage.getItem('ai_hub_history') || '[]'),
   };
@@ -34,23 +33,16 @@
     mainContent: document.getElementById('main-content'),
     statsArticles: document.getElementById('stat-articles'),
     statsCategories: document.getElementById('stat-categories'),
-    statsEbooks: document.getElementById('stat-ebooks'),
     readerModal: document.getElementById('reader-modal'),
     readerIframeContainer: document.getElementById('reader-iframe-container'),
     readerMarkdownContainer: document.getElementById('reader-markdown-container'),
-    readerPdfContainer: document.getElementById('reader-pdf-container'),
     readerFrame: document.getElementById('reader-frame'),
     markdownContent: document.getElementById('markdown-content'),
-    pdfFrame: document.getElementById('pdf-frame'),
-    pdfDownloadLink: document.getElementById('pdf-download-link'),
-    pdfSizeInfo: document.getElementById('pdf-size-info'),
     readerTitle: document.getElementById('reader-title'),
     readerCategory: document.getElementById('reader-category'),
     readerTocList: document.getElementById('reader-toc-list'),
     readerTocDrawer: document.getElementById('reader-toc-drawer'),
     wechatModal: document.getElementById('wechat-modal'),
-    pdfUnlockModal: document.getElementById('pdf-unlock-modal'),
-    pdfUnlockCode: document.getElementById('pdf-unlock-code'),
     btnPrevArticle: document.getElementById('btn-prev-article'),
     btnNextArticle: document.getElementById('btn-next-article'),
     btnBookmark: document.getElementById('btn-bookmark'),
@@ -439,7 +431,7 @@
     `;
   }
 
-  // 2. List View (精简清单表格视图)
+  // 2. List View (精简清单表格与移动端自适应卡片)
   function renderListView() {
     const articles = getFilteredArticles();
     if (articles.length === 0) {
@@ -448,15 +440,57 @@
     }
 
     el.mainContent.innerHTML = `
-      <div class="rounded-3xl glass border border-white/10 overflow-hidden animate-fade-in">
-        <div class="p-6 border-b border-white/10 flex items-center justify-between">
+      <div class="rounded-2xl sm:rounded-3xl glass border border-white/10 overflow-hidden animate-fade-in">
+        <div class="p-4 sm:p-6 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h3 class="text-xl font-bold text-white">文档速查列表</h3>
-            <p class="text-xs text-slate-400 mt-1">共找到 ${articles.length} 篇相关资料</p>
+            <h3 class="text-lg sm:text-xl font-bold text-white">文档速查列表</h3>
+            <p class="text-xs text-slate-400 mt-0.5">共找到 ${articles.length} 篇相关资料</p>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Mobile Card List View (< 640px) -->
+        <div class="block sm:hidden divide-y divide-white/5">
+          ${articles.map(art => {
+            const isBookmarked = state.bookmarks.includes(art.id);
+            const cat = state.data.categories.find(c => c.id === art.categoryId) || {};
+
+            return `
+              <div class="p-4 hover:bg-white/5 transition flex flex-col gap-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="inline-flex items-center gap-1 text-[11px] text-slate-300 bg-white/5 px-2 py-0.5 rounded-lg border border-white/5">
+                    <span>${cat.icon || '📁'}</span>
+                    <span class="truncate max-w-[120px]">${cat.name || '其他'}</span>
+                  </span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-slate-400 font-mono">${art.readTime}</span>
+                    <button onclick="window.AI_HUB.toggleBookmark('${art.id}', event)" class="w-6 h-6 rounded-md flex items-center justify-center ${isBookmarked ? 'text-amber-300 bg-amber-400/20' : 'text-slate-400 hover:bg-white/10'}">
+                      ${isBookmarked ? '★' : '☆'}
+                    </button>
+                  </div>
+                </div>
+
+                <div class="font-bold text-sm text-white hover:text-indigo-400 cursor-pointer line-clamp-2" onclick="window.AI_HUB.openReaderById('${art.id}')">
+                  ${highlight(art.title)}
+                </div>
+
+                ${art.subtitle ? `<div class="text-xs text-slate-400 line-clamp-1">${highlight(art.subtitle)}</div>` : ''}
+
+                <div class="flex items-center justify-between pt-1">
+                  <span class="badge-chip text-[10px] bg-white/5 border border-white/10 text-slate-300 uppercase">${art.format}</span>
+                  <div class="flex items-center gap-2">
+                    <a href="${art.path}" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs border border-white/10">↗ 独立页</a>
+                    <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition">
+                      阅读 →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Desktop Table View (>= 640px) -->
+        <div class="hidden sm:block overflow-x-auto">
           <table class="w-full text-left text-sm text-slate-300">
             <thead class="text-xs text-slate-400 bg-white/5 uppercase border-b border-white/10">
               <tr>
@@ -516,25 +550,25 @@
     `;
   }
 
-  // 3. Tree View (系列目录树视图)
+  // 3. Tree View (系列目录树视图 - 响应式优化)
   function renderTreeView() {
     const categories = state.data.categories;
 
     el.mainContent.innerHTML = `
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 animate-fade-in">
         <div class="lg:col-span-1 space-y-3">
-          <div class="p-6 rounded-3xl glass border border-white/10">
-            <h3 class="text-lg font-bold text-white mb-4">📚 系列知识大纲</h3>
-            <div class="space-y-1.5">
+          <div class="p-4 sm:p-6 rounded-2xl sm:rounded-3xl glass border border-white/10">
+            <h3 class="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">📚 系列知识大纲</h3>
+            <div class="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
               ${categories.map(cat => {
                 const count = state.data.articles.filter(a => a.categoryId === cat.id).length;
                 return `
-                  <a href="#tree-cat-${cat.id}" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white text-sm transition">
-                    <span class="flex items-center gap-2">
+                  <a href="#tree-cat-${cat.id}" class="flex items-center justify-between p-2 sm:p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white text-xs sm:text-sm transition">
+                    <span class="flex items-center gap-1.5 sm:gap-2 truncate">
                       <span>${cat.icon}</span>
-                      <span>${cat.name}</span>
+                      <span class="truncate">${cat.name}</span>
                     </span>
-                    <span class="text-xs bg-white/10 px-2 py-0.5 rounded-full">${count}</span>
+                    <span class="text-[10px] sm:text-xs bg-white/10 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">${count}</span>
                   </a>
                 `;
               }).join('')}
@@ -548,37 +582,37 @@
             if (catArticles.length === 0) return '';
 
             return `
-              <div id="tree-cat-${cat.id}" class="p-6 md:p-8 rounded-3xl glass border border-white/10">
-                <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
-                  <div class="flex items-center gap-3">
-                    <span class="text-3xl">${cat.icon}</span>
+              <div id="tree-cat-${cat.id}" class="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl glass border border-white/10">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3 sm:pb-4 mb-4 sm:mb-6">
+                  <div class="flex items-center gap-2.5 sm:gap-3">
+                    <span class="text-2xl sm:text-3xl">${cat.icon}</span>
                     <div>
-                      <h4 class="text-xl font-bold text-white">${cat.name}</h4>
+                      <h4 class="text-lg sm:text-xl font-bold text-white">${cat.name}</h4>
                       <p class="text-xs text-slate-400 mt-0.5">${cat.desc}</p>
                     </div>
                   </div>
-                  <span class="badge-chip bg-${cat.theme}-500/20 text-${cat.theme}-400 border border-${cat.theme}-500/30">${cat.badge}</span>
+                  <span class="badge-chip bg-${cat.theme}-500/20 text-${cat.theme}-400 border border-${cat.theme}-500/30 text-xs">${cat.badge}</span>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-2.5 sm:space-y-3">
                   ${catArticles.map((art, idx) => {
                     return `
-                      <div class="p-3.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition flex items-center justify-between gap-4 cursor-pointer group" onclick="window.AI_HUB.openReaderById('${art.id}')">
-                        <div class="flex items-center gap-3 min-w-0">
-                          <span class="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-xs font-mono text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition shrink-0">
+                      <div class="p-3 sm:p-3.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition flex items-center justify-between gap-3 sm:gap-4 cursor-pointer group" onclick="window.AI_HUB.openReaderById('${art.id}')">
+                        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                          <span class="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-white/5 flex items-center justify-center text-[10px] sm:text-xs font-mono text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition shrink-0">
                             ${idx + 1}
                           </span>
                           <div class="min-w-0">
-                            <div class="text-sm font-medium text-slate-200 group-hover:text-indigo-400 transition truncate">
+                            <div class="text-xs sm:text-sm font-medium text-slate-200 group-hover:text-indigo-400 transition truncate">
                               ${art.title}
                             </div>
-                            ${art.subtitle ? `<div class="text-xs text-slate-400 truncate mt-0.5">${art.subtitle}</div>` : ''}
+                            ${art.subtitle ? `<div class="text-[11px] sm:text-xs text-slate-400 truncate mt-0.5">${art.subtitle}</div>` : ''}
                           </div>
                         </div>
 
-                        <div class="flex items-center gap-3 shrink-0">
-                          <span class="text-xs text-slate-400">${art.readTime}</span>
-                          <span class="badge-chip text-xs bg-white/5 border border-white/10 text-slate-300">${art.badge}</span>
+                        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                          <span class="text-[10px] sm:text-xs text-slate-400">${art.readTime}</span>
+                          <span class="badge-chip text-[10px] sm:text-xs bg-white/5 border border-white/10 text-slate-300 hidden sm:inline-block">${art.badge}</span>
                         </div>
                       </div>
                     `;
@@ -592,85 +626,7 @@
     `;
   }
 
-  // 4. 3D Ebook Shelf View (3D 电子书沉浸书架)
-  function renderShelfView() {
-    const pdfBooks = state.data.articles.filter(a => a.format === 'pdf' || a.categoryId === 'ebooks');
-
-    el.mainContent.innerHTML = `
-      <div class="animate-fade-in">
-        <div class="p-8 rounded-3xl glass border border-white/10 mb-10 text-center relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 pointer-events-none"></div>
-          <div class="relative z-10 max-w-2xl mx-auto">
-            <span class="badge-chip bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30 mb-3">📖 典藏精装全本</span>
-            <h2 class="text-3xl font-extrabold text-white">AI 全套体系化电子书书架</h2>
-            <p class="text-slate-300 text-sm mt-2">
-              包含全套 14 部完整整编电子书，提供全书一键阅读、高清离线 PDF 下载（含 85MB 高清 AI Coding 入门到精通）。
-            </p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12">
-          ${pdfBooks.map((book, idx) => {
-            const gradients = [
-              'from-indigo-600 to-purple-800',
-              'from-blue-600 to-cyan-800',
-              'from-emerald-600 to-teal-800',
-              'from-purple-600 to-pink-800',
-              'from-amber-600 to-orange-800',
-              'from-rose-600 to-red-800',
-              'from-slate-700 to-zinc-900'
-            ];
-            const bgGrad = gradients[idx % gradients.length];
-
-            return `
-              <div class="book-card flex flex-col items-center">
-                <div class="book-cover-3d bg-gradient-to-br ${bgGrad} p-5 flex flex-col justify-between text-white shadow-2xl relative" onclick="window.AI_HUB.openReaderById('${book.id}')">
-                  <div class="book-spine"></div>
-                  
-                  <div>
-                    <div class="flex items-center justify-between text-xs opacity-75 mb-2 pl-2">
-                      <span>AI E-BOOK</span>
-                      <span class="bg-white/20 px-2 py-0.5 rounded">${book.badge}</span>
-                    </div>
-                    <h4 class="text-base font-bold leading-snug pl-2 line-clamp-3 mt-4 text-white drop-shadow">
-                      ${book.title.replace('.pdf', '')}
-                    </h4>
-                  </div>
-
-                  <div class="pl-2">
-                    <div class="text-xs opacity-75">${book.sizeStr}</div>
-                    <div class="text-xs opacity-90 font-medium mt-1">完整典藏版</div>
-                  </div>
-                </div>
-
-                <div class="mt-4 text-center w-full px-2">
-                  <div class="text-sm font-semibold text-white truncate" title="${book.title}">
-                    ${book.title.replace('.pdf', '')}
-                  </div>
-                  <div class="text-xs text-slate-400 mt-1 flex items-center justify-center gap-2">
-                    <span>${book.sizeStr}</span>
-                    <span>•</span>
-                    <span>${book.readTime}</span>
-                  </div>
-
-                  <div class="flex items-center justify-center gap-2 mt-3">
-                    <button onclick="window.AI_HUB.openReaderById('${book.id}')" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition shadow-sm">
-                      在线阅读
-                    </button>
-                    <button onclick="window.AI_HUB.downloadPdf('${book.path}')" class="px-3 py-1.5 rounded-xl glass hover:bg-white/15 text-slate-300 text-xs font-medium transition border border-white/10 flex items-center gap-1" title="下载 PDF">
-                      ${state.pdfUnlocked ? '<span>⬇️ 下载</span>' : '<span>🔒 解锁下载</span>'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `;
-  }
-
-  // 5. Learning Roadmap View (学习路线图)
+  // 4. Learning Roadmap View (体系化进阶路线图)
   function renderRoadmapView() {
     const roadmapData = [
       {
@@ -696,59 +652,53 @@
         title: "💼 垂直行业与企业级项目实战",
         desc: "落地企业智能客服、构建私有本地大模型知识库 (RAG)、打造英语智能导师与量化交易系统",
         categories: ["customer-service", "customer-service-harness", "local-rag", "english-agent", "quant-agent"],
-      },
-      {
-        level: "Level 5",
-        title: "📖 精装典藏全书研读与全链路通关",
-        desc: "精读全套高清 PDF 电子书与专栏合集，系统化沉淀大模型、智能体、代码生成与全栈落地能力",
-        categories: ["ebooks"],
       }
     ];
 
     el.mainContent.innerHTML = `
-      <div class="max-w-4xl mx-auto animate-fade-in">
-        <div class="text-center mb-10">
-          <span class="badge-chip bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 mb-3">🗺️ 体系化学习路线</span>
-          <h2 class="text-3xl font-extrabold text-white">从零到专家的 AI 开发者成长路径</h2>
-          <p class="text-slate-300 text-sm mt-2 max-w-xl mx-auto">
-            按照 5 个进阶阶段循序渐进研读，掌握从底层原理到 Agent 落地、AI 编程实战与全套典藏全书。
+      <div class="max-w-4xl mx-auto animate-fade-in px-1 sm:px-0">
+        <div class="text-center mb-8 sm:mb-10">
+          <span class="badge-chip bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 mb-2 sm:mb-3">🗺️ 体系化学习路线</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">从零到专家的 AI 开发者成长路径</h2>
+          <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl mx-auto">
+            按照 4 个进阶阶段循序渐进研读，掌握从底层原理到 Agent 落地、AI 编程实战与全栈工程落地。
           </p>
         </div>
 
-        <div class="space-y-8">
+        <div class="space-y-6 sm:space-y-8">
           ${roadmapData.map(step => {
             const stepArticles = state.data.articles.filter(a => step.categories.includes(a.categoryId));
 
             return `
               <div class="roadmap-step">
                 <div class="roadmap-dot"></div>
-                <div class="p-6 md:p-8 rounded-3xl glass border border-white/10">
-                  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4 mb-4">
+                <div class="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl glass border border-white/10">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 border-b border-white/10 pb-3 sm:pb-4 mb-3 sm:mb-4">
                     <div>
-                      <span class="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">${step.level}</span>
-                      <h3 class="text-xl font-bold text-white mt-2">${step.title}</h3>
+                      <span class="text-[11px] sm:text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md border border-indigo-500/20">${step.level}</span>
+                      <h3 class="text-lg sm:text-xl font-bold text-white mt-1.5">${step.title}</h3>
                       <p class="text-xs text-slate-300 mt-1">${step.desc}</p>
                     </div>
 
                     <div class="shrink-0">
-                      <span class="text-xs font-medium px-3 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                      <span class="text-[11px] sm:text-xs font-medium px-2.5 sm:px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-block">
                         共 ${stepArticles.length} 篇深度解析
                       </span>
                     </div>
                   </div>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3 sm:mt-4">
                     ${step.categories.map(catId => {
                       const cat = state.data.categories.find(c => c.id === catId);
                       if (!cat) return '';
                       const count = state.data.articles.filter(a => a.categoryId === catId).length;
                       return `
-                        <div onclick="window.AI_HUB.switchCategory('${cat.id}')" class="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex items-center justify-between cursor-pointer group">
-                          <span class="flex items-center gap-2.5 text-sm text-slate-200 group-hover:text-indigo-400 font-medium">
-                            <span class="text-lg">${cat.icon}</span>
+                        <div onclick="window.AI_HUB.switchCategory('${cat.id}')" class="p-3 sm:p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex items-center justify-between cursor-pointer group">
+                          <span class="flex items-center gap-2 text-xs sm:text-sm text-slate-200 group-hover:text-indigo-400 font-medium">
+                            <span class="text-base sm:text-lg">${cat.icon}</span>
                             <span>${cat.name}</span>
                           </span>
-                          <span class="text-xs bg-white/10 px-2.5 py-1 rounded-full text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition">${count} 篇</span>
+                          <span class="text-[11px] sm:text-xs bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition">${count} 篇</span>
                         </div>
                       `;
                     }).join('')}
@@ -809,7 +759,6 @@
     // 1. Markdown (.md)
     if (article.format === 'md') {
       if (el.readerIframeContainer) el.readerIframeContainer.classList.add('hidden');
-      if (el.readerPdfContainer) el.readerPdfContainer.classList.add('hidden');
       if (el.readerMarkdownContainer) el.readerMarkdownContainer.classList.remove('hidden');
 
       if (el.markdownContent) {
@@ -846,30 +795,9 @@
           }
         });
 
-    // 2. PDF (.pdf)
-    } else if (article.format === 'pdf') {
-      if (el.readerIframeContainer) el.readerIframeContainer.classList.add('hidden');
-      if (el.readerMarkdownContainer) el.readerMarkdownContainer.classList.add('hidden');
-      if (el.readerPdfContainer) el.readerPdfContainer.classList.remove('hidden');
-
-      if (el.pdfFrame) el.pdfFrame.src = article.path;
-      if (el.pdfDownloadLink) {
-        el.pdfDownloadLink.href = article.path;
-        el.pdfDownloadLink.innerHTML = state.pdfUnlocked ? '<span>⬇️ 下载离线版</span>' : '<span>🔒 关注解锁离线下载</span>';
-        el.pdfDownloadLink.onclick = function (e) {
-          if (!state.pdfUnlocked) {
-            e.preventDefault();
-            openPdfUnlockModal(article.path);
-          }
-        };
-      }
-      if (el.pdfSizeInfo) el.pdfSizeInfo.textContent = `PDF 完整电子书 · ${article.sizeStr}`;
-      renderReaderToc(article);
-
-    // 3. HTML (.html)
+    // 2. HTML (.html)
     } else {
       if (el.readerMarkdownContainer) el.readerMarkdownContainer.classList.add('hidden');
-      if (el.readerPdfContainer) el.readerPdfContainer.classList.add('hidden');
       if (el.readerIframeContainer) el.readerIframeContainer.classList.remove('hidden');
 
       if (el.readerFrame) {
@@ -892,9 +820,6 @@
     }
     if (el.readerFrame) {
       el.readerFrame.src = 'about:blank';
-    }
-    if (el.pdfFrame) {
-      el.pdfFrame.src = 'about:blank';
     }
     window.history.replaceState(null, '', window.location.pathname);
     renderMainView();
@@ -1017,56 +942,6 @@
     }
   }
 
-  function closePdfUnlockModal() {
-    if (el.pdfUnlockModal) {
-      el.pdfUnlockModal.classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-  }
-
-  function verifyAndUnlockPdf() {
-    const input = el.pdfUnlockCode ? el.pdfUnlockCode.value.trim() : '';
-    if (!input) {
-      showToast('请输入公众号回复的通行口令哦', '⚠️');
-      if (el.pdfUnlockCode) el.pdfUnlockCode.focus();
-      return;
-    }
-
-    state.pdfUnlocked = true;
-    localStorage.setItem('ai_hub_pdf_unlocked', 'true');
-    closePdfUnlockModal();
-    showToast('🎉 已永久解锁全套高清 PDF 电子书！', '✨');
-
-    if (pendingPdfTarget) {
-      if (typeof pendingPdfTarget === 'string') {
-        const link = document.createElement('a');
-        link.href = pendingPdfTarget;
-        link.download = pendingPdfTarget.split('/').pop();
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else if (pendingPdfTarget.id) {
-        openReader(pendingPdfTarget);
-      }
-      pendingPdfTarget = null;
-    }
-    renderMainView();
-  }
-
-  function downloadPdf(pdfPath) {
-    if (!state.pdfUnlocked) {
-      openPdfUnlockModal(pdfPath);
-      return;
-    }
-    const link = document.createElement('a');
-    link.href = pdfPath;
-    link.download = pdfPath.split('/').pop();
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast('已开始下载 PDF 完整电子书', '📥');
-  }
-
   function copyWeChatName() {
     const text = '大前端工程师';
     if (navigator.clipboard && window.isSecureContext) {
@@ -1154,9 +1029,6 @@
     if (el.btnCloseReader) el.btnCloseReader.addEventListener('click', closeReader);
     if (el.btnPrevArticle) el.btnPrevArticle.addEventListener('click', () => navigateChapter('prev'));
     if (el.btnNextArticle) el.btnNextArticle.addEventListener('click', () => navigateChapter('next'));
-    if (el.btnMarkRead) el.btnMarkRead.addEventListener('click', () => {
-      if (state.currentArticle) toggleRead(state.currentArticle.id);
-    });
     if (el.btnBookmark) el.btnBookmark.addEventListener('click', () => {
       if (state.currentArticle) toggleBookmark(state.currentArticle.id);
     });
@@ -1202,10 +1074,6 @@
     toggleBookmark: toggleBookmark,
     openWeChatModal: openWeChatModal,
     closeWeChatModal: closeWeChatModal,
-    openPdfUnlockModal: openPdfUnlockModal,
-    closePdfUnlockModal: closePdfUnlockModal,
-    verifyAndUnlockPdf: verifyAndUnlockPdf,
-    downloadPdf: downloadPdf,
     copyWeChatName: copyWeChatName,
     scrollToHeading: scrollToHeading,
     resetFilters: function () {

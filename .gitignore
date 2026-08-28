@@ -6,4 +6,6 @@ __pycache__/
 .idea/
 .vscode/
 *.log
+*.pdf
+**/*.pdf
 ai_learning_hub_dist.zip

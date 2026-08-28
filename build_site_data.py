@@ -331,18 +331,6 @@ categories_data = [
         "color": "violet",
         "difficulty": "量化实战",
         "tags": ["量化金融", "策略回测", "交易Agent", "情绪感知"]
-    },
-    {
-        "id": "ebooks",
-        "name": "精装全套电子书专区 (PDF)",
-        "icon": "📖",
-        "badge": "整本合集",
-        "desc": "精选 14 部完整版深度电子书与专栏合集（含 85MB 高清 AI Coding 从入门到精通）",
-        "theme": "fuchsia",
-        "accent": "#c026d3",
-        "color": "fuchsia",
-        "difficulty": "全套典藏",
-        "tags": ["电子书", "PDF合集", "离线阅读", "全本下载"]
     }
 ]
 
@@ -636,17 +624,6 @@ def build_data():
     if p_quant:
         add_article("quant-agent", p_quant, "量化交易 Agent 01 · 架构设计与自动化交易系统", "01 架构", 1)
 
-    # 15. Ebooks
-    pdf_files = [f for f in sorted(glob.glob("*.pdf"))]
-    ebook_order = 1
-    for f in pdf_files:
-        meta = extract_meta(f)
-        badge = "精装全本"
-        if "AI Coding" in f: badge = "85MB典藏"
-        elif "openclaw" in f: badge = "OpenClaw"
-        add_article("ebooks", f, meta['title'], badge, ebook_order)
-        ebook_order += 1
-
     # Filter categories: Remove explicitly hidden categories or categories with 0 published articles
     hidden_cats = exclude_config.get("hidden_categories", [])
     active_categories = []
@@ -663,17 +640,14 @@ def build_data():
     active_cat_ids = {c['id'] for c in active_categories}
     all_articles = [a for a in all_articles if a['categoryId'] in active_cat_ids]
 
-    active_pdfs = [a for a in all_articles if a['format'] == 'pdf' or a['categoryId'] == 'ebooks']
-
     os.makedirs("assets", exist_ok=True)
 
     site_data = {
         "siteTitle": "AI 全系列学习智库 · 体系化知识库",
-        "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG)、AI 编程工具链与精装全套电子书",
+        "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
         "stats": {
             "totalCategories": len(active_categories),
-            "totalArticles": len(all_articles),
-            "totalEbooks": len(active_pdfs)
+            "totalArticles": len(all_articles)
         },
         "categories": active_categories,
         "articles": all_articles

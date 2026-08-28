@@ -3,3 +3,5 @@
 beta-*
 node_modules
 *.log
+*.pdf
+**/*.pdf
