@@ -222,6 +222,24 @@
   function renderMainView() {
     if (!el.mainContent) return;
 
+    // Dynamically toggle category navigation bar & article hero banner visibility (Hidden in showcases mode)
+    const catNavBar = document.getElementById('category-nav-bar');
+    const heroSection = document.getElementById('hero-banner-section');
+    if (catNavBar) {
+      if (state.viewMode === 'showcases') {
+        catNavBar.classList.add('hidden');
+      } else {
+        catNavBar.classList.remove('hidden');
+      }
+    }
+    if (heroSection) {
+      if (state.viewMode === 'showcases') {
+        heroSection.classList.add('hidden');
+      } else {
+        heroSection.classList.remove('hidden');
+      }
+    }
+
     if (state.viewMode === 'grid') {
       renderGridView();
     } else if (state.viewMode === 'list') {
@@ -1275,39 +1293,23 @@
 
   // Global API exposed to HTML
 
-  // 7. Showcases & Works View (原创作品与工具箱)
+  // 7. Showcases & Works View (原创 Skills 专区)
   function renderShowcasesView() {
     const showcases = state.data.showcases || [];
     
     let html = `
-      <div class="mb-10 animate-fade-in">
+      <div class="mb-10 animate-fade-in pt-4 sm:pt-6">
         
-        <!-- Header Banner -->
-        <div class="p-6 md:p-10 rounded-3xl glass border border-emerald-500/30 mb-8 relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950/70 to-emerald-950/80 shadow-2xl">
-          <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="relative z-10 max-w-4xl">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold mb-4 shadow-sm">
-              <span>🚀</span>
-              <span>原创开源生态 · Claude Code & AI Agent 生产力工具</span>
+        <!-- Clean Section Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8 pb-4 border-b border-white/10">
+          <div>
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl sm:text-3xl">🤖</span>
+              <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">AI Agent & Claude Code 专有技能库</h2>
             </div>
-            <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight mb-3">
-              🛠️ 原创作品与开源工具箱
-            </h2>
-            <p class="text-xs sm:text-sm md:text-base text-slate-200 leading-relaxed mb-6">
-              沉淀我们在技术落地、内容创作与独立建站中的核心生产力资产。支持 Claude Code 官方技能目录一行命令极速安装、零依赖开箱即用。
+            <p class="text-xs sm:text-sm text-slate-400 mt-1.5">
+              开箱即用的自动化智能体 Skills，支持在 Claude Code 中通过单行命令按需安装与对话调用。
             </p>
-            
-            <!-- Global All-in-One Installer Snippet -->
-            <div class="p-3 sm:p-4 rounded-2xl bg-slate-950/80 border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-inner">
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="text-emerald-400 font-bold text-xs shrink-0">⚡ 全量极速安装：</span>
-                <code class="text-[11px] sm:text-xs text-emerald-200 font-mono truncate select-all">curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash</code>
-              </div>
-              <button onclick="window.AI_HUB.copyInstallCmd('curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash')" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 shrink-0 shadow-sm cursor-pointer">
-                <span>📋</span>
-                <span>复制全量命令</span>
-              </button>
-            </div>
           </div>
         </div>
 
