@@ -659,15 +659,26 @@ def build_data():
 
     os.makedirs("assets", exist_ok=True)
 
+    # Load Showcases / Works / Tools
+    showcases_list = []
+    if os.path.exists("showcases.json"):
+        try:
+            with open("showcases.json", "r", encoding="utf-8") as f:
+                showcases_list = json.load(f)
+        except Exception as e:
+            print(f"⚠️ 读取 showcases.json 失败: {e}")
+
     site_data = {
         "siteTitle": "AI 全系列学习智库 · 体系化知识库",
         "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
         "stats": {
             "totalCategories": len(active_categories),
-            "totalArticles": len(all_articles)
+            "totalArticles": len(all_articles),
+            "totalShowcases": len(showcases_list)
         },
         "categories": active_categories,
-        "articles": all_articles
+        "articles": all_articles,
+        "showcases": showcases_list
     }
 
     with open("assets/data.json", "w", encoding="utf-8") as f:
@@ -682,6 +693,7 @@ def build_data():
     print(f"✅ 数据构建完成！")
     print(f"   - 生效系列分类: {len(active_categories)} 个")
     print(f"   - 展现文献篇目: {len(all_articles)} 篇")
+    print(f"   - 原创作品工具: {len(showcases_list)} 款")
     print(f"   - 过滤排除文献: {excluded_count} 篇")
     return site_data
 

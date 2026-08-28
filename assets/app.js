@@ -63,7 +63,8 @@
     const articleParam = urlParams.get('article');
     const viewParam = urlParams.get('view');
 
-    if (viewParam && ['grid', 'list', 'tree', 'shelf', 'roadmap', 'my-space'].includes(viewParam)) {
+    if (viewParam && ['grid', 'list', 'tree', 'shelf', 'roadmap', 'my-space', 'showcases', 'works'].includes(viewParam)) {
+      state.viewMode = viewParam === 'works' ? 'showcases' : viewParam;
       state.viewMode = viewParam;
       updateViewButtons();
     }
@@ -79,6 +80,21 @@
         openReader(art);
       }
     }
+    // Hash-based direct view routing
+    const checkHashRoute = () => {
+      const hash = window.location.hash;
+      if (hash === '#showcases' || hash === '#works' || hash === '#tools') {
+        state.viewMode = 'showcases';
+        updateViewButtons();
+        renderMainView();
+      } else if (hash === '#roadmap') {
+        state.viewMode = 'roadmap';
+        updateViewButtons();
+        renderMainView();
+      }
+    };
+    window.addEventListener('hashchange', checkHashRoute);
+    checkHashRoute();
   }
 
   // Theme Management
@@ -218,6 +234,8 @@
       renderRoadmapView();
     } else if (state.viewMode === 'my-space') {
       renderMySpaceView();
+    } else if (state.viewMode === 'showcases') {
+      renderShowcasesView();
     }
   }
 
@@ -1256,6 +1274,144 @@
   }
 
   // Global API exposed to HTML
+
+  // 7. Showcases & Works View (原创作品与工具箱)
+  function renderShowcasesView() {
+    const showcases = state.data.showcases || [];
+    
+    let html = `
+      <div class="mb-10 animate-fade-in">
+        
+        <!-- Header Banner -->
+        <div class="p-6 md:p-10 rounded-3xl glass border border-emerald-500/30 mb-8 relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950/70 to-emerald-950/80 shadow-2xl">
+          <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 max-w-4xl">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold mb-4 shadow-sm">
+              <span>🚀</span>
+              <span>原创开源生态 · Claude Code & AI Agent 生产力工具</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight mb-3">
+              🛠️ 原创作品与开源工具箱
+            </h2>
+            <p class="text-xs sm:text-sm md:text-base text-slate-200 leading-relaxed mb-6">
+              沉淀我们在技术落地、内容创作与独立建站中的核心生产力资产。支持 Claude Code 官方技能目录一行命令极速安装、零依赖开箱即用。
+            </p>
+            
+            <!-- Global All-in-One Installer Snippet -->
+            <div class="p-3 sm:p-4 rounded-2xl bg-slate-950/80 border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-inner">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-emerald-400 font-bold text-xs shrink-0">⚡ 全量极速安装：</span>
+                <code class="text-[11px] sm:text-xs text-emerald-200 font-mono truncate select-all">curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash</code>
+              </div>
+              <button onclick="window.AI_HUB.copyInstallCmd('curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash')" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 shrink-0 shadow-sm cursor-pointer">
+                <span>📋</span>
+                <span>复制全量命令</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Showcase Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+          ${showcases.map(renderShowcaseCard).join('')}
+        </div>
+
+      </div>
+    `;
+
+    el.mainContent.innerHTML = html;
+  }
+
+  function renderShowcaseCard(item) {
+    const theme = item.theme || 'emerald';
+    const featuresHtml = (item.features || []).map(f => `
+      <li class="flex items-start gap-2 text-xs text-slate-300 leading-relaxed">
+        <span class="text-emerald-400 shrink-0 mt-0.5">✓</span>
+        <span>${f}</span>
+      </li>
+    `).join('');
+
+    const tagsHtml = (item.tags || []).map(t => `
+      <span class="text-[11px] px-2 py-0.5 rounded-md bg-white/5 text-slate-300 border border-white/10 font-mono">${t}</span>
+    `).join('');
+
+    const docsBtn = item.docsUrl ? `
+      <a href="${item.docsUrl}" target="_blank" class="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 text-xs font-bold text-center transition flex items-center justify-center gap-1">
+        <span>📖</span>
+        <span>实操复盘</span>
+      </a>
+    ` : '';
+
+    return `
+      <div class="rounded-3xl glass border border-white/10 p-6 sm:p-7 flex flex-col justify-between hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/10 transition-all group relative overflow-hidden bg-gradient-to-b from-white/[0.04] to-transparent">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-${theme}-500/10 rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform"></div>
+        
+        <div>
+          <!-- Card Header -->
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-inner shrink-0 group-hover:scale-110 transition-transform">
+              ${item.icon || '🛠️'}
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="badge-chip bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                ${item.badge || '自研出品'}
+              </span>
+            </div>
+          </div>
+
+          <!-- Title & Subtitle -->
+          <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors tracking-tight mb-1">
+            ${item.title}
+          </h3>
+          <div class="text-xs font-mono text-emerald-400 font-medium mb-3">
+            📦 ${item.name}
+          </div>
+
+          <!-- Description -->
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+            ${item.description}
+          </p>
+
+          <!-- Feature Bullets -->
+          <div class="p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 mb-5">
+            <div class="text-[11px] font-bold text-slate-400 mb-2 uppercase tracking-wider">💡 核心亮点</div>
+            <ul class="space-y-1.5">
+              ${featuresHtml}
+            </ul>
+          </div>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-1.5 mb-6">
+            ${tagsHtml}
+          </div>
+        </div>
+
+        <!-- Footer Action Box -->
+        <div>
+          <!-- Install Command Box -->
+          <div class="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 mb-4 flex items-center justify-between gap-2 shadow-inner">
+            <code class="text-[10px] sm:text-[11px] text-emerald-300 font-mono truncate select-all">
+              ${item.installCmd}
+            </code>
+            <button onclick="window.AI_HUB.copyInstallCmd('${item.installCmd}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 text-[10px] font-bold transition shrink-0 cursor-pointer" title="点击复制安装命令">
+              复制
+            </button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-2">
+            <a href="${item.githubUrl || 'https://github.com/fangxiao/myskills'}" target="_blank" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold text-center transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30">
+              <span>⭐</span>
+              <span>GitHub 开源</span>
+            </a>
+            ${docsBtn}
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
+
   window.AI_HUB = {
     openReaderById: function (id) {
       const art = state.data.articles.find(a => a.id === id);

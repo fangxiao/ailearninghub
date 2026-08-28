@@ -3,7 +3,8 @@
   "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
   "stats": {
     "totalCategories": 10,
-    "totalArticles": 167
+    "totalArticles": 167,
+    "totalShowcases": 3
   },
   "categories": [
     {
@@ -4299,15 +4300,97 @@
       "filename": "01-不用买服务器免备案搭建独立知识库.html",
       "format": "html",
       "title": "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战",
-      "subtitle": "实战经验复盘 · 零成本建站、微信正常访问与百度/谷歌收录指南",
-      "summary": "如果你想为自己或团队搭建一个专门放技术文章、使用教程或业务资料的独立知识库，通常会遇到两个麻烦事：",
-      "readTime": "11 分钟",
-      "sizeStr": "10.8 KB",
-      "sizeBytes": 11023,
+      "subtitle": "轻量边缘静态架构选型、全球加速分发、全网搜索引擎收录与流量分析实战复盘",
+      "summary": "⚡ 独立开发实战 · 零服务器成本商业建站指南",
+      "readTime": "10 分钟",
+      "sizeStr": "31.0 KB",
+      "sizeBytes": 31755,
       "badge": "01 建站复盘",
       "sortOrder": 1,
       "toc": [
-        "实战经验复盘 · 零成本建站、微信正常访问与百度/谷歌收录指南"
+        "轻量边缘静态架构选型、全球加速分发、全网搜索引擎收录与流量分析实战复盘"
+      ]
+    }
+  ],
+  "showcases": [
+    {
+      "id": "quick-site-builder",
+      "type": "skill",
+      "typeName": "🤖 Claude Code 技能",
+      "name": "quick-site-builder",
+      "title": "3分钟极速独立建站与全球发布 Skill",
+      "badge": "⭐ 核心自研",
+      "icon": "🚀",
+      "theme": "emerald",
+      "description": "专为 Claude Code 与 AI Agent 打造的零服务器成本独立建站技能。3分钟一键生成现代化响应式 SPA 知识库/博客骨架，自动扫描编译全站文档索引，直连 Cloudflare Pages 全球边缘 CDN 分发与百度/谷歌 SEO 主动收录矩阵。",
+      "tags": [
+        "Claude Code",
+        "Cloudflare Pages",
+        "SEO 自动化",
+        "极速脚手架",
+        "MIT 开源"
+      ],
+      "installCmd": "curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash -s quick-site-builder",
+      "githubUrl": "https://github.com/fangxiao/myskills",
+      "docsUrl": "business-growth/01-不用买服务器免备案搭建独立知识库.html",
+      "features": [
+        "30 秒生成包含分类检索、全局模糊搜索、深浅色暗黑模式的现代 SPA 首页",
+        "一键编译 Markdown/HTML 提取字数、阅读时长与轻量索引 data.json",
+        "Cloudflare Pages + GitHub 自动化 20 秒全球 CDN 分发上线并签发免费 SSL",
+        "全自动生成 340+ 链接 sitemap.xml 与 5 行 Python 脚本主动推送百度 API"
+      ]
+    },
+    {
+      "id": "wechat-official-account",
+      "type": "skill",
+      "typeName": "🤖 Claude Code 技能",
+      "name": "wechat-official-account",
+      "title": "微信公众号 100% 格式保真排版 Skill",
+      "badge": "📱 自媒体利器",
+      "icon": "✍️",
+      "theme": "teal",
+      "description": "彻底解决技术文章复制粘贴到微信公众号后台时样式丢失、背景变白与代码不高亮的顽疾。采用纯行内 CSS 编译与 OneDark 语法单行染色机制，在浏览器直接全选（Cmd+A）即拷即用。",
+      "tags": [
+        "微信公众号",
+        "OneDark 代码染色",
+        "纯行内 CSS",
+        "自媒体排版",
+        "MIT 开源"
+      ],
+      "installCmd": "curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash -s wechat-official-account",
+      "githubUrl": "https://github.com/fangxiao/myskills",
+      "docsUrl": "business-review/09-0成本免备案搭建独立知识库全流程复盘-公众号版.html",
+      "features": [
+        "100% 纯行内 CSS，彻底绕过微信公众号富文本过滤清洗机制",
+        "OneDark 语法行内逐行单行染色，Mac 三色圆点代码框原样呈现",
+        "现代化纯色 callout 提示卡片、标题徽章与移动端自适应排版",
+        "全选即拷（Cmd+A ➔ Cmd+C ➔ Cmd+V）秒级发布"
+      ]
+    },
+    {
+      "id": "tech-content-creator",
+      "type": "skill",
+      "typeName": "🤖 Claude Code 技能",
+      "name": "tech-content-creator",
+      "title": "技术内容创作与自媒体矩阵分发 Skill",
+      "badge": "🎯 爆款矩阵",
+      "icon": "🎨",
+      "theme": "purple",
+      "description": "将生硬晦涩的技术文档、开源项目或研报资料，转化为去 AI 味、通俗好懂、高传播度的自媒体长文，并一键切片分发至微信公众号、小红书图文卡片与微博/X 精华 Thread。",
+      "tags": [
+        "去 AI 味",
+        "生活化比喻",
+        "小红书图文",
+        "矩阵切片",
+        "Prompt 调优"
+      ],
+      "installCmd": "curl -fsSL https://raw.githubusercontent.com/fangxiao/myskills/main/install.sh | bash -s tech-content-creator",
+      "githubUrl": "https://github.com/fangxiao/myskills",
+      "docsUrl": "business-review/01-业务高阶Prompt结构化设计全指南.html",
+      "features": [
+        "智能剔除空泛 AI 腔调，采用短句、口语化转折与生活化具体比喻",
+        "一文多发全自动切片：公众号深度长文 + 6 页小红书卡片大纲 + X 精华 Thread",
+        "提炼因果逻辑信息图结构与高转化文案包装"
       ]
     }
   ]

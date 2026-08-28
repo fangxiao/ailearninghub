@@ -661,6 +661,8 @@ CMD ["nginx", "-g", "daemon off;"]
         shutil.copy2("sitemap.xml", os.path.join(DIST_DIR, "sitemap.xml"))
     if os.path.exists("robots.txt"):
         shutil.copy2("robots.txt", os.path.join(DIST_DIR, "robots.txt"))
+    if os.path.exists("showcases.json"):
+        shutil.copy2("showcases.json", os.path.join(DIST_DIR, "showcases.json"))
 
     # 6. Create zip bundle
     zip_path = "ai_learning_hub_dist.zip"
