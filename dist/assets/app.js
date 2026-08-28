@@ -16,7 +16,6 @@
     readerTheme: localStorage.getItem('ai_hub_reader_theme') || 'default',
     readerFontSize: parseInt(localStorage.getItem('ai_hub_reader_fontsize') || '16', 10),
     currentArticle: null,
-    bookmarks: JSON.parse(localStorage.getItem('ai_hub_bookmarks') || '[]'),
     history: JSON.parse(localStorage.getItem('ai_hub_history') || '[]'),
   };
 
@@ -31,8 +30,6 @@
     categorySelect: document.getElementById('category-select'),
     viewButtons: document.querySelectorAll('[data-view]'),
     mainContent: document.getElementById('main-content'),
-    statsArticles: document.getElementById('stat-articles'),
-    statsCategories: document.getElementById('stat-categories'),
     readerModal: document.getElementById('reader-modal'),
     readerIframeContainer: document.getElementById('reader-iframe-container'),
     readerMarkdownContainer: document.getElementById('reader-markdown-container'),
@@ -45,7 +42,6 @@
     wechatModal: document.getElementById('wechat-modal'),
     btnPrevArticle: document.getElementById('btn-prev-article'),
     btnNextArticle: document.getElementById('btn-next-article'),
-    btnBookmark: document.getElementById('btn-bookmark'),
     btnOpenExternal: document.getElementById('btn-open-external'),
     btnCloseReader: document.getElementById('btn-close-reader'),
     btnToggleToc: document.getElementById('btn-toggle-toc'),
@@ -55,7 +51,6 @@
   // Initialize App
   function init() {
     applyTheme(state.theme);
-    renderStats();
     renderCategoryTabs();
     renderCategorySelect();
     bindEvents();
@@ -312,7 +307,7 @@
                   <span>→</span>
                 </button>
                 ${firstArticle ? `
-                  <button onclick="window.AI_HUB.openReaderById('${firstArticle.id}')" class="px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-500/20 flex items-center gap-1.5">
+                  <button onclick="window.AI_HUB.openReaderById('${firstArticle.id}')" class="btn-read px-4 py-2 text-xs font-bold rounded-xl shadow-lg flex items-center gap-1.5">
                     <span>⚡ 从第 1 章开始</span>
                   </button>
                 ` : ''}
@@ -360,7 +355,7 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-3 shrink-0">
-            <button onclick="window.AI_HUB.openReaderById('${articles[0]?.id}')" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition shadow-lg shadow-indigo-500/20 flex items-center gap-2">
+            <button onclick="window.AI_HUB.openReaderById('${articles[0]?.id}')" class="btn-read px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
               <span>⚡ 从第 1 章开始阅读</span>
             </button>
           </div>
@@ -370,7 +365,6 @@
   }
 
   function renderArticleCard(art) {
-    const isBookmarked = state.bookmarks.includes(art.id);
     const cat = state.data.categories.find(c => c.id === art.categoryId) || {};
 
     let formatBadgeColor = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
@@ -388,11 +382,6 @@
                 <span>${art.readTime}</span>
               </span>
               <span class="text-xs text-slate-400 bg-white/5 px-2 py-0.5 rounded-md">${art.sizeStr}</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="window.AI_HUB.toggleBookmark('${art.id}', event)" title="${isBookmarked ? '取消收藏' : '加入收藏'}" class="w-8 h-8 rounded-lg flex items-center justify-center transition ${isBookmarked ? 'bg-amber-400/20 text-amber-300' : 'text-slate-400 hover:bg-white/10 hover:text-white'}">
-                ${isBookmarked ? '★' : '☆'}
-              </button>
             </div>
           </div>
 
@@ -421,7 +410,7 @@
             <a href="${art.path}" target="_blank" title="新标签页打开" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white flex items-center justify-center text-xs transition border border-white/10">
               ↗
             </a>
-            <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="px-3.5 py-1.5 rounded-xl bg-indigo-600/90 hover:bg-indigo-500 text-white text-xs font-medium transition shadow-md shadow-indigo-500/10 flex items-center gap-1">
+            <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="btn-read px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-1">
               <span>阅读</span>
               <span>→</span>
             </button>
@@ -451,7 +440,6 @@
         <!-- Mobile Card List View (< 640px) -->
         <div class="block sm:hidden divide-y divide-white/5">
           ${articles.map(art => {
-            const isBookmarked = state.bookmarks.includes(art.id);
             const cat = state.data.categories.find(c => c.id === art.categoryId) || {};
 
             return `
@@ -461,12 +449,7 @@
                     <span>${cat.icon || '📁'}</span>
                     <span class="truncate max-w-[120px]">${cat.name || '其他'}</span>
                   </span>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[10px] text-slate-400 font-mono">${art.readTime}</span>
-                    <button onclick="window.AI_HUB.toggleBookmark('${art.id}', event)" class="w-6 h-6 rounded-md flex items-center justify-center ${isBookmarked ? 'text-amber-300 bg-amber-400/20' : 'text-slate-400 hover:bg-white/10'}">
-                      ${isBookmarked ? '★' : '☆'}
-                    </button>
-                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">${art.readTime}</span>
                 </div>
 
                 <div class="font-bold text-sm text-white hover:text-indigo-400 cursor-pointer line-clamp-2" onclick="window.AI_HUB.openReaderById('${art.id}')">
@@ -479,7 +462,7 @@
                   <span class="badge-chip text-[10px] bg-white/5 border border-white/10 text-slate-300 uppercase">${art.format}</span>
                   <div class="flex items-center gap-2">
                     <a href="${art.path}" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs border border-white/10">↗ 独立页</a>
-                    <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition">
+                    <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="btn-read px-3 py-1 rounded-lg text-xs font-bold transition">
                       阅读 →
                     </button>
                   </div>
@@ -504,7 +487,6 @@
             </thead>
             <tbody class="divide-y divide-white/5">
               ${articles.map(art => {
-                const isBookmarked = state.bookmarks.includes(art.id);
                 const cat = state.data.categories.find(c => c.id === art.categoryId) || {};
 
                 return `
@@ -532,10 +514,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">
                       <div class="flex items-center justify-end gap-2">
-                        <button onclick="window.AI_HUB.toggleBookmark('${art.id}', event)" class="w-7 h-7 rounded-lg flex items-center justify-center ${isBookmarked ? 'text-amber-300 bg-amber-400/20' : 'text-slate-400 hover:bg-white/10'}">
-                          ${isBookmarked ? '★' : '☆'}
-                        </button>
-                        <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition">
+                        <button onclick="window.AI_HUB.openReaderById('${art.id}')" class="btn-read px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
                           阅读
                         </button>
                       </div>
@@ -802,6 +781,130 @@
 
       if (el.readerFrame) {
         el.readerFrame.src = article.path;
+        el.readerFrame.onload = function () {
+          try {
+            const iframeDoc = el.readerFrame.contentDocument || el.readerFrame.contentWindow.document;
+            if (!iframeDoc) return;
+
+            // 1. High contrast readability stylesheet injection
+            const style = iframeDoc.createElement('style');
+            style.textContent = `
+              body {
+                background: #ffffff !important;
+                color: #1e293b !important;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+                line-height: 1.8 !important;
+                letter-spacing: 0.2px !important;
+              }
+              .container {
+                max-width: 760px !important;
+                margin: 0 auto !important;
+                background: #ffffff !important;
+                box-shadow: none !important;
+                padding: 24px 16px !important;
+              }
+              p {
+                color: #334155 !important;
+                font-size: 15.5px !important;
+                line-height: 1.8 !important;
+              }
+              h1, h2, h3, h4 {
+                color: #0f172a !important;
+                font-weight: 700 !important;
+              }
+              h2 .title-text, h3 .title-text {
+                color: #0f172a !important;
+              }
+              strong, b {
+                color: #0f172a !important;
+                font-weight: 700 !important;
+              }
+              a {
+                color: #4f46e5 !important;
+                text-decoration: underline !important;
+                text-underline-offset: 3px !important;
+                cursor: pointer !important;
+              }
+              a:hover {
+                color: #4338ca !important;
+              }
+              blockquote {
+                background: #f8fafc !important;
+                border-left: 4px solid #6366f1 !important;
+                color: #334155 !important;
+                border-radius: 0 8px 8px 0 !important;
+              }
+              blockquote p {
+                color: #334155 !important;
+              }
+              .code-block, pre {
+                background: #0f172a !important;
+                border-radius: 8px !important;
+              }
+              .code-block code, pre code {
+                color: #f8fafc !important;
+              }
+              table {
+                color: #334155 !important;
+              }
+              th {
+                background: #f1f5f9 !important;
+                color: #0f172a !important;
+              }
+              td {
+                color: #334155 !important;
+              }
+            `;
+            iframeDoc.head.appendChild(style);
+
+            // 2. Intercept internal article link clicks for seamless in-app navigation
+            const links = iframeDoc.querySelectorAll('a[href]');
+            links.forEach(link => {
+              link.addEventListener('click', function (e) {
+                const rawHref = link.getAttribute('href');
+                if (!rawHref) return;
+
+                // Anchor link
+                if (rawHref.startsWith('#')) {
+                  e.preventDefault();
+                  const targetElem = iframeDoc.querySelector(rawHref);
+                  if (targetElem) {
+                    targetElem.scrollIntoView({ behavior: 'smooth' });
+                  }
+                  return;
+                }
+
+                // External link
+                if (rawHref.startsWith('http://') || rawHref.startsWith('https://') || rawHref.startsWith('//')) {
+                  link.target = '_blank';
+                  return;
+                }
+
+                // In-site article jump
+                e.preventDefault();
+                const cleanHref = rawHref.split('?')[0].split('#')[0];
+                const fileName = cleanHref.split('/').pop();
+                const matchedArt = state.data.articles.find(a => {
+                  return a.path === cleanHref ||
+                         a.path.endsWith(cleanHref) ||
+                         a.path.endsWith(fileName) ||
+                         a.id === cleanHref.replace(/\.html$/, '');
+                });
+
+                if (matchedArt) {
+                  openReader(matchedArt);
+                } else {
+                  let basePath = article.path.substring(0, article.path.lastIndexOf('/') + 1);
+                  let resolvedPath = new URL(rawHref, window.location.origin + '/' + basePath).pathname.replace(/^\//, '');
+                  el.readerFrame.src = resolvedPath;
+                }
+              });
+            });
+
+          } catch (err) {
+            console.warn('Iframe link handling notice:', err);
+          }
+        };
       }
       renderReaderToc(article);
     }
@@ -828,12 +931,6 @@
   function updateReaderButtons() {
     if (!state.currentArticle) return;
     const art = state.currentArticle;
-    const isBookmarked = state.bookmarks.includes(art.id);
-
-    if (el.btnBookmark) {
-      el.btnBookmark.innerHTML = isBookmarked ? '<span>★ 已收藏</span>' : '<span>☆ 收藏</span>';
-      el.btnBookmark.className = `px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${isBookmarked ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-white/10 hover:bg-white/20 text-slate-300'}`;
-    }
 
     if (el.btnOpenExternal) {
       el.btnOpenExternal.href = art.path;
@@ -894,24 +991,6 @@
     }
   }
 
-  // Toggle Read Status
-  // Toggle Bookmark
-  function toggleBookmark(articleId, event) {
-    if (event) event.stopPropagation();
-    if (state.bookmarks.includes(articleId)) {
-      state.bookmarks = state.bookmarks.filter(id => id !== articleId);
-      showToast('已移出收藏夹', '☆');
-    } else {
-      state.bookmarks.push(articleId);
-      showToast('已加入收藏夹！', '★');
-    }
-    localStorage.setItem('ai_hub_bookmarks', JSON.stringify(state.bookmarks));
-    if (state.currentArticle && state.currentArticle.id === articleId) {
-      updateReaderButtons();
-    }
-    renderMainView();
-  }
-
   // WeChat Modal Operations
   function openWeChatModal() {
     if (el.wechatModal) {
@@ -924,21 +1003,6 @@
     if (el.wechatModal) {
       el.wechatModal.classList.add('hidden');
       document.body.style.overflow = '';
-    }
-  }
-
-  // PDF E-Book Unlock Modal Operations
-  let pendingPdfTarget = null;
-
-  function openPdfUnlockModal(targetPdf) {
-    pendingPdfTarget = targetPdf || null;
-    if (el.pdfUnlockModal) {
-      el.pdfUnlockModal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      if (el.pdfUnlockCode) {
-        el.pdfUnlockCode.value = '';
-        setTimeout(() => el.pdfUnlockCode.focus(), 150);
-      }
     }
   }
 
@@ -1029,9 +1093,6 @@
     if (el.btnCloseReader) el.btnCloseReader.addEventListener('click', closeReader);
     if (el.btnPrevArticle) el.btnPrevArticle.addEventListener('click', () => navigateChapter('prev'));
     if (el.btnNextArticle) el.btnNextArticle.addEventListener('click', () => navigateChapter('next'));
-    if (el.btnBookmark) el.btnBookmark.addEventListener('click', () => {
-      if (state.currentArticle) toggleBookmark(state.currentArticle.id);
-    });
     if (el.btnToggleToc) {
       el.btnToggleToc.addEventListener('click', () => {
         if (el.readerTocDrawer) el.readerTocDrawer.classList.toggle('hidden');
@@ -1071,7 +1132,6 @@
       renderMainView();
       window.scrollTo({ top: 400, behavior: 'smooth' });
     },
-    toggleBookmark: toggleBookmark,
     openWeChatModal: openWeChatModal,
     closeWeChatModal: closeWeChatModal,
     copyWeChatName: copyWeChatName,

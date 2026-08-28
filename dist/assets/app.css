@@ -347,20 +347,78 @@ html:not(.dark) #wechat-modal p {
   color: #475569 !important;
 }
 
-/* Footer Section Card in Light Mode */
-.light-theme section .bg-gradient-to-br,
-html:not(.dark) section .bg-gradient-to-br {
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
+/* Vivid High-Contrast Read Buttons (Dark & Light) */
+.btn-read {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 14px -2px rgba(79, 70, 229, 0.45) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
 }
 
-.light-theme section .bg-black\/20,
-html:not(.dark) section .bg-black\/20 {
-  background-color: #f8fafc !important;
-  border-color: #e2e8f0 !important;
+.btn-read:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px -2px rgba(79, 70, 229, 0.65) !important;
+  transform: translateY(-1px) !important;
 }
 
-/* Base resets & typography */
+.btn-read *,
+.btn-read span {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Light Theme Hover Overrides (Eliminates invisible white text on white backgrounds) */
+.light-theme .hover\:text-white:hover,
+html:not(.dark) .hover\:text-white:hover {
+  color: #4f46e5 !important;
+}
+
+.light-theme .hover\:text-slate-200:hover,
+.light-theme .hover\:text-slate-300:hover,
+html:not(.dark) .hover\:text-slate-200:hover,
+html:not(.dark) .hover\:text-slate-300:hover {
+  color: #0f172a !important;
+}
+
+.light-theme .hover\:bg-white\/5:hover,
+.light-theme .hover\:bg-white\/10:hover,
+.light-theme .hover\:bg-white\/15:hover,
+.light-theme .hover\:bg-white\/20:hover,
+html:not(.dark) .hover\:bg-white\/5:hover,
+html:not(.dark) .hover\:bg-white\/10:hover,
+html:not(.dark) .hover\:bg-white\/15:hover,
+html:not(.dark) .hover\:bg-white\/20:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light-theme footer button:hover,
+html:not(.dark) footer button:hover {
+  color: #4f46e5 !important;
+}
+
+.light-theme footer a:hover,
+html:not(.dark) footer a:hover {
+  color: #4f46e5 !important;
+}
+
+.light-theme header button.glass:hover,
+html:not(.dark) header button.glass:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Dark Theme Footer Button Hover */
+footer button:hover {
+  color: #818cf8 !important;
+}
 * {
   box-sizing: border-box;
   margin: 0;
