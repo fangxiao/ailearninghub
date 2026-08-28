@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI PRD 标准规范与需求模板：传统需求文档与 AI 原生 PRD 的核心差异</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    AI PRD 标准规范与需求模板：传统需求文档与 AI 原生 PRD 的核心差异
+  </h1>
+  <h2 style="font-size: 18px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    01 · AI 原生产品经理实战指南
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    AI 产品设计 · 业务落地实战 · 大前端工程师
+  </p>
+
+  
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em;">
+    很多产品经理在第一次接手 AI 功能或 Agent 需求时，仍然按照传统确定性系统的逻辑写 PRD（例如：<em>“用户输入 A，系统必须固定返回 B”</em>）。这种写法在面对具备概率涌现特性的大模型时，研发团队根本无法排期，上线后也极易出现大量无法闭环的体验灾难。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong>💡 核心认知转变：从【确定性逻辑】到【概率与护栏体系】</strong><br>
+      • <strong>传统 PRD 关注</strong>：页面路由、字段校验、状态机转换、数据库 CRUD；<br>
+      • <strong>AI 原生 PRD 关注</strong>：意图命中置信度阈值、Token 消耗预算、模型幻觉兜底链路、用户打标与主动纠偏交互。
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">AI PRD 必须包含的 5 大必备模块</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fafafa; border: 1px solid #e8e8e8; border-radius: 10px;">
+    <p style="margin: 0 0 10px 0; font-size: 15px; font-weight: bold; color: #00897B;">1. 意图边界与拒识策略 (Scope & Rejection)</p>
+    <p style="font-size: 14px; color: #555; line-height: 1.7;">明确定义该 AI 功能“能回答什么”和“坚决不回答什么”（例如：医疗问诊、投资承诺、违法违规），并指定标准的免责话术。</p>
+    
+    <p style="margin: 15px 0 10px 0; font-size: 15px; font-weight: bold; color: #00897B;">2. 上下文与检索策略 (Context & RAG Fallback)</p>
+    <p style="font-size: 14px; color: #555; line-height: 1.7;">当 RAG 知识库检索相似度低于 0.65 时，是直接调用兜底规则人工转接，还是提示用户补充关键词？禁止让大模型自由发挥编造答案。</p>
+    
+    <p style="margin: 15px 0 10px 0; font-size: 15px; font-weight: bold; color: #00897B;">3. 延迟与流式交互规范 (Latency & Streaming UX)</p>
+    <p style="font-size: 14px; color: #555; line-height: 1.7;">大模型首字延迟（TTFT）通常在 1~3 秒。PRD 必须定义骨架屏、打字机动画、思考状态步骤提示（Thinking Indicator），防止用户因白屏流失。</p>
+    
+    <p style="margin: 15px 0 10px 0; font-size: 15px; font-weight: bold; color: #00897B;">4. 成本与 Token 熔断机制 (Cost Guardrail)</p>
+    <p style="font-size: 14px; color: #555; line-height: 1.7;">单次会话最大历史轮数（如限制最多 10 轮），单次输入最大字符数（如 4000 字），单用户每日调用频次限制（Rate Limit）。</p>
+    
+    <p style="margin: 15px 0 10px 0; font-size: 15px; font-weight: bold; color: #00897B;">5. 效果评测与验收标准 (Evaluation Benchmark)</p>
+    <p style="font-size: 14px; color: #555; line-height: 1.7;">必须提供包含 100+ 条真实历史 query 的评测集，验收指标包括：准确率 ≥ 90%、无幻觉率 ≥ 95%、响应耗时 P90 ≤ 4s。</p>
+  </section>
+    
+
+  <!-- 底部公众号卡片 -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 20px; background: linear-gradient(135deg, #004D40 0%, #00695C 100%); border-radius: 16px; text-align: center; color: #ffffff;">
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">
+      ⚡ 大前端工程师
+    </div>
+    <p style="font-size: 14px; opacity: 0.9; margin: 0 0 16px 0; line-height: 1.6;">
+      专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战
+    </p>
+    <div style="display: inline-block; background: #ffffff; padding: 10px; border-radius: 12px; margin-bottom: 12px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 140px; height: 140px; display: block;">
+    </div>
+    <p style="font-size: 13px; margin: 0; opacity: 0.95;">
+      微信扫码关注公众号，后台回复 <strong style="color: #80CBC4; font-size: 15px;">AI</strong><br>即可直接获取<strong>全套知识库网站源码、Prompt模板库与高清课件</strong>！
+    </p>
+  </section>
+
+</section>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>乐高式自动化工作流：让 AI 自动监控情报、协同写稿并推送微信</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    乐高式自动化工作流：让 AI 自动监控情报、协同写稿并推送微信
+  </h1>
+  <h2 style="font-size: 17px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+    阶段三 · 零代码搭建企业智能体实战 · 精品篇 06
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 35px 0; padding-bottom: 18px; border-bottom: 1px solid #e0e0e0;">
+    微信公众号排版专用版 · 全选复制即可直接粘贴到后台 | 大前端工程师
+  </p>
+
+
+
+
+
+  
+
+  
+  </section>
+
+  
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">单个 AI 就像一个坐着等命令的助理；但如果你把好几个 AI 和自动化工具像<strong>“乐高积木”</strong>一样串联起来，你就能打造一条 7x24 小时不睡觉的<strong>自动化数字流水线</strong>！</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">今天我们就来看看：如何不用写代码，让 AI 每天早上自动抓取全网竞品动态并推送到你的微信群。</p>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">积木拼接：竞品舆情自动监控流水线</span>
+    </p>
+  </section>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      A[每天早上 08:30 闹钟触发] --> B[自动上网搜竞品负面新闻]
+      B --> C[AI 总结核心事件并评定风险]
+      C --> D{是否高危?}
+      D -->|是| E[红色高亮卡片推送到运营企微群]
+      D -->|否| F[归档进日报待查]
+    </p></section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897B; border-radius: 8px; color: #00695C; font-size: 15px; line-height: 1.8;">
+    • <strong>积木 1 · 触发器</strong>：设定每天早晨 08:30 自动启动；<br>
+    • <strong>积木 2 · 搜索节点</strong>：自动在百度/微博/小红书检索竞品品牌关键词；<br>
+    • <strong>积木 3 · AI 思考节点</strong>：把抓回来的 50 条信息浓缩成 3 条核心要闻，并判断严重程度；<br>
+    • <strong>积木 4 · 推送节点</strong>：自动生成格式整齐的消息，通过 Webhook 发送到你们的核心工作群。
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">三个和尚有水喝：多 Agent 角色分工</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">如果让一个 AI 既查资料、又写文章、又做质检，它很容易偷懒漏掉关键信息。聪明的做法是让它们<strong>“组团分工”</strong>：</p>
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 15px; line-height: 1.8;">
+    • <strong>1 号智能体（情报搜集员）</strong>：专门负责在全网搜集最硬核的数据和真实案例；<br>
+    • <strong>2 号智能体（金牌文案员）</strong>：专门负责把搜来的资料写成通俗好看的初稿；<br>
+    • <strong>3 号智能体（严格质检员）</strong>：专门负责挑刺、去 AI 味套话、检查有没有错别字。<br>
+    三个智能体一串联，出来的文章直接就能发布！
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">考考你：一分钟检查你真的学会了吗？</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 15px; line-height: 1.8;">
+    <strong>🤔 随堂小考：</strong><br>
+    为什么写复杂报告时，把任务拆给 3 个专门的 AI 智能体，比直接让一个 AI 一步到位写出来质量高得多？<br><br>
+    <strong>💡 答案：</strong><br>
+    因为单次对话模型的注意力是有限的。分工之后，每个 Agent 只需要专注做好一件事（搜集的专注搜集，质检的专注挑刺），不会顾此失彼！
+  </section>
+
+
+  <div class="footer-brand">
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">⚡ 大前端工程师</section>
+    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 15px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</section>
+    <div style="display: inline-block; background: #ffffff; padding: 10px; border-radius: 12px; margin-bottom: 10px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 130px; height: 130px; display: block;">
+    </section>
+    <div style="font-size: 13px; opacity: 0.95;">微信扫码关注公众号，回复 <strong style="color: #80CBC4;">AI</strong> 获取全套落地源码与工具包</p></section>
+  </section>
+
+
+</section>
+</body>
+</html>

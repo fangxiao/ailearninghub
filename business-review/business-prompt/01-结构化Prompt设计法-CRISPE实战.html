@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>结构化 Prompt 设计法：告别泛泛空话，用 CRISPE 框架精准交付业务结果</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 23px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    结构化 Prompt 设计法：告别泛泛空话，用 CRISPE 框架精准交付业务结果
+  </h1>
+  <h2 style="font-size: 18px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 30px 0; line-height: 1.5;">
+    01 · 业务场景高阶提示工程实战
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 40px 0; padding-bottom: 20px; border-bottom: 1px solid #e0e0e0;">
+    业务提示工程 · 职场提效 · 大前端工程师
+  </p>
+
+  
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em;">
+    很多职场人抱怨：<em>“为什么我让 AI 帮我写报告，写出来的全是假大空的套话，根本没法向领导汇报？”</em>
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em;">
+    根本原因在于：你把 AI 当成了一个“读心术大师”，只给了它一句话需求，却没给它业务上下文、角色背景和约束边界。
+  </p>
+
+  <section style="margin: 25px 0; padding: 20px; background: #E0F2F1; border: 1px solid #b2dfdb; border-radius: 12px;">
+    <p style="margin: 0; color: #00695C; font-size: 15px; line-height: 1.8;">
+      <strong>💡 黄金公式：CRISPE 结构化框架</strong><br>
+      • <strong>C (Capacity 角色)</strong>：你是谁？（如：资深零售业务专家）<br>
+      • <strong>R (Recipient 受众)</strong>：给谁看？（如：向公司高管汇报）<br>
+      • <strong>I (Insight 背景)</strong>：业务现状是什么？（如：Q2 华东大区客单价下降 12%）<br>
+      • <strong>S (Statement 任务)</strong>：需要产出什么？（如：输出 3 条归因与 2 套改进方案）<br>
+      • <strong>P (Personality 语气)</strong>：语言风格如何？（如：数据驱动、严谨凝练、禁用空话）<br>
+      • <strong>E (Experiment 格式)</strong>：最终输出样式？（如：Markdown 表格 + 结构化要点）
+    </p>
+  </section>
+
+  <section style="margin: 50px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">对比实战：烂 Prompt vs 工业级 Prompt</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #fff5f5; border: 1px solid #ffcdd2; border-radius: 10px;">
+    <p style="margin: 0; font-size: 14px; color: #c62828; font-weight: bold;">❌ 低效提示词：</p>
+    <p style="margin: 8px 0 0 0; font-size: 14px; color: #555;">“帮我写一份关于提高客户复购率的方案。”</p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
+    <p style="margin: 0; font-size: 14px; color: #15803d; font-weight: bold;">✅ 工业级 CRISPE 提示词（直接复制）：</p>
+    <p style="margin: 8px 0 0 0; font-size: 13px; color: #1e293b; line-height: 1.7; font-family: monospace; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+      【角色设定】：你是一位拥有 10 年消费品私域运营经验的业务操盘手。<br>
+      【汇报对象】：公司业务副总裁（偏好数据、抓关键指标、反感大而无当的理论）。<br>
+      【业务背景】：我们是一家客单价 200 元的健康轻食品牌，目前注册会员 50 万人，但 30 天复购率仅 18%（行业均值 28%），主要流失在首次购买后的第 14~21 天。<br>
+      【核心任务】：请帮我制定一套《30天复购率提升冲刺方案》，包含：1. 客户流失关键触点归因；2. 3个可立即落地的抓手动作；3. 预计指标提升与测算逻辑。<br>
+      【输出约束】：使用客观严谨的语气，禁止使用“赋能”、“生态闭环”等空泛词汇。每个抓手动作必须包含具体的触发时机、触达渠道和文案核心主张。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em;">
+    加上了这套结构约束后，大模型输出的内容就能直接拿到业务周会上进行汇报，省去 80% 的二次修改时间。
+  </p>
+
+
+  <!-- 底部公众号卡片 -->
+  <section style="margin: 40px 0 20px 0; padding: 25px 20px; background: linear-gradient(135deg, #004D40 0%, #00695C 100%); border-radius: 16px; text-align: center; color: #ffffff;">
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">
+      ⚡ 大前端工程师
+    </div>
+    <p style="font-size: 14px; opacity: 0.9; margin: 0 0 16px 0; line-height: 1.6;">
+      专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战
+    </p>
+    <div style="display: inline-block; background: #ffffff; padding: 10px; border-radius: 12px; margin-bottom: 12px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 140px; height: 140px; display: block;">
+    </div>
+    <p style="font-size: 13px; margin: 0; opacity: 0.95;">
+      微信扫码关注公众号，后台回复 <strong style="color: #80CBC4; font-size: 15px;">AI</strong><br>即可直接获取<strong>全套知识库网站源码、Prompt模板库与高清课件</strong>！
+    </p>
+  </section>
+
+</section>
+</body>
+</html>

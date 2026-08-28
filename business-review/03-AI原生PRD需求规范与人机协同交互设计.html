@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大白话聊 AI 产品设计：为什么传统产品经理做 AI，总被研发吐槽？ · 大前端工程师</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+  <style>
+    body { margin: 0; padding: 0; background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #1e293b; line-height: 2.1; letter-spacing: 0.5px; }
+    .container { max-width: 780px; margin: 30px auto; background: #ffffff; padding: 40px 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; color: #00897B; text-decoration: none; margin-bottom: 20px; padding: 6px 14px; background: #E0F2F1; border-radius: 20px; transition: all 0.2s; }
+    .back-btn:hover { background: #00897B; color: #fff; }
+    .header-box { text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 25px; margin-bottom: 30px; }
+    h1 { font-size: 23px; font-weight: 800; color: #0f172a; margin: 10px 0; line-height: 1.4; }
+    h2.sub { font-size: 16px; font-weight: bold; color: #00897B; margin: 0 0 15px 0; }
+    .meta { font-size: 13px; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    .badge { background: #f1f5f9; padding: 3px 8px; border-radius: 6px; font-weight: 600; color: #475569; }
+    p { margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; color: #334155; }
+    .dialog-box { margin: 25px 0; padding: 18px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 15px; }
+    .callout { margin: 25px 0; padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.8; }
+    .callout-teal { background: #E0F2F1; border: 1px solid #b2dfdb; color: #00695C; }
+    .callout-amber { background: #FFFDE7; border: 1px solid #FFF59D; border-left: 4px solid #FBC02D; color: #616161; }
+    .callout-red { background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; color: #c62828; }
+    .callout-green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .section-title { margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; gap: 12px; }
+    .section-num { font-size: 18px; font-weight: 800; color: #fff; background: #00897B; padding: 4px 12px; border-radius: 6px; }
+    .section-text { font-size: 18px; font-weight: bold; color: #0f172a; }
+    .code-box { font-family: monospace; font-size: 13.5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 15px 0; line-height: 1.7; color: #0f172a; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13.5px; }
+    th { background: #E0F2F1; color: #00695C; font-weight: bold; padding: 10px; border: 1px solid #b2dfdb; text-align: left; }
+    td { padding: 10px; border: 1px solid #e2e8f0; color: #334155; }
+    .mermaid-box { text-align: center; margin: 25px 0; background: #ffffff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; }
+    .footer-brand { margin-top: 50px; padding: 25px; background: linear-gradient(135deg, #004D40 0%, #00695C 100%); border-radius: 16px; text-align: center; color: #ffffff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- WeChat Official Account 1-Click Copy Engine -->
+<div style="position: sticky; top: 15px; z-index: 999; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+  <button id="copy-wechat-btn" onclick="copyForWechat()" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #07c160 0%, #059669 100%); color: #ffffff; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(7, 193, 96, 0.35); transition: all 0.2s;">
+    <span>📋 一键复制到公众号（排版保真）</span>
+  </button>
+</div>
+<div id="copy-toast" style="display: none; position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; background: #07c160; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+  ✅ 复制成功！直接在公众号后台 Ctrl+V (或 Cmd+V) 粘贴即可，格式完美保留！
+</div>
+
+<script>
+function copyForWechat() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  // Clone container to modify into inline-styled WeChat HTML
+  const clone = container.cloneNode(true);
+
+  // Remove top buttons
+  const backBtn = clone.querySelector(".back-btn");
+  if (backBtn) backBtn.remove();
+  const copyBtnWrapper = clone.querySelector("#copy-wechat-btn");
+  if (copyBtnWrapper) copyBtnWrapper.closest("div").remove();
+
+  // Convert Elements into WeChat Inline Styles
+  // 1. Header Box
+  const headerBox = clone.querySelector(".header-box");
+  if (headerBox) {
+    headerBox.setAttribute("style", "text-align: left; border-bottom: 2px solid #07c160; padding-bottom: 18px; margin-bottom: 25px;");
+  }
+
+  // 2. Headings
+  clone.querySelectorAll("h1").forEach(h1 => {
+    h1.setAttribute("style", "font-size: 21px; font-weight: bold; color: #1e293b; line-height: 1.5; margin: 10px 0;");
+  });
+  clone.querySelectorAll("h2.sub").forEach(h2 => {
+    h2.setAttribute("style", "font-size: 14px; font-weight: 600; color: #07c160; margin: 0 0 10px 0;");
+  });
+
+  // 3. Section Titles
+  clone.querySelectorAll(".section-title").forEach(st => {
+    const num = st.querySelector(".section-num") ? st.querySelector(".section-num").innerText : "";
+    const text = st.querySelector(".section-text") ? st.querySelector(".section-text").innerText : st.innerText;
+    st.outerHTML = `<section style="margin: 35px 0 18px 0; display: flex; align-items: center; border-bottom: 2px solid #f0fdf4; padding-bottom: 8px;">
+      <span style="background: #07c160; color: #ffffff; font-size: 13px; font-weight: bold; padding: 3px 9px; border-radius: 4px; margin-right: 8px;">${num}</span>
+      <span style="font-size: 17px; font-weight: bold; color: #0f172a;">${text}</span>
+    </section>`;
+  });
+
+  // 4. Callout boxes
+  clone.querySelectorAll(".callout-teal").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-amber").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-slate").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-red").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 8px; color: #991b1b; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-green").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+
+  // 5. Code boxes
+  clone.querySelectorAll(".code-box").forEach(cb => {
+    cb.setAttribute("style", "margin: 15px 0; padding: 14px; background: #1e293b; color: #f8fafc; font-family: Consolas, Monaco, monospace; font-size: 13px; border-radius: 6px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;");
+  });
+
+  // 6. Paragraphs
+  clone.querySelectorAll("p").forEach(p => {
+    p.setAttribute("style", "margin: 16px 0; font-size: 15.5px; color: #334155; line-height: 1.9; letter-spacing: 0.5px; text-align: justify;");
+  });
+
+  // 7. Tables
+  clone.querySelectorAll("table").forEach(t => {
+    t.setAttribute("style", "width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; line-height: 1.6;");
+  });
+  clone.querySelectorAll("th").forEach(th => {
+    th.setAttribute("style", "background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;");
+  });
+  clone.querySelectorAll("td").forEach(td => {
+    td.setAttribute("style", "padding: 10px; border: 1px solid #e2e8f0; color: #334155;");
+  });
+
+  // 8. Mermaid Boxes (convert rendered SVG)
+  clone.querySelectorAll(".mermaid-box").forEach(mb => {
+    const svg = mb.querySelector("svg");
+    if (svg) {
+      svg.setAttribute("style", "max-width: 100%; height: auto; display: block; margin: 0 auto;");
+      mb.setAttribute("style", "text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;");
+    }
+  });
+
+  // 9. Footer Brand
+  const footerBrand = clone.querySelector(".footer-brand");
+  if (footerBrand) {
+    footerBrand.setAttribute("style", "margin-top: 40px; padding: 22px; background: #0f172a; border-radius: 12px; text-align: center; color: #ffffff; font-size: 14px;");
+  }
+
+  // Generate complete rich text HTML
+  const finalHtml = `<section style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif; max-width: 677px; margin: 0 auto; line-height: 1.9; color: #334155;">` + clone.innerHTML + `</section>`;
+
+  // Copy as rich text HTML to clipboard
+  const blob = new Blob([finalHtml], { type: "text/html" });
+  const textBlob = new Blob([clone.innerText], { type: "text/plain" });
+  const item = new ClipboardItem({
+    "text/html": blob,
+    "text/plain": textBlob
+  });
+
+  navigator.clipboard.write([item]).then(() => {
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  }).catch(err => {
+    // Fallback using execCommand
+    const listener = function(e) {
+      e.clipboardData.setData("text/html", finalHtml);
+      e.clipboardData.setData("text/plain", clone.innerText);
+      e.preventDefault();
+    };
+    document.addEventListener("copy", listener);
+    document.execCommand("copy");
+    document.removeEventListener("copy", listener);
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  });
+}
+</script>
+
+  <a href="../review.html" class="back-btn">← 返回业务待审篇目总览</a>
+
+  <div class="header-box">
+    <h1>大白话聊 AI 产品设计：为什么传统产品经理做 AI，总被研发吐槽？</h1>
+    <h2 class="sub">阶段二 · AI 原生产品经理实战指南 · 精品篇 03</h2>
+    <div class="meta">
+      <span class="badge">📝 约 2000 字</span>
+      <span class="badge">🏷️ AI PRD / 交互选型 / 拒绝白屏 / 产品模板</span>
+      <span class="badge">👨‍💻 作者：大前端工程师</span>
+      <span class="badge">📌 状态：已完整编写 · 待审阅</span>
+    </div>
+  </div>
+
+  
+  <p>很多传统产品经理在第一次做 AI 功能时，都栽过跟头：</p>
+  <p>写需求文档依然按照老套路：<em>“用户在输入框打字，点击发送，系统必须返回正确答案”</em>。结果研发工程师看完直摇头：“大模型生成的内容是有概率的，有时候聪明有时候胡说，你这需求根本没法写代码！”</p>
+  <p>今天我们用大白话讲清楚：<strong>为什么传统软件像‘做算术题’，而 AI 产品像‘管一个聪明员工’？</strong></p>
+
+  <div class="section-title">
+    <span class="section-num">01</span>
+    <span class="section-text">打个比方：做计算器 vs 招员工</span>
+  </div>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      subgraph 传统产品逻辑
+        A[输入 A] --> B[固定规则] --> C[确定输出 B]
+      end
+      subgraph AI 产品逻辑
+        D[自然语言输入] --> E[概率生成 + 安全护栏] --> F[高质量答案 / 兜底转人工]
+      end
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    • <strong>传统软件像计算器</strong>：输入 1+1，结果必须是 2。错一点就是 Bug。<br>
+    • <strong>AI 产品像管员工</strong>：他懂得很多，但偶尔会开小差。作为产品经理，你的任务不是把每句话焊死，而是<strong>给他立好三道护栏，防止他跟客户乱说话</strong>！
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">02</span>
+    <span class="section-text">交互三兄弟：Copilot、Chatbot、Agent 怎么选？</span>
+  </div>
+
+  <p>不要一做 AI 就在右下角挂个聊天泡泡！我们用生活场景来看看 3 种模式的区别：</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>交互模式</th>
+        <th>形象比喻</th>
+        <th>怎么交互</th>
+        <th>典型例子</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Copilot (副驾驶)</strong></td>
+        <td>像坐在你旁边的秘书，随时帮你改错字</td>
+        <td>选中一段文字按空格，原地改好，按 Enter 采纳</td>
+        <td>Notion AI, 智能文档</td>
+      </tr>
+      <tr>
+        <td><strong>2. Chatbot (聊天助手)</strong></td>
+        <td>像前台问询处，你问一句他答一句</td>
+        <td>在对话框里一问一答，适合漫无边际的初探</td>
+        <td>Kimi, 智能客服</td>
+      </tr>
+      <tr>
+        <td><strong>3. Agent (全自动管家)</strong></td>
+        <td>交代完目标后，他自己去订机票、订酒店</td>
+        <td>给一个目标，他自己拆解多步骤执行，执行前找你确认</td>
+        <td>自动化工单分派、自动爬虫</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">
+    <span class="section-num">03</span>
+    <span class="section-text">写 AI PRD 的 4 个必备要素（抄作业模板）</span>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>✅ AI 功能需求大白话模板：</strong>
+    <div class="code-box">【功能名称】：智能合同审查助手
+【能干什么】：帮业务人员在 10 秒内标出合同里的 5 类常见风险（如违约金超标、账期过长）。
+【坚决不干什么（免责边界）】：不提供法律责任兜底，每条提示后必须附带“建议咨询法务顾问”。
+【回答太慢怎么办】：大模型首字必须在 2 秒内吐出来，同时展示“正在逐条核对法条...”的动态步骤，不能让用户干等白屏。
+【防破产预算】：每个人每天最多查 20 份合同，超过提示“明日额度已刷新”，防止 Token 费用失控。</div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">04</span>
+    <span class="section-text">考考你：一分钟检查你真的学会了吗？</span>
+  </div>
+
+  <div class="callout callout-amber">
+    <strong>🤔 随堂小考：</strong><br>
+    如果你们公司要做一个在 CRM 客户管理系统里帮销售润色跟进记录的功能，你该选 Chatbot 聊天框还是 Copilot 原地嵌入？<br><br>
+    <strong>💡 答案：</strong><br>
+    必须选 Copilot！因为销售正在表格里填记录，如果让他切屏去右下角聊天框聊两句再复制回来，使用意愿会下降 80%。直接在输入框里点“一键润色”才是丝滑体验！
+  </div>
+
+
+  <div class="footer-brand">
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">⚡ 大前端工程师</div>
+    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 15px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</div>
+    <div style="display: inline-block; background: #ffffff; padding: 10px; border-radius: 12px; margin-bottom: 10px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 130px; height: 130px; display: block;">
+    </div>
+    <div style="font-size: 13px; opacity: 0.95;">微信扫码关注公众号，回复 <strong style="color: #80CBC4;">AI</strong> 获取全套落地源码与工具包</div>
+  </div>
+</div>
+
+</body>
+</html>

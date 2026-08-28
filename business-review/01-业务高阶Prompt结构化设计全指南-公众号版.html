@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>业务场景下的高阶 Prompt 结构化设计指南</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    业务场景下的高阶 Prompt 结构化设计指南
+  </h1>
+  <h2 style="font-size: 17px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+    阶段一 · 业务认知与高阶提示工程 · 精品篇 01
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 35px 0; padding-bottom: 18px; border-bottom: 1px solid #e0e0e0;">
+    微信公众号排版专用版 · 全选复制即可直接粘贴到后台 | 大前端工程师
+  </p>
+
+
+
+
+
+  
+
+  
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    在业务落地中，很多人发现让大模型撰写方案时，输出往往充斥着“加强多方协同、优化业务链路、赋能长效增长”等泛化词汇，缺乏实质性的执行动作和数据支撑。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    产生这一现象的根本原因，在于提示词中缺乏<strong>具体的业务上下文、明确的约束边界以及结构化的输出格式要求</strong>。大模型基于概率生成，当输入条件过于宽泛时，其倾向于收敛至语料库中出现频率最高的中庸表述。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    本文结合一线业务实操，梳理结构化 Prompt 的设计要点与常见岗位的开箱即用模板。
+  </p>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">业务提示词的 4 个核心构成要素</span>
+    </p>
+  </section>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      A[1. 角色定位<br/>专业领域与身份] --> B[2. 业务背景<br/>数据现状与真实痛点]
+      B --> C[3. 具体任务<br/>明确目标与交付物]
+      C --> D[4. 约束规范<br/>输出格式与负向限制]
+    </p></section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897B; border-radius: 8px; color: #00695C; font-size: 15px; line-height: 1.8;">
+    • <strong>角色定位</strong>：明确模型的专业视角（例如：拥有快消行业 5 年私域运营经验的操盘手）；<br>
+    • <strong>业务背景</strong>：提供输入数据与现状（例如：客单价 180 元，首月复购率 15%，主要流失周期为第 14~21 天）；<br>
+    • <strong>具体任务</strong>：定义清晰的产出项（例如：给出 3 个具体召回动作，包含触发触点、话术要点与预算分配）；<br>
+    • <strong>约束规范</strong>：限定结构格式与禁止项（例如：以表格形式呈现，禁用空泛修饰词，每项须包含明确时间节点）。
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">业务场景对比：基础指令 vs 结构化指令</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    以电商售后沟通为例：
+  </p>
+  <section style="margin: 20px 0; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 15px; line-height: 1.8;">
+    <strong>❌ 常见粗放写法：</strong><br>
+    “客户买了衣服说有线头要退货，帮我写个回复话术。”
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897B; border-radius: 8px; color: #00695C; font-size: 15px; line-height: 1.8;">
+    <strong>✅ 结构化设计写法：</strong>
+      <section style="margin: 25px 0; background-color: #282c34; border-radius: 8px; padding: 16px 18px; overflow-x: auto;">
+    <p style="margin: 0 0 12px 0; line-height: 1; padding-bottom: 8px; border-bottom: 1px solid #3e4451;">
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ff5f56; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ffbd2e; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #27c93f; margin-right: 8px;"></span>
+      <span style="color: #abb2bf; font-size: 12px; font-family: Consolas, Menlo, Monaco, monospace; font-weight: bold;">实战代码 / Prompt 模板</span>
+    </p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=<span style=\"color: #98c379;\">"color: #c678dd; font-weight: bold;"</span>><span style=\"color: #e5c07b; font-weight: bold;\">【角色设定】</span></span>：高端轻奢女装品牌的金牌客服主管。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【客户原声】</span>：<span style=\"color: #98c379;\">“买的 800 块真丝衬衫手工卷边有浮线，要求退货并包邮。”</span></p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=<span style=\"color: #98c379;\">"color: #c678dd; font-weight: bold;"</span>><span style=\"color: #e5c07b; font-weight: bold;\">【业务目标】</span></span>：安抚情绪并解释天然真丝手工卷边的正常工艺特性，争取在不退货的前提下，促成客户接受 20 元无门槛津贴或换新。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=<span style=\"color: #98c379;\">"color: #c678dd; font-weight: bold;"</span>><span style=\"color: #e5c07b; font-weight: bold;\">【输出要求】</span></span>：</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">1. 首句共情并致歉，不推卸责任；</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">2. 简要说明真丝浮线的处理建议，消除质量顾虑；</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">3. 提供<span style=\"color: #e5c07b; font-weight: bold;\">【极速包邮换新】</span>与<span style=\"color: #e5c07b; font-weight: bold;\">【保留商品享 20 元津贴】</span>两个选项；</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">4. 语气专业克制，字数控制在 120 字以内。</p>
+  </section>
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">常见岗位场景与模板参考</span>
+    </p>
+  </section>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13.5px; line-height: 1.6;">
+    <thead>
+      <tr>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">业务岗位</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">高频任务场景</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">结构化输入要点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>招聘与 HR</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">简历人岗匹配度初筛</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">输入岗位 JD 核心门槛与候选人经历，输出匹配度评分、3 项核心亮点与 2 个面试追问要点</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>财务核算</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">跨表关联公式与异常分析</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">提供表头结构与关联逻辑，生成兼容版 Excel 匹配公式及数据波动归因说明</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>行政与管理</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">会议速记提炼正式纪要</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">输入口语化录音文本，归纳【会议决议】、【待办事项】、【责任人与完成节点清单】</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>运营与销售</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">大客户商务议价沟通</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">输入报价差异与底线原则，输出温和委婉、价值对齐与权益置换三版阶梯回复</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">提示词调优实践准则</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 15px; line-height: 1.8;">
+    1. <strong>避免主观模糊词汇</strong>：用具体指标（如“列举 3 个动作，每项包含成本测算”）替代“专业一点、写详细点”；<br>
+    2. <strong>明确负向约束 (Negative Constraints)</strong>：明确告知禁止项（如“严禁虚构未披露数据”）；<br>
+    3. <strong>提供 Few-Shot 示例</strong>：对于格式要求严格的输出，附带 1 个标准示范样本，可显著降低格式畸变率；<br>
+    4. <strong>长任务拆分执行</strong>：对于复杂的策划类方案，按“大纲确认 ➔ 逐段细化 ➔ 数据校对”分步推进。
+  </section>
+
+  <div class="footer-brand">
+    <div style="font-size: 20px; font-weight: bold; margin-bottom: 6px;">⚡ 大前端工程师</section>
+    <div style="font-size: 13.5px; opacity: 0.85; margin-bottom: 12px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</section>
+    <div style="display: inline-block; background: #ffffff; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 120px; height: 120px; display: block;">
+    </section>
+    <div style="font-size: 12.5px; opacity: 0.9;">微信扫码关注公众号，回复 <strong style="color: #5eead4;">AI</strong> 获取全套实战源码与文档包</p></section>
+  </section>
+
+
+</section>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>非结构化数据清洗与行业研报提炼实战 · 大前端工程师</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+  <style>
+    body { margin: 0; padding: 0; background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #1e293b; line-height: 1.9; letter-spacing: 0.3px; }
+    .container { max-width: 780px; margin: 30px auto; background: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #0f766e; text-decoration: none; margin-bottom: 20px; padding: 5px 12px; background: #f0fdfa; border-radius: 6px; border: 1px solid #ccfbf1; }
+    .back-btn:hover { background: #0f766e; color: #fff; }
+    .header-box { text-align: left; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 25px; }
+    h1 { font-size: 22px; font-weight: 700; color: #0f172a; margin: 8px 0; line-height: 1.4; }
+    h2.sub { font-size: 15px; font-weight: 500; color: #0f766e; margin: 0 0 12px 0; }
+    .meta { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .badge { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; color: #475569; }
+    p { margin: 18px 0; text-align: justify; font-size: 15.5px; color: #334155; }
+    .callout { margin: 20px 0; padding: 16px 18px; border-radius: 8px; font-size: 14.5px; line-height: 1.7; }
+    .callout-teal { background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #0d9488; color: #115e59; }
+    .callout-amber { background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; }
+    .callout-slate { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; color: #334155; }
+    .section-title { margin: 35px 0 16px 0; padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
+    .section-num { font-size: 14px; font-weight: 700; color: #0f766e; background: #ccfbf1; padding: 2px 8px; border-radius: 4px; }
+    .section-text { font-size: 17px; font-weight: 700; color: #0f172a; }
+    .code-box { font-family: monospace; font-size: 13px; background: #0f172a; color: #f8fafc; border-radius: 6px; padding: 14px; margin: 15px 0; line-height: 1.6; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; }
+    th { background: #f8fafc; color: #1e293b; font-weight: 600; padding: 10px; border: 1px solid #e2e8f0; text-align: left; }
+    td { padding: 10px; border: 1px solid #e2e8f0; color: #334155; }
+    .mermaid-box { text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; overflow-x: auto; }
+    .footer-brand { margin-top: 40px; padding: 20px; background: #0f172a; border-radius: 10px; text-align: center; color: #ffffff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- WeChat Official Account 1-Click Copy Engine -->
+<div style="position: sticky; top: 15px; z-index: 999; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+  <button id="copy-wechat-btn" onclick="copyForWechat()" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #07c160 0%, #059669 100%); color: #ffffff; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(7, 193, 96, 0.35); transition: all 0.2s;">
+    <span>📋 一键复制到公众号（排版保真）</span>
+  </button>
+</div>
+<div id="copy-toast" style="display: none; position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; background: #07c160; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+  ✅ 复制成功！直接在公众号后台 Ctrl+V (或 Cmd+V) 粘贴即可，格式完美保留！
+</div>
+
+<script>
+function copyForWechat() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  // Clone container to modify into inline-styled WeChat HTML
+  const clone = container.cloneNode(true);
+
+  // Remove top buttons
+  const backBtn = clone.querySelector(".back-btn");
+  if (backBtn) backBtn.remove();
+  const copyBtnWrapper = clone.querySelector("#copy-wechat-btn");
+  if (copyBtnWrapper) copyBtnWrapper.closest("div").remove();
+
+  // Convert Elements into WeChat Inline Styles
+  // 1. Header Box
+  const headerBox = clone.querySelector(".header-box");
+  if (headerBox) {
+    headerBox.setAttribute("style", "text-align: left; border-bottom: 2px solid #07c160; padding-bottom: 18px; margin-bottom: 25px;");
+  }
+
+  // 2. Headings
+  clone.querySelectorAll("h1").forEach(h1 => {
+    h1.setAttribute("style", "font-size: 21px; font-weight: bold; color: #1e293b; line-height: 1.5; margin: 10px 0;");
+  });
+  clone.querySelectorAll("h2.sub").forEach(h2 => {
+    h2.setAttribute("style", "font-size: 14px; font-weight: 600; color: #07c160; margin: 0 0 10px 0;");
+  });
+
+  // 3. Section Titles
+  clone.querySelectorAll(".section-title").forEach(st => {
+    const num = st.querySelector(".section-num") ? st.querySelector(".section-num").innerText : "";
+    const text = st.querySelector(".section-text") ? st.querySelector(".section-text").innerText : st.innerText;
+    st.outerHTML = `<section style="margin: 35px 0 18px 0; display: flex; align-items: center; border-bottom: 2px solid #f0fdf4; padding-bottom: 8px;">
+      <span style="background: #07c160; color: #ffffff; font-size: 13px; font-weight: bold; padding: 3px 9px; border-radius: 4px; margin-right: 8px;">${num}</span>
+      <span style="font-size: 17px; font-weight: bold; color: #0f172a;">${text}</span>
+    </section>`;
+  });
+
+  // 4. Callout boxes
+  clone.querySelectorAll(".callout-teal").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-amber").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-slate").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-red").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 8px; color: #991b1b; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-green").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+
+  // 5. Code boxes
+  clone.querySelectorAll(".code-box").forEach(cb => {
+    cb.setAttribute("style", "margin: 15px 0; padding: 14px; background: #1e293b; color: #f8fafc; font-family: Consolas, Monaco, monospace; font-size: 13px; border-radius: 6px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;");
+  });
+
+  // 6. Paragraphs
+  clone.querySelectorAll("p").forEach(p => {
+    p.setAttribute("style", "margin: 16px 0; font-size: 15.5px; color: #334155; line-height: 1.9; letter-spacing: 0.5px; text-align: justify;");
+  });
+
+  // 7. Tables
+  clone.querySelectorAll("table").forEach(t => {
+    t.setAttribute("style", "width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; line-height: 1.6;");
+  });
+  clone.querySelectorAll("th").forEach(th => {
+    th.setAttribute("style", "background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;");
+  });
+  clone.querySelectorAll("td").forEach(td => {
+    td.setAttribute("style", "padding: 10px; border: 1px solid #e2e8f0; color: #334155;");
+  });
+
+  // 8. Mermaid Boxes (convert rendered SVG)
+  clone.querySelectorAll(".mermaid-box").forEach(mb => {
+    const svg = mb.querySelector("svg");
+    if (svg) {
+      svg.setAttribute("style", "max-width: 100%; height: auto; display: block; margin: 0 auto;");
+      mb.setAttribute("style", "text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;");
+    }
+  });
+
+  // 9. Footer Brand
+  const footerBrand = clone.querySelector(".footer-brand");
+  if (footerBrand) {
+    footerBrand.setAttribute("style", "margin-top: 40px; padding: 22px; background: #0f172a; border-radius: 12px; text-align: center; color: #ffffff; font-size: 14px;");
+  }
+
+  // Generate complete rich text HTML
+  const finalHtml = `<section style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif; max-width: 677px; margin: 0 auto; line-height: 1.9; color: #334155;">` + clone.innerHTML + `</section>`;
+
+  // Copy as rich text HTML to clipboard
+  const blob = new Blob([finalHtml], { type: "text/html" });
+  const textBlob = new Blob([clone.innerText], { type: "text/plain" });
+  const item = new ClipboardItem({
+    "text/html": blob,
+    "text/plain": textBlob
+  });
+
+  navigator.clipboard.write([item]).then(() => {
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  }).catch(err => {
+    // Fallback using execCommand
+    const listener = function(e) {
+      e.clipboardData.setData("text/html", finalHtml);
+      e.clipboardData.setData("text/plain", clone.innerText);
+      e.preventDefault();
+    };
+    document.addEventListener("copy", listener);
+    document.execCommand("copy");
+    document.removeEventListener("copy", listener);
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  });
+}
+</script>
+
+  <a href="../review.html" class="back-btn">← 返回业务待审篇目总览</a>
+
+  <div class="header-box">
+    <h1>非结构化数据清洗与行业研报提炼实战</h1>
+    <h2 class="sub">阶段一 · 业务认知与高阶提示工程 · 精品篇 02</h2>
+    <div class="meta">
+      <span class="badge">📝 实操指南 (约 2000 字)</span>
+      <span class="badge">🏷️ 数据打标 / 研报提炼 / 问卷清洗 / 业务分析</span>
+      <span class="badge">👨‍💻 作者：大前端工程师</span>
+    </div>
+  </div>
+
+  <p>
+    在日常业务分析中，运营和产品人员经常需要处理两类长文本资料：一类是分散在问卷、客诉及社群中的<strong>非结构化反馈留言</strong>；另一类是篇幅较长、包含大量宏观数据的<strong>行业研究报告</strong>。
+  </p>
+  <p>
+    传统人工阅读与归纳耗时较长，且容易受主观偏好影响。借助大语言模型的<strong>语义提取与结构化约束能力</strong>，可快速完成批量清洗打标与核心决策信息提炼。
+  </p>
+
+  <div class="section-title">
+    <span class="section-num">01</span>
+    <span class="section-text">非结构化用户反馈的批量打标 SOP</span>
+  </div>
+
+  <p>
+    处理客诉或问卷原声时，核心在于<strong>强制限定分类枚举值</strong>，避免模型自行衍生出语义相近但表述不一的标签，从而便于后续导入 Excel 进行汇总统计。
+  </p>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      A[原始非结构化文本] --> B[大模型打标: 严格限定分类字典]
+      B --> C[标准 Markdown 表格]
+      C --> D[直接粘贴进 Excel / 多维表格汇总]
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <strong>✅ 批量清洗与结构化打标 Prompt 示例：</strong>
+    <div class="code-box">【任务】：对以下用户售后留言进行语义分类与量化打标。
+【规则字典】：
+1. 【诉求分类】：严格限定单选 [物流时效 | 包装破损 | 商品质量 | 尺码规格 | 客服态度 | 其他]；
+2. 【严重程度】：[高危-需当日电话介入 | 中危-需优惠券挽留 | 低危-标准回复]；
+3. 【根因提取】：用 2~4 个字概括具体问题（如：拉链卡齿、漏发赠品）。
+【输出格式】：
+输出标准 Markdown 表格，包含列：[编号, 客户原声摘要, 诉求分类, 严重程度, 根因关键词, 建议处理动作]。
+
+--- 待处理文本：
+1. 快递等了一周才到，外包装都压变形了。
+2. 衣服面料扎人，而且尺码明显偏小。
+3. 客服一直不回消息，体验很差。</div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">02</span>
+    <span class="section-text">长篇行业研报的决策导向提炼</span>
+  </div>
+
+  <p>
+    面对数十页的行业研报，通用性的“全文总结”往往产出宏观大纲，难以直接服务于业务判断。在提示词中，应聚焦于 4 个具体的商业评估维度：
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>提炼维度</th>
+        <th>关注要点</th>
+        <th>模型约束要求</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>细分市场增长</strong></td>
+        <td>高增速赛道与驱动因素</td>
+        <td>必须摘录报告中的复合增长率 (CAGR) 与预测数据</td>
+      </tr>
+      <tr>
+        <td><strong>竞争格局与痛点</strong></td>
+        <td>头部企业壁垒与未满足需求</td>
+        <td>梳理主要竞品的核心优势与用户负面反馈</td>
+      </tr>
+      <tr>
+        <td><strong>运营与财务指标</strong></td>
+        <td>行业基准数据参考</td>
+        <td>提炼平均毛利率、获客成本 (CAC) 及复购周期</td>
+      </tr>
+      <tr>
+        <td><strong>落地切入建议</strong></td>
+        <td>中小团队的可行性打法</td>
+        <td>给出轻量级的差异化切入点，避免宏观空泛建议</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-slate">
+    <strong>提示词约束建议：</strong>在指令中加入“对于报告中未提及的数据，明确标注‘未披露’，严禁主观推测”，可有效避免模型产生数值幻觉。
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">03</span>
+    <span class="section-text">长文本批量处理中的工程细节</span>
+  </div>
+
+  <div class="callout callout-amber">
+    • <strong>分批输入（Batching）</strong>：单次批量处理以 50~100 条为宜，避免超出模型上下文窗口导致前文遗忘；<br>
+    • <strong>数据溯源校验</strong>：关键财务与市场指标要求附带报告中的原文出处或页码，确保决策依据真实可靠。
+  </div>
+
+  <div class="footer-brand">
+    <div style="font-size: 20px; font-weight: bold; margin-bottom: 6px;">⚡ 大前端工程师</div>
+    <div style="font-size: 13.5px; opacity: 0.85; margin-bottom: 12px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</div>
+    <div style="display: inline-block; background: #ffffff; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 120px; height: 120px; display: block;">
+    </div>
+    <div style="font-size: 12.5px; opacity: 0.9;">微信扫码关注公众号，回复 <strong style="color: #5eead4;">AI</strong> 获取全套实战源码与文档包</div>
+  </div>
+</div>
+
+</body>
+</html>

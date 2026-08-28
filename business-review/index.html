@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>业务落地路线 · 8篇重磅精品待审总览</title>
+  <style>
+    body { margin: 0; padding: 0; background: #0f172a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; line-height: 1.6; }
+    .header { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 40px 20px; text-align: center; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
+    .card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; display: flex; flex-col; justify-content: space-between; transition: all 0.3s; }
+    .card:hover { transform: translateY(-3px); border-color: #6366f1; box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2); }
+    .stage-tag { font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 6px; background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); display: inline-block; margin-bottom: 10px; }
+    .card-title { font-size: 16px; font-weight: bold; color: #ffffff; margin: 0 0 10px 0; line-height: 1.4; }
+    .card-desc { font-size: 13px; color: #94a3b8; margin: 0 0 15px 0; line-height: 1.6; }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; }
+    .btn-review { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 12px; }
+    .btn-review:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div style="font-size: 13px; color: #818cf8; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px;">📑 内部审阅控制台 · 大前端工程师</div>
+  <h1 style="font-size: 28px; margin: 0 0 10px 0; color: #ffffff;">业务落地路线 · 8 篇重磅深度精品审阅大纲</h1>
+  <p style="font-size: 14px; color: #94a3b8; max-width: 600px; margin: 0 auto;">每篇严格保持在 1800~2300 字，按宝玉风格讲人话、带实操模板与架构图，供您逐篇审核与公众号排期。</p>
+</div>
+
+<div class="container">
+
+<!-- WeChat Official Account 1-Click Copy Engine -->
+<div style="position: sticky; top: 15px; z-index: 999; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+  <button id="copy-wechat-btn" onclick="copyForWechat()" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #07c160 0%, #059669 100%); color: #ffffff; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(7, 193, 96, 0.35); transition: all 0.2s;">
+    <span>📋 一键复制到公众号（排版保真）</span>
+  </button>
+</div>
+<div id="copy-toast" style="display: none; position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; background: #07c160; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+  ✅ 复制成功！直接在公众号后台 Ctrl+V (或 Cmd+V) 粘贴即可，格式完美保留！
+</div>
+
+<script>
+function copyForWechat() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  // Clone container to modify into inline-styled WeChat HTML
+  const clone = container.cloneNode(true);
+
+  // Remove top buttons
+  const backBtn = clone.querySelector(".back-btn");
+  if (backBtn) backBtn.remove();
+  const copyBtnWrapper = clone.querySelector("#copy-wechat-btn");
+  if (copyBtnWrapper) copyBtnWrapper.closest("div").remove();
+
+  // Convert Elements into WeChat Inline Styles
+  // 1. Header Box
+  const headerBox = clone.querySelector(".header-box");
+  if (headerBox) {
+    headerBox.setAttribute("style", "text-align: left; border-bottom: 2px solid #07c160; padding-bottom: 18px; margin-bottom: 25px;");
+  }
+
+  // 2. Headings
+  clone.querySelectorAll("h1").forEach(h1 => {
+    h1.setAttribute("style", "font-size: 21px; font-weight: bold; color: #1e293b; line-height: 1.5; margin: 10px 0;");
+  });
+  clone.querySelectorAll("h2.sub").forEach(h2 => {
+    h2.setAttribute("style", "font-size: 14px; font-weight: 600; color: #07c160; margin: 0 0 10px 0;");
+  });
+
+  // 3. Section Titles
+  clone.querySelectorAll(".section-title").forEach(st => {
+    const num = st.querySelector(".section-num") ? st.querySelector(".section-num").innerText : "";
+    const text = st.querySelector(".section-text") ? st.querySelector(".section-text").innerText : st.innerText;
+    st.outerHTML = `<section style="margin: 35px 0 18px 0; display: flex; align-items: center; border-bottom: 2px solid #f0fdf4; padding-bottom: 8px;">
+      <span style="background: #07c160; color: #ffffff; font-size: 13px; font-weight: bold; padding: 3px 9px; border-radius: 4px; margin-right: 8px;">${num}</span>
+      <span style="font-size: 17px; font-weight: bold; color: #0f172a;">${text}</span>
+    </section>`;
+  });
+
+  // 4. Callout boxes
+  clone.querySelectorAll(".callout-teal").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-amber").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-slate").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-red").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 8px; color: #991b1b; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-green").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+
+  // 5. Code boxes
+  clone.querySelectorAll(".code-box").forEach(cb => {
+    cb.setAttribute("style", "margin: 15px 0; padding: 14px; background: #1e293b; color: #f8fafc; font-family: Consolas, Monaco, monospace; font-size: 13px; border-radius: 6px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;");
+  });
+
+  // 6. Paragraphs
+  clone.querySelectorAll("p").forEach(p => {
+    p.setAttribute("style", "margin: 16px 0; font-size: 15.5px; color: #334155; line-height: 1.9; letter-spacing: 0.5px; text-align: justify;");
+  });
+
+  // 7. Tables
+  clone.querySelectorAll("table").forEach(t => {
+    t.setAttribute("style", "width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; line-height: 1.6;");
+  });
+  clone.querySelectorAll("th").forEach(th => {
+    th.setAttribute("style", "background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;");
+  });
+  clone.querySelectorAll("td").forEach(td => {
+    td.setAttribute("style", "padding: 10px; border: 1px solid #e2e8f0; color: #334155;");
+  });
+
+  // 8. Mermaid Boxes (convert rendered SVG)
+  clone.querySelectorAll(".mermaid-box").forEach(mb => {
+    const svg = mb.querySelector("svg");
+    if (svg) {
+      svg.setAttribute("style", "max-width: 100%; height: auto; display: block; margin: 0 auto;");
+      mb.setAttribute("style", "text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;");
+    }
+  });
+
+  // 9. Footer Brand
+  const footerBrand = clone.querySelector(".footer-brand");
+  if (footerBrand) {
+    footerBrand.setAttribute("style", "margin-top: 40px; padding: 22px; background: #0f172a; border-radius: 12px; text-align: center; color: #ffffff; font-size: 14px;");
+  }
+
+  // Generate complete rich text HTML
+  const finalHtml = `<section style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif; max-width: 677px; margin: 0 auto; line-height: 1.9; color: #334155;">` + clone.innerHTML + `</section>`;
+
+  // Copy as rich text HTML to clipboard
+  const blob = new Blob([finalHtml], { type: "text/html" });
+  const textBlob = new Blob([clone.innerText], { type: "text/plain" });
+  const item = new ClipboardItem({
+    "text/html": blob,
+    "text/plain": textBlob
+  });
+
+  navigator.clipboard.write([item]).then(() => {
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  }).catch(err => {
+    // Fallback using execCommand
+    const listener = function(e) {
+      e.clipboardData.setData("text/html", finalHtml);
+      e.clipboardData.setData("text/plain", clone.innerText);
+      e.preventDefault();
+    };
+    document.addEventListener("copy", listener);
+    document.execCommand("copy");
+    document.removeEventListener("copy", listener);
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  });
+}
+</script>
+
+  <div class="grid">
+    <!-- 01 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">🎯 阶段一 · 提示工程</span>
+        <h3 class="card-title">01 · 业务场景高阶 Prompt 结构化设计全指南</h3>
+        <p class="card-desc">CRISPE 框架核心心法、5 组真实业务坏 Prompt vs 工业级 Prompt 对比、50+ 岗位通用开箱即用手册。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 2200 字</span>
+        <a href="01-业务高阶Prompt结构化设计全指南.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">🎯 阶段一 · 提示工程</span>
+        <h3 class="card-title">02 · 非结构化数据清洗与万字研报秒级提炼实操</h3>
+        <p class="card-desc">千条客诉/问卷批量清洗打标 SOP、决策导向型研报提炼模板、新媒体爆款 5 维选题裂变公式。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 1850 字</span>
+        <a href="02-非结构化数据清洗与研报秒级提炼.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">💡 阶段二 · AI 产品经理</span>
+        <h3 class="card-title">03 · AI 原生 PRD 需求规范与人机协同交互设计</h3>
+        <p class="card-desc">传统 PRD vs AI PRD 5 大核心差异、Copilot/Chatbot/Agent 选型矩阵、Notion/Cursor/Kimi 顶级微交互拆解。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 2100 字</span>
+        <a href="03-AI原生PRD需求规范与人机协同交互设计.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">💡 阶段二 · AI 产品经理</span>
+        <h3 class="card-title">04 · AI 产品防幻觉三重护栏与 Eval 评测体系</h3>
+        <p class="card-desc">严肃商业级产品输入/检索/输出三重护栏、黄金评测集构建、LLM-as-a-Judge 自动化跑分与数据飞轮闭环。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 1800 字</span>
+        <a href="04-AI产品防幻觉三重护栏与Eval评测体系.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">🤖 阶段三 · 零代码智能体</span>
+        <h3 class="card-title">05 · 零代码平台深度横评与企业私有知识库 Bot 实操</h3>
+        <p class="card-desc">Dify vs 扣子 vs FastGPT 选型横评、15 分钟零代码知识库搭建实操、7x24 销售线索初筛与智能分流 Bot。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 2250 字</span>
+        <a href="05-零代码平台深度横评与企业私有知识库Bot实操.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">🤖 阶段三 · 零代码智能体</span>
+        <h3 class="card-title">06 · 自动化业务工作流 Workflow 编排与微信生态接入</h3>
+        <p class="card-desc">竞品公关舆情自动监控流水线编排、多智能体（Multi-Agent）角色协同、微信公众号与企微群客服免代码接入。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 1950 字</span>
+        <a href="06-自动化业务工作流Workflow编排与微信生态接入.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">📈 阶段四 · 商业化与ROI</span>
+        <h3 class="card-title">07 · 企业引入 AI 的 ROI 成本账本与团队落地 SOP</h3>
+        <p class="card-desc">自研 vs SaaS vs 零代码搭建的详细 ROI 账本、避免“买了没人用”的 4 步落地 SOP、企业数据安全防泄密红线。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 1850 字</span>
+        <a href="07-企业引入AI的ROI成本账本与团队落地SOP.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="card">
+      <div>
+        <span class="stage-tag">📈 阶段四 · 商业化与ROI</span>
+        <h3 class="card-title">08 · 一人公司超级个体 AI 商业化与私域变现全流程</h3>
+        <p class="card-desc">一人公司全链协同工作流、垂直行业真实变现模式拆解、从“卖课程”到“卖 AI 专家智库”的高客单交付模型。</p>
+      </div>
+      <div class="card-meta">
+        <span style="color: #cbd5e1;">字数：约 2050 字</span>
+        <a href="08-一人公司超级个体AI商业化与私域变现全流程.html" class="btn-review">📖 立即审阅全文 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

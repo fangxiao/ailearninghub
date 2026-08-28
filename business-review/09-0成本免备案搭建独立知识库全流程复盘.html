@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>不用买服务器、免备案：我是如何用 Cloudflare + GitHub 搭建独立知识库的？ · 大前端工程师</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+  <style>
+    body { margin: 0; padding: 0; background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #1e293b; line-height: 2.0; letter-spacing: 0.3px; }
+    .container { max-width: 780px; margin: 30px auto; background: #ffffff; padding: 40px 30px; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #0f766e; text-decoration: none; margin-bottom: 20px; padding: 5px 12px; background: #f0fdfa; border-radius: 6px; border: 1px solid #ccfbf1; }
+    .back-btn:hover { background: #0f766e; color: #fff; }
+    .header-box { text-align: left; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 25px; }
+    h1 { font-size: 22px; font-weight: 700; color: #0f172a; margin: 8px 0; line-height: 1.4; }
+    h2.sub { font-size: 15px; font-weight: 500; color: #0f766e; margin: 0 0 12px 0; }
+    .meta { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .badge { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; color: #475569; }
+    p { margin: 18px 0; text-align: justify; font-size: 15.5px; color: #334155; }
+    .callout { margin: 20px 0; padding: 16px 18px; border-radius: 8px; font-size: 14.5px; line-height: 1.7; }
+    .callout-teal { background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #0d9488; color: #115e59; }
+    .callout-amber { background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; color: #92400e; }
+    .callout-slate { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; color: #334155; }
+    .section-title { margin: 35px 0 16px 0; padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px; }
+    .section-num { font-size: 14px; font-weight: 700; color: #0f766e; background: #ccfbf1; padding: 2px 8px; border-radius: 4px; }
+    .section-text { font-size: 17px; font-weight: 700; color: #0f172a; }
+    .code-box { font-family: monospace; font-size: 13px; background: #0f172a; color: #f8fafc; border-radius: 6px; padding: 14px; margin: 15px 0; line-height: 1.6; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; }
+    th { background: #f8fafc; color: #1e293b; font-weight: 600; padding: 10px; border: 1px solid #e2e8f0; text-align: left; }
+    td { padding: 10px; border: 1px solid #e2e8f0; color: #334155; }
+    .mermaid-box { text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; overflow-x: auto; }
+    .footer-brand { margin-top: 40px; padding: 20px; background: #0f172a; border-radius: 10px; text-align: center; color: #ffffff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- WeChat Official Account 1-Click Copy Engine -->
+<div style="position: sticky; top: 15px; z-index: 999; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+  <button id="copy-wechat-btn" onclick="copyForWechat()" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #07c160 0%, #059669 100%); color: #ffffff; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(7, 193, 96, 0.35); transition: all 0.2s;">
+    <span>📋 一键复制到公众号（排版保真）</span>
+  </button>
+</div>
+<div id="copy-toast" style="display: none; position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; background: #07c160; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+  ✅ 复制成功！直接在公众号后台 Ctrl+V (或 Cmd+V) 粘贴即可，格式完美保留！
+</div>
+
+<script>
+function copyForWechat() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  // Clone container to modify into inline-styled WeChat HTML
+  const clone = container.cloneNode(true);
+
+  // Remove top buttons
+  const backBtn = clone.querySelector(".back-btn");
+  if (backBtn) backBtn.remove();
+  const copyBtnWrapper = clone.querySelector("#copy-wechat-btn");
+  if (copyBtnWrapper) copyBtnWrapper.closest("div").remove();
+
+  // Convert Elements into WeChat Inline Styles
+  // 1. Header Box
+  const headerBox = clone.querySelector(".header-box");
+  if (headerBox) {
+    headerBox.setAttribute("style", "text-align: left; border-bottom: 2px solid #07c160; padding-bottom: 18px; margin-bottom: 25px;");
+  }
+
+  // 2. Headings
+  clone.querySelectorAll("h1").forEach(h1 => {
+    h1.setAttribute("style", "font-size: 21px; font-weight: bold; color: #1e293b; line-height: 1.5; margin: 10px 0;");
+  });
+  clone.querySelectorAll("h2.sub").forEach(h2 => {
+    h2.setAttribute("style", "font-size: 14px; font-weight: 600; color: #07c160; margin: 0 0 10px 0;");
+  });
+
+  // 3. Section Titles
+  clone.querySelectorAll(".section-title").forEach(st => {
+    const num = st.querySelector(".section-num") ? st.querySelector(".section-num").innerText : "";
+    const text = st.querySelector(".section-text") ? st.querySelector(".section-text").innerText : st.innerText;
+    st.outerHTML = `<section style="margin: 35px 0 18px 0; display: flex; align-items: center; border-bottom: 2px solid #f0fdf4; padding-bottom: 8px;">
+      <span style="background: #07c160; color: #ffffff; font-size: 13px; font-weight: bold; padding: 3px 9px; border-radius: 4px; margin-right: 8px;">${num}</span>
+      <span style="font-size: 17px; font-weight: bold; color: #0f172a;">${text}</span>
+    </section>`;
+  });
+
+  // 4. Callout boxes
+  clone.querySelectorAll(".callout-teal").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-amber").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-slate").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-red").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 8px; color: #991b1b; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-green").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+
+  // 5. Code boxes
+  clone.querySelectorAll(".code-box").forEach(cb => {
+    cb.setAttribute("style", "margin: 15px 0; padding: 14px; background: #1e293b; color: #f8fafc; font-family: Consolas, Monaco, monospace; font-size: 13px; border-radius: 6px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;");
+  });
+
+  // 6. Paragraphs
+  clone.querySelectorAll("p").forEach(p => {
+    p.setAttribute("style", "margin: 16px 0; font-size: 15.5px; color: #334155; line-height: 1.9; letter-spacing: 0.5px; text-align: justify;");
+  });
+
+  // 7. Tables
+  clone.querySelectorAll("table").forEach(t => {
+    t.setAttribute("style", "width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; line-height: 1.6;");
+  });
+  clone.querySelectorAll("th").forEach(th => {
+    th.setAttribute("style", "background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;");
+  });
+  clone.querySelectorAll("td").forEach(td => {
+    td.setAttribute("style", "padding: 10px; border: 1px solid #e2e8f0; color: #334155;");
+  });
+
+  // 8. Mermaid Boxes (convert rendered SVG)
+  clone.querySelectorAll(".mermaid-box").forEach(mb => {
+    const svg = mb.querySelector("svg");
+    if (svg) {
+      svg.setAttribute("style", "max-width: 100%; height: auto; display: block; margin: 0 auto;");
+      mb.setAttribute("style", "text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;");
+    }
+  });
+
+  // 9. Footer Brand
+  const footerBrand = clone.querySelector(".footer-brand");
+  if (footerBrand) {
+    footerBrand.setAttribute("style", "margin-top: 40px; padding: 22px; background: #0f172a; border-radius: 12px; text-align: center; color: #ffffff; font-size: 14px;");
+  }
+
+  // Generate complete rich text HTML
+  const finalHtml = `<section style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif; max-width: 677px; margin: 0 auto; line-height: 1.9; color: #334155;">` + clone.innerHTML + `</section>`;
+
+  // Copy as rich text HTML to clipboard
+  const blob = new Blob([finalHtml], { type: "text/html" });
+  const textBlob = new Blob([clone.innerText], { type: "text/plain" });
+  const item = new ClipboardItem({
+    "text/html": blob,
+    "text/plain": textBlob
+  });
+
+  navigator.clipboard.write([item]).then(() => {
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  }).catch(err => {
+    // Fallback using execCommand
+    const listener = function(e) {
+      e.clipboardData.setData("text/html", finalHtml);
+      e.clipboardData.setData("text/plain", clone.innerText);
+      e.preventDefault();
+    };
+    document.addEventListener("copy", listener);
+    document.execCommand("copy");
+    document.removeEventListener("copy", listener);
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  });
+}
+</script>
+
+  <a href="../review.html" class="back-btn">← 返回业务待审篇目总览</a>
+
+  <div class="header-box">
+    <h1>不用买服务器、免备案：我是如何用 Cloudflare + GitHub 搭建独立知识库的？</h1>
+    <h2 class="sub">实战经验复盘 · 零成本建站、微信正常访问与百度/谷歌收录指南</h2>
+    <div class="meta">
+      <span class="badge">📝 通俗实战 (约 1800 字)</span>
+      <span class="badge">🏷️ 个人建站 / 零成本 / 免备案 / 微信访问 / 搜索收录</span>
+      <span class="badge">👨‍💻 作者：大前端工程师</span>
+    </div>
+  </div>
+
+  <p>
+    如果你想为自己或团队搭建一个专门放技术文章、使用教程或业务资料的独立知识库，通常会遇到两个麻烦事：
+  </p>
+  <p>
+    一是<strong>成本高</strong>：每年要花几百上千块租云服务器；<br>
+    二是<strong>流程繁琐</strong>：要在国内绑定域名，要在国内绑定域名，必须申请 ICP 备案、提交各种资料审核并等上一两周。
+  </p>
+  <p>
+    但对于文档和博客这类“别人主要用来看、不需要经常往数据库里存数据”的网站，其实<strong>完全不需要买云服务器，也不需要等待备案</strong>。
+  </p>
+  <p>
+    这次我们在上线 <strong>AI 学习智库（https://ailearning.top）</strong> 时，采用了一套非常轻便的方案：<strong>用 GitHub 存代码，用 Cloudflare 免费分发加速</strong>。全流程只花了几块钱买域名，当天就完成上线，并在微信和各大搜索引擎里跑通了全部流程。
+  </p>
+  <p>
+    把这套通俗好懂的搭建经验记录下来，分享给有同样需求的朋友。
+  </p>
+
+  <div class="section-title">
+    <span class="section-num">01</span>
+    <span class="section-text">为什么不需要买云服务器？</span>
+  </div>
+
+  <p>
+    我们可以把建站理解为开店：
+  </p>
+  <div class="callout callout-teal">
+    • <strong>传统建站（买云服务器）</strong>：相当于你租了一间实体店面。不管今天有没有客人来，每个月都要交固定的房租和水电费，还得自己负责打扫和防盗；<br>
+    • <strong>现代静态建站（Cloudflare 托管）</strong>：相当于你把印刷好的手册，免费放在全球各地的公共服务台。有人想看时，就近的服务台直接把手册递给他，<strong>你不需要租店面，一分钱房租都不用掏</strong>。
+  </div>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      A[1. 文章写好存进 GitHub] --> B[2. Cloudflare 自动打包发布]
+      B --> C[3. 绑定自己的域名 ailearning.top]
+      C --> D[4. 读者手机/电脑秒开访问]
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">02</span>
+    <span class="section-text">如何做到让 166 篇文章打开不卡顿？</span>
+  </div>
+
+  <p>
+    很多人建站喜欢装很多插件，导致网页打开很慢。我们做知识库时遵循了两个简单的原则：
+  </p>
+  <p>
+    <strong>1. 纯静态页面</strong>：不连复杂的数据库，直接把文章生成干净的 HTML 文件。打开网页时，就像看一张图片一样快；<br>
+    <strong>2. 自动生成轻量目录索引</strong>：通过几行简单的 Python 脚本，把 166 篇文章的标题和简介提取出来，生成一个只有几十 KB 的小目录。读者在网页里搜文章或点分类时，在手机本地瞬间完成，完全不需要等待服务器慢慢查询。
+  </p>
+
+  <div class="section-title">
+    <span class="section-num">03</span>
+    <span class="section-text">微信里打开会不会被拦截？</span>
+  </div>
+
+  <p>
+    这是很多人最关心的问题：<em>“没办国内备案，在微信里点链接会不会弹警告？”</em>
+  </p>
+  <p>
+    只要做好这三点，微信里就能正常顺畅打开：
+  </p>
+  <div class="callout callout-slate">
+    1. <strong>用正规的独立域名</strong>：花几块钱买个正经的域名（比如 <code>.top</code> 或 <code>.com</code>），不要用免费平台上那种长串的临时测试网址；<br>
+    2. <strong>内容干净合规</strong>：文章都是正规的技术分享与教程，不搞“强制关注公众号才能看”、“强制转发朋友圈才能看”这类微信严打的诱导行为；<br>
+    3. <strong>开通 https 安全锁</strong>：Cloudflare 会自动为域名配好免费的 SSL 安全证书，微信识别为安全链接后就会直接打开。
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">04</span>
+    <span class="section-text">怎么让百度和 Google 能搜到你的网站？</span>
+  </div>
+
+  <p>
+    网站建好后，如果别人搜不到，就像把店开在深山里。让搜索引擎主动来收录只需要做两件事：
+  </p>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph TD
+      A[网站自动生成地图 sitemap.xml] --> B[提交给 Google Search Console ➔ 自动抓取]
+      A --> C[提交给 必应 Bing ➔ 一键同步]
+      A --> D[提交给 百度 ➔ 用 API 接口先推送首页和分类]
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    • <strong>自动生成网站地图 (sitemap.xml)</strong>：把网站所有文章的链接整理成一份标准清单（我们站一共 338 个链接）；<br>
+    • <strong>去 Google 和 Bing 提交</strong>：在 Google 站长后台填入 <code>sitemap.xml</code>，点提交就搞定了；Bing 更是支持直接从 Google 账号一键导入；<br>
+    • <strong>百度新站小技巧</strong>：新网站在百度提交地图时可能暂时没有配额，可以在百度的【API 提交】页面，用几行 Python 脚本把首页和主要分类链接直接推给百度，当天就能进入抓取队列。
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">05</span>
+    <span class="section-text">怎么看每天有多少人来访问？</span>
+  </div>
+
+  <p>
+    不需要在网站里安装乱七八糟的统计插件，Cloudflare 仪表盘自带了流量看板：
+  </p>
+  <p>
+    • 每天有多少人看（独立访客数 UV、浏览量 PV）；<br>
+    • 读者来自国内还是海外；<br>
+    • 读者是用手机微信、电脑还是浏览器打开的。
+  </p>
+  <p>
+    全部自动统计，一目了然。
+  </p>
+
+  <div class="section-title">
+    <span class="section-num">06</span>
+    <span class="section-text">总结与建议</span>
+  </div>
+
+  <p>
+    如果你也想搭建自己的技术专栏、产品使用手册或个人作品集，**建议优先考虑“GitHub + Cloudflare 边缘托管”这条路线**。
+  </p>
+  <p>
+    它不仅帮你省下了每年的服务器续费开销和维护精力，还能让你把 100% 的时间聚焦在最核心的事情上——<strong>写出真正有价值的内容</strong>。
+  </p>
+
+  <div class="footer-brand">
+    <div style="font-size: 20px; font-weight: bold; margin-bottom: 6px;">⚡ 大前端工程师</div>
+    <div style="font-size: 13.5px; opacity: 0.85; margin-bottom: 12px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</div>
+    <div style="display: inline-block; background: #ffffff; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 120px; height: 120px; display: block;">
+    </div>
+    <div style="font-size: 12.5px; opacity: 0.9;">微信扫码关注公众号，回复 <strong style="color: #5eead4;">AI</strong> 获取全套实战源码与文档包</div>
+  </div>
+</div>
+
+</body>
+</html>

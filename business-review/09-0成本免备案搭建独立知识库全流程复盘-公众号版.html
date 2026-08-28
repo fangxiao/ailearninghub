@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>不用买服务器、免备案：我是如何用 Cloudflare + GitHub 搭建独立知识库的？</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5;">
+
+<!-- 微信正文总容器 (无 flexbox, 纯块级布局，100% 微信兼容) -->
+<section style="max-width: 677px; margin: 0 auto; padding: 30px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background-color: #ffffff;">
+
+  <!-- 顶部主题药丸标签 -->
+  <p style="margin: 0 0 16px 0; text-align: center;">
+    <span style="display: inline-block; background-color: #e0f2f1; color: #00897b; font-size: 12px; font-weight: bold; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;">
+      ⚡ 独立开发实战 · 零成本商业建站指南
+    </span>
+  </p>
+
+  <!-- 标题 -->
+  <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 15px 0 10px 0; line-height: 1.45;">
+    不用买服务器、免备案：我是如何用 Cloudflare + GitHub 搭建独立知识库的？
+  </h1>
+
+  <!-- 副标题 -->
+  <h2 style="font-size: 16px; font-weight: bold; color: #00897b; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+    零成本建站、Cloudflare 全球托管、微信直连与百度/谷歌收录全流程复盘
+  </h2>
+
+  <!-- 元数据栏 -->
+  <p style="font-size: 13px; color: #888888; text-align: center; margin: 0 0 30px 0; padding-bottom: 18px; border-bottom: 1px dashed #e0e0e0;">
+    作者：大前端工程师 &nbsp;|&nbsp; 约 1900 字 &nbsp;|&nbsp; 实战复盘指南
+  </p>
+
+  <!-- 金句引用框 -->
+  <section style="margin: 25px 0; padding: 18px 20px; background-color: #f0fdfa; border-left: 4px solid #00897b; border-radius: 4px;">
+    <p style="margin: 0; font-size: 15px; color: #00695c; line-height: 1.8; font-weight: bold;">
+      “搭建一个属于自己的独立技术专栏或产品知识库，本该是一件轻快纯粹的事。你不应该被每年上千块的闲置服务器年费和漫长的备案流程劝退。”
+    </p>
+  </section>
+
+  <!-- 导语 -->
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    如果你想为自己或团队搭建一个专门放技术文章、使用教程或业务资料的独立知识库，过去通常会遇到两个麻烦事：
+  </p>
+
+  <!-- 红色痛点卡片 -->
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e53935; border-radius: 6px;">
+    <p style="margin: 0 0 10px 0; color: #c62828; font-size: 15px; line-height: 1.8;">
+      ❌ <strong>痛点 1 · 成本高昂</strong>：每年必须掏几百甚至上千块租云服务器、买公网 IP 和带宽；
+    </p>
+    <p style="margin: 0; color: #c62828; font-size: 15px; line-height: 1.8;">
+      ❌ <strong>痛点 2 · 流程窒息</strong>：要绑定国内域名，要在国内绑定域名，必须申请 ICP 备案、提交各种资料审核并等上一两周。
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    但对于文档和博客这类“别人主要用来看、不需要经常往数据库里存数据”的网站，其实<strong style="color: #00897b;">完全不需要买云服务器，更不需要等待备案</strong>。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    这次我们在上线 <strong style="color: #00897b;">AI 学习智库（https://ailearning.top）</strong> 时，采用了一套非常现代的轻量化方案：<strong>用 GitHub 存源码，用 Cloudflare 全球免费加速</strong>。全流程只花了几块钱买域名，当天就完成上线，并在微信内置浏览器和各大搜索引擎里跑通了全部流程。
+  </p>
+
+  <!-- 章节 01 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">01</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">为什么你不需要买云服务器？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    我们可以把建站简单理解为开店：
+  </p>
+
+  <!-- 绿色比喻卡片 -->
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
+    <p style="margin: 0 0 12px 0; color: #00695c; font-size: 15px; line-height: 1.8;">
+      🏢 <strong>传统建站（买云服务器）</strong>：相当于你租了一间实体店面。不管今天有没有客人来，每个月都要交固定的房租和水电费，还得自己负责打扫卫生和防黑客扫描。
+    </p>
+    <p style="margin: 0; color: #00695c; font-size: 15px; line-height: 1.8;">
+      🌐 <strong>现代静态建站（Cloudflare 托管）</strong>：相当于你把印刷好的手册，免费放在全球数百个公共服务台。有人想看时，就近的服务台直接把手册递给他。<strong>你不需要租店面，一分钱房租都不用掏</strong>。
+    </p>
+  </section>
+
+  <!-- 章节 02 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">02</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">Cloudflare 4 步极速托管实操</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    很多新手一听到 Cloudflare 觉得很神秘，其实按下面 4 步点点鼠标就能搞定：
+  </p>
+
+  <!-- 步骤 1 -->
+  <section style="margin: 15px 0; padding: 16px 18px; background-color: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #00897b;">
+      <span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background-color: #00897b; color: #ffffff; text-align: center; line-height: 22px; font-size: 12px; margin-right: 6px;">1</span>
+      第 1 步 · 注册账号并添加域名
+    </p>
+    <p style="margin: 0; font-size: 14.5px; color: #3f3f3f; line-height: 1.8;">
+      打开 Cloudflare 官网（dash.cloudflare.com）注册免费账号 ➔ 点击右上角【添加站点】➔ 输入你买好的域名（如 <code>ailearning.top</code>）➔ 计划选择最下方的 <strong>Free（免费版）</strong> ➔ 点击继续。
+    </p>
+  </section>
+
+  <!-- 步骤 2 -->
+  <section style="margin: 15px 0; padding: 16px 18px; background-color: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #00897b;">
+      <span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background-color: #00897b; color: #ffffff; text-align: center; line-height: 22px; font-size: 12px; margin-right: 6px;">2</span>
+      第 2 步 · 修改 DNS 服务器地址
+    </p>
+    <p style="margin: 0; font-size: 14.5px; color: #3f3f3f; line-height: 1.8;">
+      Cloudflare 会给出 2 个专属 NS 地址（如 <code>emerie.ns.cloudflare.com</code>）➔ 登录买域名的平台（如腾讯云/阿里云），在【DNS 修改】中替换为这两个地址 ➔ 回到 Cloudflare 点击【完成，检查名称服务器】，几分钟内状态就会变为绿色的<strong>【有效 / Active】</strong>。
+    </p>
+  </section>
+
+  <!-- 步骤 3 -->
+  <section style="margin: 15px 0; padding: 16px 18px; background-color: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #00897b;">
+      <span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background-color: #00897b; color: #ffffff; text-align: center; line-height: 22px; font-size: 12px; margin-right: 6px;">3</span>
+      第 3 步 · 连接 GitHub 仓库自动部署
+    </p>
+    <p style="margin: 0; font-size: 14.5px; color: #3f3f3f; line-height: 1.8;">
+      在左侧菜单点击【Workers 和 Pages】➔ 选择【Pages】➔ 点击【连接到 Git】授权选中你的 GitHub 知识库仓库 ➔ 输出目录填 <code>dist</code> ➔ 点击【保存并部署】，Cloudflare 会在 30 秒内完成全球分发发布。
+    </p>
+  </section>
+
+  <!-- 步骤 4 -->
+  <section style="margin: 15px 0; padding: 16px 18px; background-color: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #00897b;">
+      <span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background-color: #00897b; color: #ffffff; text-align: center; line-height: 22px; font-size: 12px; margin-right: 6px;">4</span>
+      第 4 步 · 绑定独立域名与自动 SSL
+    </p>
+    <p style="margin: 0; font-size: 14.5px; color: #3f3f3f; line-height: 1.8;">
+      在项目详情中点击【自定义域】➔ 输入你的域名（如 <code>www.ailearning.top</code> 和 <code>ailearning.top</code>）➔ Cloudflare 会全自动在后台把 DNS 解析和<strong>免费的 HTTPS 证书（自带绿色安全小锁 🔒）</strong>配置妥当！
+    </p>
+  </section>
+
+  <!-- 章节 03 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">03</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">如何做到 166 篇文章打开不卡顿？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    很多网站之所以慢，是因为每次访问都要查询数据库。我们在构建知识库时遵循了两个简单法则：
+  </p>
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 6px;">
+    <p style="margin: 0 0 10px 0; color: #334155; font-size: 14.5px; line-height: 1.8;">
+      ⚡ <strong>纯静态 HTML</strong>：文章预先编译为干净的 HTML 网页，访问时就像加载图片一样快；
+    </p>
+    <p style="margin: 0; color: #334155; font-size: 14.5px; line-height: 1.8;">
+      📦 <strong>轻量索引体系</strong>：全站 166 篇文章的标题和摘要被压缩为一个仅 86KB 的索引小文件，读者在页面内搜索与切换专栏完全在手机本地瞬间完成！
+    </p>
+  </section>
+
+  <!-- 章节 04 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">04</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">微信内直接打开防拦截秘诀</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    很多人最担心的是：<em>“没办国内备案，在微信里点开会不会弹红色感叹号？”</em>
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    只要做好这三点，微信内置浏览器就能顺畅直连秒开：
+  </p>
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
+    <p style="margin: 0 0 10px 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
+      1. <strong>独立顶级域名</strong>：花几块钱买个正规域名（如 <code>.top</code> 或 <code>.com</code>），绝不用免费平台上那些长串的临时测试网址；
+    </p>
+    <p style="margin: 0 0 10px 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
+      2. <strong>内容绿色合规</strong>：文章都是正规的技术分享，绝不搞“强制关注公众号才给看全文”这种微信严厉打击的诱导拦截；
+    </p>
+    <p style="margin: 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
+      3. <strong>可信 HTTPS 加密</strong>：Cloudflare 自动颁发标准 SSL 安全证书，微信在 TLS 握手时判定为可信安全站点。
+    </p>
+  </section>
+
+    <!-- 微信拦截与3分钟极速解封 SOP 卡片 -->
+  <section style="margin: 25px 0; padding: 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
+    <p style="margin: 0 0 10px 0; font-size: 15px; font-weight: bold; color: #00695c;">
+      🛡️ 实测避坑 · 微信拦截后 3 分钟站长极速解封 SOP
+    </p>
+    <p style="margin: 0 0 8px 0; color: #334155; font-size: 14px; line-height: 1.8;">
+      如果新域名在微信中打开提示“未备案或非微信官方网页”，按照以下 4 步可<strong>立刻临时恢复正常访问</strong>：
+    </p>
+    <p style="margin: 0 0 6px 0; color: #334155; font-size: 13.5px; line-height: 1.7;">
+      <strong>1. 触发站长认证</strong>：在微信拦截页面点击【申请恢复访问】➔ 选择【网站管理员认证】；<br>
+      <strong>2. 获取认证文件</strong>：微信会给出一个专属 txt 文件名（如 <code>fb59...txt</code>）和一串 Hash 校验码；<br>
+      <strong>3. 极速发布部署</strong>：在网站根目录下创建该 txt 文件，填入校验码并推送到 GitHub（Cloudflare Pages 20 秒自动分发完成）；<br>
+      <strong>4. 点击验证秒解封</strong>：回到微信点击【立即认证】，微信系统读取 txt 成功后，<strong>当场解除拦截，微信内恢复直接秒开</strong>！
+    </p>
+  </section>
+
+  <!-- 章节 05 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">05</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">让 Google、Bing 和百度收录你的网站</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    网站上线后，怎么让各大搜索引擎快速找到你？下面是经过验证的 3 大平台实操指南：
+  </p>
+
+  <!-- 暖黄搜索实操大卡片 -->
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 6px;">
+    
+    <p style="margin: 0 0 8px 0; color: #92400e; font-size: 15px; line-height: 1.8; font-weight: bold;">
+      🌎 一、Google Search Console（谷歌站长提交 · 2分钟）
+    </p>
+    <p style="margin: 0 0 16px 0; color: #78350f; font-size: 14px; line-height: 1.8;">
+      1. 打开 Google Search Console（search.google.com/search-console）登录 Google 账号；<br>
+      2. 选择【网址前缀】输入 <code>https://www.ailearning.top</code> ➔ 选择【HTML 标记】验证方式；<br>
+      3. 把给出的验证代码加入首页 <code>&lt;head&gt;</code> 中，点击【验证】通过；<br>
+      4. 点击左侧【站点地图】➔ 输入 <code>sitemap.xml</code> 点击提交，状态立刻显示绿色的<strong>【成功】</strong>！
+    </p>
+
+    <p style="margin: 0 0 8px 0; color: #92400e; font-size: 15px; line-height: 1.8; font-weight: bold;">
+      🤖 二、微软 Bing / 微软 Copilot（1 秒一键导入）
+    </p>
+    <p style="margin: 0 0 16px 0; color: #78350f; font-size: 14px; line-height: 1.8;">
+      打开 Bing 站长平台（bing.com/webmasters）➔ 点击【从 Google Search Console 导入】➔ 授权刚才的 Google 账号，3 秒钟直接一键同步完成！
+    </p>
+
+    <p style="margin: 0 0 8px 0; color: #92400e; font-size: 15px; line-height: 1.8; font-weight: bold;">
+      🇨🇳 三、百度搜索资源平台（百度认证与新站 API 极速推送）
+    </p>
+    <p style="margin: 0; color: #78350f; font-size: 14px; line-height: 1.8;">
+      1. 打开百度搜索资源平台（ziyuan.baidu.com）添加站点并完成 HTML 标签验证；<br>
+      2. 针对新站地图配额为 0 的限制，在【API 提交】复制接口地址与 Token；<br>
+      3. 运行下方 5 行 Python 脚本，将首页与核心分类种子链接直接推给百度爬虫！
+    </p>
+  </section>
+
+  <!-- 微信专用 · 100% 不丢色代码高亮容器 (单行 <p> 分段，保证 span 颜色绝不丢失) -->
+  <section style="margin: 25px 0; background-color: #282c34; border-radius: 8px; padding: 16px 18px; overflow-x: auto;">
+    <!-- 顶栏红黄绿圆点 -->
+    <p style="margin: 0 0 12px 0; line-height: 1; padding-bottom: 8px; border-bottom: 1px solid #3e4451;">
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ff5f56; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ffbd2e; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #27c93f; margin-right: 8px;"></span>
+      <span style="color: #abb2bf; font-size: 12px; font-family: Consolas, Menlo, Monaco, monospace; font-weight: bold;">Python 3 · 百度主动推送脚本</span>
+    </p>
+    <!-- 代码每一行独立 <p> 保证复制时换行与颜色精准保留 -->
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #5c6370; font-style: italic; white-space: pre;"><span style="color: #5c6370;"># 1. 导入 Python 标准网络请求库</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style="color: #c678dd; font-weight: bold;">import</span> <span style="color: #e5c07b;">urllib.request</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">&nbsp;</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #5c6370; font-style: italic; white-space: pre;"><span style="color: #5c6370;"># 2. 百度站长 API 接口地址 (替换为你的 Token)</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">api = <span style="color: #98c379;">"http://data.zz.baidu.com/urls?site=https://www.ailearning.top&token=你的TOKEN"</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">&nbsp;</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #5c6370; font-style: italic; white-space: pre;"><span style="color: #5c6370;"># 3. 准备要推送的核心种子链接</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">urls = <span style="color: #98c379;">"\n"</span>.<span style="color: #61afef;">join</span>([</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    <span style="color: #98c379;">"https://www.ailearning.top/"</span>,</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    <span style="color: #98c379;">"https://www.ailearning.top/#roadmap"</span>,</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    <span style="color: #98c379;">"https://www.ailearning.top/#cat=bigmodel"</span>,</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    <span style="color: #98c379;">"https://www.ailearning.top/#cat=agent-core"</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">])</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">&nbsp;</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #5c6370; font-style: italic; white-space: pre;"><span style="color: #5c6370;"># 4. 构建 POST 请求并发送推送</span></p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">req = urllib.request.<span style="color: #61afef;">Request</span>(</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    api, </p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    data=urls.<span style="color: #61afef;">encode</span>(<span style="color: #98c379;">"utf-8"</span>), </p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">    headers={<span style="color: #98c379;">"Content-Type"</span>: <span style="color: #98c379;">"text/plain"</span>}</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">)</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">res = urllib.request.<span style="color: #61afef;">urlopen</span>(req).<span style="color: #61afef;">read</span>().<span style="color: #61afef;">decode</span>(<span style="color: #98c379;">"utf-8"</span>)</p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style="color: #c678dd; font-weight: bold;">print</span>(<span style="color: #98c379;">"✅ 百度推送响应结果:"</span>, res)</p>
+  </section>
+
+    <!-- 章节 06 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">06</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">流量统计 vs 行为转化：怎么看每天的数据？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    网站上线后，很多朋友最关心的是：<em>“怎么看每天有多少人来看？他们都点了什么？文末的二维码到底有没有人看？”</em>
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    在实际运营中，数据分析通常分为两个层次：<strong>基础流量大盘</strong>与<strong>进阶行为转化</strong>。
+  </p>
+
+  <!-- 层次一卡片 -->
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #00897b; border-radius: 6px;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #00897b;">
+      📊 第一层：基础流量大盘（Cloudflare 零埋点自带）
+    </p>
+    <p style="margin: 0 0 10px 0; color: #334155; font-size: 14px; line-height: 1.8;">
+      不需要在网页里塞任何臃肿的第三方统计 JS 插件，Cloudflare 仪表盘完全基于全球边缘 CDN 节点日志自动统计：
+    </p>
+    <p style="margin: 0 0 6px 0; color: #334155; font-size: 14px; line-height: 1.8;">
+      • <strong>独立访客 (UV)</strong>：通过 IP 与设备指纹去重，算出今天到底来了多少个真人；<br>
+      • <strong>总浏览量 (PV)</strong>：全站文章被打开和阅读的总次数；<br>
+      • <strong>地域与设备</strong>：读者来自国内哪些省份、来自海外哪些国家，是用手机微信还是电脑浏览器。
+    </p>
+    <p style="margin: 0; color: #00695c; font-size: 13.5px; line-height: 1.7; font-style: italic;">
+      💡 优势：网页代码零耗电、零延迟，且绝不会被读者的浏览器广告插件屏蔽而漏记。
+    </p>
+  </section>
+
+  <!-- 层次二卡片 -->
+  <section style="margin: 20px 0; padding: 18px 20px; background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 6px;">
+    <p style="margin: 0 0 8px 0; font-size: 15px; font-weight: bold; color: #92400e;">
+      🎯 第二层：进阶用户行为与转化漏斗（点击、曝光与引流）
+    </p>
+    <p style="margin: 0 0 10px 0; color: #78350f; font-size: 14px; line-height: 1.8;">
+      如果你想把知识库作为个人商业化或私域引流的入口，只看 PV 是不够的，还需要关注更深度的<strong>用户行为指标</strong>：
+    </p>
+    <p style="margin: 0 0 6px 0; color: #78350f; font-size: 14px; line-height: 1.8;">
+      • <strong>卡片可视曝光 (Impression)</strong>：读者是否真的把屏幕滑到了底部、文末的公众号二维码是否在手机视野里停留超过 2 秒；<br>
+      • <strong>专栏点击偏好 (Click)</strong>：读者更喜欢点哪个分类标签、搜索了哪些高频关键词；<br>
+      • <strong>完读与转化漏斗 (Conversion)</strong>：从打开首页 ➔ 阅读 75% 篇幅 ➔ 点击文末链接的完整转化率。
+    </p>
+    <p style="margin: 0; color: #92400e; font-size: 13.5px; line-height: 1.7;">
+      🛠️ <strong>如何实现：</strong>可以使用现代轻量开源埋点（如 Umami 或自建原生 <code>IntersectionObserver</code> 监听），几行代码就能搞定精准的转化漏斗追踪！
+    </p>
+  </section>
+
+  <!-- 章节 07 -->
+  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">07</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">写在最后</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    如果你也想搭建自己的技术专栏、产品手册或独立作品集，<strong>建议优先考虑“GitHub + Cloudflare 边缘托管”这条路线</strong>。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    它不仅帮你省下了每年的服务器续费开销和运维精力，还能让你把 100% 的时间聚焦在最核心的事情上——<strong>写出真正有价值的高质量内容</strong>。
+  </p>
+
+  <!-- 底部公众号卡片 (微信标准 100% 保真结构) -->
+  <section style="margin: 50px 0 10px 0; padding: 25px 20px; background-color: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; text-align: center;">
+    <p style="margin: 0 0 6px 0; font-size: 18px; font-weight: bold; color: #1a1a1a;">⚡ 大前端工程师</p>
+    <p style="margin: 0 0 15px 0; font-size: 13.5px; color: #666666;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</p>
+    <p style="margin: 0 0 15px 0;">
+      <img src="https://ailearning.top/assets/qrcode.jpg" alt="公众号二维码" style="width: 140px; height: 140px; border-radius: 4px; display: inline-block;">
+    </p>
+    <p style="margin: 0 0 6px 0; font-size: 13.5px; color: #333333;">
+      📱 手机微信扫一扫关注公众号
+    </p>
+    <p style="margin: 0; font-size: 12.5px; color: #666666;">
+      后台回复 <strong style="color: #00897b;">AI</strong> 获取全套建站源码与大模型实战资料包
+    </p>
+  </section>
+
+</section>
+
+</body>
+</html>

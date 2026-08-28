@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大白话聊 AI 产品设计：为什么传统产品经理做 AI，总被研发吐槽？</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    大白话聊 AI 产品设计：为什么传统产品经理做 AI，总被研发吐槽？
+  </h1>
+  <h2 style="font-size: 17px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+    阶段二 · AI 原生产品经理实战指南 · 精品篇 03
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 35px 0; padding-bottom: 18px; border-bottom: 1px solid #e0e0e0;">
+    微信公众号排版专用版 · 全选复制即可直接粘贴到后台 | 大前端工程师
+  </p>
+
+
+
+
+
+  
+
+  
+  </section>
+
+  
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">很多传统产品经理在第一次做 AI 功能时，都栽过跟头：</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">写需求文档依然按照老套路：<em>“用户在输入框打字，点击发送，系统必须返回正确答案”</em>。结果研发工程师看完直摇头：“大模型生成的内容是有概率的，有时候聪明有时候胡说，你这需求根本没法写代码！”</p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">今天我们用大白话讲清楚：<strong>为什么传统软件像‘做算术题’，而 AI 产品像‘管一个聪明员工’？</strong></p>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">打个比方：做计算器 vs 招员工</span>
+    </p>
+  </section>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      subgraph 传统产品逻辑
+        A[输入 A] --> B[固定规则] --> C[确定输出 B]
+      end
+      subgraph AI 产品逻辑
+        D[自然语言输入] --> E[概率生成 + 安全护栏] --> F[高质量答案 / 兜底转人工]
+      end
+    </p></section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897B; border-radius: 8px; color: #00695C; font-size: 15px; line-height: 1.8;">
+    • <strong>传统软件像计算器</strong>：输入 1+1，结果必须是 2。错一点就是 Bug。<br>
+    • <strong>AI 产品像管员工</strong>：他懂得很多，但偶尔会开小差。作为产品经理，你的任务不是把每句话焊死，而是<strong>给他立好三道护栏，防止他跟客户乱说话</strong>！
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">交互三兄弟：Copilot、Chatbot、Agent 怎么选？</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">不要一做 AI 就在右下角挂个聊天泡泡！我们用生活场景来看看 3 种模式的区别：</p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13.5px; line-height: 1.6;">
+    <thead>
+      <tr>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">交互模式</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">形象比喻</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">怎么交互</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">典型例子</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>1. Copilot (副驾驶)</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">像坐在你旁边的秘书，随时帮你改错字</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">选中一段文字按空格，原地改好，按 Enter 采纳</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">Notion AI, 智能文档</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>2. Chatbot (聊天助手)</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">像前台问询处，你问一句他答一句</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">在对话框里一问一答，适合漫无边际的初探</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">Kimi, 智能客服</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>3. Agent (全自动管家)</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">交代完目标后，他自己去订机票、订酒店</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">给一个目标，他自己拆解多步骤执行，执行前找你确认</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">自动化工单分派、自动爬虫</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">写 AI PRD 的 4 个必备要素（抄作业模板）</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 15px; line-height: 1.8;">
+    <strong>✅ AI 功能需求大白话模板：</strong>
+      <section style="margin: 25px 0; background-color: #282c34; border-radius: 8px; padding: 16px 18px; overflow-x: auto;">
+    <p style="margin: 0 0 12px 0; line-height: 1; padding-bottom: 8px; border-bottom: 1px solid #3e4451;">
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ff5f56; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ffbd2e; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #27c93f; margin-right: 8px;"></span>
+      <span style="color: #abb2bf; font-size: 12px; font-family: Consolas, Menlo, Monaco, monospace; font-weight: bold;">实战代码 / Prompt 模板</span>
+    </p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【功能名称】</span>：智能合同审查助手</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【能干什么】</span>：帮业务人员在 10 秒内标出合同里的 5 类常见风险（如违约金超标、账期过长）。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【坚决不干什么（免责边界）】</span>：不提供法律责任兜底，每条提示后必须附带<span style=\"color: #98c379;\">“建议咨询法务顾问”</span>。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【回答太慢怎么办】</span>：大模型首字必须在 2 秒内吐出来，同时展示<span style=\"color: #98c379;\">“正在逐条核对法条...”</span>的动态步骤，不能让用户干等白屏。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【防破产预算】</span>：每个人每天最多查 20 份合同，超过提示<span style=\"color: #98c379;\">“明日额度已刷新”</span>，防止 Token 费用失控。</p>
+  </section>
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">04</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">考考你：一分钟检查你真的学会了吗？</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 15px; line-height: 1.8;">
+    <strong>🤔 随堂小考：</strong><br>
+    如果你们公司要做一个在 CRM 客户管理系统里帮销售润色跟进记录的功能，你该选 Chatbot 聊天框还是 Copilot 原地嵌入？<br><br>
+    <strong>💡 答案：</strong><br>
+    必须选 Copilot！因为销售正在表格里填记录，如果让他切屏去右下角聊天框聊两句再复制回来，使用意愿会下降 80%。直接在输入框里点“一键润色”才是丝滑体验！
+  </section>
+
+
+  <div class="footer-brand">
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">⚡ 大前端工程师</section>
+    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 15px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</section>
+    <div style="display: inline-block; background: #ffffff; padding: 10px; border-radius: 12px; margin-bottom: 10px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 130px; height: 130px; display: block;">
+    </section>
+    <div style="font-size: 13px; opacity: 0.95;">微信扫码关注公众号，回复 <strong style="color: #80CBC4;">AI</strong> 获取全套落地源码与工具包</p></section>
+  </section>
+
+
+</section>
+</body>
+</html>

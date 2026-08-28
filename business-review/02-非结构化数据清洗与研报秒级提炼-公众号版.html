@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>非结构化数据清洗与行业研报提炼实战</title>
+</head>
+<body style="margin: 0; padding: 0; background: #f5f5f5;">
+
+<section style="max-width: 750px; margin: 0 auto; padding: 30px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 16px; color: #3f3f3f; line-height: 2.0; letter-spacing: 0.5px; background: #ffffff;">
+
+  <!-- 标题区 -->
+  <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 30px 0 10px 0; line-height: 1.5;">
+    非结构化数据清洗与行业研报提炼实战
+  </h1>
+  <h2 style="font-size: 17px; font-weight: bold; color: #00897B; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
+    阶段一 · 业务认知与高阶提示工程 · 精品篇 02
+  </h2>
+  <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 35px 0; padding-bottom: 18px; border-bottom: 1px solid #e0e0e0;">
+    微信公众号排版专用版 · 全选复制即可直接粘贴到后台 | 大前端工程师
+  </p>
+
+
+
+
+
+  
+
+  
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    在日常业务分析中，运营和产品人员经常需要处理两类长文本资料：一类是分散在问卷、客诉及社群中的<strong>非结构化反馈留言</strong>；另一类是篇幅较长、包含大量宏观数据的<strong>行业研究报告</strong>。
+  </p>
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    传统人工阅读与归纳耗时较长，且容易受主观偏好影响。借助大语言模型的<strong>语义提取与结构化约束能力</strong>，可快速完成批量清洗打标与核心决策信息提炼。
+  </p>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">01</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">非结构化用户反馈的批量打标 SOP</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    处理客诉或问卷原声时，核心在于<strong>强制限定分类枚举值</strong>，避免模型自行衍生出语义相近但表述不一的标签，从而便于后续导入 Excel 进行汇总统计。
+  </p>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      A[原始非结构化文本] --> B[大模型打标: 严格限定分类字典]
+      B --> C[标准 Markdown 表格]
+      C --> D[直接粘贴进 Excel / 多维表格汇总]
+    </p></section>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897B; border-radius: 8px; color: #00695C; font-size: 15px; line-height: 1.8;">
+    <strong>✅ 批量清洗与结构化打标 Prompt 示例：</strong>
+      <section style="margin: 25px 0; background-color: #282c34; border-radius: 8px; padding: 16px 18px; overflow-x: auto;">
+    <p style="margin: 0 0 12px 0; line-height: 1; padding-bottom: 8px; border-bottom: 1px solid #3e4451;">
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ff5f56; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ffbd2e; margin-right: 4px;"></span>
+      <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #27c93f; margin-right: 8px;"></span>
+      <span style="color: #abb2bf; font-size: 12px; font-family: Consolas, Menlo, Monaco, monospace; font-weight: bold;">实战代码 / Prompt 模板</span>
+    </p>
+    <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=<span style=\"color: #98c379;\">"color: #c678dd; font-weight: bold;"</span>><span style=\"color: #e5c07b; font-weight: bold;\">【任务】</span></span>：对以下用户售后留言进行语义分类与量化打标。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=<span style=\"color: #98c379;\">"color: #c678dd; font-weight: bold;"</span>><span style=\"color: #e5c07b; font-weight: bold;\">【规则字典】</span></span>：</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">1. <span style=\"color: #e5c07b; font-weight: bold;\">【诉求分类】</span>：严格限定单选 [物流时效 | 包装破损 | 商品质量 | 尺码规格 | 客服态度 | 其他]；</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">2. <span style=\"color: #e5c07b; font-weight: bold;\">【严重程度】</span>：[高危-需当日电话介入 | 中危-需优惠券挽留 | 低危-标准回复]；</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">3. <span style=\"color: #e5c07b; font-weight: bold;\">【根因提取】</span>：用 2~4 个字概括具体问题（如：拉链卡齿、漏发赠品）。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style=\"color: #e5c07b; font-weight: bold;\">【输出格式】</span>：</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">输出标准 Markdown 表格，包含列：[编号, 客户原声摘要, 诉求分类, 严重程度, 根因关键词, 建议处理动作]。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">&nbsp;</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">--- 待处理文本：</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">1. 快递等了一周才到，外包装都压变形了。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">2. 衣服面料扎人，而且尺码明显偏小。</p><p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">3. 客服一直不回消息，体验很差。</p>
+  </section>
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">02</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">长篇行业研报的决策导向提炼</span>
+    </p>
+  </section>
+
+  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
+    面对数十页的行业研报，通用性的“全文总结”往往产出宏观大纲，难以直接服务于业务判断。在提示词中，应聚焦于 4 个具体的商业评估维度：
+  </p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13.5px; line-height: 1.6;">
+    <thead>
+      <tr>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">提炼维度</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">关注要点</th>
+        <th style="background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;">模型约束要求</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>细分市场增长</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">高增速赛道与驱动因素</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">必须摘录报告中的复合增长率 (CAGR) 与预测数据</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>竞争格局与痛点</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">头部企业壁垒与未满足需求</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">梳理主要竞品的核心优势与用户负面反馈</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>运营与财务指标</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">行业基准数据参考</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">提炼平均毛利率、获客成本 (CAC) 及复购周期</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;"><strong>落地切入建议</strong></td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">中小团队的可行性打法</td>
+        <td style="padding: 10px; border: 1px solid #e2e8f0; color: #334155;">给出轻量级的差异化切入点，避免宏观空泛建议</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 20px 0; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 15px; line-height: 1.8;">
+    <strong>提示词约束建议：</strong>在指令中加入“对于报告中未提及的数据，明确标注‘未披露’，严禁主观推测”，可有效避免模型产生数值幻觉。
+  </section>
+
+  <section style="margin: 45px 0 20px 0; padding: 15px 0; border-top: 1px dashed #e0e0e0;">
+    <p style="margin: 0;">
+      <span style="display: inline-block; font-size: 20px; font-weight: bold; color: #fff; background: #00897B; padding: 6px 14px; border-radius: 4px; margin-right: 12px; vertical-align: middle;">03</span>
+      <span style="font-size: 18px; font-weight: bold; color: #1a1a1a; vertical-align: middle;">长文本批量处理中的工程细节</span>
+    </p>
+  </section>
+
+  <section style="margin: 20px 0; padding: 20px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 15px; line-height: 1.8;">
+    • <strong>分批输入（Batching）</strong>：单次批量处理以 50~100 条为宜，避免超出模型上下文窗口导致前文遗忘；<br>
+    • <strong>数据溯源校验</strong>：关键财务与市场指标要求附带报告中的原文出处或页码，确保决策依据真实可靠。
+  </section>
+
+  <div class="footer-brand">
+    <div style="font-size: 20px; font-weight: bold; margin-bottom: 6px;">⚡ 大前端工程师</section>
+    <div style="font-size: 13.5px; opacity: 0.85; margin-bottom: 12px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</section>
+    <div style="display: inline-block; background: #ffffff; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 120px; height: 120px; display: block;">
+    </section>
+    <div style="font-size: 12.5px; opacity: 0.9;">微信扫码关注公众号，回复 <strong style="color: #5eead4;">AI</strong> 获取全套实战源码与文档包</p></section>
+  </section>
+
+
+</section>
+</body>
+</html>
