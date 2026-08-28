@@ -331,6 +331,18 @@ categories_data = [
         "color": "violet",
         "difficulty": "量化实战",
         "tags": ["量化金融", "策略回测", "交易Agent", "情绪感知"]
+    },
+    {
+        "id": "business-growth",
+        "name": "业务落地与轻量建站",
+        "icon": "🚀",
+        "badge": "实战复盘",
+        "desc": "零成本独立建站、SEO 流量矩阵、微信生态闭环、Prompt 业务工程与超级个体实战",
+        "theme": "teal",
+        "accent": "#0d9488",
+        "color": "teal",
+        "difficulty": "商业落地",
+        "tags": ["零成本建站", "Cloudflare", "免备案", "SEO矩阵", "业务落地"]
     }
 ]
 
@@ -623,6 +635,11 @@ def build_data():
     p_quant = get_existing_path("quant-trading-agent/量化交易Agent系列-01-公众号版.html")
     if p_quant:
         add_article("quant-agent", p_quant, "量化交易 Agent 01 · 架构设计与自动化交易系统", "01 架构", 1)
+
+    # 17. Business Growth
+    p_bg = get_existing_path("business-growth/01-不用买服务器免备案搭建独立知识库.html")
+    if p_bg:
+        add_article("business-growth", p_bg, "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战", "01 建站复盘", 1)
 
     # Filter categories: Remove explicitly hidden categories or categories with 0 published articles
     hidden_cats = exclude_config.get("hidden_categories", [])

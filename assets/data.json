@@ -2,8 +2,8 @@
   "siteTitle": "AI 全系列学习智库 · 体系化知识库",
   "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
   "stats": {
-    "totalCategories": 9,
-    "totalArticles": 166
+    "totalCategories": 10,
+    "totalArticles": 167
   },
   "categories": [
     {
@@ -175,6 +175,25 @@
         "企业部署"
       ],
       "count": 19
+    },
+    {
+      "id": "business-growth",
+      "name": "业务落地与轻量建站",
+      "icon": "🚀",
+      "badge": "实战复盘",
+      "desc": "零成本独立建站、SEO 流量矩阵、微信生态闭环、Prompt 业务工程与超级个体实战",
+      "theme": "teal",
+      "accent": "#0d9488",
+      "color": "teal",
+      "difficulty": "商业落地",
+      "tags": [
+        "零成本建站",
+        "Cloudflare",
+        "免备案",
+        "SEO矩阵",
+        "业务落地"
+      ],
+      "count": 1
     }
   ],
   "articles": [
@@ -4271,6 +4290,24 @@
         "商业化可能性",
         "风险与应对",
         "总结"
+      ]
+    },
+    {
+      "id": "business_growth_01_不用买服务器免备案搭建独立知识库_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/01-不用买服务器免备案搭建独立知识库.html",
+      "filename": "01-不用买服务器免备案搭建独立知识库.html",
+      "format": "html",
+      "title": "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战",
+      "subtitle": "实战经验复盘 · 零成本建站、微信正常访问与百度/谷歌收录指南",
+      "summary": "如果你想为自己或团队搭建一个专门放技术文章、使用教程或业务资料的独立知识库，通常会遇到两个麻烦事：",
+      "readTime": "11 分钟",
+      "sizeStr": "10.8 KB",
+      "sizeBytes": 11023,
+      "badge": "01 建站复盘",
+      "sortOrder": 1,
+      "toc": [
+        "实战经验复盘 · 零成本建站、微信正常访问与百度/谷歌收录指南"
       ]
     }
   ]

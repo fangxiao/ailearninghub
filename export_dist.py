@@ -541,6 +541,11 @@ def build_dist():
     if p_quant:
         process_article("quant-agent", p_quant, "量化交易 Agent 01 · 架构设计与自动化交易系统", "01 架构", 1)
 
+    # 17. Business Growth
+    p_bg = get_existing_path("business-growth/01-不用买服务器免备案搭建独立知识库.html")
+    if p_bg:
+        process_article("business-growth", p_bg, "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战", "01 建站复盘", 1)
+
     # 4. Copy image assets (mermaid images, diagrams, etc.) referenced by articles
     for img_dir in ["mermaid", "bigmodel/mermaid", "customer-service-agent/mermaid-img", "aitools/diagram", "local-llm-knowledge-base/mermaid-img"]:
         if os.path.exists(img_dir):
