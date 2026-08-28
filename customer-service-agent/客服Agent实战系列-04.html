@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent实战系列 04</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > code { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">客服Agent实战系列 04</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+知识库插件：让Bot从FAQ中找到答案
+</p>
+
+<blockquote class="opinion">
+<p>上一篇我们实现了意图识别，Bot知道用户想做什么了。这一篇来解决更核心的问题：<strong>用户问"如何修改密码"，Bot怎么从FAQ知识库中找到答案？</strong>这就是RAG（检索增强生成）——客服Bot的"大脑"。</p>
+</blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">什么是RAG？为什么重要？</span></h3>
+
+<p>RAG（Retrieval-Augmented Generation，检索增强生成）是2026年最主流的AI知识问答方案。它的核心思想：<strong>先检索，再生成</strong>。</p>
+
+<table>
+<tr><th>传统方案</th><th>RAG方案</th><th>优势</th></tr>
+<tr><td>让大模型"记住"所有知识</td><td>从知识库检索相关内容，再让大模型生成答案</td><td>知识可更新、成本低、准确率高</td></tr>
+</table>
+
+<p>RAG的工作流程：</p>
+
+<blockquote class="highlight">
+<p><strong>三个步骤：</strong></p>
+<p>1. <strong>检索</strong>：从知识库中找到与用户问题相关的文档</p>
+<p>2. <strong>增强</strong>：将检索到的文档作为上下文，提供给大模型</p>
+<p>3. <strong>生成</strong>：大模型基于上下文生成答案</p>
+</blockquote>
+
+<h3><span class="icon">2</span><span class="title-text">FAQ知识库的结构</span></h3>
+
+<p>客服场景的FAQ知识库相对简单，我们用JSON格式存储：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code>[
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"faq_001"</span>,
+    <span style="color: #e6db74">"question"</span>: <span style="color: #e6db74">"如何修改密码？"</span>,
+    <span style="color: #e6db74">"answer"</span>: <span style="color: #e6db74">"您可以通过以下步骤修改密码：\n1. 登录账户\n2. 进入「账户设置」\n3. 点击「修改密码」\n4. 输入原密码和新密码\n5. 点击确认保存"</span>,
+    <span style="color: #e6db74">"category"</span>: <span style="color: #e6db74">"账户相关"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"密码"</span>, <span style="color: #e6db74">"修改密码"</span>, <span style="color: #e6db74">"改密码"</span>, <span style="color: #e6db74">"忘记密码"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"faq_002"</span>,
+    <span style="color: #e6db74">"question"</span>: <span style="color: #e6db74">"如何申请退款？"</span>,
+    <span style="color: #e6db74">"answer"</span>: <span style="color: #e6db74">"退款申请流程：\n1. 进入「我的订单」\n2. 找到需要退款的订单\n3. 点击「申请退款」\n4. 填写退款原因\n5. 等待审核（1-3个工作日）"</span>,
+    <span style="color: #e6db74">"category"</span>: <span style="color: #e6db74">"订单相关"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"退款"</span>, <span style="color: #e6db74">"退货"</span>, <span style="color: #e6db74">"申请退款"</span>]
+  }
+]</code></pre>
+
+<p>FAQ知识库的关键字段：</p>
+
+<table>
+<tr><th>字段</th><th>作用</th></tr>
+<tr><td><strong>question</strong></td><td>FAQ的标准问题</td></tr>
+<tr><td><strong>answer</strong></td><td>FAQ的标准答案</td></tr>
+<tr><td><strong>keywords</strong></td><td>关键词，用于快速检索</td></tr>
+<tr><td><strong>category</strong></td><td>分类，用于组织管理</td></tr>
+</table>
+
+<h3><span class="icon">3</span><span class="title-text">知识库插件的实现方式</span></h3>
+
+<p>2026年，知识库检索有两种主流方式：</p>
+
+<table>
+<tr><th>方式</th><th>优点</th><th>缺点</th><th>适用场景</th></tr>
+<tr><td><strong>关键词检索</strong></td><td>速度快、实现简单</td><td>准确率低、需要维护关键词库</td><td>FAQ数量少（<100）</td></tr>
+<tr><td><strong>向量检索</strong></td><td>准确率高、语义理解</td><td>需要向量数据库、成本稍高</td><td>FAQ数量多（>100）</td></tr>
+</table>
+
+<p>客服场景我们选择<strong>关键词检索 + 向量检索</strong>的混合方案：</p>
+
+<blockquote class="highlight">
+<p><strong>混合方案的优势：</strong></p>
+<p>1. 常见问题（关键词匹配）用关键词检索，速度快</p>
+<p>2. 复杂问题（语义理解）用向量检索，准确率高</p>
+<p>3. 检索结果融合，取最佳匹配</p>
+</blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">实战：实现知识库插件</span></h3>
+
+<p>我们创建知识库插件：</p>
+
+<p><strong>plugins/knowledge_base/plugin.py：</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> pathlib </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Path</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> List, Dict</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">KnowledgeBasePlugin</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">"""知识库插件"""</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, faq_file: str = </span><span style="color: #e6db74">"data/faq.json"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.faqs = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_faqs(faq_file)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_index = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._build_keyword_index()</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_load_faqs</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, faq_file: str) -> List[Dict]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""加载FAQ知识库"""</span>
+<span style="color: #f8f8f2">        path = Path(faq_file)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> path.exists():</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> open(path, </span><span style="color: #e6db74">'r'</span><span style="color: #f8f8f2">, encoding=</span><span style="color: #e6db74">'utf-8'</span><span style="color: #f8f8f2">) </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> f:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.load(f)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> []</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_build_keyword_index</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">) -> Dict[str, List[str]]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""构建关键词索引"""</span>
+<span style="color: #f8f8f2">        index = {}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> faq </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.faqs:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> keyword </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> faq.get(</span><span style="color: #e6db74">"keywords"</span><span style="color: #f8f8f2">, []):</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> keyword </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> index:</span>
+<span style="color: #f8f8f2">                    index[keyword] = []</span>
+<span style="color: #f8f8f2">                index[keyword].append(faq[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">])</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> index</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">search</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, query: str, top_k: int = </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">) -> List[Dict]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""检索FAQ"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第一步：关键词检索</span>
+<span style="color: #f8f8f2">        keyword_results = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._keyword_search(query)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第二步：向量检索（如果有向量数据库）</span>
+<span style="color: #f8f8f2">        vector_results = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._vector_search(query)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第三步：融合结果</span>
+<span style="color: #f8f8f2">        all_results = keyword_results + vector_results</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 去重并返回top_k</span>
+<span style="color: #f8f8f2">        unique_results = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._deduplicate(all_results)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> unique_results[:top_k]</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_keyword_search</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, query: str) -> List[Dict]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""关键词检索"""</span>
+<span style="color: #f8f8f2">        results = []</span>
+<span style="color: #f8f8f2">        query_words = query.split()</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> word </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> query_words:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> word </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_index:</span>
+<span style="color: #f8f8f2">                faq_ids = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_index[word]</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> faq_id </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> faq_ids:</span>
+<span style="color: #f8f8f2">                    faq = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._get_faq_by_id(faq_id)</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> faq:</span>
+<span style="color: #f8f8f2">                        results.append({</span>
+<span style="color: #f8f8f2">                            </span><span style="color: #e6db74">"faq"</span><span style="color: #f8f8f2">: faq,</span>
+<span style="color: #f8f8f2">                            </span><span style="color: #e6db74">"score"</span><span style="color: #f8f8f2">: </span><span style="color: #ae81ff">1.0</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">                            </span><span style="color: #e6db74">"source"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"keyword"</span>
+<span style="color: #f8f8f2">                        })</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> results</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_vector_search</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, query: str) -> List[Dict]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""向量检索（简化版）"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 实际项目中会调用向量数据库API</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 这里简化为返回空列表</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> []</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_get_faq_by_id</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, faq_id: str) -> Dict:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""根据ID获取FAQ"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> faq </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.faqs:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> faq[</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">] == faq_id:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> faq</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">None</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_deduplicate</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, results: List[Dict]) -> List[Dict]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""去重"""</span>
+<span style="color: #f8f8f2">        seen = set()</span>
+<span style="color: #f8f8f2">        unique = []</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> result </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> results:</span>
+<span style="color: #f8f8f2">            faq_id = result[</span><span style="color: #e6db74">"faq"</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">"id"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> faq_id </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> seen:</span>
+<span style="color: #f8f8f2">                seen.add(faq_id)</span>
+<span style="color: #f8f8f2">                unique.append(result)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> unique</span></code></pre>
+
+<h3><span class="icon">5</span><span class="title-text">集成到Bot中</span></h3>
+
+<p>将知识库插件集成到客服Bot：</p>
+
+<p><strong>src/bot.py（更新版）：</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> plugins.knowledge_base.plugin </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> KnowledgeBasePlugin</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">CustomerServiceBot</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, config_path: str = </span><span style="color: #e6db74">"config/customer_service.yaml"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.config = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_config(config_path)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.system_prompt = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_prompt()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intent_plugin = IntentRecognitionPlugin()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.kb_plugin = KnowledgeBasePlugin()</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_handle_faq</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 从知识库检索FAQ</span>
+<span style="color: #f8f8f2">        results = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.kb_plugin.search(user_input, top_k=</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> results:</span>
+<span style="color: #f8f8f2">            faq = results[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">][</span><span style="color: #e6db74">"faq"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a8a8a8; font-style: italic;"># 直接返回FAQ答案</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> faq[</span><span style="color: #e6db74">"answer"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 如果没找到，走大模型</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"抱歉，我暂时无法回答这个问题。建议您转人工客服获取帮助。"</span></code></pre>
+
+<h3><span class="icon">6</span><span class="title-text">测试知识库效果</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 测试知识库检索</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> plugins.knowledge_base.plugin </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> KnowledgeBasePlugin</span>
+
+<span style="color: #f8f8f2">kb = </span><span style="color: #a6e22e">KnowledgeBasePlugin</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试关键词检索</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(kb.search(</span><span style="color: #e6db74">"如何修改密码"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：找到faq_001，返回修改密码的答案</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(kb.search(</span><span style="color: #e6db74">"申请退款"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：找到faq_002，返回退款流程</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(kb.search(</span><span style="color: #e6db74">"配送多久"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：找到faq_003，返回配送时间说明</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试完整Bot</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> src.bot </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> CustomerServiceBot</span>
+
+<span style="color: #f8f8f2">bot = </span><span style="color: #a6e22e">CustomerServiceBot</span><span style="color: #f8f8f2">()</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(bot.chat(</span><span style="color: #e6db74">"如何修改密码"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：您可以通过以下步骤修改密码...</span></code></pre>
+
+<h3><span class="icon">7</span><span class="title-text">RAG的优化方向</span></h3>
+
+<blockquote class="highlight">
+<p><strong>三个优化方向：</strong></p>
+<p>1. <strong>向量检索</strong>：使用向量数据库（如Pinecone、Weaviate）进行语义检索</p>
+<p>2. <strong>重排序</strong>：使用CrossEncoder对检索结果进行重排序，提高准确率</p>
+<p>3. <strong>答案生成</strong>：不只是返回FAQ原文，让大模型基于FAQ生成更自然的答案</p>
+</blockquote>
+
+<table>
+<tr><th>优化方法</th><th>效果</th><th>成本</th></tr>
+<tr><td>增加关键词库</td><td>提高关键词检索覆盖率</td><td>低（人工维护）</td></tr>
+<tr><td>向量检索</td><td>提高语义理解能力</td><td>中（需要向量数据库）</td></tr>
+<tr><td>答案生成</td><td>答案更自然、更个性化</td><td>中（调用大模型）</td></tr>
+</table>
+
+<h3><span class="icon">8</span><span class="title-text">总结：知识库是Bot的"大脑"</span></h3>
+
+<blockquote class="highlight">
+<p><strong>本篇要点：</strong></p>
+<p>1. <strong>RAG是主流方案</strong>：先检索，再生成，知识可更新</p>
+<p>2. <strong>FAQ知识库结构简单</strong>：question、answer、keywords、category</p>
+<p>3. <strong>混合检索最优</strong>：关键词快速检索 + 向量语义检索</p>
+<p>4. <strong>插件化设计</strong>：知识库作为独立插件，方便扩展</p>
+<p>5. <strong>持续优化</strong>：增加FAQ数量、引入向量检索、优化答案生成</p>
+</blockquote>
+
+<p>下一篇，我们来写<strong>对话管理</strong>——如何让Bot记住对话历史，处理多轮对话。</p>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent实战系列</strong><br>
+01 · 项目初始化<br>
+02 · Bot定义：System Prompt设计<br>
+03 · 意图识别插件<br>
+04 · 知识库插件 ← 你在这里<br>
+05 · 对话管理<br>
+... 共14篇<br><br>
+<strong>前置系列：</strong><a href="../Agent开发系列-11.html" style="color: #00897B;">Agent开发系列 11：RAG检索</a>
+</p>
+
+</div>
+</body>
+</html>

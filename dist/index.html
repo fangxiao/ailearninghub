@@ -122,10 +122,9 @@
         
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
           
-          <button onclick="window.AI_HUB.openWeChatModal()" class="px-2 sm:px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition shadow-sm" title="关注微信公众号【大前端工程师】">
-            <span>💬</span>
-            <span class="hidden md:inline">公众号：</span>
-            <span>大前端工程师</span>
+          <button onclick="window.AI_HUB.openWeChatModal()" class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] sm:text-xs font-bold flex items-center gap-1.5 transition shadow-sm group" title="关注微信公众号【大前端工程师】获取全套源码与资料">
+            <span class="text-sm group-hover:scale-125 transition-transform">🎁</span>
+            <span>领资料 · 关注公众号</span>
           </button>
 
           
@@ -200,35 +199,44 @@
 
     
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-      <div class="p-8 md:p-10 rounded-3xl glass border border-emerald-500/20 relative overflow-hidden bg-gradient-to-br from-emerald-950/20 via-slate-900 to-indigo-950/30">
-        <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center relative z-10">
+      <div class="p-6 sm:p-8 md:p-10 rounded-3xl glass border border-emerald-500/30 relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950/70 to-emerald-950/80 shadow-2xl">
+        <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-center relative z-10">
           
-          <div class="md:col-span-2 space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-              <span>💬</span>
-              <span>欢迎关注官方微信公众号</span>
+          <div class="md:col-span-2 space-y-3.5 sm:space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-sm">
+              <span>🎁</span>
+              <span>全套实战资料与源码 · 官方公众号</span>
             </div>
-            <h3 class="text-2xl md:text-3xl font-extrabold text-white">大前端工程师</h3>
-            <p class="text-sm text-slate-300 leading-relaxed max-w-2xl">
-              专注于 <strong>AI Agent 智能体落地、大模型全栈架构、现代前端前沿生态与 AI 编程实战</strong>。持续输出高质量原创图文与开源项目，欢迎与数万技术开发者一同交流成长！
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-sm">
+              关注公众号【大前端工程师】
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-100 font-normal leading-relaxed max-w-2xl">
+              专注于 <strong>AI Agent 智能体落地、大模型全栈架构、AI 编程实战与业务赋能</strong>。用手机微信扫右侧二维码关注，后台发送消息直接获取：
             </p>
-            <div class="flex flex-wrap items-center gap-3 pt-2">
-              <button onclick="window.AI_HUB.copyWeChatName()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center gap-2 shadow-lg shadow-emerald-600/20">
-                <span>📋 一键复制公众号名称</span>
-              </button>
-              <button onclick="window.AI_HUB.openWeChatModal()" class="px-4 py-2.5 rounded-xl glass hover:bg-white/10 text-slate-200 text-xs font-medium transition border border-white/15 flex items-center gap-2">
-                <span>🔍 查看高清二维码</span>
-              </button>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+              <div class="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between">
+                <div class="text-xs font-bold text-emerald-300">📦 回复【AI】</div>
+                <div class="text-[11px] text-slate-200 mt-1">全套知识库网站源码与高清架构图包</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between">
+                <div class="text-xs font-bold text-indigo-300">💡 回复【Prompt】</div>
+                <div class="text-[11px] text-slate-200 mt-1">50+ 岗位通用开箱即用高阶提示词库</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between">
+                <div class="text-xs font-bold text-amber-300">👥 回复【加群】</div>
+                <div class="text-[11px] text-slate-200 mt-1">加入 AI 原生落地与技术读者交流群</div>
+              </div>
             </div>
           </div>
 
-          <div class="flex flex-col items-center justify-center text-center p-5 rounded-2xl glass border border-white/10 bg-black/20">
-            <div class="w-36 h-36 rounded-2xl bg-white p-2 shadow-2xl flex items-center justify-center overflow-hidden cursor-pointer" onclick="window.AI_HUB.openWeChatModal()">
-              <img id="footer-qr-img" src="assets/qrcode.jpg" onerror="this.onerror=null; this.src='assets/qrcode.png'; this.onerror=()=>this.src='assets/qrcode_placeholder.svg';" alt="大前端工程师公众号二维码" class="w-full h-full object-contain">
+          <div class="flex flex-col items-center justify-center text-center p-5 rounded-2xl glass border border-white/15 bg-black/40 shadow-inner">
+            <div class="w-36 h-36 sm:w-40 sm:h-40 rounded-2xl bg-white p-2.5 shadow-2xl flex items-center justify-center overflow-hidden cursor-pointer group" onclick="window.AI_HUB.openWeChatModal()">
+              <img id="footer-qr-img" src="assets/qrcode.jpg" onerror="this.onerror=null; this.src='assets/qrcode.png'; this.onerror=()=>this.src='assets/qrcode_placeholder.svg';" alt="大前端工程师公众号二维码" class="w-full h-full object-contain rounded-lg group-hover:scale-105 transition-transform">
             </div>
-            <div class="mt-3 text-xs font-medium text-slate-200">微信扫一扫 · 关注公众号</div>
-            <div class="text-[11px] text-emerald-400 mt-0.5">回复【AI】获取全套课件与源码</div>
+            <div class="mt-3 text-xs font-bold text-white">📱 手机微信扫一扫关注</div>
+            <div class="text-[11px] text-emerald-300 font-medium mt-0.5">大前端工程师</div>
           </div>
 
         </div>
@@ -261,38 +269,45 @@
 
   
   <div id="wechat-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-    <div class="w-full max-w-md rounded-3xl glass border border-emerald-500/30 p-6 md:p-8 shadow-2xl relative text-center bg-slate-900/90">
+    <div class="w-full max-w-md rounded-3xl glass border border-emerald-500/40 p-6 md:p-8 shadow-2xl relative text-center bg-slate-900/95">
       
-      <button onclick="window.AI_HUB.closeWeChatModal()" class="absolute right-5 top-5 w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition">
+      <button onclick="window.AI_HUB.closeWeChatModal()" class="absolute right-4 top-4 w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition">
         ✕
       </button>
 
       
-      <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
-        💬
+      <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl mx-auto mb-2.5 shadow-inner">
+        ⚡
       </div>
-      <h3 class="text-2xl font-black text-white">大前端工程师</h3>
-      <p class="text-xs text-emerald-400 font-medium mt-1">官方微信公众号 · 关注获取全套实战源码</p>
+      <h3 class="text-xl sm:text-2xl font-black text-white">大前端工程师</h3>
+      <p class="text-xs text-emerald-400 font-semibold mt-0.5">官方微信公众号 · 关注领取全套实战资料</p>
 
       
-      <div class="my-6 p-4 rounded-2xl bg-white max-w-[220px] mx-auto shadow-2xl border border-white/20 relative group">
+      <div class="my-5 p-3.5 bg-white max-w-[200px] mx-auto rounded-2xl shadow-xl border border-white/20 relative group">
         <img id="modal-qr-img" src="assets/qrcode.jpg" onerror="this.onerror=null; this.src='assets/qrcode.png'; this.onerror=()=>this.src='assets/qrcode_placeholder.svg';" alt="大前端工程师公众号二维码" class="w-full h-auto object-contain rounded-lg">
+        <div class="text-[11px] text-slate-800 font-bold mt-1.5">📱 手机微信扫一扫关注</div>
       </div>
 
       
-      <p class="text-xs text-slate-300 leading-relaxed mb-5">
-        打开微信 <span class="text-emerald-400 font-bold">扫一扫</span> 上方二维码，或搜索公众号关注。<br>
-        后台回复 <kbd class="px-1.5 py-0.5 bg-white/10 rounded font-mono text-emerald-300">AI</kbd> 即可获取全系列资料包与源码仓库。
-      </p>
+      <div class="space-y-2 mb-4 text-left bg-white/5 p-3.5 rounded-2xl border border-white/10 text-xs">
+        <div class="flex items-center gap-2 text-slate-200">
+          <span class="font-bold text-emerald-400">📦 回复【AI】：</span>
+          <span>获取全套网站源码 + 高清架构图包</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-200 border-t border-white/5 pt-2">
+          <span class="font-bold text-indigo-400">💡 回复【Prompt】：</span>
+          <span>获取 50+ 岗位开箱即用提示词库</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-200 border-t border-white/5 pt-2">
+          <span class="font-bold text-amber-400">👥 回复【加群】：</span>
+          <span>加入 AI 原生落地与技术读者交流群</span>
+        </div>
+      </div>
 
-      <div class="flex items-center gap-3">
-        <button onclick="window.AI_HUB.copyWeChatName()" class="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+      <div class="flex items-center gap-2">
+        <button onclick="window.AI_HUB.copyWeChatName()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-md">
           <span>📋 复制公众号名称 (大前端工程师)</span>
         </button>
-      </div>
-
-      <div class="mt-4 text-[11px] text-slate-400">
-        💡 提示：若需替换为你自己的二维码，只需将图片保存为 <code class="text-emerald-400">assets/qrcode.png</code> 即可自动生效！
       </div>
     </div>
   </div>
@@ -318,6 +333,12 @@
 
         
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          
+          <button onclick="window.AI_HUB.openWeChatModal()" class="px-2 sm:px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition shadow-sm" title="扫码关注公众号【大前端工程师】">
+            <span>📱</span>
+            <span class="hidden sm:inline">领资料 · 关注公众号</span>
+          </button>
+
           
           <button id="btn-prev-article" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition" title="上一篇 (←)">
             ←

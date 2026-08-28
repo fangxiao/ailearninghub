@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent实战系列 06</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > code { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">客服Agent实战系列 06</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+情感分析插件：让Bot识别用户情绪
+</p>
+
+<blockquote class="opinion">
+<p>上一篇我们实现了对话管理，Bot能记住对话历史了。这一篇来解决客服场景的关键问题：<strong>用户说"你们的服务太差了！我要投诉！"，Bot怎么识别这是愤怒情绪，及时转人工？</strong>这就是情感分析——客服Bot的"情商"。</p>
+</blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">什么是情感分析？为什么重要？</span></h3>
+
+<p>情感分析（Sentiment Analysis）是Agent感知模块的高级功能。它的作用是：<strong>识别用户情绪，及时响应负面情绪</strong>。</p>
+
+<table>
+<tr><th>用户输入</th><th>识别的情感</th><th>Bot的处理</th></tr>
+<tr><td>"你好"</td><td>中性</td><td>正常回复</td></tr>
+<tr><td>"谢谢"</td><td>正面</td><td>礼貌感谢</td></tr>
+<tr><td>"你们的服务太差了"</td><td>负面（愤怒）</td><td>安抚+转人工</td></tr>
+<tr><td>"我等了很久了"</td><td>负面（不耐烦）</td><td>道歉+加快处理</td></tr>
+</table>
+
+<p>情感分析的重要性：</p>
+
+<blockquote class="highlight">
+<p><strong>三个关键作用：</strong></p>
+<p>1. <strong>及时转人工</strong>：识别愤怒情绪，立即转人工客服</p>
+<p>2. <strong>调整语气</strong>：识别负面情绪，用更温和的语气回复</p>
+<p>3. <strong>预警机制</strong>：识别情绪变化趋势，提前干预</p>
+</blockquote>
+
+<h3><span class="icon">2</span><span class="title-text">情感等级的定义</span></h3>
+
+<p>客服场景的情感分为5个等级：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code>[
+  {
+    <span style="color: #e6db74">"level"</span>: <span style="color: #ae81ff">1</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"正面"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"谢谢"</span>, <span style="color: #e6db74">"感谢"</span>, <span style="color: #e6db74">"好的"</span>, <span style="color: #e6db74">"满意"</span>],
+    <span style="color: #e6db74">"response"</span>: <span style="color: #e6db74">"礼貌感谢"</span>
+  },
+  {
+    <span style="color: #e6db74">"level"</span>: <span style="color: #ae81ff">2</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"中性"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"你好"</span>, <span style="color: #e6db74">"在吗"</span>, <span style="color: #e6db74">"请问"</span>],
+    <span style="color: #e6db74">"response"</span>: <span style="color: #e6db74">"正常回复"</span>
+  },
+  {
+    <span style="color: #e6db74">"level"</span>: <span style="color: #ae81ff">3</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"轻微负面"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"有点慢"</span>, <span style="color: #e6db74">"不太方便"</span>],
+    <span style="color: #e6db74">"response"</span>: <span style="color: #e6db74">"道歉+改进建议"</span>
+  },
+  {
+    <span style="color: #e6db74">"level"</span>: <span style="color: #ae81ff">4</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"负面"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"太慢了"</span>, <span style="color: #e6db74">"等了很久"</span>, <span style="color: #e6db74">"不满意"</span>],
+    <span style="color: #e6db74">"response"</span>: <span style="color: #e6db74">"道歉+加快处理"</span>
+  },
+  {
+    <span style="color: #e6db74">"level"</span>: <span style="color: #ae81ff">5</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"愤怒"</span>,
+    <span style="color: #e6db74">"keywords"</span>: [<span style="color: #e6db74">"投诉"</span>, <span style="color: #e6db74">"太差了"</span>, <span style="color: #e6db74">"垃圾"</span>, <span style="color: #e6db74">"骗子"</span>],
+    <span style="color: #e6db74">"response"</span>: <span style="color: #e6db74">"立即转人工"</span>
+  }
+]</code></pre>
+
+<p>情感等级的处理策略：</p>
+
+<table>
+<tr><th>等级</th><th>情感</th><th>处理策略</th></tr>
+<tr><td><strong>Level 1</strong></td><td>正面</td><td>礼貌感谢："感谢您的支持！"</td></tr>
+<tr><td><strong>Level 2</strong></td><td>中性</td><td>正常回复，按意图处理</td></tr>
+<tr><td><strong>Level 3</strong></td><td>轻微负面</td><td>道歉："抱歉给您带来不便..."</td></tr>
+<tr><td><strong>Level 4</strong></td><td>负面</td><td>道歉+加快："非常抱歉，我立即为您处理..."</td></tr>
+<tr><td><strong>Level 5</strong></td><td>愤怒</td><td>立即转人工："非常抱歉，正在为您转接人工客服..."</td></tr>
+</table>
+
+<h3><span class="icon">3</span><span class="title-text">情感分析的实现方式</span></h3>
+
+<p>2026年，情感分析有三种主流方式：</p>
+
+<table>
+<tr><th>方式</th><th>优点</th><th>缺点</th><th>适用场景</th></tr>
+<tr><td><strong>关键词匹配</strong></td><td>速度快、成本低</td><td>准确率低、需要维护关键词库</td><td>简单场景、快速分流</td></tr>
+<tr><td><strong>小模型分类</strong></td><td>准确率高、成本低</td><td>需要训练数据、维护模型</td><td>情感固定的场景</td></tr>
+<tr><td><strong>大模型识别</strong></td><td>准确率最高、灵活</td><td>成本高、速度慢</td><td>复杂场景、情感多变</td></tr>
+</table>
+
+<p>客服场景我们选择<strong>关键词匹配 + 大模型识别</strong>的混合方案：</p>
+
+<blockquote class="highlight">
+<p><strong>混合方案的优势：</strong></p>
+<p>1. 常见情绪词（"投诉"、"太差了"）用关键词匹配，速度快</p>
+<p>2. 复杂情绪表达用大模型识别，准确率高</p>
+<p>3. 情感等级≥4，立即转人工</p>
+</blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">实战：实现情感分析插件</span></h3>
+
+<p>我们创建情感分析插件：</p>
+
+<p><strong>plugins/sentiment_analysis/plugin.py：</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> pathlib </span><span style="color: #f8f8f2"> import</span><span style="color: #f8f8f2"> Path</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Dict</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">SentimentAnalysisPlugin</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">"""情感分析插件"""</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, sentiment_file: str = </span><span style="color: #e6db74">"data/sentiments.json"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.sentiments = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_sentiments(sentiment_file)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_map = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._build_keyword_map()</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_load_sentiments</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, sentiment_file: str) -> list:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""加载情感定义"""</span>
+<span style="color: #f8f8f2">        path = Path(sentiment_file)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> path.exists():</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> open(path, </span><span style="color: #e6db74">'r'</span><span style="color: #f8f8f2">, encoding=</span><span style="color: #e6db74">'utf-8'</span><span style="color: #f8f8f2">) </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> f:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.load(f)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> []</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_build_keyword_map</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">) -> Dict[str, int]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""构建关键词映射表"""</span>
+<span style="color: #f8f8f2">        keyword_map = {}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> sentiment </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.sentiments:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> keyword </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> sentiment.get(</span><span style="color: #e6db74">"keywords"</span><span style="color: #f8f8f2">, []):</span>
+<span style="color: #f8f8f2">                keyword_map[keyword] = sentiment[</span><span style="color: #e6db74">"level"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> keyword_map</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">analyze</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> Dict:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""分析用户情感"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第一步：关键词匹配</span>
+<span style="color: #f8f8f2">        sentiment_level = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._keyword_match(user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第二步：如果关键词匹配失败，用大模型识别</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> sentiment_level == </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            sentiment_level = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._llm_analyze(user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 获取情感信息</span>
+<span style="color: #f8f8f2">        sentiment = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._get_sentiment_by_level(sentiment_level)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"level"</span><span style="color: #f8f8f2">: sentiment_level,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: sentiment.get(</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"未知"</span><span style="color: #f8f8f2">),</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"response_strategy"</span><span style="color: #f8f8f2">: sentiment.get(</span><span style="color: #e6db74">"response"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"正常回复"</span><span style="color: #f8f8f2">),</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"need_handoff"</span><span style="color: #f8f8f2">: sentiment_level >= </span><span style="color: #ae81ff">4</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_keyword_match</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> int:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""关键词匹配"""</span>
+<span style="color: #f8f8f2">        max_level = </span><span style="color: #ae81ff">0</span>
+<span style="color: #f8f8f2">        words = user_input.split()</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> word </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> words:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> word </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_map:</span>
+<span style="color: #f8f8f2">                level = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_map[word]</span>
+<span style="color: #f8f8f2">                max_level = max(max_level, level)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> max_level</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_llm_analyze</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> int:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""大模型分析（简化版）"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 实际项目中会调用大模型API</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 这里简化为返回中性</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_get_sentiment_by_level</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, level: int) -> Dict:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""根据等级获取情感信息"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> sentiment </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.sentiments:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> sentiment[</span><span style="color: #e6db74">"level"</span><span style="color: #f8f8f2">] == level:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> sentiment</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span><span style="color: #e6db74">"level"</span><span style="color: #f8f8f2">: </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"中性"</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">"response"</span><span style="color: #f8f8f2">: </span><span style="color: #e6db74">"正常回复"</span><span style="color: #f8f8f2">}</span></code></pre>
+
+<h3><span class="icon">5</span><span class="title-text">集成到Bot中</span></h3>
+
+<p>将情感分析插件集成到客服Bot：</p>
+
+<p><strong>src/bot.py（更新版）：</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> plugins.sentiment_analysis.plugin </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> SentimentAnalysisPlugin</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">CustomerServiceBot</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, config_path: str = </span><span style="color: #e6db74">"config/customer_service.yaml"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.config = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_config(config_path)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.system_prompt = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_prompt()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intent_plugin = IntentRecognitionPlugin()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.kb_plugin = KnowledgeBasePlugin()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.dialog_manager = DialogManager(max_history=</span><span style="color: #ae81ff">10</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.sentiment_plugin = SentimentAnalysisPlugin()</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 先分析情感</span>
+<span style="color: #f8f8f2">        sentiment_result = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.sentiment_plugin.analyze(user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 如果情感等级≥4，立即转人工</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> sentiment_result[</span><span style="color: #e6db74">"need_handoff"</span><span style="color: #f8f8f2">]:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"非常抱歉给您带来不便。我立即为您转接人工客服处理。"</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 正常处理意图</span>
+<span style="color: #f8f8f2">        intent_result = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intent_plugin.recognize(user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 根据情感调整回复语气</span>
+<span style="color: #f8f8f2">        response = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._process_intent(intent_result, user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 根据情感等级调整语气</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> sentiment_result[</span><span style="color: #e6db74">"level"</span><span style="color: #f8f8f2">] == </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            response = </span><span style="color: #e6db74">"抱歉给您带来不便。"</span><span style="color: #f8f8f2"> + response</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> response</span></code></pre>
+
+<h3><span class="icon">6</span><span class="title-text">测试情感分析效果</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 测试情感分析</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> plugins.sentiment_analysis.plugin </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> SentimentAnalysisPlugin</span>
+
+<span style="color: #f8f8f2">plugin = </span><span style="color: #a6e22e">SentimentAnalysisPlugin</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试正面情绪</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.analyze(</span><span style="color: #e6db74">"谢谢"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'level': 1, 'name': '正面', 'need_handoff': False}</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试中性情绪</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.analyze(</span><span style="color: #e6db74">"你好"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'level': 2, 'name': '中性', 'need_handoff': False}</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试负面情绪</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.analyze(</span><span style="color: #e6db74">"太慢了"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'level': 4, 'name': '负面', 'need_handoff': True}</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试愤怒情绪</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.analyze(</span><span style="color: #e6db74">"我要投诉"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'level': 5, 'name': '愤怒', 'need_handoff': True}</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试完整Bot</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> src.bot </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> CustomerServiceBot</span>
+
+<span style="color: #f8f8f2">bot = </span><span style="color: #a6e22e">CustomerServiceBot</span><span style="color: #f8f8f2">()</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(bot.chat(</span><span style="color: #e6db74">"你们的服务太差了！"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：非常抱歉给您带来不便。我立即为您转接人工客服处理。</span></code></pre>
+
+<h3><span class="icon">7</span><span class="title-text">情感分析的优化方向</span></h3>
+
+<blockquote class="highlight">
+<p><strong>三个优化方向：</strong></p>
+<p>1. <strong>情绪追踪</strong>：记录情绪变化趋势，识别情绪升级（如从"有点慢"到"太慢了"）</p>
+<p>2. <strong>个性化回复</strong>：根据用户历史情绪，调整回复策略</p>
+<p>3. <strong>预警机制</strong>：情绪等级≥3时，提前预警，准备转人工</p>
+</blockquote>
+
+<table>
+<tr><th>优化方法</th><th>效果</th><th>成本</th></tr>
+<tr><td>情绪追踪</td><td>识别情绪升级，提前干预</td><td>低（记录情绪）</td></tr>
+<tr><td>个性化回复</td><td>提高用户满意度</td><td>中（分析历史）</td></tr>
+<tr><td>预警机制</td><td>减少投诉率</td><td>低（设置阈值）</td></tr>
+</table>
+
+<h3><span class="icon">8</span><span class="title-text">总结：情感分析是Bot的"情商"</span></h3>
+
+<blockquote class="highlight">
+<p><strong>本篇要点：</strong></p>
+<p>1. <strong>情感分析识别情绪</strong>：正面、中性、轻微负面、负面、愤怒5个等级</p>
+<p>2. <strong>关键词匹配最快</strong>：常见情绪词快速识别</p>
+<p>3. <strong>大模型识别最准</strong>：复杂情绪表达准确识别</p>
+<p>4. <strong>等级≥4转人工</strong>：负面和愤怒情绪立即转人工</p>
+<p>5. <strong>调整回复语气</strong>：根据情感等级调整语气</p>
+</blockquote>
+
+<p>下一篇，我们来写<strong>订单查询插件</strong>——如何让Bot查询订单状态。</p>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent实战系列</strong><br>
+01 · 项目初始化<br>
+02 · Bot定义：System Prompt设计<br>
+03 · 意图识别插件<br>
+04 · 知识库插件<br>
+05 · 对话管理<br>
+06 · 情感分析插件 ← 你在这里<br>
+07 · 订单查询插件<br>
+... 共14篇<br><br>
+<strong>前置系列：</strong><a href="../Agent开发系列-05.html" style="color: #00897B;">Agent开发系列 05：感知模块</a>
+</p>
+
+</div>
+</body>
+</html>

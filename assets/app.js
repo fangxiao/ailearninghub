@@ -645,30 +645,48 @@
       {
         level: "Level 1",
         title: "🎯 业务认知与高阶提示工程 (Prompt 赋能业务)",
-        desc: "把业务规则转化为大模型能精准执行的高阶 Prompt，掌握结构化输出、业务边界约束与非结构化数据清洗",
-        categories: ["aitools", "ai-news"],
-        skills: ["结构化 Prompt 模板", "业务规则与边界约束", "非结构化数据初筛", "行业研报秒级提炼"]
+        desc: "把业务规则转化为大模型能精准执行的高阶 Prompt，掌握结构化输出、业务边界约束与内容润色",
+        skills: ["CRISPE 结构化框架", "业务规则与边界约束", "非结构化数据初筛", "自媒体图文生产流", "文本去 AI 痕润色"],
+        curatedArticles: [
+          { id: "aitools_pm_skills_write_prd_深度实战_公众号版_html", tag: "🎯 产品PRD实战" },
+          { id: "aitools_baoyu_skills_中文自媒体技能集_公众号版_html", tag: "⚡ 图文生产流" },
+          { id: "aitools_humanizer_skill介绍_公众号版_html", tag: "📝 文本去AI痕" }
+        ],
+        inProgressText: "🌱 《业务场景高阶 Prompt 结构化设计全指南》审核排期中..."
       },
       {
         level: "Level 2",
-        title: "💡 AI 产品设计与业务流重构 (AI PRD 与场景挖掘)",
-        desc: "掌握 AI 原生产品需求定义（AI PRD 规范）、人机协同交互模式设计、业务漏斗全链路重塑与内容批量生产管线",
-        categories: ["aitools", "ai-coding", "english-agent"],
-        skills: ["AI PRD 结构化撰写", "Copilot vs Agent 模式", "幻觉控制与评测 (Eval)", "业务漏斗全链路重构"]
+        title: "💡 AI 产品设计与业务流重构 (AI PM 实战)",
+        desc: "掌握 AI 原生产品需求定义（AI PRD 规范）、人机协同交互模式设计、全网研报调研与业务流程自动化",
+        skills: ["AI PRD 结构化撰写", "Copilot vs Agent 选型", "全网竞品深度调研", "业务流程自动化"],
+        curatedArticles: [
+          { id: "aitools_pm_skills_产品经理技能市场_公众号版_html", tag: "🎯 PM 技能市场" },
+          { id: "aitools_agent_reach_让AI上网搜资料_公众号版_html", tag: "🔍 全网研报搜集" }
+        ],
+        inProgressText: "🌱 《AI 原生 PRD 需求规范与人机协同交互设计》审核排期中..."
       },
       {
         level: "Level 3",
-        title: "🤖 零代码搭建业务智能体 (Dify/扣子实操落地)",
-        desc: "无需编写一行代码，通过 Dify / 扣子 / FastGPT 可视化搭建企业专属知识问答助手、业务自动化工作流与企微/飞书机器人",
-        categories: ["customer-service", "local-rag", "openclaw"],
-        skills: ["企业私有知识问答库", "自动化工作流 Workflow", "销售与客服智能助手", "企微/飞书机器人接入"]
+        title: "🤖 零代码搭建业务智能体 (Dify / 扣子实操)",
+        desc: "无需编写复杂代码，通过可视化界面搭建企业专属知识问答助手、业务自动化工作流与智能客服机器人",
+        skills: ["企业私有知识问答库", "可视化问答交互界面", "业务痛点与意图分析", "微信/企微客服接入"],
+        curatedArticles: [
+          { id: "local_llm_knowledge_base_本地大模型知识库系列_01_公众号版_html", tag: "📚 私有知识库" },
+          { id: "local_llm_knowledge_base_本地大模型知识库系列_04_公众号版_html", tag: "🖥️ 可视化问答" },
+          { id: "customer_service_agent_客服Agent实战系列_01_html", tag: "💬 业务痛点分析" }
+        ],
+        inProgressText: "🌱 《零代码平台深度横评与企业私有知识库 Bot 实操》审核排期中..."
       },
       {
         level: "Level 4",
-        title: "📈 业务 ROI 评估与商业化闭环 (决策与商业落地)",
-        desc: "掌握 AI 项目投入产出比（ROI）测算、自研 vs SaaS 采购决策、一人公司（Solopreneur）闭环与垂直行业真实案例",
-        categories: ["customer-service-harness", "quant-agent", "ai-safety"],
-        skills: ["自研 vs SaaS 选型 ROI", "一人公司 AI 协同闭环", "垂直行业落地案例拆解", "业务团队 AI 落地 SOP"]
+        title: "📈 业务 ROI 评估与商业化闭环 (决策与落地)",
+        desc: "掌握 AI 项目投入产出比（ROI）测算、业务团队引入 SOP、一人公司（Solopreneur）闭环与企业落地指南",
+        skills: ["企业 AI 选型 ROI 账本", "业务团队引入 SOP", "一人公司商业闭环", "复杂业务多体协同"],
+        curatedArticles: [
+          { id: "customer_service_agent_客服Agent实战系列_08_公众号版_html", tag: "🤝 复杂业务会诊" },
+          { id: "ai_coding_AI_Coding系列_25_团队协作_html", tag: "👥 团队协同落地" }
+        ],
+        inProgressText: "🌱 《企业引入 AI 的 ROI 成本账本与业务团队落地 SOP》审核排期中..."
       }
     ];
 
@@ -695,13 +713,15 @@
           <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl mx-auto leading-relaxed">
             ${isTech 
               ? '按照 4 个工程进阶阶段循序渐进研读，掌握从大模型原理到 Agent 落地、AI 编程实战与全栈工程体系。' 
-              : '专为产品经理、业务专家与运营打造：从高阶提示工程到 AI 原生产品设计、零代码搭建企业智能体与商业闭环。'}
+              : '专为产品经理、业务专家与运营打造：严格剔除底层代码干扰，精选业务实操与产品落地文献。'}
           </p>
         </div>
 
         <div class="space-y-6 sm:space-y-8">
           ${roadmapData.map(step => {
-            const stepArticles = state.data.articles.filter(a => step.categories.includes(a.categoryId));
+            const count = isTech 
+              ? state.data.articles.filter(a => step.categories.includes(a.categoryId)).length
+              : (step.curatedArticles || []).length;
 
             return `
               <div class="roadmap-step">
@@ -716,7 +736,7 @@
 
                     <div class="shrink-0">
                       <span class="text-[11px] sm:text-xs font-medium px-2.5 sm:px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-block">
-                        共 ${stepArticles.length} 篇精选文献
+                        ${isTech ? `共 ${count} 篇专栏解析` : `已收录 ${count} 篇精选实操`}
                       </span>
                     </div>
                   </div>
@@ -730,22 +750,62 @@
                     `).join('')}
                   </div>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3 sm:mt-4">
-                    ${step.categories.map(catId => {
-                      const cat = state.data.categories.find(c => c.id === catId);
-                      if (!cat) return '';
-                      const count = state.data.articles.filter(a => a.categoryId === catId).length;
-                      return `
-                        <div onclick="window.AI_HUB.switchCategory('${cat.id}')" class="p-3 sm:p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex items-center justify-between cursor-pointer group">
-                          <span class="flex items-center gap-2 text-xs sm:text-sm text-slate-200 group-hover:text-indigo-400 font-medium">
-                            <span class="text-base sm:text-lg">${cat.icon}</span>
-                            <span>${cat.name}</span>
-                          </span>
-                          <span class="text-[11px] sm:text-xs bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition">${count} 篇</span>
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
+                  ${isTech ? `
+                    <!-- Tech Track: Category List -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3 sm:mt-4">
+                      ${step.categories.map(catId => {
+                        const cat = state.data.categories.find(c => c.id === catId);
+                        if (!cat) return '';
+                        const catCount = state.data.articles.filter(a => a.categoryId === catId).length;
+                        return `
+                          <div onclick="window.AI_HUB.switchCategory('${cat.id}')" class="p-3 sm:p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex items-center justify-between cursor-pointer group">
+                            <span class="flex items-center gap-2 text-xs sm:text-sm text-slate-200 group-hover:text-indigo-400 font-medium">
+                              <span class="text-base sm:text-lg">${cat.icon}</span>
+                              <span>${cat.name}</span>
+                            </span>
+                            <span class="text-[11px] sm:text-xs bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition">${catCount} 篇</span>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  ` : `
+                    <!-- Business Track: Curated Specific Article Cards -->
+                    <div class="space-y-3 mt-3 sm:mt-4">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                        ${(step.curatedArticles || []).map(item => {
+                          const art = state.data.articles.find(a => a.id === item.id);
+                          if (!art) return '';
+                          return `
+                            <div onclick="window.AI_HUB.openReaderById('${art.id}')" class="p-3 sm:p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex flex-col justify-between cursor-pointer group shadow-sm">
+                              <div>
+                                <div class="flex items-center justify-between gap-2 mb-1.5">
+                                  <span class="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                                    ${item.tag}
+                                  </span>
+                                  <span class="text-[10px] sm:text-[11px] text-slate-400">⏱️ ${art.readTime}</span>
+                                </div>
+                                <h4 class="text-xs sm:text-sm font-semibold text-slate-100 group-hover:text-indigo-300 line-clamp-2 transition leading-snug">
+                                  ${art.title}
+                                </h4>
+                              </div>
+                              <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-white/5 text-[11px] text-indigo-400 group-hover:text-indigo-300 font-medium">
+                                <span>📖 立即阅读</span>
+                                <span class="transform group-hover:translate-x-1 transition">→</span>
+                              </div>
+                            </div>
+                          `;
+                        }).join('')}
+                      </div>
+
+                      <!-- In-Progress Placeholder Badge -->
+                      <div class="p-2.5 sm:p-3 rounded-xl bg-indigo-500/5 border border-dashed border-indigo-500/20 flex items-center justify-between text-xs text-indigo-300">
+                        <span class="flex items-center gap-1.5">
+                          <span>${step.inProgressText}</span>
+                        </span>
+                        <span class="text-[10px] text-slate-400 hidden sm:inline">公众号【大前端工程师】每周首发同步</span>
+                      </div>
+                    </div>
+                  `}
                 </div>
               </div>
             `;
@@ -1081,6 +1141,19 @@
     } else {
       promptCopy(text);
     }
+  }
+
+  function copyKeyword(kw) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(kw).then(() => {
+        showToast(`已复制口令【${kw}】，请在微信公众号后台直接发送！`, '📋');
+      }).catch(() => {
+        promptCopy(kw);
+      });
+    } else {
+      promptCopy(kw);
+    }
+    openWeChatModal();
   }
 
   function promptCopy(text) {

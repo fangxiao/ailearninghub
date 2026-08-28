@@ -1,0 +1,97 @@
+[
+  {
+    "id": "intent_001",
+    "name": "faq_query",
+    "description": "FAQ问题查询",
+    "examples": [
+      "如何修改密码",
+      "怎么申请退款",
+      "配送要多久",
+      "如何退款",
+      "怎么退款",
+      "配送时间",
+      "配送多久",
+      "如何联系客服"
+    ]
+  },
+  {
+    "id": "intent_002",
+    "name": "order_query",
+    "description": "订单查询",
+    "examples": [
+      "我的订单在哪里",
+      "查一下订单",
+      "订单状态",
+      "订单到哪了",
+      "查订单",
+      "物流状态",
+      "配送到哪了"
+    ]
+  },
+  {
+    "id": "intent_003",
+    "name": "human_handoff",
+    "description": "转人工",
+    "examples": [
+      "转人工",
+      "我要人工客服",
+      "帮我转人工",
+      "人工服务",
+      "找人工"
+    ]
+  },
+  {
+    "id": "intent_004",
+    "name": "complaint",
+    "description": "投诉",
+    "examples": [
+      "我要投诉",
+      "服务太差了",
+      "投诉你们",
+      "不满意",
+      "太慢了"
+    ]
+  },
+  {
+    "id": "intent_005",
+    "name": "greeting",
+    "description": "问候",
+    "examples": [
+      "你好",
+      "在吗",
+      "有人吗",
+      "您好",
+      "hi",
+      "hello"
+    ]
+  },
+  {
+    "id": "intent_006",
+    "name": "thanks",
+    "description": "感谢",
+    "examples": [
+      "谢谢",
+      "感谢",
+      "好的谢谢"
+    ]
+  },
+  {
+    "id": "intent_007",
+    "name": "order",
+    "description": "下单订购",
+    "examples": [
+      "订花",
+      "我要订花",
+      "买花",
+      "订购",
+      "下单",
+      "订一束花"
+    ]
+  },
+  {
+    "id": "intent_008",
+    "name": "unknown",
+    "description": "未识别意图",
+    "examples": []
+  }
+]

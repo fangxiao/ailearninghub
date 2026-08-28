@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent实战系列 01</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:'neutral'});</script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+.detail-box { background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+.detail-box .detail-title { font-size: 14px; font-weight: bold; color: #353535; margin-bottom: 8px; }
+.detail-box .detail-content { font-size: 13px; color: #666; line-height: 1.7; }
+.mermaid { text-align: center; margin: 20px 0; background: #fafafa; padding: 20px; border-radius: 8px; }
+.diagram-title { font-size: 14px; color: #666; text-align: center; margin-bottom: 10px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">客服Agent实战系列 01</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+项目初始化：把 Agent 开发系列的知识用起来
+</p>
+
+<blockquote class="opinion">
+<p>前面我们用了29篇文章讲 Agent 开发：感知、规划、行动、记忆、工具、执行引擎……现在，是时候把这些知识<strong>用起来</strong>了。本系列是 <a href="../Agent开发系列-01.html" class="key">Agent开发系列</a> 的实战篇——用代码实现一个真正可运行的智能客服系统。</p>
+</blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">为什么选客服场景？三个理由</span></h3>
+
+<p>2026年，AI 落地最成熟的场景有三个：客服、代码助手、知识问答。为什么选客服？</p>
+
+<table>
+<tr><th>理由</th><th>具体说明</th></tr>
+<tr><td><strong>需求最明确</strong></td><td>FAQ查询、订单查询、转人工——场景边界清晰，不会"什么都想做"</td></tr>
+<tr><td><strong>效果可量化</strong></td><td>解决率、响应时间、人工转接率——每个指标都能算ROI</td></tr>
+<tr><td><strong>技术最成熟</strong></td><td>意图识别、RAG检索、多轮对话——2026年这些已经是"标配"而非"创新"</td></tr>
+</table>
+
+<p>学完这个系列，你得到的不是一个"玩具项目"，而是一个<strong>可以真正上线运行的客服系统</strong>。</p>
+
+<h3><span class="icon">2</span><span class="title-text">与 Agent 开发系列的联动</span></h3>
+
+<p>Agent 开发系列讲了原理，本系列负责落地：</p>
+
+<table>
+<tr><th>Agent开发系列</th><th>客服实战系列</th></tr>
+<tr><td><a href="../Agent开发系列-03.html">03：最小可行Agent</a></td><td>02：客服Bot定义</td></tr>
+<tr><td><a href="../Agent开发系列-05.html">05：感知模块</a></td><td>03：意图识别插件</td></tr>
+<tr><td><a href="../Agent开发系列-11.html">11：RAG检索</a></td><td>04：知识库插件</td></tr>
+<tr><td><a href="../Agent开发系列-07.html">07：核心循环</a></td><td>05：对话管理</td></tr>
+<tr><td><a href="../Agent开发系列-13.html">13：Tool接口</a></td><td>08：工单系统</td></tr>
+<tr><td><a href="../Agent开发系列-17.html">17：执行引擎</a></td><td>09：Web接口</td></tr>
+</table>
+
+<p>项目结构：</p>
+
+<pre><code>customer-service-agent/
+├── config/              # 配置文件
+│   ├── base.yaml       # 基础配置
+│   └── customer_service.yaml  # 客服专用
+├── data/               # 业务数据
+│   ├── faq.json        # FAQ知识库
+│   └── intents.json    # 意图定义
+├── plugins/            # 客服插件
+│   ├── intent_recognition/  # 意图识别
+│   ├── knowledge_base/      # 知识库检索
+│   ├── emotion_analysis/    # 情感分析
+│   └── ticket_system/       # 工单系统
+├── src/                # 核心逻辑
+├── web/                # Web接口
+└── examples/           # 示例代码</code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">客服Agent架构总览</span></h3>
+
+<p class="diagram-title">图1：客服Agent核心架构</p>
+<div class="mermaid">
+graph TB
+    User[用户输入] --> Intent[意图识别<br/>intent_recognition]
+    Intent --> |FAQ查询| KB[知识库检索<br/>knowledge_base]
+    Intent --> |订单查询| Order[订单系统]
+    Intent --> |转人工| Ticket[工单系统<br/>ticket_system]
+    
+    KB --> LLM[大模型生成<br/>GLM-5.1/Qwen3]
+    Order --> LLM
+    Ticket --> Human[人工客服]
+    
+    LLM --> Emotion[情感分析<br/>emotion_analysis]
+    Emotion --> Response[响应输出]
+    
+    style User fill:#e3f2fd
+    style Response fill:#e8f5e9
+    style LLM fill:#fff3e0
+</div>
+
+<h3><span class="icon">4</span><span class="title-text">大模型选择：云端 vs 本地（2026年6月）</span></h3>
+
+<p>2026年的大模型格局已经很清晰了：<strong>云端追求效果，本地追求隐私和成本</strong>。</p>
+
+<table>
+<tr><th>类型</th><th>推荐模型</th><th>适用场景</th></tr>
+<tr><td><strong>云端-智谱</strong></td><td>GLM-5.1-flash</td><td>性价比高，中文强，客服首选</td></tr>
+<tr><td><strong>云端-阿里</strong></td><td>通义千问3-turbo</td><td>极速响应，企业级支持</td></tr>
+<tr><td><strong>云端-DeepSeek</strong></td><td>DeepSeek V3</td><td>代码能力强，技术客服</td></tr>
+<tr><td><strong>本地-Ollama</strong></td><td>Qwen3-8B</td><td>中文最佳，无需API Key</td></tr>
+<tr><td><strong>本地-vLLM</strong></td><td>GLM5-9B</td><td>高性能推理，生产环境</td></tr>
+</table>
+
+<p><strong>base.yaml</strong> - 配置示例：</p>
+
+<pre><code>llm:
+  # 云端：智谱AI GLM-5.1（推荐）
+  provider: zhipu
+  model: glm-5.1-flash
+  api_key: ${ZHIPU_API_KEY}
+  
+  # 本地：Ollama（无需API Key）
+  # provider: ollama
+  # model: qwen3:8b
+  # base_url: http://localhost:11434</code></pre>
+
+<blockquote class="highlight">
+<p><strong>🏠 本地部署三步走：</strong></p>
+<p>1. <strong>安装 Ollama：</strong>curl -fsSL https://ollama.com/install.sh | sh<br>
+2. <strong>拉取模型：</strong>ollama pull qwen3:8b<br>
+3. <strong>启动服务：</strong>ollama serve<br><br>
+本地部署的优势：<strong>数据不出本地、无API费用、可离线运行</strong>。</p>
+</blockquote>
+
+<h3><span class="icon">5</span><span class="title-text">数据准备：三类数据就够了</span></h3>
+
+<p>客服系统不需要复杂的数据模型，三类数据足矣：</p>
+
+<p class="diagram-title">图2：数据流转过程</p>
+<div class="mermaid">
+graph LR
+    U[用户问题] --> I[意图识别<br/>intents.json]
+    I --> |匹配FAQ| F[FAQ知识库<br/>faq.json]
+    I --> |提取实体| E[实体词典<br/>entities.json]
+    
+    F --> R[检索相关答案]
+    E --> R
+    R --> A[生成响应]
+    
+    style U fill:#e3f2fd
+    style A fill:#e8f5e9
+    style F fill:#fff3e0
+    style E fill:#fff3e0
+</div>
+
+<table>
+<tr><th>数据类型</th><th>文件</th><th>说明</th></tr>
+<tr><td>FAQ知识库</td><td>faq.json</td><td>常见问题及标准答案</td></tr>
+<tr><td>意图定义</td><td>intents.json</td><td>用户意图分类（查询、投诉、转人工等）</td></tr>
+<tr><td>实体词典</td><td>entities.json</td><td>订单号、产品名等关键实体</td></tr>
+</table>
+
+<p><strong>faq.json 示例：</strong></p>
+
+<pre><code>{
+  "id": "faq_001",
+  "question": "如何修改密码？",
+  "answer": "1.登录账户 2.进入账户设置 3.点击修改密码...",
+  "keywords": ["密码", "修改密码", "忘记密码"]
+}</code></pre>
+
+<h3><span class="icon">6</span><span class="title-text">快速验证：5分钟跑起来</span></h3>
+
+<p class="diagram-title">图3：快速验证流程</p>
+<div class="mermaid">
+graph TB
+    S[开始] --> A[安装依赖<br/>pip install -r requirements.txt]
+    A --> B{选择部署方式}
+    B --> |云端| C[配置API Key]
+    B --> |本地| D[启动Ollama<br/>ollama serve]
+    C --> E[验证配置]
+    D --> E
+    E --> F[测试大模型]
+    F --> G[✅ 完成]
+    
+    style S fill:#e3f2fd
+    style G fill:#e8f5e9
+</div>
+
+<pre><code># 1. 安装依赖
+pip install -r requirements.txt
+
+# 2. 配置环境变量（云端）
+export ZHIPU_API_KEY="your-key"
+
+# 或本地部署（无需API Key）
+ollama pull qwen3:8b && ollama serve
+
+# 3. 验证配置
+python -c "import yaml; print(yaml.safe_load(open('config/base.yaml')))"
+
+# 4. 测试大模型
+python -c "
+from zhipuai import ZhipuAI
+client = ZhipuAI()
+print(client.chat.completions.create(
+    model='glm-5.1-flash',
+    messages=[{'role': 'user', 'content': '你好'}]
+).choices[0].message.content)
+"</code></pre>
+
+<h3><span class="icon">7</span><span class="title-text">总结：从原理到实践</span></h3>
+
+<blockquote class="highlight">
+<p><strong>本篇要点：</strong></p>
+<p>1. <strong>原理已讲过</strong>：Agent开发系列（01-29）覆盖了所有核心概念<br>
+2. <strong>现在要落地</strong>：本系列负责把原理变成可运行的代码<br>
+3. <strong>场景要聚焦</strong>：客服场景边界清晰，效果可量化<br>
+4. <strong>模型要选对</strong>：云端追求效果，本地追求隐私<br>
+5. <strong>先跑起来</strong>：5分钟验证，不要陷入配置地狱</p>
+</blockquote>
+
+<p>下一篇，我们来写<strong>客服Bot的核心：System Prompt设计</strong>——如何让AI真正"懂"客服业务。</p>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent实战系列</strong><br>
+01 · 项目初始化 ← 你在这里<br>
+02 · Bot定义：System Prompt设计<br>
+03 · 意图识别插件<br>
+04 · 知识库插件<br>
+... 共14篇<br><br>
+<strong>前置系列：</strong><a href="../Agent开发系列-01.html" style="color: #00897B;">Agent开发系列（01-29）</a>
+</p>
+
+</div>
+</body>
+</html>

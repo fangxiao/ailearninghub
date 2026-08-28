@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服Agent实战系列 03</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif; font-size: 16px; color: #3f3f3f; line-height: 1.75; background: #f7f7f7; padding: 20px; letter-spacing: 0.5px; }
+.container { max-width: 677px; margin: 0 auto; background: #fff; padding: 32px 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+p { padding: 14px 0; color: #3f3f3f; }
+h2 { margin: 50px 0 30px; text-align: center; position: relative; }
+h2 .title-text { font-size: 18px; color: #353535; font-weight: bold; letter-spacing: 1px; position: relative; display: inline-block; padding: 0 20px; }
+h2 .title-text::before, h2 .title-text::after { content: ""; position: absolute; top: 50%; width: 40px; height: 1px; background: linear-gradient(to right, transparent, #d5d5d5); }
+h2 .title-text::before { right: 100%; background: linear-gradient(to left, transparent, #d5d5d5); }
+h2 .title-text::after { left: 100%; }
+h3 { margin: 40px 0 18px; font-size: 16px; font-weight: bold; color: #353535; }
+h3 .icon { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; background: linear-gradient(135deg, #00897B 0%, #00695C 100%); color: #fff; border-radius: 50%; margin-right: 10px; font-size: 12px; font-weight: normal; vertical-align: middle; }
+h3 .title-text { color: #353535; vertical-align: middle; }
+blockquote { margin: 20px 0; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-left: 4px solid #5eb0ef; border-radius: 0 4px 4px 0; }
+blockquote p { color: #5a5a5a; padding: 0; margin: 0; line-height: 1.8; }
+blockquote.highlight { background: linear-gradient(135deg, #fff3e0 0%, #fff 100%); border-left-color: #ff9800; }
+blockquote.highlight p { color: #5a5a5a; }
+blockquote.opinion { background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%); border-left: 4px solid #00bcd4; }
+blockquote.opinion p { color: #5a5a5a; }
+pre { margin: 16px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+pre .code-header { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; background: #1e2433; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='14' viewBox='0 0 54 14'%3E%3Ccircle cx='8' cy='7' r='6' fill='%23ff5f56'/%3E%3Ccircle cx='26' cy='7' r='6' fill='%23ffbd2e'/%3E%3Ccircle cx='44' cy='7' r='6' fill='%2327c93f'/%3E%3C/svg%3E"); background-position: 12px center; background-repeat: no-repeat; }
+pre .code-lang { color: #8b949e; font-size: 12px; font-family: 'SF Mono', 'Monaco', monospace; margin-left: auto; text-transform: uppercase; }
+pre > code { display: block; padding: 16px 20px; color: #e2e8f0; background: #2d3748; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; white-space: pre; }
+pre.code-block { background: #272822; }
+pre.code-block .code-header { background: #1e1f1c; }
+pre.code-block > code { margin: 0; padding: 16px 20px; background: #272822; font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace; font-size: 13px; line-height: 1.6em; overflow-x: auto; border-radius: 0; box-shadow: none; }
+ul, ol { margin: 14px 0; padding-left: 24px; }
+li { margin: 8px 0; line-height: 1.75; }
+hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0e0, transparent); margin: 36px 0; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid #e8e8e8; padding: 12px 14px; text-align: left; }
+th { background: #fafafa; font-weight: 600; color: #2c2c2c; }
+tr:nth-child(even) { background: #fafafa; }
+strong { color: #2c2c2c; font-weight: 600; }
+.key { color: #00897B; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2><span class="title-text">客服Agent实战系列 03</span></h2>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-bottom: 30px;">
+意图识别插件：让Bot理解用户想做什么
+</p>
+
+<blockquote class="opinion">
+<p>上一篇我们设计了System Prompt，告诉Bot"你是谁"。这一篇来解决更关键的问题：<strong>Bot怎么知道用户想做什么？</strong>用户说"我的订单在哪"，Bot要知道这是"订单查询"；用户说"我要投诉"，Bot要知道这是"转人工"。这就是意图识别——客服Bot的"耳朵"。</p>
+</blockquote>
+
+<h3><span class="icon">1</span><span class="title-text">什么是意图识别？为什么重要？</span></h3>
+
+<p>意图识别（Intent Recognition）是Agent感知模块的核心功能。它的作用是：<strong>从用户的自然语言中，提取出用户的意图</strong>。</p>
+
+<table>
+<tr><th>用户输入</th><th>识别出的意图</th><th>后续处理</th></tr>
+<tr><td>"如何修改密码"</td><td>faq_query</td><td>从FAQ知识库检索答案</td></tr>
+<tr><td>"我的订单在哪"</td><td>order_query</td><td>调用订单查询接口</td></tr>
+<tr><td>"我要投诉"</td><td>complaint</td><td>立即转人工客服</td></tr>
+<tr><td>"你好"</td><td>greeting</td><td>返回问候语</td></tr>
+<tr><td>"今天天气怎么样"</td><td>unknown</td><td>礼貌拒绝，引导回客服话题</td></tr>
+</table>
+
+<p>意图识别的重要性：</p>
+
+<blockquote class="highlight">
+<p><strong>三个关键作用：</strong></p>
+<p>1. <strong>决定后续流程</strong>：不同意图走不同的处理路径</p>
+<p>2. <strong>提高效率</strong>：不用每次都让大模型"猜"，意图识别可以快速分流</p>
+<p>3. <strong>降低成本</strong>：意图识别可以用轻量模型，比每次调用大模型便宜</p>
+</blockquote>
+
+<h3><span class="icon">2</span><span class="title-text">客服场景的意图定义</span></h3>
+
+<p>客服场景的意图相对固定，我们定义了7个核心意图：</p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">json</span></span><code>[
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_001"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"faq_query"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"FAQ问题查询"</span>,
+    <span style="color: #e6db74">"examples"</span>: [<span style="color: #e6db74">"如何修改密码"</span>, <span style="color: #e6db74">"怎么申请退款"</span>, <span style="color: #e6db74">"配送要多久"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_002"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"order_query"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"订单查询"</span>,
+    <span style="color: #e6db74">"examples"</span>: [<span style="color: #e6db74">"我的订单在哪里"</span>, <span style="color: #e6db74">"查一下订单"</span>, <span style="color: #e6db74">"订单状态"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_003"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"human_handoff"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"转人工"</span>,
+    <span style="color: #e6db74">"examples"</span>: [<span style="color: #e6db74">"转人工"</span>, <span style="color: #e6db74">"我要人工客服"</span>, <span style="color: #e6db74">"帮我转人工"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_004"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"complaint"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"投诉"</span>,
+    <span style="color: #e6db74">"examples"</span>: [<span style="color: #e6db74">"我要投诉"</span>, <span style="color: #e6db74">"服务太差了"</span>, <span style="color: #e6db74">"投诉你们"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_005"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"greeting"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"问候"</span>,
+    <span style="color: #e6db74">"examples"</span>: [<span style="color: #e6db74">"你好"</span>, <span style="color: #e6db74">"在吗"</span>, <span style="color: #e6db74">"有人吗"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_006"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"thanks"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"感谢"</span>,
+    <span style="color: #e6db74">"examples"</span>: [<span style="color: #e6db74">"谢谢"</span>, <span style="color: #e6db74">"感谢"</span>, <span style="color: #e6db74">"好的谢谢"</span>]
+  },
+  {
+    <span style="color: #e6db74">"id"</span>: <span style="color: #e6db74">"intent_007"</span>,
+    <span style="color: #e6db74">"name"</span>: <span style="color: #e6db74">"unknown"</span>,
+    <span style="color: #e6db74">"description"</span>: <span style="color: #e6db74">"未识别意图"</span>,
+    <span style="color: #e6db74">"examples"</span>: []
+  }
+]</code></pre>
+
+<h3><span class="icon">3</span><span class="title-text">意图识别的实现方式</span></h3>
+
+<p>2026年，意图识别有三种主流方式：</p>
+
+<table>
+<tr><th>方式</th><th>优点</th><th>缺点</th><th>适用场景</th></tr>
+<tr><td><strong>关键词匹配</strong></td><td>速度快、成本低</td><td>准确率低、需要维护关键词库</td><td>简单场景、快速分流</td></tr>
+<tr><td><strong>小模型分类</strong></td><td>准确率高、成本低</td><td>需要训练数据、维护模型</td><td>意图固定的场景</td></tr>
+<tr><td><strong>大模型识别</strong></td><td>准确率最高、灵活</td><td>成本高、速度慢</td><td>复杂场景、意图不固定</td></tr>
+</table>
+
+<p>客服场景我们选择<strong>小模型分类 + 大模型兜底</strong>的混合方案：</p>
+
+<blockquote class="highlight">
+<p><strong>混合方案的优势：</strong></p>
+<p>1. 常见意图（FAQ、订单查询）用小模型快速识别，成本低</p>
+<p>2. 复杂意图（投诉、情绪识别）用大模型，准确率高</p>
+<p>3. 未识别意图用大模型兜底，不会漏掉</p>
+</blockquote>
+
+<h3><span class="icon">4</span><span class="title-text">实战：实现意图识别插件</span></h3>
+
+<p>我们创建意图识别插件：</p>
+
+<p><strong>plugins/intent_recognition/plugin.py：</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> json</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> pathlib </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Path</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> typing </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> Dict, List</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">IntentRecognitionPlugin</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #a8a8a8; font-style: italic;">"""意图识别插件"""</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, intents_file: str = </span><span style="color: #e6db74">"data/intents.json"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intents = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_intents(intents_file)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_map = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._build_keyword_map()</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_load_intents</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, intents_file: str) -> List[Dict]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""加载意图定义"""</span>
+<span style="color: #f8f8f2">        path = Path(intents_file)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> path.exists():</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">with</span><span style="color: #f8f8f2"> open(path, </span><span style="color: #e6db74">'r'</span><span style="color: #f8f8f2">, encoding=</span><span style="color: #e6db74">'utf-8'</span><span style="color: #f8f8f2">) </span><span style="color: #66d9ef">as</span><span style="color: #f8f8f2"> f:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> json.load(f)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> []</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_build_keyword_map</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">) -> Dict[str, str]:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""构建关键词映射表"""</span>
+<span style="color: #f8f8f2">        keyword_map = {}</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> intent </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intents:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> example </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> intent.get(</span><span style="color: #e6db74">"examples"</span><span style="color: #f8f8f2">, []):</span>
+<span style="color: #f8f8f2">                </span><span style="color: #a8a8a8; font-style: italic;"># 提取关键词（简化版）</span>
+<span style="color: #f8f8f2">                keywords = example.split()</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> kw </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> keywords:</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> kw </span><span style="color: #66d9ef">not</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> keyword_map:</span>
+<span style="color: #f8f8f2">                        keyword_map[kw] = intent[</span><span style="color: #e6db74">"name"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> keyword_map</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">recognize</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> Dict:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""识别用户意图"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第一步：关键词快速匹配</span>
+<span style="color: #f8f8f2">        intent = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._keyword_match(user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 第二步：如果关键词匹配失败，用大模型识别</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> intent == </span><span style="color: #e6db74">"unknown"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            intent = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._llm_recognize(user_input)</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"intent"</span><span style="color: #f8f8f2">: intent,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"confidence"</span><span style="color: #f8f8f2">: </span><span style="color: #ae81ff">0.9</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">            </span><span style="color: #e6db74">"original_input"</span><span style="color: #f8f8f2">: user_input</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_keyword_match</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""关键词匹配"""</span>
+<span style="color: #f8f8f2">        words = user_input.split()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> word </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> words:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> word </span><span style="color: #66d9ef">in</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_map:</span>
+<span style="color: #f8f8f2">                </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.keyword_map[word]</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"unknown"</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_llm_recognize</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">"""大模型识别（简化版）"""</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 实际项目中会调用大模型API</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 这里简化为返回unknown</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"unknown"</span></code></pre>
+
+<h3><span class="icon">5</span><span class="title-text">集成到Bot中</span></h3>
+
+<p>将意图识别插件集成到客服Bot：</p>
+
+<p><strong>src/bot.py（更新版）：</strong></p>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> plugins.intent_recognition.plugin </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> IntentRecognitionPlugin</span>
+
+<span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">CustomerServiceBot</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, config_path: str = </span><span style="color: #e6db74">"config/customer_service.yaml"</span><span style="color: #f8f8f2">):</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.config = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_config(config_path)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.system_prompt = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._load_prompt()</span>
+<span style="color: #f8f8f2">        </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intent_plugin = IntentRecognitionPlugin()</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">chat</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str, history: list = </span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 先识别意图</span>
+<span style="color: #f8f8f2">        intent_result = </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">.intent_plugin.recognize(user_input)</span>
+<span style="color: #f8f8f2">        intent = intent_result[</span><span style="color: #e6db74">"intent"</span><span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">        </span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 根据意图分流处理</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> intent == </span><span style="color: #e6db74">"faq_query"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._handle_faq(user_input)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> intent == </span><span style="color: #e6db74">"order_query"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._handle_order_query(user_input)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> intent == </span><span style="color: #e6db74">"complaint"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._handle_complaint(user_input)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">elif</span><span style="color: #f8f8f2"> intent == </span><span style="color: #e6db74">"human_handoff"</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._handle_handoff(user_input)</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+<span style="color: #f8f8f2">            </span><span style="color: #a8a8a8; font-style: italic;"># 其他意图走大模型</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">._call_llm_with_context(user_input, history)</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_handle_faq</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;">#下一篇会实现知识库插件</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"正在从FAQ知识库检索答案..."</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_handle_order_query</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #a8a8a8; font-style: italic;"># 后续会实现订单查询插件</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"正在查询您的订单..."</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_handle_complaint</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"非常抱歉给您带来不便。我立即为您转接人工客服处理。"</span>
+<span style="color: #f8f8f2">    </span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">def</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_handle_handoff</span><span style="color: #f8f8f2">(</span><span style="color: #f8f8f2">self</span><span style="color: #f8f8f2">, user_input: str) -> str:</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">"好的，正在为您转接人工客服..."</span></code></pre>
+
+<h3><span class="icon">6</span><span class="title-text">测试意图识别效果</span></h3>
+
+<pre class="code-block"><span class="code-header"><span class="code-lang">python</span></span><code><span style="color: #a8a8a8; font-style: italic;"># 测试意图识别</span>
+<span style="color: #66d9ef">from</span><span style="color: #f8f8f2"> plugins.intent_recognition.plugin </span><span style="color: #66d9ef">import</span><span style="color: #f8f8f2"> IntentRecognitionPlugin</span>
+
+<span style="color: #f8f8f2">plugin = </span><span style="color: #a6e22e">IntentRecognitionPlugin</span><span style="color: #f8f8f2">()</span>
+
+<span style="color: #a8a8a8; font-style: italic;"># 测试各种意图</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.recognize(</span><span style="color: #e6db74">"如何修改密码"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'intent': 'faq_query', 'confidence': 0.9}</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.recognize(</span><span style="color: #e6db74">"我的订单在哪"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'intent': 'order_query', 'confidence': 0.9}</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.recognize(</span><span style="color: #e6db74">"我要投诉"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'intent': 'complaint', 'confidence': 0.9}</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.recognize(</span><span style="color: #e6db74">"你好"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'intent': 'greeting', 'confidence': 0.9}</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(plugin.recognize(</span><span style="color: #e6db74">"今天天气怎么样"</span><span style="color: #f8f8f2">))</span>
+<span style="color: #a8a8a8; font-style: italic;"># 输出：{'intent': 'unknown', 'confidence': 0.9}</span></code></pre>
+
+<h3><span class="icon">7</span><span class="title-text">意图识别的优化方向</span></h3>
+
+<blockquote class="highlight">
+<p><strong>三个优化方向：</strong></p>
+<p>1. <strong>增加训练数据</strong>：收集更多用户对话，训练小模型分类器</p>
+<p>2. <strong>上下文理解</strong>：结合历史对话，识别多轮意图</p>
+<p>3. <strong>置信度阈值</strong>：低置信度的意图用大模型二次确认</p>
+</blockquote>
+
+<table>
+<tr><th>优化方法</th><th>效果</th><th>成本</th></tr>
+<tr><td>增加关键词库</td><td>提高关键词匹配准确率</td><td>低（人工维护）</td></tr>
+<tr><td>训练小模型</td><td>提高整体准确率到95%+</td><td>中（需要数据）</td></tr>
+<tr><td>上下文理解</td><td>识别多轮意图</td><td>高（需要记忆模块）</td></tr>
+</table>
+
+<h3><span class="icon">8</span><span class="title-text">总结：意图识别是Bot的"耳朵"</span></h3>
+
+<blockquote class="highlight">
+<p><strong>本篇要点：</strong></p>
+<p>1. <strong>意图识别决定分流</strong>：不同意图走不同处理路径</p>
+<p>2. <strong>混合方案最优</strong>：关键词快速匹配 + 大模型兜底</p>
+<p>3. <strong>意图定义要清晰</strong>：客服场景7个核心意图足够</p>
+<p>4. <strong>插件化设计</strong>：意图识别作为独立插件，方便扩展</p>
+<p>5. <strong>持续优化</strong>：收集数据，训练小模型，提高准确率</p>
+</blockquote>
+
+<p>下一篇，我们来写<strong>知识库插件</strong>——如何让Bot从FAQ中找到答案。</p>
+
+<hr>
+
+<p style="text-align: center; color: #888; font-size: 14px; padding-top: 30px;">
+<strong>客服Agent实战系列</strong><br>
+01 · 项目初始化<br>
+02 · Bot定义：System Prompt设计<br>
+03 · 意图识别插件 ← 你在这里<br>
+04 · 知识库插件<br>
+... 共14篇<br><br>
+<strong>前置系列：</strong><a href="../Agent开发系列-05.html" style="color: #00897B;">Agent开发系列 05：感知模块</a>
+</p>
+
+</div>
+</body>
+</html>

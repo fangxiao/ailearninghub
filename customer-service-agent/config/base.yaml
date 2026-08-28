@@ -1,0 +1,47 @@
+# 基础配置 - 继承自 myAgent 框架
+# 参考：myAgent开发系列 04：项目初始化
+
+# LLM 配置 - 支持云端和本地部署（2026年6月）
+llm:
+  # 方式一：云端大模型（智谱AI GLM-5.1）
+  provider: zhipu
+  model: glm-5.1-flash  # glm-5.1-flash（快速） / glm-5.1（标准） / glm-5.1-plus（增强）
+  temperature: 0.7
+  max_tokens: 2000
+  api_key: ${ZHIPU_API_KEY}
+  
+  # 方式二：云端大模型（阿里云通义千问3）
+  # provider: dashscope
+  # model: qwen3-turbo  # qwen3-turbo / qwen3-max / qwen3-plus
+  # api_key: ${DASHSCOPE_API_KEY}
+  
+  # 方式三：本地部署（Ollama）
+  # provider: ollama
+  # model: qwen3:8b  # 或 glm5:9b、llama4:8b 等
+  # base_url: http://localhost:11434
+  
+  # 方式四：本地部署（vLLM）
+  # provider: openai_compatible
+  # model: Qwen/Qwen3-8B-Instruct
+  # base_url: http://localhost:8000/v1
+
+# 向量数据库配置
+vector_db:
+  provider: chromadb  # chromadb / pinecone / milvus
+  persist_directory: ./data/chroma
+  collection_name: customer_service
+  
+# 日志配置
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: ./logs/app.log
+
+# 插件配置
+plugins:
+  enabled:
+    - intent_recognition
+    - knowledge_base
+    - emotion_analysis
+    - ticket_system
+  auto_load: true

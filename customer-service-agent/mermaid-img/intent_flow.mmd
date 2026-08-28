@@ -1,0 +1,38 @@
+
+graph TB
+    UserInput[用户输入] --> KeywordMatch[关键词快速匹配]
+    
+    KeywordMatch --> MatchSuccess{匹配成功?}
+    
+    MatchSuccess -->|Yes| ReturnIntent[返回意图]
+    MatchSuccess -->|No| LLMRecognize[大模型识别]
+    
+    LLMRecognize --> ReturnIntent
+    
+    ReturnIntent --> BotProcess[Bot根据意图分流处理]
+    
+    subgraph Intents[意图类型]
+        FAQ[faq_query<br/>FAQ查询]
+        Order[order_query<br/>订单查询]
+        Complaint[complaint<br/>投诉]
+        Handoff[human_handoff<br/>转人工]
+        Unknown[unknown<br/>未识别]
+    end
+    
+    BotProcess --> FAQ
+    BotProcess --> Order
+    BotProcess --> Complaint
+    BotProcess --> Handoff
+    BotProcess --> Unknown
+    
+    FAQ --> FAQHandler[知识库检索]
+    Order --> OrderHandler[订单查询接口]
+    Complaint --> ComplaintHandler[立即转人工]
+    Handoff --> HandoffHandler[转人工]
+    Unknown --> LLMHandler[大模型处理]
+    
+    style UserInput fill:#fce4ec,stroke:#e91e63
+    style KeywordMatch fill:#fff9c4,stroke:#fbc02d
+    style LLMRecognize fill:#e3f2fd,stroke:#2196f3
+    style BotProcess fill:#f3e5f5,stroke:#9c27b0
+    style MatchSuccess fill:#e0e0e0,stroke:#9e9e9e

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能客服Agent</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .header h1 { font-size: 18px; font-weight: 600; }
+        .header .status { font-size: 12px; opacity: 0.9; }
+        .header .status::before {
+            content: ''; display: inline-block; width: 8px; height: 8px;
+            background: #4ade80; border-radius: 50%; margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f7f8fa;
+        }
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .message {
+            max-width: 80%;
+            display: flex;
+            gap: 8px;
+        }
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .message .bubble {
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .message.bot { align-self: flex-start; }
+        .message.bot .bubble {
+            background: #fff;
+            color: #333;
+            border: 1px solid #e5e7eb;
+            border-top-left-radius: 4px;
+        }
+        .message.user .bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-top-right-radius: 4px;
+        }
+        .message .role {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+            padding: 0 4px;
+        }
+        .message.user .role { text-align: right; }
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+        .typing span {
+            width: 8px; height: 8px;
+            background: #9ca3af;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        .input-area {
+            padding: 16px 24px;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+        }
+        .quick-replies {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .quick-reply {
+            padding: 6px 14px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-reply:hover {
+            background: #667eea;
+            color: #fff;
+            border-color: #667eea;
+        }
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-row input:focus { border-color: #667eea; }
+        .input-row button {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .input-row button:hover { transform: scale(1.05); }
+        .input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .side-panel {
+            width: 280px;
+            background: #f9fafb;
+            border-left: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+        .side-panel h3 {
+            padding: 20px;
+            font-size: 14px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .info-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .info-item {
+            margin-bottom: 16px;
+        }
+        .info-item .label {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .info-item .value {
+            font-size: 13px;
+            color: #374151;
+            font-weight: 500;
+            word-break: break-word;
+        }
+        .info-item .value.badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e0e7ff;
+            color: #4f46e5;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        .side-actions {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .side-actions button {
+            width: 100%;
+            padding: 10px;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .side-actions button:hover { background: #dc2626; }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-state h2 { font-size: 18px; margin-bottom: 8px; color: #6b7280; }
+        .empty-state p { font-size: 14px; }
+        @media (max-width: 640px) {
+            .container { height: 100vh; border-radius: 0; }
+            .side-panel { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="avatar">🤖</div>
+                <div>
+                    <h1>智能客服小助手</h1>
+                    <div class="status">在线 · 随时为您服务</div>
+                </div>
+            </div>
+            <button onclick="reset()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;">重置对话</button>
+        </div>
+
+        <div class="main">
+            <div class="chat-area">
+                <div class="messages" id="messages">
+                    <div class="message bot">
+                        <div>
+                            <div class="role">客服小助手</div>
+                            <div class="bubble">您好！我是智能客服小助手，有什么可以帮您？</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="quick-replies" id="quickReplies">
+                        <div class="quick-reply" onclick="send('我的订单到哪了？')">📦 订单查询</div>
+                        <div class="quick-reply" onclick="send('如何退款？')">💰 退款咨询</div>
+                        <div class="quick-reply" onclick="send('订一束玫瑰花')">🌹 订购花束</div>
+                        <div class="quick-reply" onclick="send('我要投诉')">⚠️ 投诉建议</div>
+                    </div>
+                    <div class="input-row">
+                        <input type="text" id="messageInput"
+                               placeholder="请输入您的问题..."
+                               onkeydown="if(event.key==='Enter')send()">
+                        <button onclick="send()" id="sendBtn">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-panel">
+                <h3>📊 会话信息</h3>
+                <div class="info-list" id="infoList">
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <h2>暂无会话</h2>
+                        <p>开始对话后显示详细信息</p>
+                    </div>
+                </div>
+                <div class="side-actions">
+                    <button onclick="reset()">🗑️ 清空对话</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userId = 'user_' + Math.random().toString(36).slice(2, 8);
+        let isLoading = false;
+
+        async function send(text) {
+            const input = document.getElementById('messageInput');
+            const message = text || input.value.trim();
+            if (!message || isLoading) return;
+
+            addMessage('user', message);
+            input.value = '';
+            isLoading = true;
+
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing';
+            typingDiv.innerHTML = '<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+            document.getElementById('messages').appendChild(typingDiv);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+
+            try {
+                const resp = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message, user_id: userId})
+                });
+                const data = await resp.json();
+
+                document.getElementById('typing').remove();
+                addMessage('bot', data.response);
+                updateInfo(data);
+            } catch (err) {
+                document.getElementById('typing').remove();
+                addMessage('bot', '❌ 出错了：' + err.message);
+            }
+
+            isLoading = false;
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        }
+
+        function addMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = 'message ' + role;
+            const roleName = role === 'user' ? '我' : '客服小助手';
+            div.innerHTML = '<div><div class="role">' + roleName + '</div><div class="bubble">' + escapeHtml(text) + '</div></div>';
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        }
+
+        function updateInfo(data) {
+            const list = document.getElementById('infoList');
+            list.innerHTML = '';
+
+            const items = [
+                {label: '用户ID', value: userId},
+                {label: '识别意图', value: '<span class="badge">' + (data.intent || '-') + '</span>'},
+                {label: '对话轮数', value: data.dialog_messages || 0},
+                {label: '响应时间', value: (data.response_time_ms || 0) + ' ms'},
+                {label: '用户画像', value: data.user_summary || '-'}
+            ];
+
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'info-item';
+                div.innerHTML = '<div class="label">' + item.label + '</div><div class="value">' + item.value + '</div>';
+                list.appendChild(div);
+            });
+        }
+
+        async function reset() {
+            await fetch('/api/reset', {method: 'POST'});
+            userId = 'user_' + Math.random().toString(36).slice(2, 8);
+            document.getElementById('messages').innerHTML =
+                '<div class="message bot"><div><div class="role">客服小助手</div><div class="bubble">对话已重置，您好！有什么可以帮您？</div></div></div>';
+            document.getElementById('infoList').innerHTML =
+                '<div class="empty-state"><div class="icon">📋</div><h2>暂无会话</h2><p>开始对话后显示详细信息</p></div>';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.getElementById('messageInput').focus();
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+graph TB
+    UserInput[用户输入] --> BuildMsg[构建消息列表]
+    
+    subgraph Messages[消息结构]
+        M1[System Message<br/>角色设定]
+        M2[History<br/>历史对话]
+        M3[User Message<br/>当前问题]
+    end
+    
+    BuildMsg --> M1
+    BuildMsg --> M2
+    BuildMsg --> M3
+    
+    M1 --> CallLLM[调用大模型API]
+    M2 --> CallLLM
+    M3 --> CallLLM
+    
+    CallLLM --> Response[获取响应]
+    Response --> Return[返回给用户]
+    
+    style UserInput fill:#fce4ec,stroke:#e91e63
+    style CallLLM fill:#e3f2fd,stroke:#2196f3
+    style Response fill:#e8f5e9,stroke:#4caf50
+    style Return fill:#c8e6c9,stroke:#388e3c

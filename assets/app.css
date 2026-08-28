@@ -218,6 +218,19 @@ html:not(.dark) select#category-select {
 }
 
 /* Category Tabs in Light Mode */
+.light-theme .bg-gradient-to-br,
+html:not(.dark) .bg-gradient-to-br {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #064e3b 100%) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+.light-theme .bg-gradient-to-br h3,
+html:not(.dark) .bg-gradient-to-br h3 {
+  color: #ffffff !important;
+}
+.light-theme .bg-gradient-to-br p,
+html:not(.dark) .bg-gradient-to-br p {
+  color: #f8fafc !important;
+}
 .light-theme .category-tab:not(.active),
 html:not(.dark) .category-tab:not(.active) {
   background: #ffffff !important;
