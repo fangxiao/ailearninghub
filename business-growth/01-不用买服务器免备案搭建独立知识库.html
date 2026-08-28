@@ -24,7 +24,7 @@
 
   <!-- 副标题 -->
   <h2 style="font-size: 16px; font-weight: bold; color: #00897b; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
-    轻量边缘静态架构选型、全球加速分发、微信直连与百度/谷歌收录全流程复盘
+    轻量边缘静态架构选型、全球加速分发、全网搜索引擎收录与流量分析实战复盘
   </h2>
 
   <!-- 元数据栏 -->
@@ -58,7 +58,7 @@
     但对于文档和博客这类“读者主要用来看、不需要高频往数据库写数据”的网站，其实<strong style="color: #00897b;">完全不需要常驻一台昂贵的云服务器进行运维</strong>。
   </p>
   <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    这次我们在上线 <strong style="color: #00897b;">AI 学习智库（https://ailearning.top）</strong> 时，采用了一套非常现代的轻量化方案：<strong>用 GitHub 存源码，用 Cloudflare 全球免费加速分发</strong>。全流程只需几块钱注册一个域名，当天就完成上线，并在微信内置浏览器和各大搜索引擎里跑通了全部流程。
+    这次我们在上线 <strong style="color: #00897b;">AI 学习智库（https://ailearning.top）</strong> 时，采用了一套非常现代的轻量化方案：<strong>用 GitHub 存源码，用 Cloudflare 全球免费加速分发</strong>。全流程只需几块钱注册一个域名，当天就完成上线，并在各大搜索引擎和网络环境中跑通了全部流程。
   </p>
 
   <!-- 章节 01 -->
@@ -163,45 +163,6 @@
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
       <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">04</span>
-      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">微信内直接打开与安全直连技巧</span>
-    </p>
-  </section>
-
-  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    很多朋友在微信里分享网站链接时，希望读者能够顺畅点开：
-  </p>
-  <section style="margin: 20px 0; padding: 18px 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
-    <p style="margin: 0 0 10px 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
-      1. <strong>独立顶级域名</strong>：使用正规域名（如 <code>.top</code> 或 <code>.com</code>），绝不用免费平台上那些长串的临时测试网址；
-    </p>
-    <p style="margin: 0 0 10px 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
-      2. <strong>内容绿色合规</strong>：文章都是正规的技术分享，绝不搞“强制关注才给看全文”这种微信严厉打击的诱导行为；
-    </p>
-    <p style="margin: 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
-      3. <strong>可信 HTTPS 加密</strong>：Cloudflare 自动颁发标准 SSL 安全证书，微信在 TLS 握手时判定为可信安全站点。
-    </p>
-  </section>
-
-  <!-- 微信站长认证 SOP 卡片 -->
-  <section style="margin: 25px 0; padding: 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
-    <p style="margin: 0 0 10px 0; font-size: 15px; font-weight: bold; color: #00695c;">
-      🛡️ 实战避坑 · 微信站长 3 分钟极速认证放行 SOP
-    </p>
-    <p style="margin: 0 0 8px 0; color: #334155; font-size: 14px; line-height: 1.8;">
-      如果新域名在微信中打开出现安全提示，按照以下 4 步可<strong>快速完成站长认证并恢复正常访问</strong>：
-    </p>
-    <p style="margin: 0; color: #334155; font-size: 13.5px; line-height: 1.7;">
-      <strong>1. 触发站长认证</strong>：在提示页面点击【申请恢复访问】➔ 选择【网站管理员认证】；<br>
-      <strong>2. 获取认证文件</strong>：微信会给出一个专属 txt 文件名（如 <code>fb59...txt</code>）和一串 Hash 校验码；<br>
-      <strong>3. 极速发布部署</strong>：在网站根目录下创建该 txt 文件，填入校验码并推送到 GitHub（Cloudflare Pages 20 秒自动分发完成）；<br>
-      <strong>4. 点击验证秒放行</strong>：回到微信点击【立即认证】，微信系统读取 txt 成功后，<strong>当场解除限制，微信内直接秒开</strong>！
-    </p>
-  </section>
-
-  <!-- 章节 05 -->
-  <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
-    <p style="margin: 0;">
-      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">05</span>
       <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">让 Google、Bing 和百度收录你的网站</span>
     </p>
   </section>
@@ -272,10 +233,10 @@
     <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style="color: #c678dd; font-weight: bold;">print</span>(<span style="color: #98c379;">"✅ 百度推送响应结果:"</span>, res)</p>
   </section>
 
-  <!-- 章节 06 -->
+  <!-- 章节 05 -->
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
-      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">06</span>
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">05</span>
       <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">流量统计 vs 行为转化：怎么看每天的数据？</span>
     </p>
   </section>
@@ -323,10 +284,10 @@
     </p>
   </section>
 
-  <!-- 章节 07：开源福利 Skill -->
+  <!-- 章节 06：开源福利 Skill -->
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
-      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">07</span>
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">06</span>
       <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">开源福利：一键将整套建站能力装入你的 AI 助手</span>
     </p>
   </section>
@@ -380,10 +341,10 @@
     ⭐ 开源仓库地址：<strong style="color: #00897b;">https://github.com/fangxiao/myskills</strong>（欢迎 Star 收藏）
   </p>
 
-  <!-- 章节 08 -->
+  <!-- 章节 07 -->
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
-      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">08</span>
+      <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">07</span>
       <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">写在最后</span>
     </p>
   </section>
