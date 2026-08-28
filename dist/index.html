@@ -8,19 +8,19 @@
   <meta name="keywords" content="AI, 大模型, Transformer, Agent, 智能体, Claude Code, OpenClaw, RAG, Ollama, AI Coding, MCP, Prompt Engineering, 知识库, 深度学习, 微信公众号大前端工程师">
   <meta name="author" content="大前端工程师">
   
-  <!-- OpenGraph Meta Tags for Social & Overseas Sharing -->
+  
   <meta property="og:type" content="website">
   <meta property="og:title" content="AI 全系列学习智库 · 体系化知识库">
   <meta property="og:description" content="涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG)、AI Coding 与精装全套电子书的现代化知识门户。">
   <meta property="og:site_name" content="AI 全系列学习智库">
   <meta property="og:locale" content="zh_CN">
   
-  <!-- Twitter Card -->
+  
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AI 全系列学习智库 · 体系化知识库">
   <meta name="twitter:description" content="涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG)、AI Coding 与精装全套电子书的现代化知识门户。">
 
-  <!-- JSON-LD Structured Data for Google/Bing SEO -->
+  
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,10 +35,10 @@
   }
   </script>
 
-  <!-- Favicon -->
+  
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!-- Tailwind CSS CDN -->
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -58,9 +58,9 @@
       }
     }
   </script>
-  <!-- Marked.js for Markdown Rendering -->
+  
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <!-- Pre-render Theme Setter -->
+  
   <script>
     (function() {
       var savedTheme = localStorage.getItem('ai_hub_theme') || 'dark';
@@ -73,22 +73,22 @@
       }
     })();
   </script>
-  <!-- Custom App Styles -->
+  
   <link rel="stylesheet" href="assets/app.css?v=1.0.3">
 </head>
 <body class="antialiased selection:bg-indigo-500 selection:text-white pb-20">
 
-  <!-- Background Hero Glow -->
+  
   <div class="hero-glow"></div>
 
-  <!-- App Wrapper -->
+  
   <div id="app" class="relative z-10">
 
-    <!-- Top Navigation Bar -->
+    
     <header class="sticky top-0 z-40 glass-nav transition-all">
       <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
         
-        <!-- Brand Logo -->
+        
         <div class="flex items-center gap-2 sm:gap-3 cursor-pointer min-w-0" onclick="window.AI_HUB.resetFilters(); window.AI_HUB.switchView('roadmap');">
           <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-base sm:text-xl shadow-lg shadow-indigo-500/25 shrink-0">
             ⚡
@@ -99,7 +99,7 @@
           </div>
         </div>
 
-        <!-- Quick View Switcher (Desktop) - Roadmap prioritized -->
+        
         <div class="hidden md:flex items-center p-1 rounded-2xl glass border border-white/10 text-xs">
           <button data-view="roadmap" class="px-3.5 py-1.5 rounded-xl font-medium transition flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm">
             <span>🗺️</span>
@@ -119,16 +119,16 @@
           </button>
         </div>
 
-        <!-- Right Action Items -->
+        
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <!-- WeChat Official Account Button in Header -->
+          
           <button onclick="window.AI_HUB.openWeChatModal()" class="px-2 sm:px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition shadow-sm" title="关注微信公众号【大前端工程师】">
             <span>💬</span>
             <span class="hidden md:inline">公众号：</span>
             <span>大前端工程师</span>
           </button>
 
-          <!-- Theme Toggle Button -->
+          
           <button id="theme-toggle" title="切换深色/浅色主题 (T)" class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-xl glass border border-white/10 flex items-center justify-center text-xs sm:text-sm text-slate-300 hover:text-white hover:bg-white/10 transition shrink-0">
             <span id="theme-icon">🌙</span>
           </button>
@@ -136,11 +136,11 @@
       </div>
     </header>
 
-    <!-- Hero Banner Section -->
+    
     <section class="relative pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div class="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
         
-        <!-- Official Account Badge Pill -->
+        
         <div class="flex items-center justify-center gap-2 flex-wrap mb-4">
           <button onclick="window.AI_HUB.openWeChatModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition cursor-pointer shadow-sm group">
             <span class="group-hover:scale-125 transition-transform">📱</span>
@@ -160,7 +160,7 @@
           从大模型底层原理与数学架构，到手写轻量级 Agent 骨架、企业智能客服闭环、本地私有 RAG 知识库、AI Coding 全栈实战与 OpenClaw 智能体，全链路打通 AI 认知与落地能力。
         </p>
 
-        <!-- Mobile Quick View Switcher -->
+        
         <div class="flex md:hidden items-center justify-center p-1 rounded-2xl glass border border-white/10 text-xs max-w-xs mx-auto mt-6">
           <button data-view="roadmap" class="flex-1 py-1.5 rounded-xl font-medium transition flex items-center justify-center gap-1 bg-indigo-600 text-white shadow-sm text-xs">
             <span>🗺️</span>
@@ -182,23 +182,23 @@
       </div>
     </section>
 
-    <!-- Sticky Category Filter Navigation Bar (Multi-row Wrap - All Visible) -->
+    
     <nav class="sticky top-16 z-30 py-3 glass-nav transition-all mb-8 shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div id="category-tabs" class="flex flex-wrap items-center gap-2">
-          <!-- Populated by app.js -->
+          
         </div>
       </div>
     </nav>
 
-    <!-- Main Content Dynamic View -->
+    
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
       <div id="main-content">
-        <!-- Rendered dynamically by app.js -->
+        
       </div>
     </main>
 
-    <!-- WeChat Official Account Dedicated Showcase Card in Footer -->
+    
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
       <div class="p-8 md:p-10 rounded-3xl glass border border-emerald-500/20 relative overflow-hidden bg-gradient-to-br from-emerald-950/20 via-slate-900 to-indigo-950/30">
         <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -235,7 +235,7 @@
       </div>
     </section>
 
-    <!-- Footer -->
+    
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 border-t border-white/10 text-center text-xs text-slate-400">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
         <div class="flex flex-wrap items-center justify-center gap-2 font-semibold text-slate-300">
@@ -259,27 +259,27 @@
 
   </div>
 
-  <!-- WeChat QR Code Modal (弹窗展示公众号) -->
+  
   <div id="wechat-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
     <div class="w-full max-w-md rounded-3xl glass border border-emerald-500/30 p-6 md:p-8 shadow-2xl relative text-center bg-slate-900/90">
-      <!-- Close Button -->
+      
       <button onclick="window.AI_HUB.closeWeChatModal()" class="absolute right-5 top-5 w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition">
         ✕
       </button>
 
-      <!-- Badge & Title -->
+      
       <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
         💬
       </div>
       <h3 class="text-2xl font-black text-white">大前端工程师</h3>
       <p class="text-xs text-emerald-400 font-medium mt-1">官方微信公众号 · 关注获取全套实战源码</p>
 
-      <!-- QR Code Image Box -->
+      
       <div class="my-6 p-4 rounded-2xl bg-white max-w-[220px] mx-auto shadow-2xl border border-white/20 relative group">
         <img id="modal-qr-img" src="assets/qrcode.jpg" onerror="this.onerror=null; this.src='assets/qrcode.png'; this.onerror=()=>this.src='assets/qrcode_placeholder.svg';" alt="大前端工程师公众号二维码" class="w-full h-auto object-contain rounded-lg">
       </div>
 
-      <!-- Action & Tips -->
+      
       <p class="text-xs text-slate-300 leading-relaxed mb-5">
         打开微信 <span class="text-emerald-400 font-bold">扫一扫</span> 上方二维码，或搜索公众号关注。<br>
         后台回复 <kbd class="px-1.5 py-0.5 bg-white/10 rounded font-mono text-emerald-300">AI</kbd> 即可获取全系列资料包与源码仓库。
@@ -297,13 +297,13 @@
     </div>
   </div>
 
-  <!-- In-App Reader Modal (支持 HTML / Markdown) -->
+  
   <div id="reader-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-fade-in">
     <div class="w-full h-full max-w-7xl rounded-none sm:rounded-3xl glass border-0 sm:border sm:border-white/20 shadow-2xl flex flex-col overflow-hidden relative">
       
-      <!-- Top Reader Header Bar (Mobile Optimized) -->
+      
       <div class="h-14 sm:h-16 px-3 sm:px-6 glass-nav border-b border-white/10 flex items-center justify-between gap-2 sm:gap-4 shrink-0">
-        <!-- Title & Category Info -->
+        
         <div class="flex items-center gap-2 sm:gap-3 min-w-0">
           <button id="btn-close-reader" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm transition shrink-0" title="关闭阅读器 (Esc)">
             ✕
@@ -316,53 +316,53 @@
           </div>
         </div>
 
-        <!-- Reader Controls -->
+        
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <!-- Prev Chapter -->
+          
           <button id="btn-prev-article" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition" title="上一篇 (←)">
             ←
           </button>
 
-          <!-- Next Chapter -->
+          
           <button id="btn-next-article" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition" title="下一篇 (→)">
             →
           </button>
 
-          <!-- TOC Drawer Toggle -->
+          
           <button id="btn-toggle-toc" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 text-xs font-medium transition flex items-center gap-1" title="查看文章目录">
             <span>📑 目录</span>
           </button>
 
-          <!-- Open in new tab -->
+          
           <a id="btn-open-external" href="#" target="_blank" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition hidden sm:flex" title="新标签页打开">
             ↗
           </a>
         </div>
       </div>
 
-      <!-- Reader Body (Hybrid: Iframe for HTML / Markdown Viewer) -->
+      
       <div class="flex-1 flex overflow-hidden relative bg-slate-950">
         
-        <!-- Main Iframe Content Container (for HTML) -->
+        
         <div id="reader-iframe-container" class="flex-1 h-full overflow-hidden relative">
           <iframe id="reader-frame" src="about:blank" class="w-full h-full border-0 bg-white" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
         </div>
 
-        <!-- Main Markdown Container (for .md) -->
+        
         <div id="reader-markdown-container" class="hidden flex-1 h-full overflow-y-auto p-4 sm:p-8 md:p-12 max-w-4xl mx-auto w-full">
           <div id="markdown-content" class="markdown-body">
-            <!-- Rendered Markdown HTML -->
+            
           </div>
         </div>
 
-        <!-- Floating TOC Drawer (Responsive on Mobile) -->
+        
         <aside id="reader-toc-drawer" class="hidden absolute right-0 top-0 bottom-0 w-full sm:w-80 glass border-l border-white/10 p-5 overflow-y-auto z-20 shadow-2xl bg-slate-900/95">
           <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">本篇大纲目录</h4>
             <button onclick="document.getElementById('reader-toc-drawer').classList.add('hidden')" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white text-xs flex items-center justify-center">✕</button>
           </div>
           <div id="reader-toc-list" class="space-y-1">
-            <!-- Populated dynamically -->
+            
           </div>
         </aside>
       </div>
@@ -370,15 +370,15 @@
     </div>
   </div>
 
-  <!-- Toast Notification Pill -->
+  
   <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl glass border border-white/20 shadow-2xl text-white text-sm flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
     <span>✨</span>
     <span>操作成功</span>
   </div>
 
-  <!-- Data Script -->
+  
   <script src="assets/data.js?v=1.0.3"></script>
-  <!-- Application Core Script -->
+  
   <script src="assets/app.js?v=1.0.3"></script>
 </body>
 </html>

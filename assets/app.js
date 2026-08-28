@@ -12,6 +12,7 @@
     searchQuery: '',
     difficultyFilter: 'all',
     viewMode: 'roadmap', // 'roadmap' (default) | 'grid' | 'tree' | 'list'
+    roadmapTrack: 'tech', // 'tech' (技术研发路线) | 'business' (业务落地路线)
     theme: localStorage.getItem('ai_hub_theme') || 'dark',
     readerTheme: localStorage.getItem('ai_hub_reader_theme') || 'default',
     readerFontSize: parseInt(localStorage.getItem('ai_hub_reader_fontsize') || '16', 10),
@@ -605,42 +606,96 @@
     `;
   }
 
-  // 4. Learning Roadmap View (体系化进阶路线图)
+  // 4. Learning Roadmap View (体系化进阶路线图 - 支持技术研发 / 业务落地 双轨切换)
   function renderRoadmapView() {
-    const roadmapData = [
+    const isTech = state.roadmapTrack === 'tech';
+
+    const techRoadmapData = [
       {
         level: "Level 1",
         title: "🌱 基础通识与大模型底层原理",
-        desc: "建立 AI 技术全貌认知，深入理解大模型架构、注意力机制、RoPE 与位置编码",
+        desc: "深入掌握大模型核心架构、注意力机制 (Self-Attention)、RoPE 与位置编码数学原理与前沿脉络",
         categories: ["ai-science", "ai-news", "bigmodel", "ai-safety"],
+        skills: ["Transformer 架构", "注意力机制计算", "Token & 嵌入向量", "模型安全与伦理"]
       },
       {
         level: "Level 2",
-        title: "⚡ Agent 核心架构、手写框架与 OpenClaw 实战",
-        desc: "从零手写轻量级 Agent，深入 OpenClaw 智能体系统，掌握有限状态机、意图感知、记忆与核心思考循环",
+        title: "⚡ Agent 核心架构、手写框架与思考循环",
+        desc: "从零手写轻量级 Agent 思考循环，深入 OpenClaw 智能体系统，掌握有限状态机、意图感知与记忆系统",
         categories: ["myagent", "agent-core", "openclaw"],
+        skills: ["ReAct 思考循环", "短/长期记忆系统", "工具调用协议", "OpenClaw 智能体"]
       },
       {
         level: "Level 3",
-        title: "🛠️ 现代 AI 工具链与 AI Coding 编程实战",
-        desc: "玩转 Claude Code 全家桶、AI Coding 33篇全体系、MCP Server 协议开发、Dify 编排与 TDD 先行",
+        title: "🛠️ 现代 AI 工具链与 AI Coding 全栈进阶",
+        desc: "玩转 Claude Code 全家桶、AI Coding 33篇全体系、MCP Server 协议开发、TDD 与后端服务集成",
         categories: ["aitools", "ai-coding"],
+        skills: ["Claude Code 全家桶", "MCP 协议开发", "AI 辅助架构设计", "测试驱动开发 TDD"]
       },
       {
         level: "Level 4",
-        title: "💼 垂直行业与企业级项目实战",
-        desc: "落地企业智能客服、构建私有本地大模型知识库 (RAG)、打造英语智能导师与量化交易系统",
+        title: "💼 企业级工程落地与私有知识库 (RAG)",
+        desc: "落地企业智能客服全闭环、构建私有本地大模型知识库 (Ollama + 向量库)、打造垂直领域 Agent 系统",
         categories: ["customer-service", "customer-service-harness", "local-rag", "english-agent", "quant-agent"],
+        skills: ["企业微信智能客服", "本地私有 RAG", "向量检索与重排", "垂直 Agent 落地"]
       }
     ];
 
+    const businessRoadmapData = [
+      {
+        level: "Level 1",
+        title: "🎯 业务认知与高阶提示工程 (Prompt 赋能业务)",
+        desc: "把业务规则转化为大模型能精准执行的高阶 Prompt，掌握结构化输出、业务边界约束与非结构化数据清洗",
+        categories: ["aitools", "ai-news"],
+        skills: ["结构化 Prompt 模板", "业务规则与边界约束", "非结构化数据初筛", "行业研报秒级提炼"]
+      },
+      {
+        level: "Level 2",
+        title: "💡 AI 产品设计与业务流重构 (AI PRD 与场景挖掘)",
+        desc: "掌握 AI 原生产品需求定义（AI PRD 规范）、人机协同交互模式设计、业务漏斗全链路重塑与内容批量生产管线",
+        categories: ["aitools", "ai-coding", "english-agent"],
+        skills: ["AI PRD 结构化撰写", "Copilot vs Agent 模式", "幻觉控制与评测 (Eval)", "业务漏斗全链路重构"]
+      },
+      {
+        level: "Level 3",
+        title: "🤖 零代码搭建业务智能体 (Dify/扣子实操落地)",
+        desc: "无需编写一行代码，通过 Dify / 扣子 / FastGPT 可视化搭建企业专属知识问答助手、业务自动化工作流与企微/飞书机器人",
+        categories: ["customer-service", "local-rag", "openclaw"],
+        skills: ["企业私有知识问答库", "自动化工作流 Workflow", "销售与客服智能助手", "企微/飞书机器人接入"]
+      },
+      {
+        level: "Level 4",
+        title: "📈 业务 ROI 评估与商业化闭环 (决策与商业落地)",
+        desc: "掌握 AI 项目投入产出比（ROI）测算、自研 vs SaaS 采购决策、一人公司（Solopreneur）闭环与垂直行业真实案例",
+        categories: ["customer-service-harness", "quant-agent", "ai-safety"],
+        skills: ["自研 vs SaaS 选型 ROI", "一人公司 AI 协同闭环", "垂直行业落地案例拆解", "业务团队 AI 落地 SOP"]
+      }
+    ];
+
+    const roadmapData = isTech ? techRoadmapData : businessRoadmapData;
+
     el.mainContent.innerHTML = `
       <div class="max-w-4xl mx-auto animate-fade-in px-1 sm:px-0">
+        <!-- Dual Track Switcher Pill -->
         <div class="text-center mb-8 sm:mb-10">
-          <span class="badge-chip bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 mb-2 sm:mb-3">🗺️ 体系化学习路线</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">从零到专家的 AI 开发者成长路径</h2>
-          <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl mx-auto">
-            按照 4 个进阶阶段循序渐进研读，掌握从底层原理到 Agent 落地、AI 编程实战与全栈工程落地。
+          <div class="inline-flex items-center p-1 rounded-2xl glass border border-white/15 text-xs sm:text-sm mb-5 shadow-lg max-w-full">
+            <button onclick="window.AI_HUB.switchRoadmapTrack('tech')" class="px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold transition flex items-center gap-1.5 sm:gap-2 ${isTech ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}">
+              <span>🛠️ 技术研发路线</span>
+              <span class="text-[10px] sm:text-xs opacity-75 font-normal hidden xs:inline">（工程师/架构）</span>
+            </button>
+            <button onclick="window.AI_HUB.switchRoadmapTrack('business')" class="px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold transition flex items-center gap-1.5 sm:gap-2 ${!isTech ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}">
+              <span>🎯 业务落地路线</span>
+              <span class="text-[10px] sm:text-xs opacity-75 font-normal hidden xs:inline">（产品/业务/运营）</span>
+            </button>
+          </div>
+
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">
+            ${isTech ? '从零到架构师的 <span class="gradient-text">AI 开发者</span> 进阶路线' : '从零到操盘手的 <span class="gradient-text">AI 产品与业务落地</span> 路线'}
+          </h2>
+          <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl mx-auto leading-relaxed">
+            ${isTech 
+              ? '按照 4 个工程进阶阶段循序渐进研读，掌握从大模型原理到 Agent 落地、AI 编程实战与全栈工程体系。' 
+              : '专为产品经理、业务专家与运营打造：从高阶提示工程到 AI 原生产品设计、零代码搭建企业智能体与商业闭环。'}
           </p>
         </div>
 
@@ -661,9 +716,18 @@
 
                     <div class="shrink-0">
                       <span class="text-[11px] sm:text-xs font-medium px-2.5 sm:px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-block">
-                        共 ${stepArticles.length} 篇深度解析
+                        共 ${stepArticles.length} 篇精选文献
                       </span>
                     </div>
+                  </div>
+
+                  <!-- Key Competencies Skills Badges -->
+                  <div class="flex flex-wrap items-center gap-1.5 my-3">
+                    ${(step.skills || []).map(s => `
+                      <span class="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-md bg-white/5 text-slate-300 border border-white/10">
+                        ✓ ${s}
+                      </span>
+                    `).join('')}
                   </div>
 
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3 sm:mt-4">
@@ -1147,6 +1211,10 @@
       state.viewMode = mode;
       updateViewButtons();
       renderMainView();
+    },
+    switchRoadmapTrack: function (track) {
+      state.roadmapTrack = track;
+      renderRoadmapView();
     }
   };
 

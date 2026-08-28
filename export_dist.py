@@ -14,9 +14,96 @@ import zipfile
 import fnmatch
 import json
 import re
+import subprocess
 
 DIST_DIR = "dist"
 EXCLUDE_CONFIG_PATH = "exclude_config.json"
+
+def minify_css_content(css_str):
+    """Minify CSS using esbuild with pure-python fallback"""
+    try:
+        proc = subprocess.run(
+            ["npx", "--yes", "esbuild", "--loader=css", "--minify"],
+            input=css_str.encode('utf-8'),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True
+        )
+        return proc.stdout.decode('utf-8').strip()
+    except Exception:
+        pass
+        
+    # High-efficiency Python Fallback
+    css = re.sub(r'/\*[\s\S]*?\*/', '', css_str)
+    css = re.sub(r'\s+', ' ', css)
+    css = re.sub(r'\s*([\{\}\:\;\,\>\+\~\(\)])\s*', r'\1', css)
+    css = re.sub(r';\}', '}', css)
+    return css.strip()
+
+def minify_js_content(js_str):
+    """Minify JavaScript using esbuild with syntax-safe python tokenizer fallback"""
+    try:
+        proc = subprocess.run(
+            ["npx", "--yes", "esbuild", "--loader=js", "--minify"],
+            input=js_str.encode('utf-8'),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True
+        )
+        return proc.stdout.decode('utf-8').strip()
+    except Exception:
+        pass
+
+    # Tokenizer-based Python Fallback preserving strings & template literals
+    res = []
+    i = 0
+    n = len(js_str)
+    in_str = None
+    
+    while i < n:
+        c = js_str[i]
+        if in_str:
+            res.append(c)
+            if c == '\\':
+                if i + 1 < n:
+                    res.append(js_str[i+1])
+                    i += 2
+                    continue
+            elif c == in_str:
+                in_str = None
+            i += 1
+            continue
+            
+        if c in ('"', "'", '`'):
+            in_str = c
+            res.append(c)
+            i += 1
+            continue
+            
+        if c == '/' and i + 1 < n:
+            if js_str[i+1] == '/':
+                end = js_str.find('\n', i)
+                if end == -1: break
+                i = end + 1
+                res.append('\n')
+                continue
+            elif js_str[i+1] == '*':
+                end = js_str.find('*/', i + 2)
+                if end == -1: break
+                i = end + 2
+                continue
+                
+        res.append(c)
+        i += 1
+        
+    code = ''.join(res)
+    lines = [l.strip() for l in code.splitlines() if l.strip()]
+    return '\n'.join(lines)
+
+def minify_html_content(html_str):
+    """Minify HTML structure by removing comments and trimming space"""
+    html = re.sub(r'<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->)[\s\S])*-->', '', html_str)
+    return html.strip()
 
 def load_exclude_config():
     config = {
@@ -490,9 +577,6 @@ def build_dist():
     with open(os.path.join(DIST_DIR, "assets", "data.json"), "w", encoding="utf-8") as f:
         json.dump(dist_site_data, f, ensure_ascii=False, indent=2)
 
-    with open(os.path.join(DIST_DIR, "assets", "data.js"), "w", encoding="utf-8") as f:
-        f.write("window.SITE_DATA = " + json.dumps(dist_site_data, ensure_ascii=False, indent=2) + ";")
-
     # Write CloudBase Dockerfile & nginx.conf directly inside DIST_DIR for 1-click cloud deploy
     cloud_dockerfile = '''FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -508,8 +592,65 @@ CMD ["nginx", "-g", "daemon off;"]
     if os.path.exists(".dockerignore"):
         shutil.copy2(".dockerignore", os.path.join(DIST_DIR, ".dockerignore"))
 
-    # 5. Create zip bundle
+    # 5. Minify CSS, JS, HTML, and JSON Assets for Production
+    print("-" * 65)
+    print(" ⚡ 正在执行专业级静态资源深度压缩 (Minification)...")
+    
+    min_stats = []
+
+    # 5.1 Minify app.css
+    dist_css_path = os.path.join(DIST_DIR, "assets", "app.css")
+    if os.path.exists(dist_css_path):
+        with open(dist_css_path, "r", encoding="utf-8") as f:
+            orig_css = f.read()
+        min_css = minify_css_content(orig_css)
+        with open(dist_css_path, "w", encoding="utf-8") as f:
+            f.write(min_css)
+        min_stats.append(("assets/app.css", len(orig_css), len(min_css)))
+
+    # 5.2 Minify app.js
+    dist_js_path = os.path.join(DIST_DIR, "assets", "app.js")
+    if os.path.exists(dist_js_path):
+        with open(dist_js_path, "r", encoding="utf-8") as f:
+            orig_js = f.read()
+        min_js = minify_js_content(orig_js)
+        with open(dist_js_path, "w", encoding="utf-8") as f:
+            f.write(min_js)
+        min_stats.append(("assets/app.js", len(orig_js), len(min_js)))
+
+    # 5.3 Write Ultra-Compact data.json & data.js
+    dist_json_path = os.path.join(DIST_DIR, "assets", "data.json")
+    dist_data_js_path = os.path.join(DIST_DIR, "assets", "data.js")
+    
+    compact_json = json.dumps(dist_site_data, separators=(',', ':'), ensure_ascii=False)
+    compact_data_js = "window.SITE_DATA=" + compact_json + ";"
+    
+    with open(dist_json_path, "w", encoding="utf-8") as f:
+        f.write(compact_json)
+    with open(dist_data_js_path, "w", encoding="utf-8") as f:
+        f.write(compact_data_js)
+        
+    orig_data_len = len(json.dumps(dist_site_data, indent=2, ensure_ascii=False))
+    min_stats.append(("assets/data.json", orig_data_len, len(compact_json)))
+    min_stats.append(("assets/data.js", orig_data_len + 25, len(compact_data_js)))
+
+    # 5.4 Minify index.html
+    dist_index_path = os.path.join(DIST_DIR, "index.html")
+    if os.path.exists(dist_index_path):
+        with open(dist_index_path, "r", encoding="utf-8") as f:
+            orig_html = f.read()
+        min_html = minify_html_content(orig_html)
+        with open(dist_index_path, "w", encoding="utf-8") as f:
+            f.write(min_html)
+        min_stats.append(("index.html", len(orig_html), len(min_html)))
+
+    for name, orig_len, new_len in min_stats:
+        saved_pct = ((orig_len - new_len) / orig_len) * 100 if orig_len > 0 else 0
+        print(f"    ✓ {name:<18}: {format_size(orig_len):>8} -> {format_size(new_len):>8} (体积缩减 {saved_pct:.1f}%)")
+
+    # 6. Create zip bundle
     zip_path = "ai_learning_hub_dist.zip"
+    print("-" * 65)
     print(" 📦 正在生成一键发布压缩包: ai_learning_hub_dist.zip ...")
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, dirs, files in os.walk(DIST_DIR):
@@ -523,6 +664,7 @@ CMD ["nginx", "-g", "daemon off;"]
     print(f"    - 发布分类数: {len(active_categories)} 个")
     print(f"    - 正式收录文献: {len(final_articles)} 篇")
     print(f"    - 物理过滤草稿: {skipped_count} 篇")
+    print(f"    - 静态资源压缩: 已全部完成 (CSS/JS/JSON/HTML Minified)")
     print(f"    - 生成部署 ZIP: {zip_path} ({os.path.getsize(zip_path) // 1024} KB)")
     print("=" * 65)
     print(" 💡 提示：部署时只需将 dist/ 文件夹内容（或解压后的 ZIP）上传到服务器即可！")
