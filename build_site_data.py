@@ -659,11 +659,82 @@ def build_data():
     with open("assets/data.js", "w", encoding="utf-8") as f:
         f.write("window.SITE_DATA = " + json.dumps(site_data, ensure_ascii=False, indent=2) + ";")
 
+    # Generate SEO files (sitemap.xml and robots.txt)
+    generate_seo_files(site_data)
+
     print(f"✅ 数据构建完成！")
     print(f"   - 生效系列分类: {len(active_categories)} 个")
     print(f"   - 展现文献篇目: {len(all_articles)} 篇")
     print(f"   - 过滤排除文献: {excluded_count} 篇")
     return site_data
+
+def generate_seo_files(site_data):
+    base_url = "https://ailearning.top"
+    now_date = "2026-08-28"
+    
+    # 1. robots.txt
+    robots_content = f"""User-agent: *
+Allow: /
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    with open("robots.txt", "w", encoding="utf-8") as f:
+        f.write(robots_content)
+        
+    # 2. sitemap.xml
+    urls = []
+    # Homepage
+    urls.append(f"""  <url>
+    <loc>{base_url}/</loc>
+    <lastmod>{now_date}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>\n""")
+    
+    # Roadmap
+    urls.append(f"""  <url>
+    <loc>{base_url}/#roadmap</loc>
+    <lastmod>{now_date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>\n""")
+    
+    # Categories
+    for cat in site_data.get('categories', []):
+        cat_id = cat.get('id')
+        urls.append(f"""  <url>
+    <loc>{base_url}/#cat={cat_id}</loc>
+    <lastmod>{now_date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>\n""")
+        
+    # Articles
+    for art in site_data.get('articles', []):
+        art_id = art.get('id')
+        art_path = art.get('path', '')
+        urls.append(f"""  <url>
+    <loc>{base_url}/?id={art_id}</loc>
+    <lastmod>{now_date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>\n""")
+        if art_path and art_path.endswith('.html'):
+            urls.append(f"""  <url>
+    <loc>{base_url}/{art_path}</loc>
+    <lastmod>{now_date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>\n""")
+            
+    sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{"".join(urls)}</urlset>"""
+
+    with open("sitemap.xml", "w", encoding="utf-8") as f:
+        f.write(sitemap_xml)
+        
+    print(f"   - 🌐 全球 SEO 索引已生成: robots.txt, sitemap.xml (收录 {len(urls)} 个独立页面链接)")
 
 if __name__ == '__main__':
     build_data()

@@ -591,6 +591,10 @@ CMD ["nginx", "-g", "daemon off;"]
         shutil.copy2("nginx.conf", os.path.join(DIST_DIR, "nginx.conf"))
     if os.path.exists(".dockerignore"):
         shutil.copy2(".dockerignore", os.path.join(DIST_DIR, ".dockerignore"))
+    if os.path.exists("robots.txt"):
+        shutil.copy2("robots.txt", os.path.join(DIST_DIR, "robots.txt"))
+    if os.path.exists("sitemap.xml"):
+        shutil.copy2("sitemap.xml", os.path.join(DIST_DIR, "sitemap.xml"))
 
     # 5. Minify CSS, JS, HTML, and JSON Assets for Production
     print("-" * 65)
