@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>不用买服务器、免备案：我是如何用 Cloudflare + GitHub 搭建独立知识库的？</title>
+  <title>0服务器成本：我是如何用 Cloudflare + GitHub 搭建现代化独立知识库的？</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f5f5f5;">
 
@@ -13,52 +13,52 @@
   <!-- 顶部主题药丸标签 -->
   <p style="margin: 0 0 16px 0; text-align: center;">
     <span style="display: inline-block; background-color: #e0f2f1; color: #00897b; font-size: 12px; font-weight: bold; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;">
-      ⚡ 独立开发实战 · 零成本商业建站指南
+      ⚡ 独立开发实战 · 零服务器成本商业建站指南
     </span>
   </p>
 
   <!-- 标题 -->
   <h1 style="font-size: 22px; font-weight: bold; color: #1a1a1a; text-align: center; margin: 15px 0 10px 0; line-height: 1.45;">
-    不用买服务器、免备案：我是如何用 Cloudflare + GitHub 搭建独立知识库的？
+    0服务器成本：我是如何用 Cloudflare + GitHub 搭建现代化独立知识库的？
   </h1>
 
   <!-- 副标题 -->
   <h2 style="font-size: 16px; font-weight: bold; color: #00897b; text-align: center; margin: 0 0 25px 0; line-height: 1.5;">
-    零成本建站、Cloudflare 全球托管、微信直连与百度/谷歌收录全流程复盘
+    轻量边缘静态架构选型、全球加速分发、微信直连与百度/谷歌收录全流程复盘
   </h2>
 
   <!-- 元数据栏 -->
   <p style="font-size: 13px; color: #888888; text-align: center; margin: 0 0 30px 0; padding-bottom: 18px; border-bottom: 1px dashed #e0e0e0;">
-    作者：大前端工程师 &nbsp;|&nbsp; 约 1900 字 &nbsp;|&nbsp; 实战复盘指南
+    作者：大前端工程师 &nbsp;|&nbsp; 约 2000 字 &nbsp;|&nbsp; 实战复盘指南
   </p>
 
   <!-- 金句引用框 -->
   <section style="margin: 25px 0; padding: 18px 20px; background-color: #f0fdfa; border-left: 4px solid #00897b; border-radius: 4px;">
     <p style="margin: 0; font-size: 15px; color: #00695c; line-height: 1.8; font-weight: bold;">
-      “搭建一个属于自己的独立技术专栏或产品知识库，本该是一件轻快纯粹的事。你不应该被每年上千块的闲置服务器年费和漫长的备案流程劝退。”
+      “搭建一个属于自己的独立技术专栏或产品知识库，本该是一件轻快纯粹的事。你不应该被每年上千块的闲置服务器年费和复杂的运维部署劝退。”
     </p>
   </section>
 
   <!-- 导语 -->
   <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    如果你想为自己或团队搭建一个专门放技术文章、使用教程或业务资料的独立知识库，过去通常会遇到两个麻烦事：
+    如果你想为自己或团队搭建一个专门放技术文章、使用教程或业务资料的独立知识库，传统方案通常会遇到两个麻烦事：
   </p>
 
-  <!-- 红色痛点卡片 -->
+  <!-- 红色痛点卡片 (已修正重复表述，去除敏感词) -->
   <section style="margin: 20px 0; padding: 18px 20px; background-color: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e53935; border-radius: 6px;">
     <p style="margin: 0 0 10px 0; color: #c62828; font-size: 15px; line-height: 1.8;">
-      ❌ <strong>痛点 1 · 成本高昂</strong>：每年必须掏几百甚至上千块租云服务器、买公网 IP 和带宽；
+      ❌ <strong>痛点 1 · 闲置成本高</strong>：每年必须掏几百甚至上千块租云服务器、购买公网 IP 和固定带宽；
     </p>
     <p style="margin: 0; color: #c62828; font-size: 15px; line-height: 1.8;">
-      ❌ <strong>痛点 2 · 流程窒息</strong>：要绑定国内域名，要在国内绑定域名，必须申请 ICP 备案、提交各种资料审核并等上一两周。
+      ❌ <strong>痛点 2 · 运维管理繁琐</strong>：需要手动配置 Nginx 反向代理、Linux 运行时环境依赖、数据库维护与 SSL 证书续期，运维负担重。
     </p>
   </section>
 
   <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    但对于文档和博客这类“别人主要用来看、不需要经常往数据库里存数据”的网站，其实<strong style="color: #00897b;">完全不需要买云服务器，更不需要等待备案</strong>。
+    但对于文档和博客这类“读者主要用来看、不需要高频往数据库写数据”的网站，其实<strong style="color: #00897b;">完全不需要常驻一台昂贵的云服务器进行运维</strong>。
   </p>
   <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    这次我们在上线 <strong style="color: #00897b;">AI 学习智库（https://ailearning.top）</strong> 时，采用了一套非常现代的轻量化方案：<strong>用 GitHub 存源码，用 Cloudflare 全球免费加速</strong>。全流程只花了几块钱买域名，当天就完成上线，并在微信内置浏览器和各大搜索引擎里跑通了全部流程。
+    这次我们在上线 <strong style="color: #00897b;">AI 学习智库（https://ailearning.top）</strong> 时，采用了一套非常现代的轻量化方案：<strong>用 GitHub 存源码，用 Cloudflare 全球免费加速分发</strong>。全流程只需几块钱注册一个域名，当天就完成上线，并在微信内置浏览器和各大搜索引擎里跑通了全部流程。
   </p>
 
   <!-- 章节 01 -->
@@ -79,7 +79,7 @@
       🏢 <strong>传统建站（买云服务器）</strong>：相当于你租了一间实体店面。不管今天有没有客人来，每个月都要交固定的房租和水电费，还得自己负责打扫卫生和防黑客扫描。
     </p>
     <p style="margin: 0; color: #00695c; font-size: 15px; line-height: 1.8;">
-      🌐 <strong>现代静态建站（Cloudflare 托管）</strong>：相当于你把印刷好的手册，免费放在全球数百个公共服务台。有人想看时，就近的服务台直接把手册递给他。<strong>你不需要租店面，一分钱房租都不用掏</strong>。
+      🌐 <strong>现代静态建站（Cloudflare 托管）</strong>：相当于你把印刷好的手册，免费放在全球数百个公共服务台。有人想看时，就近的服务台直接把手册递给他。<strong>你不需要租实体店面，一分钱房租都不用掏</strong>。
     </p>
   </section>
 
@@ -163,41 +163,38 @@
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
       <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">04</span>
-      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">微信内直接打开防拦截秘诀</span>
+      <span style="display: inline-block; vertical-align: middle; font-size: 18px; font-weight: bold; color: #1a1a1a;">微信内直接打开与安全直连技巧</span>
     </p>
   </section>
 
   <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    很多人最担心的是：<em>“没办国内备案，在微信里点开会不会弹红色感叹号？”</em>
-  </p>
-  <p style="margin: 25px 0; text-align: justify; text-indent: 2em; font-size: 16px; line-height: 2.0; color: #3f3f3f;">
-    只要做好这三点，微信内置浏览器就能顺畅直连秒开：
+    很多朋友在微信里分享网站链接时，希望读者能够顺畅点开：
   </p>
   <section style="margin: 20px 0; padding: 18px 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
     <p style="margin: 0 0 10px 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
-      1. <strong>独立顶级域名</strong>：花几块钱买个正规域名（如 <code>.top</code> 或 <code>.com</code>），绝不用免费平台上那些长串的临时测试网址；
+      1. <strong>独立顶级域名</strong>：使用正规域名（如 <code>.top</code> 或 <code>.com</code>），绝不用免费平台上那些长串的临时测试网址；
     </p>
     <p style="margin: 0 0 10px 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
-      2. <strong>内容绿色合规</strong>：文章都是正规的技术分享，绝不搞“强制关注公众号才给看全文”这种微信严厉打击的诱导拦截；
+      2. <strong>内容绿色合规</strong>：文章都是正规的技术分享，绝不搞“强制关注才给看全文”这种微信严厉打击的诱导行为；
     </p>
     <p style="margin: 0; color: #00695c; font-size: 14.5px; line-height: 1.8;">
       3. <strong>可信 HTTPS 加密</strong>：Cloudflare 自动颁发标准 SSL 安全证书，微信在 TLS 握手时判定为可信安全站点。
     </p>
   </section>
 
-    <!-- 微信拦截与3分钟极速解封 SOP 卡片 -->
+  <!-- 微信站长认证 SOP 卡片 -->
   <section style="margin: 25px 0; padding: 20px; background-color: #f0fdfa; border: 1px solid #ccfbf1; border-left: 4px solid #00897b; border-radius: 6px;">
     <p style="margin: 0 0 10px 0; font-size: 15px; font-weight: bold; color: #00695c;">
-      🛡️ 实测避坑 · 微信拦截后 3 分钟站长极速解封 SOP
+      🛡️ 实战避坑 · 微信站长 3 分钟极速认证放行 SOP
     </p>
     <p style="margin: 0 0 8px 0; color: #334155; font-size: 14px; line-height: 1.8;">
-      如果新域名在微信中打开提示“未备案或非微信官方网页”，按照以下 4 步可<strong>立刻临时恢复正常访问</strong>：
+      如果新域名在微信中打开出现安全提示，按照以下 4 步可<strong>快速完成站长认证并恢复正常访问</strong>：
     </p>
-    <p style="margin: 0 0 6px 0; color: #334155; font-size: 13.5px; line-height: 1.7;">
-      <strong>1. 触发站长认证</strong>：在微信拦截页面点击【申请恢复访问】➔ 选择【网站管理员认证】；<br>
+    <p style="margin: 0; color: #334155; font-size: 13.5px; line-height: 1.7;">
+      <strong>1. 触发站长认证</strong>：在提示页面点击【申请恢复访问】➔ 选择【网站管理员认证】；<br>
       <strong>2. 获取认证文件</strong>：微信会给出一个专属 txt 文件名（如 <code>fb59...txt</code>）和一串 Hash 校验码；<br>
       <strong>3. 极速发布部署</strong>：在网站根目录下创建该 txt 文件，填入校验码并推送到 GitHub（Cloudflare Pages 20 秒自动分发完成）；<br>
-      <strong>4. 点击验证秒解封</strong>：回到微信点击【立即认证】，微信系统读取 txt 成功后，<strong>当场解除拦截，微信内恢复直接秒开</strong>！
+      <strong>4. 点击验证秒放行</strong>：回到微信点击【立即认证】，微信系统读取 txt 成功后，<strong>当场解除限制，微信内直接秒开</strong>！
     </p>
   </section>
 
@@ -243,16 +240,14 @@
     </p>
   </section>
 
-  <!-- 微信专用 · 100% 不丢色代码高亮容器 (单行 <p> 分段，保证 span 颜色绝不丢失) -->
+  <!-- 微信专用 · 100% 不丢色代码高亮容器 -->
   <section style="margin: 25px 0; background-color: #282c34; border-radius: 8px; padding: 16px 18px; overflow-x: auto;">
-    <!-- 顶栏红黄绿圆点 -->
     <p style="margin: 0 0 12px 0; line-height: 1; padding-bottom: 8px; border-bottom: 1px solid #3e4451;">
       <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ff5f56; margin-right: 4px;"></span>
       <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #ffbd2e; margin-right: 4px;"></span>
       <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #27c93f; margin-right: 8px;"></span>
       <span style="color: #abb2bf; font-size: 12px; font-family: Consolas, Menlo, Monaco, monospace; font-weight: bold;">Python 3 · 百度主动推送脚本</span>
     </p>
-    <!-- 代码每一行独立 <p> 保证复制时换行与颜色精准保留 -->
     <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #5c6370; font-style: italic; white-space: pre;"><span style="color: #5c6370;"># 1. 导入 Python 标准网络请求库</span></p>
     <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style="color: #c678dd; font-weight: bold;">import</span> <span style="color: #e5c07b;">urllib.request</span></p>
     <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;">&nbsp;</p>
@@ -277,7 +272,7 @@
     <p style="margin: 0; font-family: Consolas, Menlo, Monaco, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6; color: #abb2bf; white-space: pre;"><span style="color: #c678dd; font-weight: bold;">print</span>(<span style="color: #98c379;">"✅ 百度推送响应结果:"</span>, res)</p>
   </section>
 
-    <!-- 章节 06 -->
+  <!-- 章节 06 -->
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
       <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">06</span>
@@ -328,7 +323,7 @@
     </p>
   </section>
 
-    <!-- 章节 07：开源福利 Skill -->
+  <!-- 章节 07：开源福利 Skill -->
   <section style="margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e0e0e0; border-bottom: 1px dashed #e0e0e0;">
     <p style="margin: 0;">
       <span style="display: inline-block; vertical-align: middle; background-color: #00897b; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; margin-right: 10px;">07</span>
