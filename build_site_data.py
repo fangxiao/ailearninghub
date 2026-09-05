@@ -343,6 +343,18 @@ categories_data = [
         "color": "teal",
         "difficulty": "商业落地",
         "tags": ["零成本建站", "Cloudflare", "免备案", "SEO矩阵", "业务落地"]
+    },
+    {
+        "id": "student-growth",
+        "name": "学生 AI 成长路线",
+        "icon": "🎒",
+        "badge": "学生专属",
+        "desc": "专为中学生与大学生打造：告别做题家思维、掌握提问力、数理化费曼学习法、手搓网页游戏与个人知识库",
+        "theme": "cyan",
+        "accent": "#0284c7",
+        "color": "cyan",
+        "difficulty": "零基础到创造者",
+        "tags": ["思维升级", "费曼学习", "启发式提问", "手搓游戏", "错题知识库", "个人主页"]
     }
 ]
 

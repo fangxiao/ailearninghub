@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学生成长 08 · 零成本上线：搭建一个向全世界展示的个人独立作品集主页</title>
+  <link rel="stylesheet" href="../assets/app.css">
+  <style>
+    body { margin: 0; padding: 0; background: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #f1f5f9; line-height: 1.9; }
+    .container { max-width: 820px; margin: 30px auto; background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.08); padding: 40px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #38bdf8; text-decoration: none; margin-bottom: 20px; padding: 6px 14px; background: rgba(56, 189, 248, 0.1); border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.2s; }
+    .back-btn:hover { background: #0284c7; color: #fff; }
+    .header-box { text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 25px; }
+    h1 { font-size: 24px; font-weight: 800; color: #ffffff; margin: 8px 0; line-height: 1.4; }
+    h2.sub { font-size: 15px; font-weight: 500; color: #38bdf8; margin: 0 0 12px 0; }
+    .meta { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    p { margin: 18px 0; text-align: justify; font-size: 15.5px; color: #cbd5e1; }
+    .callout { margin: 20px 0; padding: 16px 18px; border-radius: 8px; font-size: 14.5px; line-height: 1.7; }
+    .callout-blue { background: rgba(2, 132, 199, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-left: 4px solid #0284c7; color: #bae6fd; }
+    .callout-teal { background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(20, 184, 166, 0.2); border-left: 4px solid #0d9488; color: #99f6e4; }
+    .section-title { margin: 35px 0 16px 0; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 10px; }
+    .section-num { font-size: 13px; font-weight: 700; color: #ffffff; background: #0284c7; padding: 3px 9px; border-radius: 4px; }
+    .section-text { font-size: 18px; font-weight: 700; color: #ffffff; }
+    .btn-wechat-preview { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #07c160 0%, #059669 100%); color: #ffffff; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3); transition: all 0.2s; }
+    .btn-wechat-preview:hover { opacity: 0.9; transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <a href="../index.html" class="back-btn">← 返回智库主页</a>
+    <a href="08-零成本上线-搭建向全世界展示的个人独立作品集主页-公众号版.html" target="_blank" class="btn-wechat-preview">
+      <span>📱 查看公众号排版专版 (一键复制) ↗</span>
+    </a>
+  </div>
+
+  <div class="header-box">
+    <span style="display: inline-block; font-size: 12px; font-weight: bold; color: #38bdf8; background: rgba(56, 189, 248, 0.15); padding: 3px 10px; border-radius: 6px; margin-bottom: 8px;">🎒 学生 AI 成长路线 · 创造实战篇 08</span>
+    <h1>零成本上线：搭建一个向全世界展示的个人独立作品集主页</h1>
+    <h2 class="sub">一张纸质简历谁都差不多？带你用 15 分钟免费上线专属独立网站，成为你升学求职中最耀眼的数字名片！</h2>
+    <div class="meta">
+      <span>✍️ 大前端工程师</span>
+      <span>⏱️ 全文约 2400 字</span>
+      <span>💡 精读 6 分钟</span>
+      <span>🏷️ 独立建站 · GitHub Pages · 个人品牌</span>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>核心认知提炼：</strong>“在数字时代，<strong>拥有一个属于自己的独立网站，就像在互联网浩瀚的星球上插上了一面属于你自己的旗帜。</strong>它不受任何社交平台封禁制约，是你四年青春最硬核的数字档案。”
+  </div>
+
+  <p>很多中学生、大学生在参加自主招生夏令营、科创答辩或者大厂实习面试时，大家交上去的材料几乎千篇一律：白纸黑字印着几门课的分数、拿过什么奖状，面试官一天看 50 份，眼睛早就审美疲劳了。</p>
+  <p>但如果这时候，你递上的材料里印着一个精美的二维码和一个专属网址：<code>https://yourname.github.io</code>，老师或考官掏出手机一扫，屏幕上赫然出现一个设计现代化、支持深色模式的个人主页——<strong>这种维度的震撼，是任何一张纸质简历都给不了的。</strong></p>
+
+  <div class="section-title">
+    <span class="section-num">三步上手</span>
+    <span class="section-text">不用花一分钱！15 分钟搭建全流程</span>
+  </div>
+
+  <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; margin: 20px 0;">
+    <div style="margin-bottom: 12px; border-left: 3px solid #3b82f6; padding-left: 12px;">
+      <div style="color: #60a5fa; font-weight: bold; font-size: 14px;">1. 注册 GitHub 账号：</div>
+      <div style="font-size: 13.5px; color: #cbd5e1; margin-top: 4px;">全世界最大的开源代码托管社区，全球科技极客的共同家园（完全免费）。</div>
+    </div>
+    <div style="margin-bottom: 12px; border-left: 3px solid #10b981; padding-left: 12px;">
+      <div style="color: #34d399; font-weight: bold; font-size: 14px;">2. 让 AI 生成单文件个人主页：</div>
+      <div style="font-size: 13.5px; color: #cbd5e1; margin-top: 4px;">把你的兴趣、喜欢的书、做过的小作品发给 AI，让它输出一个纯静态的 index.html。</div>
+    </div>
+    <div style="border-left: 3px solid #f59e0b; padding-left: 12px;">
+      <div style="color: #fbbf24; font-weight: bold; font-size: 14px;">3. 开启 GitHub Pages 一键发布：</div>
+      <div style="font-size: 13.5px; color: #cbd5e1; margin-top: 4px;">在仓库设置中点击 Pages 选项，选择 main 分支并点击保存。不到 60 秒即可全球上线！</div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">提示词模板</span>
+    <span class="section-text">复制即用：让 AI 为你设计极简极客主页</span>
+  </div>
+
+  <div style="background: #020617; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; margin: 20px 0; font-family: monospace; font-size: 13px; color: #e2e8f0; line-height: 1.7;">
+    <div style="color: #38bdf8; font-weight: bold; margin-bottom: 8px;">📋 复制粘贴这段话给 AI：</div>
+    “请帮我用 HTML + Tailwind CSS CDN 编写一个现代、极客风格的个人独立主页，全部代码整合在单个 index.html 中。<br><br>
+    <strong>页面板块包括：</strong><br>
+    1. <strong>个人 Hero 头像区</strong>：大标题是我的名字【你的名字】，副标题是‘高中生 / 编程与天文爱好者 / 探索用 AI 赋能真实世界’；<br>
+    2. <strong>我的作品展示卡片（3个）</strong>：包括我在上期做的 HTML5 物理弹球小游戏、我的私人错题知识库、以及我的科技读书笔记；<br>
+    3. <strong>技能与爱好标签墙</strong>：Python、Claude Code、天文摄影、骑行；<br>
+    4. <strong>底部联系方式</strong>：带 GitHub 链接与微信公众号引导卡；<br>
+    5. 支持手机和电脑响应式排版，带有深色暗黑渐变背景。”
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">成就感时刻</span>
+    <span class="section-text">你在互联网上的终身坐标</span>
+  </div>
+
+  <p>很多人大学毕业时，除了几本文凭证书，在网络上几乎没有留下任何有价值的技术足迹；而如果你从今天开始，把自己的每一次探索、每一个小游戏、每一篇读书笔记都挂载在这个属于你自己的站点上，时间会成为你最强大的复利放大器。</p>
+
+  <div style="margin-top: 40px; padding: 24px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; text-align: center;">
+    <div style="color: #38bdf8; font-weight: bold; font-size: 16px; margin-bottom: 8px;">🌟 微信公众号：大前端工程师</div>
+    <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
+      回复 <strong>“个人主页”</strong> 领取本篇配套极客个人主页开箱即用代码与一键发布脚本。
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

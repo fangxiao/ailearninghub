@@ -2,8 +2,8 @@
   "siteTitle": "AI 全系列学习智库 · 体系化知识库",
   "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
   "stats": {
-    "totalCategories": 10,
-    "totalArticles": 176,
+    "totalCategories": 11,
+    "totalArticles": 186,
     "totalShowcases": 4
   },
   "categories": [
@@ -193,6 +193,26 @@
         "免备案",
         "SEO矩阵",
         "业务落地"
+      ],
+      "count": 10
+    },
+    {
+      "id": "student-growth",
+      "name": "学生 AI 成长路线",
+      "icon": "🎒",
+      "badge": "学生专属",
+      "desc": "专为中学生与大学生打造：告别做题家思维、掌握提问力、数理化费曼学习法、手搓网页游戏与个人知识库",
+      "theme": "cyan",
+      "accent": "#0284c7",
+      "color": "cyan",
+      "difficulty": "零基础到创造者",
+      "tags": [
+        "思维升级",
+        "费曼学习",
+        "启发式提问",
+        "手搓游戏",
+        "错题知识库",
+        "个人主页"
       ],
       "count": 10
     }
@@ -4489,6 +4509,211 @@
         "超级个体的 4 个数字轮子",
         "从“卖录播课”到“卖 24 小时在线的 AI 专家智库”",
         "考考你：一分钟检查你真的学会了吗？"
+      ]
+    },
+    {
+      "id": "student_growth_01_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/01-拒绝当被动复制的做题家-学生最值钱的3种底层能力.html",
+      "filename": "01-拒绝当被动复制的做题家-学生最值钱的3种底层能力.html",
+      "format": "html",
+      "title": "学生成长 01 · 拒绝当“被动复制的做题家”：AI 时代，学生最值钱的 3 种底层能力",
+      "subtitle": "思维破局篇 01",
+      "summary": "为什么直接找 AI 要答案会让你脑子越来越慢？把大模型变成“思维磨刀石”的真实方法。",
+      "readTime": "11 分钟",
+      "sizeStr": "13.1 KB",
+      "sizeBytes": 13375,
+      "badge": "第 01 篇",
+      "sortOrder": 1,
+      "toc": [
+        "高质量的提问力：从“要现成答案”到“要思考路径”",
+        "火眼金睛的批判鉴别力：一眼看穿 AI 的“一本正经胡说八道”",
+        "从“做题”到“做作品”的创造力：用 AI 交付真实成果",
+        "写给每一位年轻求知者的一句话"
+      ]
+    },
+    {
+      "id": "student_growth_02_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/02-告别帮我写篇作文-学生必学4个黄金提问公式.html",
+      "filename": "02-告别帮我写篇作文-学生必学4个黄金提问公式.html",
+      "format": "html",
+      "title": "学生成长 02 · 告别“帮我写篇作文”：学生必学的 4 个黄金提问公式",
+      "subtitle": "实战技巧篇 02",
+      "summary": "为什么 AI 总给你吐车轱辘话？教你用“名校名师启发法”，把大模型调教成懂你的专属私教。",
+      "readTime": "10 分钟",
+      "sizeStr": "11.7 KB",
+      "sizeBytes": 12020,
+      "badge": "第 02 篇",
+      "sortOrder": 2,
+      "toc": [
+        "“特级教师挑刺法”：角色 + 评分细则 + 红笔批注",
+        "“费曼装傻法”：角色反转 + 小学生听众 + 随时打断",
+        "“脚手架拆解法”：不给答案 + 只给观察切入点 + 关键辅助线",
+        "“苏格拉底产婆法”：反向质问 + 追根究底 + 找寻盲区",
+        "学生提问的“避坑自查三问”"
+      ]
+    },
+    {
+      "id": "student_growth_03_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/03-告别死记硬背-用费曼学习法加AI降维攻克数理化难点.html",
+      "filename": "03-告别死记硬背-用费曼学习法加AI降维攻克数理化难点.html",
+      "format": "html",
+      "title": "学生成长 03 · 告别死记硬背：用“费曼学习法 + AI”降维攻克数理化难点",
+      "subtitle": "学业提效篇 03",
+      "summary": "公式背得滚瓜烂熟，做题依然两眼发懵？教你用 AI 打造随身“费曼陪练”，把抽象概念嚼碎了吞下去。",
+      "readTime": "10 分钟",
+      "sizeStr": "12.5 KB",
+      "sizeBytes": 12751,
+      "badge": "第 03 篇",
+      "sortOrder": 3,
+      "toc": [
+        "费曼学习法四步走：为什么必须找人听你讲？",
+        "3 个典型科目的 AI 费曼实战演示",
+        "复制即用：AI 费曼学习法专用提示词",
+        "把输出当成最高级的输入"
+      ]
+    },
+    {
+      "id": "student_growth_04_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/04-英语外语沉浸式破局-打造7x24小时母语陪练搭子.html",
+      "filename": "04-英语外语沉浸式破局-打造7x24小时母语陪练搭子.html",
+      "format": "html",
+      "title": "学生成长 04 · 英语沉浸式破局：打造属于你的 7×24 小时母语陪练搭子与作文升华导师",
+      "subtitle": "学业提效篇 04",
+      "summary": "告别死背单词表与“中式哑巴英语”！教你用 AI 模拟真实语言环境，把作文从“勉强及格”打磨到“满分地道”。",
+      "readTime": "7 分钟",
+      "sizeStr": "8.9 KB",
+      "sizeBytes": 9115,
+      "badge": "第 04 篇",
+      "sortOrder": 4,
+      "toc": [
+        "角色扮演对话：把 AI 变成身临其境的情境搭子",
+        "英语作文“三级跳”升华法：从及格卷到高分表达",
+        "语言不是用来考的，是用来连接世界的"
+      ]
+    },
+    {
+      "id": "student_growth_05_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/05-复杂长文与课外拓展-如何让AI帮你透视一本大部头经典.html",
+      "filename": "05-复杂长文与课外拓展-如何让AI帮你透视一本大部头经典.html",
+      "format": "html",
+      "title": "学生成长 05 · 复杂长文与课外拓展：如何让 AI 帮你“透视”一本大部头经典",
+      "subtitle": "思辨拓展篇 05",
+      "summary": "拒绝浅显的二手内容梗概！教你用“提问式解剖刀”，把几百页的书读出作者没写在纸上的深层逻辑。",
+      "readTime": "7 分钟",
+      "sizeStr": "8.4 KB",
+      "sizeBytes": 8567,
+      "badge": "第 05 篇",
+      "sortOrder": 5,
+      "toc": [
+        "抽丝剥茧：提取作者的核心立论骨架",
+        "隔空对决：让 AI 扮演书中作者与反方辩友",
+        "从“学业提效”迈向“动手创造”"
+      ]
+    },
+    {
+      "id": "student_growth_06_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/06-不用死磕语法-用自然语言写出人生第一个网页小游戏.html",
+      "filename": "06-不用死磕语法-用自然语言写出人生第一个网页小游戏.html",
+      "format": "html",
+      "title": "学生成长 06 · 不用死磕语法！用自然语言写出你人生中的第一个网页小游戏",
+      "subtitle": "创造实战篇 06",
+      "summary": "谁说初中生、非计算机专业不能写代码？30 分钟带你用母语跟 AI 对话，手搓一个在手机上能玩的物理弹球游戏！",
+      "readTime": "7 分钟",
+      "sizeStr": "8.9 KB",
+      "sizeBytes": 9124,
+      "badge": "第 06 篇",
+      "sortOrder": 6,
+      "toc": [
+        "明确游戏规则：像对同桌说话一样描述需求",
+        "见证奇迹：3 步跑起你的游戏",
+        "进阶迭代：像游戏制作人一样指挥 AI 改版",
+        "从“消费者”到“创造者”的质变"
+      ]
+    },
+    {
+      "id": "student_growth_07_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/07-打造个人专属数字知识库-错题本变成私人问答Bot.html",
+      "filename": "07-打造个人专属数字知识库-错题本变成私人问答Bot.html",
+      "format": "html",
+      "title": "学生成长 07 · 打造个人专属数字知识库：把错题本与课堂笔记变成私人问答 Bot",
+      "subtitle": "创造实战篇 07",
+      "summary": "手抄错题本两小时、考前看都不看？教你 10 分钟搭一个随身答疑助教，考前自动抽查你的薄弱弱点！",
+      "readTime": "6 分钟",
+      "sizeStr": "8.1 KB",
+      "sizeBytes": 8304,
+      "badge": "第 07 篇",
+      "sortOrder": 7,
+      "toc": [
+        "从“纸质破烂”到“AI 助教”的转化流水线",
+        "考前 30 分钟：让 Bot 变着花样抽考你",
+        "拥抱你的数字第二大脑"
+      ]
+    },
+    {
+      "id": "student_growth_08_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/08-零成本上线-搭建向全世界展示的个人独立作品集主页.html",
+      "filename": "08-零成本上线-搭建向全世界展示的个人独立作品集主页.html",
+      "format": "html",
+      "title": "学生成长 08 · 零成本上线：搭建一个向全世界展示的个人独立作品集主页",
+      "subtitle": "创造实战篇 08",
+      "summary": "一张纸质简历谁都差不多？带你用 15 分钟免费上线专属独立网站，成为你升学求职中最耀眼的数字名片！",
+      "readTime": "7 分钟",
+      "sizeStr": "8.7 KB",
+      "sizeBytes": 8912,
+      "badge": "第 08 篇",
+      "sortOrder": 8,
+      "toc": [
+        "不用花一分钱！15 分钟搭建全流程",
+        "复制即用：让 AI 为你设计极简极客主页",
+        "你在互联网上的终身坐标"
+      ]
+    },
+    {
+      "id": "student_growth_09_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/09-参加科创比赛与社团活动-如何用AI赋能研究性学习.html",
+      "filename": "09-参加科创比赛与社团活动-如何用AI赋能研究性学习.html",
+      "format": "html",
+      "title": "学生成长 09 · 参加科创比赛与社团活动：如何用 AI 赋能研究性学习与答辩设计",
+      "subtitle": "竞赛实战篇 09",
+      "summary": "拒绝假大空的悬浮课题！教你从校园真实痛点出发，用 AI 快速完成问卷、原型与模拟答辩。",
+      "readTime": "7 分钟",
+      "sizeStr": "8.3 KB",
+      "sizeBytes": 8463,
+      "badge": "第 09 篇",
+      "sortOrder": 9,
+      "toc": [
+        "用 AI 跑通研究性学习的全生命周期",
+        "复制即用：科创答辩前夜的“魔鬼陪练”指令",
+        "科学精神与解决真实问题的底气"
+      ]
+    },
+    {
+      "id": "student_growth_10_html",
+      "categoryId": "student-growth",
+      "path": "student-growth/10-2026及未来十年科技浪潮-给年轻求知者的一封公开信.html",
+      "filename": "10-2026及未来十年科技浪潮-给年轻求知者的一封公开信.html",
+      "format": "html",
+      "title": "学生成长 10 · 2026 及未来十年科技浪潮：给年轻求知者的一封公开信",
+      "subtitle": "终极总结篇 10",
+      "summary": "当人工智能秒解一切标准答案，什么才是我们不可替代的灵魂？愿你保持清醒，做时代最酷的创造者。",
+      "readTime": "7 分钟",
+      "sizeStr": "8.8 KB",
+      "sizeBytes": 8961,
+      "badge": "第 10 篇",
+      "sortOrder": 10,
+      "toc": [
+        "一个旧时代的落幕与新大陆的开启",
+        "送给年轻一代的三件护身武器",
+        "愿你奔赴星辰，历尽千帆仍是少年"
       ]
     }
   ],

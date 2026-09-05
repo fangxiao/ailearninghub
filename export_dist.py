@@ -562,6 +562,23 @@ def build_dist():
         if p_act:
             process_article("business-growth", p_act, t, b, o)
 
+    # 18. Student AI Growth (10 articles total)
+    for p, t, b, o in [
+        ("student-growth/01-拒绝当被动复制的做题家-学生最值钱的3种底层能力.html", "学生成长 01 · 拒绝当“被动复制的做题家”：AI 时代，学生最值钱的 3 种底层能力", "01 思维破局", 1),
+        ("student-growth/02-告别帮我写篇作文-学生必学4个黄金提问公式.html", "学生成长 02 · 告别“帮我写篇作文”：学生必学的 4 个黄金提问公式", "02 提问公式", 2),
+        ("student-growth/03-告别死记硬背-用费曼学习法加AI降维攻克数理化难点.html", "学生成长 03 · 告别死记硬背：用“费曼学习法 + AI”降维攻克数理化难点", "03 费曼学习", 3),
+        ("student-growth/04-英语外语沉浸式破局-打造7x24小时母语陪练搭子.html", "学生成长 04 · 英语沉浸式破局：打造属于你的 7×24 小时母语陪练搭子与作文升华导师", "04 英语陪练", 4),
+        ("student-growth/05-复杂长文与课外拓展-如何让AI帮你透视一本大部头经典.html", "学生成长 05 · 复杂长文与课外拓展：如何让 AI 帮你“透视”一本大部头经典", "05 长文透视", 5),
+        ("student-growth/06-不用死磕语法-用自然语言写出人生第一个网页小游戏.html", "学生成长 06 · 不用死磕语法！用自然语言写出你人生中的第一个网页小游戏", "06 网页游戏", 6),
+        ("student-growth/07-打造个人专属数字知识库-错题本变成私人问答Bot.html", "学生成长 07 · 打造个人专属数字知识库：把错题本与课堂笔记变成私人问答 Bot", "07 错题Bot", 7),
+        ("student-growth/08-零成本上线-搭建向全世界展示的个人独立作品集主页.html", "学生成长 08 · 零成本上线：搭建一个向全世界展示的个人独立作品集主页", "08 独立主页", 8),
+        ("student-growth/09-参加科创比赛与社团活动-如何用AI赋能研究性学习.html", "学生成长 09 · 参加科创比赛与社团活动：如何用 AI 赋能研究性学习与答辩设计", "09 科创答辩", 9),
+        ("student-growth/10-2026及未来十年科技浪潮-给年轻求知者的一封公开信.html", "学生成长 10 · 2026 及未来十年科技浪潮：给年轻求知者的一封公开信", "10 终极公开信", 10),
+    ]:
+        p_act = get_existing_path(p)
+        if p_act:
+            process_article("student-growth", p_act, t, b, o)
+
     # 4. Copy image assets (mermaid images, diagrams, etc.) referenced by articles
     for img_dir in ["mermaid", "bigmodel/mermaid", "customer-service-agent/mermaid-img", "aitools/diagram", "local-llm-knowledge-base/mermaid-img"]:
         if os.path.exists(img_dir):
