@@ -6,13 +6,30 @@
 (function () {
   'use strict';
 
-  // 1. 网关端点配置：直连 Cloudflare AI 网关 (基于 Origin 域名白名单鉴权，前端 100% 零密钥暴露)
+  // 1. 网关端点配置：直连 Cloudflare AI 网关 (动态防伪时间戳签名 + 边缘频控鉴权)
   const RAG_CONFIG = {
     endpoint: 'https://api.ailearning.top/v1/chat/completions',
     model: 'auto',
     topK: 4,
     maxHistory: 6
   };
+
+  // 动态防伪时间戳签名 (防重放、防盗刷、防外部爬虫调用)
+  async function generateSecuritySign(path) {
+    const ts = Date.now();
+    const SALT = "ai_hub_sec_982f10";
+    const raw = `${ts}:${path}:${SALT}`;
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(raw);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const sign = hashArray.map(b => b.toString(16).padStart(2, "0")).join("").substring(0, 32);
+      return { ts: String(ts), sign };
+    } catch (e) {
+      return { ts: String(ts), sign: "" };
+    }
+  }
 
   // 2. 状态管理
   const state = {
@@ -765,10 +782,13 @@ ${contextStr ? `【智库实时检索到的高相关内容如下】：\n--------
     let fullAnswer = '';
 
     try {
+      const sig = await generateSecuritySign('/v1/chat/completions');
       const response = await fetch(RAG_CONFIG.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-request-time': sig.ts,
+          'x-request-sign': sig.sign
         },
         body: JSON.stringify({
           model: RAG_CONFIG.model,

@@ -138,8 +138,25 @@
     if (el.statsEbooks) el.statsEbooks.textContent = state.data.categories.find(c => c.id === 'ebooks')?.count || 7;
   }
 
-  // Dynamic Visitor Counter (方案 A · 文案 2 温暖学伴风 · 100% 真实 Cloudflare KV 边缘计数)
-  function initVisitorCounter() {
+  // Client Dynamic Security Signature (防刷与防盗调用安全签名)
+  async function generateSecuritySign(path) {
+    const ts = Date.now();
+    const SALT = "ai_hub_sec_982f10";
+    const raw = `${ts}:${path}:${SALT}`;
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(raw);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const sign = hashArray.map(b => b.toString(16).padStart(2, "0")).join("").substring(0, 32);
+      return { ts: String(ts), sign };
+    } catch (e) {
+      return { ts: String(ts), sign: "" };
+    }
+  }
+
+  // Dynamic Visitor Counter (方案 A · 文案 2 温暖学伴风 · 100% 真实 Cloudflare KV 边缘计数 + 动态安全鉴权)
+  async function initVisitorCounter() {
     const idEl = document.getElementById('visitor-id-num');
     const totalEl = document.getElementById('visitor-total-num');
     if (!idEl && !totalEl) return;
@@ -158,17 +175,29 @@
       }
     }
 
-    // 2. 异步向 Cloudflare 边缘接口同步真实 KV 数据 (优先同源，自动回退至全局网关)
+    // 2. 异步向 Cloudflare 边缘接口同步真实 KV 数据 (携带动态安全签名)
     const query = isNewVisitor ? '?action=hit' : '?action=get';
     const primaryUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'https://api.ailearning.top/api/visitor' + query
       : '/api/visitor' + query;
 
-    fetch(primaryUrl)
+    const sig = await generateSecuritySign('/api/visitor');
+    const headers = {
+      'x-request-time': sig.ts,
+      'x-request-sign': sig.sign
+    };
+
+    fetch(primaryUrl, {
+      method: isNewVisitor ? 'POST' : 'GET',
+      headers
+    })
       .then(res => {
         if (!res.ok) {
           // 如果同源 404，回退到主 API 网关
-          return fetch('https://api.ailearning.top/api/visitor' + query).then(r => r.json());
+          return fetch('https://api.ailearning.top/api/visitor' + query, {
+            method: isNewVisitor ? 'POST' : 'GET',
+            headers
+          }).then(r => r.json());
         }
         return res.json();
       })
