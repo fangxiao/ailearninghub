@@ -297,29 +297,35 @@ ${contextStr ? `【智库实时检索到的高相关内容如下】：\n--------
 
   // 8. 挂载 UI 结构
   function mountUI() {
-    // 浮动唤醒按钮
+    // 浮动唤醒按钮 (移动端胶囊化更紧凑，避免遮挡页面内容)
     const triggerBtn = document.createElement('div');
     triggerBtn.id = 'ai-assistant-trigger';
-    triggerBtn.className = 'fixed bottom-5 right-5 z-40 flex items-center group cursor-pointer';
+    triggerBtn.className = 'fixed bottom-5 right-4 sm:right-5 z-40 flex items-center group cursor-pointer transition-all duration-300';
     triggerBtn.innerHTML = `
-      <div class="relative flex items-center gap-2 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-2xl hover:shadow-indigo-500/50 hover:scale-105 transition-all duration-300 border border-white/20">
-        <span class="text-lg sm:text-xl animate-bounce">🤖</span>
-        <span class="text-xs sm:text-sm font-bold tracking-wide">智库 AI 助手</span>
+      <div class="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-2xl hover:shadow-indigo-500/50 hover:scale-105 active:scale-95 transition-all duration-300 border border-white/20 select-none">
+        <span class="text-base sm:text-xl animate-bounce">🤖</span>
+        <span class="text-xs sm:text-sm font-bold tracking-wide">智库 AI</span>
+        <span class="hidden sm:inline text-xs sm:text-sm font-bold tracking-wide">助手</span>
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
       </div>
     `;
     triggerBtn.addEventListener('click', toggleChat);
     document.body.appendChild(triggerBtn);
 
-    // 聊天主体悬浮窗口
+    // 聊天主体悬浮窗口 (移动端全屏无边框抽屉式体验，PC端悬浮卡片)
     const modal = document.createElement('div');
     modal.id = 'ai-assistant-modal';
-    modal.className = 'fixed bottom-5 right-5 z-50 flex flex-col glass border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 opacity-0 pointer-events-none translate-y-6 bg-slate-900/95 backdrop-blur-2xl w-[92vw] sm:w-[460px] h-[82vh] sm:h-[660px] max-w-full max-h-[92vh]';
+    modal.className = 'fixed inset-0 sm:inset-auto sm:bottom-5 sm:right-5 z-50 flex flex-col glass sm:border sm:border-white/20 sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 opacity-0 pointer-events-none translate-y-6 bg-slate-900/95 backdrop-blur-2xl w-full sm:w-[460px] h-[100dvh] sm:h-[660px] sm:max-h-[90vh]';
     modal.innerHTML = `
+      <!-- Mobile Drag Handle -->
+      <div class="sm:hidden pt-2 pb-1 bg-slate-950/80 flex justify-center items-center cursor-pointer" id="ai-mobile-handle">
+        <div class="w-10 h-1 bg-white/25 rounded-full"></div>
+      </div>
+
       <!-- Header -->
-      <div class="flex items-center justify-between px-4 py-3.5 bg-slate-950/70 border-b border-white/10 shrink-0">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-base shadow-inner shrink-0">
+      <div class="flex items-center justify-between px-3.5 sm:px-4 py-2.5 sm:py-3.5 bg-slate-950/70 border-b border-white/10 shrink-0">
+        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-sm sm:text-base shadow-inner shrink-0">
             🤖
           </div>
           <div class="min-w-0">
@@ -329,7 +335,7 @@ ${contextStr ? `【智库实时检索到的高相关内容如下】：\n--------
             </div>
             <div class="text-[10px] text-slate-400 flex items-center gap-1 truncate">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
-              <span>Cloudflare AI 网关 (auto)</span>
+              <span>Cloudflare AI 网关 · 167 篇智库</span>
             </div>
           </div>
         </div>
@@ -339,34 +345,34 @@ ${contextStr ? `【智库实时检索到的高相关内容如下】：\n--------
           <button id="ai-clear-btn" title="新建会话 (清空历史与上下文)" class="w-7 h-7 rounded-lg hover:bg-white/10 hover:text-white flex items-center justify-center text-xs transition cursor-pointer">
             🔄
           </button>
-          <!-- Maximize Toggle -->
-          <button id="ai-max-btn" title="最大化 / 还原" class="w-7 h-7 rounded-lg hover:bg-white/10 hover:text-white flex items-center justify-center text-xs transition hidden sm:flex cursor-pointer">
+          <!-- Maximize Toggle (PC Only) -->
+          <button id="ai-max-btn" title="最大化 / 还原" class="w-7 h-7 rounded-lg hover:bg-white/10 hover:text-white items-center justify-center text-xs transition hidden sm:flex cursor-pointer">
             ⛶
           </button>
-          <!-- Close -->
-          <button id="ai-close-btn" title="关闭 (Esc)" class="w-7 h-7 rounded-lg hover:bg-white/10 hover:text-white flex items-center justify-center text-sm transition cursor-pointer">
+          <!-- Close / Back -->
+          <button id="ai-close-btn" title="关闭" class="w-7 h-7 rounded-lg hover:bg-white/10 hover:text-white flex items-center justify-center text-sm sm:text-base transition cursor-pointer">
             ✕
           </button>
         </div>
       </div>
 
       <!-- Chat Messages Container -->
-      <div id="ai-messages-container" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs sm:text-sm scroll-smooth">
+      <div id="ai-messages-container" class="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-4 text-xs sm:text-sm scroll-smooth">
         ${getWelcomeCardHTML()}
       </div>
 
-      <!-- Input Area -->
-      <div class="p-3 bg-slate-950/80 border-t border-white/10 shrink-0 space-y-2">
+      <!-- Input Area with Safe Area Bottom Padding -->
+      <div class="p-2.5 sm:p-3 bg-slate-950/90 border-t border-white/10 shrink-0 space-y-2 ai-safe-bottom">
         <div class="relative flex items-end gap-2">
           <textarea 
             id="ai-user-input" 
             rows="1" 
-            placeholder="向 AI 智库提问技术问题... (仅限 AI / 大模型 / 编程实战)" 
+            placeholder="向 AI 智库提问技术问题... (仅限 AI / 编程技术)" 
             class="flex-1 max-h-32 min-h-[42px] px-3.5 py-2.5 rounded-2xl bg-white/5 border border-white/15 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none leading-relaxed"
           ></textarea>
 
           <!-- Action Button (Send / Stop) -->
-          <button id="ai-send-btn" class="w-10 h-10 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white flex items-center justify-center transition shadow-lg shrink-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" title="发送提问">
+          <button id="ai-send-btn" class="w-10 h-10 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 active:scale-95 text-white flex items-center justify-center transition shadow-lg shrink-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" title="发送提问">
             <span id="ai-send-icon" class="text-base">🚀</span>
           </button>
         </div>
@@ -376,11 +382,18 @@ ${contextStr ? `【智库实时检索到的高相关内容如下】：\n--------
             <span>🛡️</span>
             <span>仅限 AI 与技术开发交流</span>
           </span>
-          <span class="text-slate-400 font-mono">167 篇文献体系联动</span>
+          <span class="text-slate-400 font-mono">文献精准引证</span>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
+
+    // 移动端顶部把手支持下拉关闭
+    const mobileHandle = document.getElementById('ai-mobile-handle');
+    if (mobileHandle) {
+      mobileHandle.addEventListener('click', closeChat);
+    }
+
 
     // 绑定事件
     document.getElementById('ai-close-btn').addEventListener('click', (e) => {
@@ -500,12 +513,12 @@ ${contextStr ? `【智库实时检索到的高相关内容如下】：\n--------
     if (!modal) return;
 
     if (state.isMaximized) {
-      modal.classList.remove('bottom-5', 'right-5', 'w-[92vw]', 'sm:w-[460px]', 'h-[82vh]', 'sm:h-[660px]', 'rounded-3xl');
-      modal.classList.add('inset-3', 'w-auto', 'h-auto', 'rounded-2xl');
+      modal.classList.remove('sm:bottom-5', 'sm:right-5', 'sm:w-[460px]', 'sm:h-[660px]', 'sm:rounded-3xl');
+      modal.classList.add('sm:inset-4', 'sm:w-auto', 'sm:h-auto', 'sm:rounded-2xl');
       if (maxBtn) maxBtn.textContent = '❐';
     } else {
-      modal.classList.remove('inset-3', 'w-auto', 'h-auto', 'rounded-2xl');
-      modal.classList.add('bottom-5', 'right-5', 'w-[92vw]', 'sm:w-[460px]', 'h-[82vh]', 'sm:h-[660px]', 'rounded-3xl');
+      modal.classList.remove('sm:inset-4', 'sm:w-auto', 'sm:h-auto', 'sm:rounded-2xl');
+      modal.classList.add('sm:bottom-5', 'sm:right-5', 'sm:w-[460px]', 'sm:h-[660px]', 'sm:rounded-3xl');
       if (maxBtn) maxBtn.textContent = '⛶';
     }
   }

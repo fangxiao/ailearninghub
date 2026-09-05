@@ -882,3 +882,33 @@ html:not(.dark) .markdown-body a {
     font-size: 1.1rem !important;
   }
 }
+
+/* ==========================================================================
+   AI Assistant Mobile Responsive & Safe Area Enhancements
+   ========================================================================== */
+#ai-assistant-modal {
+  max-height: 100dvh;
+}
+
+@media (max-width: 639px) {
+  #ai-assistant-modal {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+  
+  #ai-assistant-trigger {
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+    right: 1rem !important;
+  }
+
+  .ai-safe-bottom {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem)) !important;
+  }
+}
