@@ -158,11 +158,18 @@
       }
     }
 
-    // 2. 异步向 Cloudflare 边缘接口同步真实 KV 数据
-    const apiEndpoint = '/api/visitor' + (isNewVisitor ? '?action=hit' : '?action=get');
-    fetch(apiEndpoint)
+    // 2. 异步向 Cloudflare 边缘接口同步真实 KV 数据 (优先同源，自动回退至全局网关)
+    const query = isNewVisitor ? '?action=hit' : '?action=get';
+    const primaryUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'https://api.ailearning.top/api/visitor' + query
+      : '/api/visitor' + query;
+
+    fetch(primaryUrl)
       .then(res => {
-        if (!res.ok) throw new Error('Network error');
+        if (!res.ok) {
+          // 如果同源 404，回退到主 API 网关
+          return fetch('https://api.ailearning.top/api/visitor' + query).then(r => r.json());
+        }
         return res.json();
       })
       .then(data => {
