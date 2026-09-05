@@ -640,6 +640,9 @@ def build_data():
     p_bg = get_existing_path("business-growth/01-不用买服务器免备案搭建独立知识库.html")
     if p_bg:
         add_article("business-growth", p_bg, "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战", "01 建站复盘", 1)
+    p_bg2 = get_existing_path("business-growth/02-纯静态网站秒变智能知识库-Vector-RAG实战.html")
+    if p_bg2:
+        add_article("business-growth", p_bg2, "知识库 RAG 实战 · 纯静态站点秒变智能智库：用 Cloudflare Workers + Vector RAG 零成本打造 AI 伴学助手", "02 RAG实战", 2)
 
     # Filter categories: Remove explicitly hidden categories or categories with 0 published articles
     hidden_cats = exclude_config.get("hidden_categories", [])
@@ -764,6 +767,14 @@ Sitemap: {base_url}/sitemap.xml
         f.write(sitemap_xml)
         
     print(f"   - 🌐 全球 SEO 索引已生成: robots.txt, sitemap.xml (收录 {len(urls)} 个独立页面链接)")
+    
+    # 自动同步更新 Vector RAG 知识库索引
+    try:
+        from build_rag_index import build_knowledge_base
+        print("   - 🤖 正在同步构建 Vector RAG 知识库切片...")
+        build_knowledge_base()
+    except Exception as e:
+        print(f"   - ⚠️ 构建 RAG 知识库切片失败: {e}")
 
 if __name__ == '__main__':
     build_data()

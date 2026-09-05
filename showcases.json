@@ -1,5 +1,31 @@
 [
   {
+    "id": "prompt-generator",
+    "type": "tool",
+    "typeName": "💻 网页版在线工具",
+    "name": "prompt-generator",
+    "title": "结构化业务 Prompt 架构工作室",
+    "badge": "⚡ 在线交互",
+    "icon": "🎯",
+    "theme": "indigo",
+    "description": "基于 CRISPE、CO-STAR 与 Few-Shot 架构的高阶结构化 Prompt 可视化生成工具。支持 Claude/DeepSeek XML 标签规范、实时字数统计、6大行业预设模板与一键复制导出。",
+    "tags": [
+      "CRISPE 框架",
+      "CO-STAR",
+      "XML 标签",
+      "Few-Shot",
+      "免安装即用"
+    ],
+    "toolUrl": "tools/prompt-generator/index.html",
+    "docsUrl": "business-review/01-业务高阶Prompt结构化设计全指南.html",
+    "features": [
+      "CRISPE / CO-STAR / XML 标签三大工业级 Prompt 架构一键自由切换",
+      "预设 AI-PRD、万字研报提炼、代码审计、小红书分镜等 6 大行业模板",
+      "Markdown 与 Claude/DeepSeek 最佳实践 XML 双格式实时渲染预览",
+      "纯前端零依赖，开箱即用，支持一键极速复制与 System 角色单独提取"
+    ]
+  },
+  {
     "id": "quick-site-builder",
     "type": "skill",
     "typeName": "🤖 Claude Code 技能",

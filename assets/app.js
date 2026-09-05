@@ -222,14 +222,15 @@
   function renderMainView() {
     if (!el.mainContent) return;
 
-    // Dynamically toggle category navigation bar & article hero banner visibility (Hidden in showcases mode)
+    // Dynamically toggle category navigation bar visibility:
+    // Only show category filter bar in 'grid' and 'list' views; hide in 'roadmap', 'tree', 'showcases', etc.
     const catNavBar = document.getElementById('category-nav-bar');
     const heroSection = document.getElementById('hero-banner-section');
     if (catNavBar) {
-      if (state.viewMode === 'showcases') {
-        catNavBar.classList.add('hidden');
-      } else {
+      if (['grid', 'list'].includes(state.viewMode)) {
         catNavBar.classList.remove('hidden');
+      } else {
+        catNavBar.classList.add('hidden');
       }
     }
     if (heroSection) {
@@ -1096,6 +1097,17 @@
       el.btnOpenExternal.href = art.path;
     }
 
+    const wechatBtn = document.getElementById('btn-open-wechat-version');
+    if (wechatBtn) {
+      if (art.path && (art.path.includes('business-review/') || art.path.includes('-公众号版.html'))) {
+        const wechatPath = art.path.includes('-公众号版.html') ? art.path : art.path.replace(/\.html$/, '-公众号版.html');
+        wechatBtn.href = wechatPath;
+        wechatBtn.classList.remove('hidden');
+      } else {
+        wechatBtn.classList.add('hidden');
+      }
+    }
+
     const catArticles = state.data.articles.filter(a => a.categoryId === art.categoryId);
     const currentIndex = catArticles.findIndex(a => a.id === art.id);
 
@@ -1216,6 +1228,13 @@
         if (el.searchClear) {
           el.searchClear.classList.toggle('hidden', !state.searchQuery);
         }
+        // If user is searching, switch to grid view to show the filtered cards
+        if (state.searchQuery) {
+          if (state.viewMode !== 'grid' && state.viewMode !== 'list') {
+            state.viewMode = 'grid';
+            updateViewButtons();
+          }
+        }
         renderMainView();
       });
     }
@@ -1225,8 +1244,46 @@
         state.searchQuery = '';
         el.searchInput.value = '';
         el.searchClear.classList.add('hidden');
+        el.searchInput.focus();
         renderMainView();
       });
+    }
+
+    // Bind Hot Search Tags
+    document.querySelectorAll('.hot-tag-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kw = btn.dataset.keyword;
+        if (!kw) return;
+        if (el.searchInput) {
+          el.searchInput.value = kw;
+          state.searchQuery = kw;
+          if (el.searchClear) el.searchClear.classList.remove('hidden');
+          if (state.viewMode !== 'grid' && state.viewMode !== 'list') {
+            state.viewMode = 'grid';
+            updateViewButtons();
+          }
+          renderMainView();
+          el.mainContent?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    function scrollToMainContent() {
+      if (!el.mainContent) return;
+      if (state.viewMode === 'showcases') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      const navBar = document.getElementById('category-nav-bar');
+      if (navBar && !navBar.classList.contains('hidden')) {
+        const rect = navBar.getBoundingClientRect();
+        const topOffset = window.pageYOffset + rect.top - 65;
+        window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+      } else {
+        const rect = el.mainContent.getBoundingClientRect();
+        const topOffset = window.pageYOffset + rect.top - 70;
+        window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+      }
     }
 
     if (el.categoryTabs) {
@@ -1240,6 +1297,7 @@
         }
         updateCategoryTabs();
         renderMainView();
+        scrollToMainContent();
       });
     }
 
@@ -1252,6 +1310,7 @@
         }
         updateCategoryTabs();
         renderMainView();
+        scrollToMainContent();
       });
     }
 
@@ -1260,6 +1319,7 @@
         state.viewMode = btn.dataset.view;
         updateViewButtons();
         renderMainView();
+        scrollToMainContent();
       });
     });
 
@@ -1273,9 +1333,10 @@
     }
 
     document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         el.searchInput?.focus();
+        el.searchInput?.select();
       }
       if (e.key === 'Escape') {
         if (state.currentArticle) closeReader();
@@ -1390,24 +1451,42 @@
 
         <!-- Footer Action Box -->
         <div>
-          <!-- Install Command Box -->
-          <div class="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 mb-4 flex items-center justify-between gap-2 shadow-inner">
-            <code class="text-[10px] sm:text-[11px] text-emerald-300 font-mono truncate select-all">
-              ${item.installCmd}
-            </code>
-            <button onclick="window.AI_HUB.copyInstallCmd('${item.installCmd}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 text-[10px] font-bold transition shrink-0 cursor-pointer" title="点击复制安装命令">
-              复制
-            </button>
-          </div>
+          ${item.type === 'tool' ? `
+            <!-- Web Tool Direct Action Button -->
+            <div class="mb-4">
+              <a href="${item.toolUrl}" target="_blank" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs sm:text-sm font-bold text-center transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 cursor-pointer">
+                <span>⚡</span>
+                <span>立即在线打开使用 (免安装) ➔</span>
+              </a>
+            </div>
+            ${item.docsUrl ? `
+              <div class="flex items-center gap-2">
+                <a href="${item.docsUrl}" target="_blank" class="w-full py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 text-xs font-bold text-center transition flex items-center justify-center gap-1.5">
+                  <span>📖</span>
+                  <span>阅读配套实战专栏</span>
+                </a>
+              </div>
+            ` : ''}
+          ` : `
+            <!-- Install Command Box for Skills -->
+            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 mb-4 flex items-center justify-between gap-2 shadow-inner">
+              <code class="text-[10px] sm:text-[11px] text-emerald-300 font-mono truncate select-all">
+                ${item.installCmd}
+              </code>
+              <button onclick="window.AI_HUB.copyInstallCmd('${item.installCmd}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 text-[10px] font-bold transition shrink-0 cursor-pointer" title="点击复制安装命令">
+                复制
+              </button>
+            </div>
 
-          <!-- Action Buttons -->
-          <div class="flex items-center gap-2">
-            <a href="${item.githubUrl || 'https://github.com/fangxiao/myskills'}" target="_blank" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold text-center transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30">
-              <span>⭐</span>
-              <span>GitHub 开源</span>
-            </a>
-            ${docsBtn}
-          </div>
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+              <a href="${item.githubUrl || 'https://github.com/fangxiao/myskills'}" target="_blank" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold text-center transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30">
+                <span>⭐</span>
+                <span>GitHub 开源</span>
+              </a>
+              ${docsBtn}
+            </div>
+          `}
         </div>
 
       </div>
@@ -1419,13 +1498,19 @@
       const art = state.data.articles.find(a => a.id === id);
       if (art) openReader(art);
     },
+    openReaderByPath: function (path) {
+      if (!path) return;
+      const cleanPath = path.split('#')[0];
+      const art = state.data.articles.find(a => a.path === cleanPath || a.path.endsWith(cleanPath) || cleanPath.endsWith(a.path));
+      if (art) openReader(art);
+    },
     switchCategory: function (catId) {
       state.activeCategory = catId;
       state.viewMode = 'grid';
       updateCategoryTabs();
       updateViewButtons();
       renderMainView();
-      window.scrollTo({ top: 400, behavior: 'smooth' });
+      scrollToMainContent();
     },
     openWeChatModal: openWeChatModal,
     closeWeChatModal: closeWeChatModal,
@@ -1442,6 +1527,7 @@
       state.viewMode = mode;
       updateViewButtons();
       renderMainView();
+      scrollToMainContent();
     },
     switchRoadmapTrack: function (track) {
       state.roadmapTrack = track;

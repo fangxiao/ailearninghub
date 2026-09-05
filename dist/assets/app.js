@@ -1,14 +1,14 @@
-(function(){"use strict";const a={data:window.SITE_DATA||{categories:[],articles:[],stats:{}},activeCategory:"all",searchQuery:"",difficultyFilter:"all",viewMode:"roadmap",roadmapTrack:"tech",theme:localStorage.getItem("ai_hub_theme")||"dark",readerTheme:localStorage.getItem("ai_hub_reader_theme")||"default",readerFontSize:parseInt(localStorage.getItem("ai_hub_reader_fontsize")||"16",10),currentArticle:null,history:JSON.parse(localStorage.getItem("ai_hub_history")||"[]")},t={app:document.getElementById("app"),themeToggle:document.getElementById("theme-toggle"),themeIcon:document.getElementById("theme-icon"),searchInput:document.getElementById("search-input"),searchClear:document.getElementById("search-clear"),categoryTabs:document.getElementById("category-tabs"),categorySelect:document.getElementById("category-select"),viewButtons:document.querySelectorAll("[data-view]"),mainContent:document.getElementById("main-content"),readerModal:document.getElementById("reader-modal"),readerIframeContainer:document.getElementById("reader-iframe-container"),readerMarkdownContainer:document.getElementById("reader-markdown-container"),readerFrame:document.getElementById("reader-frame"),markdownContent:document.getElementById("markdown-content"),readerTitle:document.getElementById("reader-title"),readerCategory:document.getElementById("reader-category"),readerTocList:document.getElementById("reader-toc-list"),readerTocDrawer:document.getElementById("reader-toc-drawer"),wechatModal:document.getElementById("wechat-modal"),btnPrevArticle:document.getElementById("btn-prev-article"),btnNextArticle:document.getElementById("btn-next-article"),btnOpenExternal:document.getElementById("btn-open-external"),btnCloseReader:document.getElementById("btn-close-reader"),btnToggleToc:document.getElementById("btn-toggle-toc"),toast:document.getElementById("toast")};function y(){$(a.theme),H(),j(),Q(),c();const e=new URLSearchParams(window.location.search),s=e.get("category"),i=e.get("article"),r=e.get("view");if(r&&["grid","list","tree","shelf","roadmap","my-space","showcases","works"].includes(r)&&(a.viewMode=r==="works"?"showcases":r,a.viewMode=r,m()),s&&(s==="all"||a.data.categories.some(o=>o.id===s))&&(a.activeCategory=s,g()),i){const o=a.data.articles.find(d=>d.id===i||d.path===i);o&&u(o)}const n=()=>{const o=window.location.hash;o==="#showcases"||o==="#works"||o==="#tools"?(a.viewMode="showcases",m(),c()):o==="#roadmap"&&(a.viewMode="roadmap",m(),c())};window.addEventListener("hashchange",n),n()}function $(e){a.theme=e,localStorage.setItem("ai_hub_theme",e),e==="light"?(document.documentElement.classList.add("light-theme"),document.documentElement.classList.remove("dark"),t.themeIcon&&(t.themeIcon.innerHTML="\u2600\uFE0F")):(document.documentElement.classList.remove("light-theme"),document.documentElement.classList.add("dark"),t.themeIcon&&(t.themeIcon.innerHTML="\u{1F319}"))}function k(){$(a.theme==="dark"?"light":"dark")}let I;function b(e,s="\u2728"){t.toast&&(t.toast.innerHTML=`<span class="text-xl">${s}</span><span>${e}</span>`,t.toast.classList.remove("opacity-0","translate-y-4","pointer-events-none"),t.toast.classList.add("opacity-100","translate-y-0"),clearTimeout(I),I=setTimeout(()=>{t.toast.classList.add("opacity-0","translate-y-4","pointer-events-none"),t.toast.classList.remove("opacity-100","translate-y-0")},2400))}function G(){t.statsArticles&&(t.statsArticles.textContent=a.data.articles.length),t.statsCategories&&(t.statsCategories.textContent=a.data.categories.length),t.statsEbooks&&(t.statsEbooks.textContent=a.data.categories.find(e=>e.id==="ebooks")?.count||7)}function H(){if(!t.categoryTabs)return;const e=a.data.categories;let s=`
+(function(){"use strict";const a={data:window.SITE_DATA||{categories:[],articles:[],stats:{}},activeCategory:"all",searchQuery:"",difficultyFilter:"all",viewMode:"roadmap",roadmapTrack:"tech",theme:localStorage.getItem("ai_hub_theme")||"dark",readerTheme:localStorage.getItem("ai_hub_reader_theme")||"default",readerFontSize:parseInt(localStorage.getItem("ai_hub_reader_fontsize")||"16",10),currentArticle:null,history:JSON.parse(localStorage.getItem("ai_hub_history")||"[]")},s={app:document.getElementById("app"),themeToggle:document.getElementById("theme-toggle"),themeIcon:document.getElementById("theme-icon"),searchInput:document.getElementById("search-input"),searchClear:document.getElementById("search-clear"),categoryTabs:document.getElementById("category-tabs"),categorySelect:document.getElementById("category-select"),viewButtons:document.querySelectorAll("[data-view]"),mainContent:document.getElementById("main-content"),readerModal:document.getElementById("reader-modal"),readerIframeContainer:document.getElementById("reader-iframe-container"),readerMarkdownContainer:document.getElementById("reader-markdown-container"),readerFrame:document.getElementById("reader-frame"),markdownContent:document.getElementById("markdown-content"),readerTitle:document.getElementById("reader-title"),readerCategory:document.getElementById("reader-category"),readerTocList:document.getElementById("reader-toc-list"),readerTocDrawer:document.getElementById("reader-toc-drawer"),wechatModal:document.getElementById("wechat-modal"),btnPrevArticle:document.getElementById("btn-prev-article"),btnNextArticle:document.getElementById("btn-next-article"),btnOpenExternal:document.getElementById("btn-open-external"),btnCloseReader:document.getElementById("btn-close-reader"),btnToggleToc:document.getElementById("btn-toggle-toc"),toast:document.getElementById("toast")};function y(){$(a.theme),H(),R(),V(),c();const e=new URLSearchParams(window.location.search),t=e.get("category"),i=e.get("article"),r=e.get("view");if(r&&["grid","list","tree","shelf","roadmap","my-space","showcases","works"].includes(r)&&(a.viewMode=r==="works"?"showcases":r,a.viewMode=r,p()),t&&(t==="all"||a.data.categories.some(o=>o.id===t))&&(a.activeCategory=t,u()),i){const o=a.data.articles.find(d=>d.id===i||d.path===i);o&&g(o)}const n=()=>{const o=window.location.hash;o==="#showcases"||o==="#works"||o==="#tools"?(a.viewMode="showcases",p(),c()):o==="#roadmap"&&(a.viewMode="roadmap",p(),c())};window.addEventListener("hashchange",n),n()}function $(e){a.theme=e,localStorage.setItem("ai_hub_theme",e),e==="light"?(document.documentElement.classList.add("light-theme"),document.documentElement.classList.remove("dark"),s.themeIcon&&(s.themeIcon.innerHTML="\u2600\uFE0F")):(document.documentElement.classList.remove("light-theme"),document.documentElement.classList.add("dark"),s.themeIcon&&(s.themeIcon.innerHTML="\u{1F319}"))}function k(){$(a.theme==="dark"?"light":"dark")}let C;function b(e,t="\u2728"){s.toast&&(s.toast.innerHTML=`<span class="text-xl">${t}</span><span>${e}</span>`,s.toast.classList.remove("opacity-0","translate-y-4","pointer-events-none"),s.toast.classList.add("opacity-100","translate-y-0"),clearTimeout(C),C=setTimeout(()=>{s.toast.classList.add("opacity-0","translate-y-4","pointer-events-none"),s.toast.classList.remove("opacity-100","translate-y-0")},2400))}function G(){s.statsArticles&&(s.statsArticles.textContent=a.data.articles.length),s.statsCategories&&(s.statsCategories.textContent=a.data.categories.length),s.statsEbooks&&(s.statsEbooks.textContent=a.data.categories.find(e=>e.id==="ebooks")?.count||7)}function H(){if(!s.categoryTabs)return;const e=a.data.categories;let t=`
       <button data-category="all" class="category-tab px-3.5 py-1.5 rounded-xl text-xs font-medium border flex items-center gap-1.5 transition ${a.activeCategory==="all"?"active":"border-white/10 text-slate-400 hover:text-white hover:bg-white/5"}">
         <span>\u{1F310}</span>
         <span>\u5168\u90E8\u5206\u7C7B</span>
       </button>
-    `;e.forEach(i=>{const r=a.activeCategory===i.id;s+=`
+    `;e.forEach(i=>{const r=a.activeCategory===i.id;t+=`
         <button data-category="${i.id}" class="category-tab px-3.5 py-1.5 rounded-xl text-xs font-medium border flex items-center gap-1.5 transition ${r?"active":"border-white/10 text-slate-400 hover:text-white hover:bg-white/5"}">
           <span>${i.icon}</span>
           <span>${i.name}</span>
         </button>
-      `}),t.categoryTabs.innerHTML=s}function j(){if(!t.categorySelect)return;let e=`<option value="all">\u{1F310} \u5168\u90E8\u7CFB\u5217\u5206\u7C7B (${a.data.articles.length} \u7BC7)</option>`;a.data.categories.forEach(s=>{e+=`<option value="${s.id}">${s.icon} ${s.name} (${s.count} \u7BC7)</option>`}),t.categorySelect.innerHTML=e,t.categorySelect.value=a.activeCategory}function g(){document.querySelectorAll(".category-tab").forEach(e=>{e.dataset.category===a.activeCategory?(e.classList.add("active"),e.classList.remove("border-white/10","text-slate-400","hover:bg-white/5")):(e.classList.remove("active"),e.classList.add("border-white/10","text-slate-400","hover:bg-white/5"))}),t.categorySelect&&(t.categorySelect.value=a.activeCategory)}function m(){t.viewButtons.forEach(e=>{e.dataset.view===a.viewMode?(e.classList.add("bg-indigo-600","text-white"),e.classList.remove("text-slate-400","hover:text-white","hover:bg-white/5")):(e.classList.remove("bg-indigo-600","text-white"),e.classList.add("text-slate-400","hover:text-white","hover:bg-white/5"))})}function C(){return a.data.articles.filter(e=>{if(a.activeCategory!=="all"&&e.categoryId!==a.activeCategory)return!1;if(a.searchQuery){const s=a.searchQuery.toLowerCase(),i=e.title.toLowerCase().includes(s),r=(e.subtitle||"").toLowerCase().includes(s),n=(e.summary||"").toLowerCase().includes(s),o=(e.toc||[]).some(l=>l.toLowerCase().includes(s)),d=(e.badge||"").toLowerCase().includes(s);if(!i&&!r&&!n&&!o&&!d)return!1}return!0})}function c(){if(!t.mainContent)return;const e=document.getElementById("category-nav-bar"),s=document.getElementById("hero-banner-section");e&&(a.viewMode==="showcases"?e.classList.add("hidden"):e.classList.remove("hidden")),s&&(a.viewMode==="showcases"?s.classList.add("hidden"):s.classList.remove("hidden")),a.viewMode==="grid"?R():a.viewMode==="list"?D():a.viewMode==="tree"?U():a.viewMode==="shelf"?renderShelfView():a.viewMode==="roadmap"?_():a.viewMode==="my-space"?renderMySpaceView():a.viewMode==="showcases"&&V()}function h(e){if(!a.searchQuery||!e)return e;const s=a.searchQuery.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),i=new RegExp(`(${s})`,"gi");return e.replace(i,'<mark class="bg-amber-400/30 text-amber-300 px-1 rounded">$1</mark>')}function R(){const e=C(),s=a.data.categories;if(e.length===0){t.mainContent.innerHTML=L();return}if(a.activeCategory!=="all"||a.searchQuery||a.formatFilter!=="all"){const r=s.find(d=>d.id===a.activeCategory);let n="";r&&!a.searchQuery?n=P(r,e):a.searchQuery&&(n=`
+      `}),s.categoryTabs.innerHTML=t}function R(){if(!s.categorySelect)return;let e=`<option value="all">\u{1F310} \u5168\u90E8\u7CFB\u5217\u5206\u7C7B (${a.data.articles.length} \u7BC7)</option>`;a.data.categories.forEach(t=>{e+=`<option value="${t.id}">${t.icon} ${t.name} (${t.count} \u7BC7)</option>`}),s.categorySelect.innerHTML=e,s.categorySelect.value=a.activeCategory}function u(){document.querySelectorAll(".category-tab").forEach(e=>{e.dataset.category===a.activeCategory?(e.classList.add("active"),e.classList.remove("border-white/10","text-slate-400","hover:bg-white/5")):(e.classList.remove("active"),e.classList.add("border-white/10","text-slate-400","hover:bg-white/5"))}),s.categorySelect&&(s.categorySelect.value=a.activeCategory)}function p(){s.viewButtons.forEach(e=>{e.dataset.view===a.viewMode?(e.classList.add("bg-indigo-600","text-white"),e.classList.remove("text-slate-400","hover:text-white","hover:bg-white/5")):(e.classList.remove("bg-indigo-600","text-white"),e.classList.add("text-slate-400","hover:text-white","hover:bg-white/5"))})}function I(){return a.data.articles.filter(e=>{if(a.activeCategory!=="all"&&e.categoryId!==a.activeCategory)return!1;if(a.searchQuery){const t=a.searchQuery.toLowerCase(),i=e.title.toLowerCase().includes(t),r=(e.subtitle||"").toLowerCase().includes(t),n=(e.summary||"").toLowerCase().includes(t),o=(e.toc||[]).some(l=>l.toLowerCase().includes(t)),d=(e.badge||"").toLowerCase().includes(t);if(!i&&!r&&!n&&!o&&!d)return!1}return!0})}function c(){if(!s.mainContent)return;const e=document.getElementById("category-nav-bar"),t=document.getElementById("hero-banner-section");e&&(["grid","list"].includes(a.viewMode)?e.classList.remove("hidden"):e.classList.add("hidden")),t&&(a.viewMode==="showcases"?t.classList.add("hidden"):t.classList.remove("hidden")),a.viewMode==="grid"?j():a.viewMode==="list"?D():a.viewMode==="tree"?U():a.viewMode==="shelf"?renderShelfView():a.viewMode==="roadmap"?L():a.viewMode==="my-space"?renderMySpaceView():a.viewMode==="showcases"&&N()}function x(e){if(!a.searchQuery||!e)return e;const t=a.searchQuery.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),i=new RegExp(`(${t})`,"gi");return e.replace(i,'<mark class="bg-amber-400/30 text-amber-300 px-1 rounded">$1</mark>')}function j(){const e=I(),t=a.data.categories;if(e.length===0){s.mainContent.innerHTML=_();return}if(a.activeCategory!=="all"||a.searchQuery||a.formatFilter!=="all"){const r=t.find(d=>d.id===a.activeCategory);let n="";r&&!a.searchQuery?n=P(r,e):a.searchQuery&&(n=`
           <div class="mb-8 p-6 rounded-2xl glass border border-white/10 flex items-center justify-between">
             <div>
               <div class="text-sm text-indigo-400 font-medium">\u641C\u7D22\u7ED3\u679C</div>
@@ -17,12 +17,12 @@
             </div>
             <button id="btn-clear-search-res" class="px-4 py-2 text-xs rounded-xl bg-white/10 hover:bg-white/20 text-white transition">\u6E05\u7A7A\u641C\u7D22</button>
           </div>
-        `),t.mainContent.innerHTML=`
+        `),s.mainContent.innerHTML=`
         ${n}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
           ${e.map(A).join("")}
         </div>
-      `;const o=document.getElementById("btn-clear-search-res");o&&o.addEventListener("click",()=>{a.searchQuery="",t.searchInput.value="",c()});return}let i="";s.forEach(r=>{const n=a.data.articles.filter(d=>d.categoryId===r.id);if(n.length===0)return;const o=n[0];i+=`
+      `;const o=document.getElementById("btn-clear-search-res");o&&o.addEventListener("click",()=>{a.searchQuery="",s.searchInput.value="",c()});return}let i="";t.forEach(r=>{const n=a.data.articles.filter(d=>d.categoryId===r.id);if(n.length===0)return;const o=n[0];i+=`
         <div class="mb-14" id="cat-section-${r.id}">
           <!-- Category Header -->
           <div class="p-6 md:p-8 rounded-3xl glass border border-white/10 mb-6 relative overflow-hidden">
@@ -68,7 +68,7 @@
             </div>
           `:""}
         </div>
-      `}),t.mainContent.innerHTML=i}function P(e,s){return`
+      `}),s.mainContent.innerHTML=i}function P(e,t){return`
       <div class="p-6 md:p-8 rounded-3xl glass border border-white/10 mb-8 relative overflow-hidden">
         <div class="absolute right-0 top-0 w-80 h-80 bg-${e.theme}-500/15 blur-3xl pointer-events-none"></div>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -81,20 +81,20 @@
                 <h2 class="text-2xl md:text-3xl font-bold text-white">${e.name}</h2>
                 <span class="badge-chip bg-${e.theme}-500/20 text-${e.theme}-400 border border-${e.theme}-500/30">${e.badge}</span>
                 <span class="badge-chip bg-white/5 text-slate-300 border border-white/10">${e.difficulty}</span>
-                <span class="text-xs text-slate-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/5">\u5171 ${s.length} \u7BC7\u7CBE\u9009</span>
+                <span class="text-xs text-slate-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/5">\u5171 ${t.length} \u7BC7\u7CBE\u9009</span>
               </div>
               <p class="text-sm md:text-base text-slate-300 mt-2 max-w-2xl">${e.desc}</p>
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-3 shrink-0">
-            <button onclick="window.AI_HUB.openReaderById('${s[0]?.id}')" class="btn-read px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
+            <button onclick="window.AI_HUB.openReaderById('${t[0]?.id}')" class="btn-read px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2">
               <span>\u26A1 \u4ECE\u7B2C 1 \u7AE0\u5F00\u59CB\u9605\u8BFB</span>
             </button>
           </div>
         </div>
       </div>
-    `}function A(e){const s=a.data.categories.find(r=>r.id===e.categoryId)||{};let i="bg-blue-500/20 text-blue-400 border-blue-500/30";return e.format==="pdf"&&(i="bg-rose-500/20 text-rose-400 border-rose-500/30"),e.format==="md"&&(i="bg-amber-500/20 text-amber-400 border-amber-500/30"),`
+    `}function A(e){const t=a.data.categories.find(r=>r.id===e.categoryId)||{};let i="bg-blue-500/20 text-blue-400 border-blue-500/30";return e.format==="pdf"&&(i="bg-rose-500/20 text-rose-400 border-rose-500/30"),e.format==="md"&&(i="bg-amber-500/20 text-amber-400 border-amber-500/30"),`
       <div class="article-card rounded-2xl glass border border-white/10 p-6 flex flex-col justify-between relative group">
         <div>
           <div class="flex items-center justify-between gap-2 mb-3">
@@ -109,24 +109,24 @@
           </div>
 
           <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition line-clamp-2 cursor-pointer" onclick="window.AI_HUB.openReaderById('${e.id}')">
-            ${h(e.title)}
+            ${x(e.title)}
           </h3>
 
           ${e.subtitle?`
             <div class="text-xs font-medium text-indigo-400/90 mt-1.5 line-clamp-1">
-              ${h(e.subtitle)}
+              ${x(e.subtitle)}
             </div>
           `:""}
 
           <p class="text-xs text-slate-400 mt-2.5 line-clamp-3 leading-relaxed">
-            ${h(e.summary||"\u70B9\u51FB\u8FDB\u5165\u9605\u8BFB\u5168\u7BC7\u8BE6\u7EC6\u56FE\u6587\u5185\u5BB9\u4E0E\u6280\u672F\u62C6\u89E3\u3002")}
+            ${x(e.summary||"\u70B9\u51FB\u8FDB\u5165\u9605\u8BFB\u5168\u7BC7\u8BE6\u7EC6\u56FE\u6587\u5185\u5BB9\u4E0E\u6280\u672F\u62C6\u89E3\u3002")}
           </p>
         </div>
 
         <div class="pt-5 mt-5 border-t border-white/5 flex items-center justify-between gap-3">
           <div class="flex items-center gap-1.5 text-xs text-slate-400">
-            <span>${s.icon||"\u{1F4C1}"}</span>
-            <span class="truncate max-w-[120px]">${s.name||"\u7CFB\u5217\u6587\u6863"}</span>
+            <span>${t.icon||"\u{1F4C1}"}</span>
+            <span class="truncate max-w-[120px]">${t.name||"\u7CFB\u5217\u6587\u6863"}</span>
           </div>
 
           <div class="flex items-center gap-2">
@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-    `}function D(){const e=C();if(e.length===0){t.mainContent.innerHTML=L();return}t.mainContent.innerHTML=`
+    `}function D(){const e=I();if(e.length===0){s.mainContent.innerHTML=_();return}s.mainContent.innerHTML=`
       <div class="rounded-2xl sm:rounded-3xl glass border border-white/10 overflow-hidden animate-fade-in">
         <div class="p-4 sm:p-6 border-b border-white/10 flex items-center justify-between">
           <div>
@@ -151,27 +151,27 @@
 
         <!-- Mobile Card List View (< 640px) -->
         <div class="block sm:hidden divide-y divide-white/5">
-          ${e.map(s=>{const i=a.data.categories.find(r=>r.id===s.categoryId)||{};return`
+          ${e.map(t=>{const i=a.data.categories.find(r=>r.id===t.categoryId)||{};return`
               <div class="p-4 hover:bg-white/5 transition flex flex-col gap-2.5">
                 <div class="flex items-center justify-between gap-2">
                   <span class="inline-flex items-center gap-1 text-[11px] text-slate-300 bg-white/5 px-2 py-0.5 rounded-lg border border-white/5">
                     <span>${i.icon||"\u{1F4C1}"}</span>
                     <span class="truncate max-w-[120px]">${i.name||"\u5176\u4ED6"}</span>
                   </span>
-                  <span class="text-[10px] text-slate-400 font-mono">${s.readTime}</span>
+                  <span class="text-[10px] text-slate-400 font-mono">${t.readTime}</span>
                 </div>
 
-                <div class="font-bold text-sm text-white hover:text-indigo-400 cursor-pointer line-clamp-2" onclick="window.AI_HUB.openReaderById('${s.id}')">
-                  ${h(s.title)}
+                <div class="font-bold text-sm text-white hover:text-indigo-400 cursor-pointer line-clamp-2" onclick="window.AI_HUB.openReaderById('${t.id}')">
+                  ${x(t.title)}
                 </div>
 
-                ${s.subtitle?`<div class="text-xs text-slate-400 line-clamp-1">${h(s.subtitle)}</div>`:""}
+                ${t.subtitle?`<div class="text-xs text-slate-400 line-clamp-1">${x(t.subtitle)}</div>`:""}
 
                 <div class="flex items-center justify-between pt-1">
-                  <span class="badge-chip text-[10px] bg-white/5 border border-white/10 text-slate-300 uppercase">${s.format}</span>
+                  <span class="badge-chip text-[10px] bg-white/5 border border-white/10 text-slate-300 uppercase">${t.format}</span>
                   <div class="flex items-center gap-2">
-                    <a href="${s.path}" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs border border-white/10">\u2197 \u72EC\u7ACB\u9875</a>
-                    <button onclick="window.AI_HUB.openReaderById('${s.id}')" class="btn-read px-3 py-1 rounded-lg text-xs font-bold transition">
+                    <a href="${t.path}" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs border border-white/10">\u2197 \u72EC\u7ACB\u9875</a>
+                    <button onclick="window.AI_HUB.openReaderById('${t.id}')" class="btn-read px-3 py-1 rounded-lg text-xs font-bold transition">
                       \u9605\u8BFB \u2192
                     </button>
                   </div>
@@ -194,7 +194,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-              ${e.map(s=>{const i=a.data.categories.find(r=>r.id===s.categoryId)||{};return`
+              ${e.map(t=>{const i=a.data.categories.find(r=>r.id===t.categoryId)||{};return`
                   <tr class="hover:bg-white/5 transition">
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span class="inline-flex items-center gap-1.5 text-xs text-slate-300 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
@@ -203,23 +203,23 @@
                       </span>
                     </td>
                     <td class="px-6 py-4">
-                      <div class="font-medium text-white hover:text-indigo-400 cursor-pointer" onclick="window.AI_HUB.openReaderById('${s.id}')">
-                        ${h(s.title)}
+                      <div class="font-medium text-white hover:text-indigo-400 cursor-pointer" onclick="window.AI_HUB.openReaderById('${t.id}')">
+                        ${x(t.title)}
                       </div>
-                      ${s.subtitle?`<div class="text-xs text-slate-400 mt-0.5 line-clamp-1">${h(s.subtitle)}</div>`:""}
+                      ${t.subtitle?`<div class="text-xs text-slate-400 mt-0.5 line-clamp-1">${x(t.subtitle)}</div>`:""}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="badge-chip text-xs bg-white/5 border border-white/10 text-slate-300 uppercase">${s.format}</span>
+                      <span class="badge-chip text-xs bg-white/5 border border-white/10 text-slate-300 uppercase">${t.format}</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400">
-                      ${s.readTime}
+                      ${t.readTime}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-400">
-                      ${s.sizeStr}
+                      ${t.sizeStr}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">
                       <div class="flex items-center justify-end gap-2">
-                        <button onclick="window.AI_HUB.openReaderById('${s.id}')" class="btn-read px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
+                        <button onclick="window.AI_HUB.openReaderById('${t.id}')" class="btn-read px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
                           \u9605\u8BFB
                         </button>
                       </div>
@@ -230,17 +230,17 @@
           </table>
         </div>
       </div>
-    `}function U(){const e=a.data.categories;t.mainContent.innerHTML=`
+    `}function U(){const e=a.data.categories;s.mainContent.innerHTML=`
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 animate-fade-in">
         <div class="lg:col-span-1 space-y-3">
           <div class="p-4 sm:p-6 rounded-2xl sm:rounded-3xl glass border border-white/10">
             <h3 class="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">\u{1F4DA} \u7CFB\u5217\u77E5\u8BC6\u5927\u7EB2</h3>
             <div class="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
-              ${e.map(s=>{const i=a.data.articles.filter(r=>r.categoryId===s.id).length;return`
-                  <a href="#tree-cat-${s.id}" class="flex items-center justify-between p-2 sm:p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white text-xs sm:text-sm transition">
+              ${e.map(t=>{const i=a.data.articles.filter(r=>r.categoryId===t.id).length;return`
+                  <a href="#tree-cat-${t.id}" class="flex items-center justify-between p-2 sm:p-2.5 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white text-xs sm:text-sm transition">
                     <span class="flex items-center gap-1.5 sm:gap-2 truncate">
-                      <span>${s.icon}</span>
-                      <span class="truncate">${s.name}</span>
+                      <span>${t.icon}</span>
+                      <span class="truncate">${t.name}</span>
                     </span>
                     <span class="text-[10px] sm:text-xs bg-white/10 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">${i}</span>
                   </a>
@@ -250,17 +250,17 @@
         </div>
 
         <div class="lg:col-span-2 space-y-6">
-          ${e.map(s=>{const i=a.data.articles.filter(r=>r.categoryId===s.id);return i.length===0?"":`
-              <div id="tree-cat-${s.id}" class="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl glass border border-white/10">
+          ${e.map(t=>{const i=a.data.articles.filter(r=>r.categoryId===t.id);return i.length===0?"":`
+              <div id="tree-cat-${t.id}" class="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl glass border border-white/10">
                 <div class="flex items-center justify-between border-b border-white/10 pb-3 sm:pb-4 mb-4 sm:mb-6">
                   <div class="flex items-center gap-2.5 sm:gap-3">
-                    <span class="text-2xl sm:text-3xl">${s.icon}</span>
+                    <span class="text-2xl sm:text-3xl">${t.icon}</span>
                     <div>
-                      <h4 class="text-lg sm:text-xl font-bold text-white">${s.name}</h4>
-                      <p class="text-xs text-slate-400 mt-0.5">${s.desc}</p>
+                      <h4 class="text-lg sm:text-xl font-bold text-white">${t.name}</h4>
+                      <p class="text-xs text-slate-400 mt-0.5">${t.desc}</p>
                     </div>
                   </div>
-                  <span class="badge-chip bg-${s.theme}-500/20 text-${s.theme}-400 border border-${s.theme}-500/30 text-xs">${s.badge}</span>
+                  <span class="badge-chip bg-${t.theme}-500/20 text-${t.theme}-400 border border-${t.theme}-500/30 text-xs">${t.badge}</span>
                 </div>
 
                 <div class="space-y-2.5 sm:space-y-3">
@@ -289,7 +289,7 @@
             `}).join("")}
         </div>
       </div>
-    `}function _(){const e=a.roadmapTrack==="tech",r=e?[{level:"Level 1",title:"\u{1F331} \u57FA\u7840\u901A\u8BC6\u4E0E\u5927\u6A21\u578B\u5E95\u5C42\u539F\u7406",desc:"\u6DF1\u5165\u638C\u63E1\u5927\u6A21\u578B\u6838\u5FC3\u67B6\u6784\u3001\u6CE8\u610F\u529B\u673A\u5236 (Self-Attention)\u3001RoPE \u4E0E\u4F4D\u7F6E\u7F16\u7801\u6570\u5B66\u539F\u7406\u4E0E\u524D\u6CBF\u8109\u7EDC",categories:["ai-science","ai-news","bigmodel","ai-safety"],skills:["Transformer \u67B6\u6784","\u6CE8\u610F\u529B\u673A\u5236\u8BA1\u7B97","Token & \u5D4C\u5165\u5411\u91CF","\u6A21\u578B\u5B89\u5168\u4E0E\u4F26\u7406"]},{level:"Level 2",title:"\u26A1 Agent \u6838\u5FC3\u67B6\u6784\u3001\u624B\u5199\u6846\u67B6\u4E0E\u601D\u8003\u5FAA\u73AF",desc:"\u4ECE\u96F6\u624B\u5199\u8F7B\u91CF\u7EA7 Agent \u601D\u8003\u5FAA\u73AF\uFF0C\u6DF1\u5165 OpenClaw \u667A\u80FD\u4F53\u7CFB\u7EDF\uFF0C\u638C\u63E1\u6709\u9650\u72B6\u6001\u673A\u3001\u610F\u56FE\u611F\u77E5\u4E0E\u8BB0\u5FC6\u7CFB\u7EDF",categories:["myagent","agent-core","openclaw"],skills:["ReAct \u601D\u8003\u5FAA\u73AF","\u77ED/\u957F\u671F\u8BB0\u5FC6\u7CFB\u7EDF","\u5DE5\u5177\u8C03\u7528\u534F\u8BAE","OpenClaw \u667A\u80FD\u4F53"]},{level:"Level 3",title:"\u{1F6E0}\uFE0F \u73B0\u4EE3 AI \u5DE5\u5177\u94FE\u4E0E AI Coding \u5168\u6808\u8FDB\u9636",desc:"\u73A9\u8F6C Claude Code \u5168\u5BB6\u6876\u3001AI Coding 33\u7BC7\u5168\u4F53\u7CFB\u3001MCP Server \u534F\u8BAE\u5F00\u53D1\u3001TDD \u4E0E\u540E\u7AEF\u670D\u52A1\u96C6\u6210",categories:["aitools","ai-coding"],skills:["Claude Code \u5168\u5BB6\u6876","MCP \u534F\u8BAE\u5F00\u53D1","AI \u8F85\u52A9\u67B6\u6784\u8BBE\u8BA1","\u6D4B\u8BD5\u9A71\u52A8\u5F00\u53D1 TDD"]},{level:"Level 4",title:"\u{1F4BC} \u4F01\u4E1A\u7EA7\u5DE5\u7A0B\u843D\u5730\u4E0E\u79C1\u6709\u77E5\u8BC6\u5E93 (RAG)",desc:"\u843D\u5730\u4F01\u4E1A\u667A\u80FD\u5BA2\u670D\u5168\u95ED\u73AF\u3001\u6784\u5EFA\u79C1\u6709\u672C\u5730\u5927\u6A21\u578B\u77E5\u8BC6\u5E93 (Ollama + \u5411\u91CF\u5E93)\u3001\u6253\u9020\u5782\u76F4\u9886\u57DF Agent \u7CFB\u7EDF",categories:["customer-service","customer-service-harness","local-rag","english-agent","quant-agent"],skills:["\u4F01\u4E1A\u5FAE\u4FE1\u667A\u80FD\u5BA2\u670D","\u672C\u5730\u79C1\u6709 RAG","\u5411\u91CF\u68C0\u7D22\u4E0E\u91CD\u6392","\u5782\u76F4 Agent \u843D\u5730"]}]:[{level:"Level 1",title:"\u{1F3AF} \u4E1A\u52A1\u8BA4\u77E5\u4E0E\u9AD8\u9636\u63D0\u793A\u5DE5\u7A0B (Prompt \u8D4B\u80FD\u4E1A\u52A1)",desc:"\u628A\u4E1A\u52A1\u89C4\u5219\u8F6C\u5316\u4E3A\u5927\u6A21\u578B\u80FD\u7CBE\u51C6\u6267\u884C\u7684\u9AD8\u9636 Prompt\uFF0C\u638C\u63E1\u7ED3\u6784\u5316\u8F93\u51FA\u3001\u4E1A\u52A1\u8FB9\u754C\u7EA6\u675F\u4E0E\u5185\u5BB9\u6DA6\u8272",skills:["CRISPE \u7ED3\u6784\u5316\u6846\u67B6","\u4E1A\u52A1\u89C4\u5219\u4E0E\u8FB9\u754C\u7EA6\u675F","\u975E\u7ED3\u6784\u5316\u6570\u636E\u521D\u7B5B","\u81EA\u5A92\u4F53\u56FE\u6587\u751F\u4EA7\u6D41","\u6587\u672C\u53BB AI \u75D5\u6DA6\u8272"],curatedArticles:[{id:"aitools_pm_skills_write_prd_\u6DF1\u5EA6\u5B9E\u6218_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F3AF} \u4EA7\u54C1PRD\u5B9E\u6218"},{id:"aitools_baoyu_skills_\u4E2D\u6587\u81EA\u5A92\u4F53\u6280\u80FD\u96C6_\u516C\u4F17\u53F7\u7248_html",tag:"\u26A1 \u56FE\u6587\u751F\u4EA7\u6D41"},{id:"aitools_humanizer_skill\u4ECB\u7ECD_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F4DD} \u6587\u672C\u53BBAI\u75D5"}],inProgressText:"\u{1F331} \u300A\u4E1A\u52A1\u573A\u666F\u9AD8\u9636 Prompt \u7ED3\u6784\u5316\u8BBE\u8BA1\u5168\u6307\u5357\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."},{level:"Level 2",title:"\u{1F4A1} AI \u4EA7\u54C1\u8BBE\u8BA1\u4E0E\u4E1A\u52A1\u6D41\u91CD\u6784 (AI PM \u5B9E\u6218)",desc:"\u638C\u63E1 AI \u539F\u751F\u4EA7\u54C1\u9700\u6C42\u5B9A\u4E49\uFF08AI PRD \u89C4\u8303\uFF09\u3001\u4EBA\u673A\u534F\u540C\u4EA4\u4E92\u6A21\u5F0F\u8BBE\u8BA1\u3001\u5168\u7F51\u7814\u62A5\u8C03\u7814\u4E0E\u4E1A\u52A1\u6D41\u7A0B\u81EA\u52A8\u5316",skills:["AI PRD \u7ED3\u6784\u5316\u64B0\u5199","Copilot vs Agent \u9009\u578B","\u5168\u7F51\u7ADE\u54C1\u6DF1\u5EA6\u8C03\u7814","\u4E1A\u52A1\u6D41\u7A0B\u81EA\u52A8\u5316"],curatedArticles:[{id:"aitools_pm_skills_\u4EA7\u54C1\u7ECF\u7406\u6280\u80FD\u5E02\u573A_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F3AF} PM \u6280\u80FD\u5E02\u573A"},{id:"aitools_agent_reach_\u8BA9AI\u4E0A\u7F51\u641C\u8D44\u6599_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F50D} \u5168\u7F51\u7814\u62A5\u641C\u96C6"}],inProgressText:"\u{1F331} \u300AAI \u539F\u751F PRD \u9700\u6C42\u89C4\u8303\u4E0E\u4EBA\u673A\u534F\u540C\u4EA4\u4E92\u8BBE\u8BA1\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."},{level:"Level 3",title:"\u{1F916} \u96F6\u4EE3\u7801\u642D\u5EFA\u4E1A\u52A1\u667A\u80FD\u4F53 (Dify / \u6263\u5B50\u5B9E\u64CD)",desc:"\u65E0\u9700\u7F16\u5199\u590D\u6742\u4EE3\u7801\uFF0C\u901A\u8FC7\u53EF\u89C6\u5316\u754C\u9762\u642D\u5EFA\u4F01\u4E1A\u4E13\u5C5E\u77E5\u8BC6\u95EE\u7B54\u52A9\u624B\u3001\u4E1A\u52A1\u81EA\u52A8\u5316\u5DE5\u4F5C\u6D41\u4E0E\u667A\u80FD\u5BA2\u670D\u673A\u5668\u4EBA",skills:["\u4F01\u4E1A\u79C1\u6709\u77E5\u8BC6\u95EE\u7B54\u5E93","\u53EF\u89C6\u5316\u95EE\u7B54\u4EA4\u4E92\u754C\u9762","\u4E1A\u52A1\u75DB\u70B9\u4E0E\u610F\u56FE\u5206\u6790","\u5FAE\u4FE1/\u4F01\u5FAE\u5BA2\u670D\u63A5\u5165"],curatedArticles:[{id:"local_llm_knowledge_base_\u672C\u5730\u5927\u6A21\u578B\u77E5\u8BC6\u5E93\u7CFB\u5217_01_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F4DA} \u79C1\u6709\u77E5\u8BC6\u5E93"},{id:"local_llm_knowledge_base_\u672C\u5730\u5927\u6A21\u578B\u77E5\u8BC6\u5E93\u7CFB\u5217_04_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F5A5}\uFE0F \u53EF\u89C6\u5316\u95EE\u7B54"},{id:"customer_service_agent_\u5BA2\u670DAgent\u5B9E\u6218\u7CFB\u5217_01_html",tag:"\u{1F4AC} \u4E1A\u52A1\u75DB\u70B9\u5206\u6790"}],inProgressText:"\u{1F331} \u300A\u96F6\u4EE3\u7801\u5E73\u53F0\u6DF1\u5EA6\u6A2A\u8BC4\u4E0E\u4F01\u4E1A\u79C1\u6709\u77E5\u8BC6\u5E93 Bot \u5B9E\u64CD\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."},{level:"Level 4",title:"\u{1F4C8} \u4E1A\u52A1 ROI \u8BC4\u4F30\u4E0E\u5546\u4E1A\u5316\u95ED\u73AF (\u51B3\u7B56\u4E0E\u843D\u5730)",desc:"\u638C\u63E1 AI \u9879\u76EE\u6295\u5165\u4EA7\u51FA\u6BD4\uFF08ROI\uFF09\u6D4B\u7B97\u3001\u4E1A\u52A1\u56E2\u961F\u5F15\u5165 SOP\u3001\u4E00\u4EBA\u516C\u53F8\uFF08Solopreneur\uFF09\u95ED\u73AF\u4E0E\u4F01\u4E1A\u843D\u5730\u6307\u5357",skills:["\u4F01\u4E1A AI \u9009\u578B ROI \u8D26\u672C","\u4E1A\u52A1\u56E2\u961F\u5F15\u5165 SOP","\u4E00\u4EBA\u516C\u53F8\u5546\u4E1A\u95ED\u73AF","\u590D\u6742\u4E1A\u52A1\u591A\u4F53\u534F\u540C"],curatedArticles:[{id:"customer_service_agent_\u5BA2\u670DAgent\u5B9E\u6218\u7CFB\u5217_08_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F91D} \u590D\u6742\u4E1A\u52A1\u4F1A\u8BCA"},{id:"ai_coding_AI_Coding\u7CFB\u5217_25_\u56E2\u961F\u534F\u4F5C_html",tag:"\u{1F465} \u56E2\u961F\u534F\u540C\u843D\u5730"}],inProgressText:"\u{1F331} \u300A\u4F01\u4E1A\u5F15\u5165 AI \u7684 ROI \u6210\u672C\u8D26\u672C\u4E0E\u4E1A\u52A1\u56E2\u961F\u843D\u5730 SOP\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."}];t.mainContent.innerHTML=`
+    `}function L(){const e=a.roadmapTrack==="tech",r=e?[{level:"Level 1",title:"\u{1F331} \u57FA\u7840\u901A\u8BC6\u4E0E\u5927\u6A21\u578B\u5E95\u5C42\u539F\u7406",desc:"\u6DF1\u5165\u638C\u63E1\u5927\u6A21\u578B\u6838\u5FC3\u67B6\u6784\u3001\u6CE8\u610F\u529B\u673A\u5236 (Self-Attention)\u3001RoPE \u4E0E\u4F4D\u7F6E\u7F16\u7801\u6570\u5B66\u539F\u7406\u4E0E\u524D\u6CBF\u8109\u7EDC",categories:["ai-science","ai-news","bigmodel","ai-safety"],skills:["Transformer \u67B6\u6784","\u6CE8\u610F\u529B\u673A\u5236\u8BA1\u7B97","Token & \u5D4C\u5165\u5411\u91CF","\u6A21\u578B\u5B89\u5168\u4E0E\u4F26\u7406"]},{level:"Level 2",title:"\u26A1 Agent \u6838\u5FC3\u67B6\u6784\u3001\u624B\u5199\u6846\u67B6\u4E0E\u601D\u8003\u5FAA\u73AF",desc:"\u4ECE\u96F6\u624B\u5199\u8F7B\u91CF\u7EA7 Agent \u601D\u8003\u5FAA\u73AF\uFF0C\u6DF1\u5165 OpenClaw \u667A\u80FD\u4F53\u7CFB\u7EDF\uFF0C\u638C\u63E1\u6709\u9650\u72B6\u6001\u673A\u3001\u610F\u56FE\u611F\u77E5\u4E0E\u8BB0\u5FC6\u7CFB\u7EDF",categories:["myagent","agent-core","openclaw"],skills:["ReAct \u601D\u8003\u5FAA\u73AF","\u77ED/\u957F\u671F\u8BB0\u5FC6\u7CFB\u7EDF","\u5DE5\u5177\u8C03\u7528\u534F\u8BAE","OpenClaw \u667A\u80FD\u4F53"]},{level:"Level 3",title:"\u{1F6E0}\uFE0F \u73B0\u4EE3 AI \u5DE5\u5177\u94FE\u4E0E AI Coding \u5168\u6808\u8FDB\u9636",desc:"\u73A9\u8F6C Claude Code \u5168\u5BB6\u6876\u3001AI Coding 33\u7BC7\u5168\u4F53\u7CFB\u3001MCP Server \u534F\u8BAE\u5F00\u53D1\u3001TDD \u4E0E\u540E\u7AEF\u670D\u52A1\u96C6\u6210",categories:["aitools","ai-coding"],skills:["Claude Code \u5168\u5BB6\u6876","MCP \u534F\u8BAE\u5F00\u53D1","AI \u8F85\u52A9\u67B6\u6784\u8BBE\u8BA1","\u6D4B\u8BD5\u9A71\u52A8\u5F00\u53D1 TDD"]},{level:"Level 4",title:"\u{1F4BC} \u4F01\u4E1A\u7EA7\u5DE5\u7A0B\u843D\u5730\u4E0E\u79C1\u6709\u77E5\u8BC6\u5E93 (RAG)",desc:"\u843D\u5730\u4F01\u4E1A\u667A\u80FD\u5BA2\u670D\u5168\u95ED\u73AF\u3001\u6784\u5EFA\u79C1\u6709\u672C\u5730\u5927\u6A21\u578B\u77E5\u8BC6\u5E93 (Ollama + \u5411\u91CF\u5E93)\u3001\u6253\u9020\u5782\u76F4\u9886\u57DF Agent \u7CFB\u7EDF",categories:["customer-service","customer-service-harness","local-rag","english-agent","quant-agent"],skills:["\u4F01\u4E1A\u5FAE\u4FE1\u667A\u80FD\u5BA2\u670D","\u672C\u5730\u79C1\u6709 RAG","\u5411\u91CF\u68C0\u7D22\u4E0E\u91CD\u6392","\u5782\u76F4 Agent \u843D\u5730"]}]:[{level:"Level 1",title:"\u{1F3AF} \u4E1A\u52A1\u8BA4\u77E5\u4E0E\u9AD8\u9636\u63D0\u793A\u5DE5\u7A0B (Prompt \u8D4B\u80FD\u4E1A\u52A1)",desc:"\u628A\u4E1A\u52A1\u89C4\u5219\u8F6C\u5316\u4E3A\u5927\u6A21\u578B\u80FD\u7CBE\u51C6\u6267\u884C\u7684\u9AD8\u9636 Prompt\uFF0C\u638C\u63E1\u7ED3\u6784\u5316\u8F93\u51FA\u3001\u4E1A\u52A1\u8FB9\u754C\u7EA6\u675F\u4E0E\u5185\u5BB9\u6DA6\u8272",skills:["CRISPE \u7ED3\u6784\u5316\u6846\u67B6","\u4E1A\u52A1\u89C4\u5219\u4E0E\u8FB9\u754C\u7EA6\u675F","\u975E\u7ED3\u6784\u5316\u6570\u636E\u521D\u7B5B","\u81EA\u5A92\u4F53\u56FE\u6587\u751F\u4EA7\u6D41","\u6587\u672C\u53BB AI \u75D5\u6DA6\u8272"],curatedArticles:[{id:"aitools_pm_skills_write_prd_\u6DF1\u5EA6\u5B9E\u6218_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F3AF} \u4EA7\u54C1PRD\u5B9E\u6218"},{id:"aitools_baoyu_skills_\u4E2D\u6587\u81EA\u5A92\u4F53\u6280\u80FD\u96C6_\u516C\u4F17\u53F7\u7248_html",tag:"\u26A1 \u56FE\u6587\u751F\u4EA7\u6D41"},{id:"aitools_humanizer_skill\u4ECB\u7ECD_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F4DD} \u6587\u672C\u53BBAI\u75D5"}],inProgressText:"\u{1F331} \u300A\u4E1A\u52A1\u573A\u666F\u9AD8\u9636 Prompt \u7ED3\u6784\u5316\u8BBE\u8BA1\u5168\u6307\u5357\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."},{level:"Level 2",title:"\u{1F4A1} AI \u4EA7\u54C1\u8BBE\u8BA1\u4E0E\u4E1A\u52A1\u6D41\u91CD\u6784 (AI PM \u5B9E\u6218)",desc:"\u638C\u63E1 AI \u539F\u751F\u4EA7\u54C1\u9700\u6C42\u5B9A\u4E49\uFF08AI PRD \u89C4\u8303\uFF09\u3001\u4EBA\u673A\u534F\u540C\u4EA4\u4E92\u6A21\u5F0F\u8BBE\u8BA1\u3001\u5168\u7F51\u7814\u62A5\u8C03\u7814\u4E0E\u4E1A\u52A1\u6D41\u7A0B\u81EA\u52A8\u5316",skills:["AI PRD \u7ED3\u6784\u5316\u64B0\u5199","Copilot vs Agent \u9009\u578B","\u5168\u7F51\u7ADE\u54C1\u6DF1\u5EA6\u8C03\u7814","\u4E1A\u52A1\u6D41\u7A0B\u81EA\u52A8\u5316"],curatedArticles:[{id:"aitools_pm_skills_\u4EA7\u54C1\u7ECF\u7406\u6280\u80FD\u5E02\u573A_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F3AF} PM \u6280\u80FD\u5E02\u573A"},{id:"aitools_agent_reach_\u8BA9AI\u4E0A\u7F51\u641C\u8D44\u6599_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F50D} \u5168\u7F51\u7814\u62A5\u641C\u96C6"}],inProgressText:"\u{1F331} \u300AAI \u539F\u751F PRD \u9700\u6C42\u89C4\u8303\u4E0E\u4EBA\u673A\u534F\u540C\u4EA4\u4E92\u8BBE\u8BA1\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."},{level:"Level 3",title:"\u{1F916} \u96F6\u4EE3\u7801\u642D\u5EFA\u4E1A\u52A1\u667A\u80FD\u4F53 (Dify / \u6263\u5B50\u5B9E\u64CD)",desc:"\u65E0\u9700\u7F16\u5199\u590D\u6742\u4EE3\u7801\uFF0C\u901A\u8FC7\u53EF\u89C6\u5316\u754C\u9762\u642D\u5EFA\u4F01\u4E1A\u4E13\u5C5E\u77E5\u8BC6\u95EE\u7B54\u52A9\u624B\u3001\u4E1A\u52A1\u81EA\u52A8\u5316\u5DE5\u4F5C\u6D41\u4E0E\u667A\u80FD\u5BA2\u670D\u673A\u5668\u4EBA",skills:["\u4F01\u4E1A\u79C1\u6709\u77E5\u8BC6\u95EE\u7B54\u5E93","\u53EF\u89C6\u5316\u95EE\u7B54\u4EA4\u4E92\u754C\u9762","\u4E1A\u52A1\u75DB\u70B9\u4E0E\u610F\u56FE\u5206\u6790","\u5FAE\u4FE1/\u4F01\u5FAE\u5BA2\u670D\u63A5\u5165"],curatedArticles:[{id:"local_llm_knowledge_base_\u672C\u5730\u5927\u6A21\u578B\u77E5\u8BC6\u5E93\u7CFB\u5217_01_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F4DA} \u79C1\u6709\u77E5\u8BC6\u5E93"},{id:"local_llm_knowledge_base_\u672C\u5730\u5927\u6A21\u578B\u77E5\u8BC6\u5E93\u7CFB\u5217_04_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F5A5}\uFE0F \u53EF\u89C6\u5316\u95EE\u7B54"},{id:"customer_service_agent_\u5BA2\u670DAgent\u5B9E\u6218\u7CFB\u5217_01_html",tag:"\u{1F4AC} \u4E1A\u52A1\u75DB\u70B9\u5206\u6790"}],inProgressText:"\u{1F331} \u300A\u96F6\u4EE3\u7801\u5E73\u53F0\u6DF1\u5EA6\u6A2A\u8BC4\u4E0E\u4F01\u4E1A\u79C1\u6709\u77E5\u8BC6\u5E93 Bot \u5B9E\u64CD\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."},{level:"Level 4",title:"\u{1F4C8} \u4E1A\u52A1 ROI \u8BC4\u4F30\u4E0E\u5546\u4E1A\u5316\u95ED\u73AF (\u51B3\u7B56\u4E0E\u843D\u5730)",desc:"\u638C\u63E1 AI \u9879\u76EE\u6295\u5165\u4EA7\u51FA\u6BD4\uFF08ROI\uFF09\u6D4B\u7B97\u3001\u4E1A\u52A1\u56E2\u961F\u5F15\u5165 SOP\u3001\u4E00\u4EBA\u516C\u53F8\uFF08Solopreneur\uFF09\u95ED\u73AF\u4E0E\u4F01\u4E1A\u843D\u5730\u6307\u5357",skills:["\u4F01\u4E1A AI \u9009\u578B ROI \u8D26\u672C","\u4E1A\u52A1\u56E2\u961F\u5F15\u5165 SOP","\u4E00\u4EBA\u516C\u53F8\u5546\u4E1A\u95ED\u73AF","\u590D\u6742\u4E1A\u52A1\u591A\u4F53\u534F\u540C"],curatedArticles:[{id:"customer_service_agent_\u5BA2\u670DAgent\u5B9E\u6218\u7CFB\u5217_08_\u516C\u4F17\u53F7\u7248_html",tag:"\u{1F91D} \u590D\u6742\u4E1A\u52A1\u4F1A\u8BCA"},{id:"ai_coding_AI_Coding\u7CFB\u5217_25_\u56E2\u961F\u534F\u4F5C_html",tag:"\u{1F465} \u56E2\u961F\u534F\u540C\u843D\u5730"}],inProgressText:"\u{1F331} \u300A\u4F01\u4E1A\u5F15\u5165 AI \u7684 ROI \u6210\u672C\u8D26\u672C\u4E0E\u4E1A\u52A1\u56E2\u961F\u843D\u5730 SOP\u300B\u5BA1\u6838\u6392\u671F\u4E2D..."}];s.mainContent.innerHTML=`
       <div class="max-w-4xl mx-auto animate-fade-in px-1 sm:px-0">
         <!-- Dual Track Switcher Pill -->
         <div class="text-center mb-8 sm:mb-10">
@@ -343,13 +343,13 @@
                   ${e?`
                     <!-- Tech Track: Category List -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mt-3 sm:mt-4">
-                      ${n.categories.map(d=>{const l=a.data.categories.find(f=>f.id===d);if(!l)return"";const x=a.data.articles.filter(f=>f.categoryId===d).length;return`
+                      ${n.categories.map(d=>{const l=a.data.categories.find(f=>f.id===d);if(!l)return"";const h=a.data.articles.filter(f=>f.categoryId===d).length;return`
                           <div onclick="window.AI_HUB.switchCategory('${l.id}')" class="p-3 sm:p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex items-center justify-between cursor-pointer group">
                             <span class="flex items-center gap-2 text-xs sm:text-sm text-slate-200 group-hover:text-indigo-400 font-medium">
                               <span class="text-base sm:text-lg">${l.icon}</span>
                               <span>${l.name}</span>
                             </span>
-                            <span class="text-[11px] sm:text-xs bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition">${x} \u7BC7</span>
+                            <span class="text-[11px] sm:text-xs bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition">${h} \u7BC7</span>
                           </div>
                         `}).join("")}
                     </div>
@@ -357,7 +357,7 @@
                     <!-- Business Track: Curated Specific Article Cards -->
                     <div class="space-y-3 mt-3 sm:mt-4">
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                        ${(n.curatedArticles||[]).map(d=>{const l=a.data.articles.find(x=>x.id===d.id);return l?`
+                        ${(n.curatedArticles||[]).map(d=>{const l=a.data.articles.find(h=>h.id===d.id);return l?`
                             <div onclick="window.AI_HUB.openReaderById('${l.id}')" class="p-3 sm:p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-indigo-500/30 transition flex flex-col justify-between cursor-pointer group shadow-sm">
                               <div>
                                 <div class="flex items-center justify-between gap-2 mb-1.5">
@@ -392,7 +392,7 @@
             `}).join("")}
         </div>
       </div>
-    `}function L(){return`
+    `}function _(){return`
       <div class="text-center py-20 animate-fade-in">
         <div class="text-5xl mb-4">\u{1F50D}</div>
         <h3 class="text-xl font-bold text-white">\u672A\u627E\u5230\u5339\u914D\u7684\u5B66\u4E60\u8D44\u6599</h3>
@@ -401,8 +401,8 @@
           \u91CD\u7F6E\u6240\u6709\u7B5B\u9009\u6761\u4EF6
         </button>
       </div>
-    `}function F(e){return e?e.replace(/^### (.*$)/gim,'<h3 id="$1">$1</h3>').replace(/^## (.*$)/gim,'<h2 id="$1">$1</h2>').replace(/^# (.*$)/gim,'<h1 id="$1">$1</h1>').replace(/^\> (.*$)/gim,"<blockquote>$1</blockquote>").replace(/\*\*(.*)\*\*/gim,"<strong>$1</strong>").replace(/\*(.*)\*/gim,"<em>$1</em>").replace(/```([a-z]*)\n([\s\S]*?)```/gim,"<pre><code>$2</code></pre>").replace(/`([^`]+)`/gim,"<code>$1</code>").replace(/\n\n/gim,"</p><p>").replace(/\[([^\]]+)\]\(([^)]+)\)/gim,'<a href="$2" target="_blank">$1</a>'):""}function u(e){a.currentArticle=e,a.history=[{id:e.id,time:new Date().toLocaleTimeString()},...a.history.filter(i=>i.id!==e.id)],localStorage.setItem("ai_hub_history",JSON.stringify(a.history)),window.history.replaceState(null,"",`?article=${e.id}`),t.readerTitle&&(t.readerTitle.textContent=e.title);const s=a.data.categories.find(i=>i.id===e.categoryId);t.readerCategory&&(t.readerCategory.textContent=s?`${s.icon} ${s.name}`:"\u7CFB\u5217\u6587\u6863"),O(),e.format==="md"?(t.readerIframeContainer&&t.readerIframeContainer.classList.add("hidden"),t.readerMarkdownContainer&&t.readerMarkdownContainer.classList.remove("hidden"),t.markdownContent&&(t.markdownContent.innerHTML='<div class="text-center py-16 text-slate-400">\u6B63\u5728\u89E3\u6790\u5E76\u6E32\u67D3 Markdown \u6587\u6863...</div>'),fetch(e.path).then(i=>i.text()).then(i=>{let r="";window.marked&&typeof window.marked.parse=="function"?r=window.marked.parse(i):r=F(i),t.markdownContent&&(t.markdownContent.innerHTML=r);const n=[];i.split(`
-`).forEach(d=>{(d.startsWith("## ")||d.startsWith("### "))&&n.push(d.replace(/^#+\s*/,"").trim())}),e.toc=n.slice(0,15),M(e)}).catch(i=>{t.markdownContent&&(t.markdownContent.innerHTML=`<div class="text-rose-400 p-6">\u52A0\u8F7D Markdown \u6587\u4EF6\u5931\u8D25\uFF1A${i.message}</div>`)})):(t.readerMarkdownContainer&&t.readerMarkdownContainer.classList.add("hidden"),t.readerIframeContainer&&t.readerIframeContainer.classList.remove("hidden"),t.readerFrame&&(t.readerFrame.src=e.path,t.readerFrame.onload=function(){try{const i=t.readerFrame.contentDocument||t.readerFrame.contentWindow.document;if(!i)return;const r=i.createElement("style");r.textContent=`
+    `}function O(e){return e?e.replace(/^### (.*$)/gim,'<h3 id="$1">$1</h3>').replace(/^## (.*$)/gim,'<h2 id="$1">$1</h2>').replace(/^# (.*$)/gim,'<h1 id="$1">$1</h1>').replace(/^\> (.*$)/gim,"<blockquote>$1</blockquote>").replace(/\*\*(.*)\*\*/gim,"<strong>$1</strong>").replace(/\*(.*)\*/gim,"<em>$1</em>").replace(/```([a-z]*)\n([\s\S]*?)```/gim,"<pre><code>$2</code></pre>").replace(/`([^`]+)`/gim,"<code>$1</code>").replace(/\n\n/gim,"</p><p>").replace(/\[([^\]]+)\]\(([^)]+)\)/gim,'<a href="$2" target="_blank">$1</a>'):""}function g(e){a.currentArticle=e,a.history=[{id:e.id,time:new Date().toLocaleTimeString()},...a.history.filter(i=>i.id!==e.id)],localStorage.setItem("ai_hub_history",JSON.stringify(a.history)),window.history.replaceState(null,"",`?article=${e.id}`),s.readerTitle&&(s.readerTitle.textContent=e.title);const t=a.data.categories.find(i=>i.id===e.categoryId);s.readerCategory&&(s.readerCategory.textContent=t?`${t.icon} ${t.name}`:"\u7CFB\u5217\u6587\u6863"),F(),e.format==="md"?(s.readerIframeContainer&&s.readerIframeContainer.classList.add("hidden"),s.readerMarkdownContainer&&s.readerMarkdownContainer.classList.remove("hidden"),s.markdownContent&&(s.markdownContent.innerHTML='<div class="text-center py-16 text-slate-400">\u6B63\u5728\u89E3\u6790\u5E76\u6E32\u67D3 Markdown \u6587\u6863...</div>'),fetch(e.path).then(i=>i.text()).then(i=>{let r="";window.marked&&typeof window.marked.parse=="function"?r=window.marked.parse(i):r=O(i),s.markdownContent&&(s.markdownContent.innerHTML=r);const n=[];i.split(`
+`).forEach(d=>{(d.startsWith("## ")||d.startsWith("### "))&&n.push(d.replace(/^#+\s*/,"").trim())}),e.toc=n.slice(0,15),M(e)}).catch(i=>{s.markdownContent&&(s.markdownContent.innerHTML=`<div class="text-rose-400 p-6">\u52A0\u8F7D Markdown \u6587\u4EF6\u5931\u8D25\uFF1A${i.message}</div>`)})):(s.readerMarkdownContainer&&s.readerMarkdownContainer.classList.add("hidden"),s.readerIframeContainer&&s.readerIframeContainer.classList.remove("hidden"),s.readerFrame&&(s.readerFrame.src=e.path,s.readerFrame.onload=function(){try{const i=s.readerFrame.contentDocument||s.readerFrame.contentWindow.document;if(!i)return;const r=i.createElement("style");r.textContent=`
               body {
                 background: #ffffff !important;
                 color: #1e293b !important;
@@ -468,11 +468,11 @@
               td {
                 color: #334155 !important;
               }
-            `,i.head.appendChild(r),i.querySelectorAll("a[href]").forEach(o=>{o.addEventListener("click",function(d){const l=o.getAttribute("href");if(!l)return;if(l.startsWith("#")){d.preventDefault();const p=i.querySelector(l);p&&p.scrollIntoView({behavior:"smooth"});return}if(l.startsWith("http://")||l.startsWith("https://")||l.startsWith("//")){o.target="_blank";return}d.preventDefault();const x=l.split("?")[0].split("#")[0],f=x.split("/").pop(),S=a.data.articles.find(p=>p.path===x||p.path.endsWith(x)||p.path.endsWith(f)||p.id===x.replace(/\.html$/,""));if(S)u(S);else{let p=e.path.substring(0,e.path.lastIndexOf("/")+1),z=new URL(l,window.location.origin+"/"+p).pathname.replace(/^\//,"");t.readerFrame.src=z}})})}catch(i){console.warn("Iframe link handling notice:",i)}}),M(e)),t.readerModal&&(t.readerModal.classList.remove("hidden"),document.body.style.overflow="hidden")}function T(){a.currentArticle=null,t.readerModal&&(t.readerModal.classList.add("hidden"),document.body.style.overflow=""),t.readerFrame&&(t.readerFrame.src="about:blank"),window.history.replaceState(null,"",window.location.pathname),c()}function O(){if(!a.currentArticle)return;const e=a.currentArticle;t.btnOpenExternal&&(t.btnOpenExternal.href=e.path);const s=a.data.articles.filter(r=>r.categoryId===e.categoryId),i=s.findIndex(r=>r.id===e.id);t.btnPrevArticle&&(t.btnPrevArticle.disabled=i<=0,t.btnPrevArticle.classList.toggle("opacity-30",i<=0),t.btnPrevArticle.classList.toggle("cursor-not-allowed",i<=0)),t.btnNextArticle&&(t.btnNextArticle.disabled=i===-1||i>=s.length-1,t.btnNextArticle.classList.toggle("opacity-30",i===-1||i>=s.length-1),t.btnNextArticle.classList.toggle("cursor-not-allowed",i===-1||i>=s.length-1))}function M(e){if(!t.readerTocList)return;const s=e.toc||[];if(s.length===0){t.readerTocList.innerHTML='<div class="text-xs text-slate-400 py-4 text-center">\u672C\u7BC7\u65E0\u591A\u7EA7\u6807\u9898\u7D22\u5F15</div>';return}t.readerTocList.innerHTML=s.map((i,r)=>`
+            `,i.head.appendChild(r),i.querySelectorAll("a[href]").forEach(o=>{o.addEventListener("click",function(d){const l=o.getAttribute("href");if(!l)return;if(l.startsWith("#")){d.preventDefault();const m=i.querySelector(l);m&&m.scrollIntoView({behavior:"smooth"});return}if(l.startsWith("http://")||l.startsWith("https://")||l.startsWith("//")){o.target="_blank";return}d.preventDefault();const h=l.split("?")[0].split("#")[0],f=h.split("/").pop(),S=a.data.articles.find(m=>m.path===h||m.path.endsWith(h)||m.path.endsWith(f)||m.id===h.replace(/\.html$/,""));if(S)g(S);else{let m=e.path.substring(0,e.path.lastIndexOf("/")+1),z=new URL(l,window.location.origin+"/"+m).pathname.replace(/^\//,"");s.readerFrame.src=z}})})}catch(i){console.warn("Iframe link handling notice:",i)}}),M(e)),s.readerModal&&(s.readerModal.classList.remove("hidden"),document.body.style.overflow="hidden")}function T(){a.currentArticle=null,s.readerModal&&(s.readerModal.classList.add("hidden"),document.body.style.overflow=""),s.readerFrame&&(s.readerFrame.src="about:blank"),window.history.replaceState(null,"",window.location.pathname),c()}function F(){if(!a.currentArticle)return;const e=a.currentArticle;s.btnOpenExternal&&(s.btnOpenExternal.href=e.path);const t=document.getElementById("btn-open-wechat-version");if(t)if(e.path&&(e.path.includes("business-review/")||e.path.includes("-\u516C\u4F17\u53F7\u7248.html"))){const n=e.path.includes("-\u516C\u4F17\u53F7\u7248.html")?e.path:e.path.replace(/\.html$/,"-\u516C\u4F17\u53F7\u7248.html");t.href=n,t.classList.remove("hidden")}else t.classList.add("hidden");const i=a.data.articles.filter(n=>n.categoryId===e.categoryId),r=i.findIndex(n=>n.id===e.id);s.btnPrevArticle&&(s.btnPrevArticle.disabled=r<=0,s.btnPrevArticle.classList.toggle("opacity-30",r<=0),s.btnPrevArticle.classList.toggle("cursor-not-allowed",r<=0)),s.btnNextArticle&&(s.btnNextArticle.disabled=r===-1||r>=i.length-1,s.btnNextArticle.classList.toggle("opacity-30",r===-1||r>=i.length-1),s.btnNextArticle.classList.toggle("cursor-not-allowed",r===-1||r>=i.length-1))}function M(e){if(!s.readerTocList)return;const t=e.toc||[];if(t.length===0){s.readerTocList.innerHTML='<div class="text-xs text-slate-400 py-4 text-center">\u672C\u7BC7\u65E0\u591A\u7EA7\u6807\u9898\u7D22\u5F15</div>';return}s.readerTocList.innerHTML=t.map((i,r)=>`
       <button onclick="window.AI_HUB.scrollToHeading('${i}')" class="w-full text-left p-2.5 rounded-xl hover:bg-white/10 text-xs text-slate-300 hover:text-white transition truncate" title="${i}">
         ${r+1}. ${i}
       </button>
-    `).join("")}function W(e){if(a.currentArticle&&a.currentArticle.format==="md"&&t.markdownContent){const s=t.markdownContent.querySelectorAll("h1, h2, h3, h4");for(const i of s)if(i.textContent.trim().includes(e)||e.includes(i.textContent.trim())){i.scrollIntoView({behavior:"smooth",block:"start"});break}}}function v(e){if(!a.currentArticle)return;const s=a.data.articles.filter(r=>r.categoryId===a.currentArticle.categoryId),i=s.findIndex(r=>r.id===a.currentArticle.id);e==="prev"&&i>0?u(s[i-1]):e==="next"&&i<s.length-1&&u(s[i+1])}function B(){t.wechatModal&&(t.wechatModal.classList.remove("hidden"),document.body.style.overflow="hidden")}function E(){t.wechatModal&&(t.wechatModal.classList.add("hidden"),document.body.style.overflow="")}function N(){const e="\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08";navigator.clipboard&&window.isSecureContext?navigator.clipboard.writeText(e).then(()=>{b("\u5DF2\u590D\u5236\u516C\u4F17\u53F7\u540D\u79F0\uFF1A\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08","\u{1F4CB}")}).catch(()=>{w(e)}):w(e)}function K(e){navigator.clipboard&&window.isSecureContext?navigator.clipboard.writeText(e).then(()=>{b(`\u5DF2\u590D\u5236\u53E3\u4EE4\u3010${e}\u3011\uFF0C\u8BF7\u5728\u5FAE\u4FE1\u516C\u4F17\u53F7\u540E\u53F0\u76F4\u63A5\u53D1\u9001\uFF01`,"\u{1F4CB}")}).catch(()=>{w(e)}):w(e),B()}function w(e){const s=document.createElement("input");s.value=e,document.body.appendChild(s),s.select();try{document.execCommand("copy"),b("\u5DF2\u590D\u5236\u516C\u4F17\u53F7\u540D\u79F0\uFF1A\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08","\u{1F4CB}")}catch{b("\u516C\u4F17\u53F7\u540D\u79F0\uFF1A\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08","\u{1F4AC}")}document.body.removeChild(s)}function Q(){t.themeToggle&&t.themeToggle.addEventListener("click",k),t.searchInput&&t.searchInput.addEventListener("input",e=>{a.searchQuery=e.target.value.trim(),t.searchClear&&t.searchClear.classList.toggle("hidden",!a.searchQuery),c()}),t.searchClear&&t.searchClear.addEventListener("click",()=>{a.searchQuery="",t.searchInput.value="",t.searchClear.classList.add("hidden"),c()}),t.categoryTabs&&t.categoryTabs.addEventListener("click",e=>{const s=e.target.closest("[data-category]");s&&(a.activeCategory=s.dataset.category,a.activeCategory!=="all"&&a.viewMode==="roadmap"&&(a.viewMode="grid",m()),g(),c())}),t.categorySelect&&t.categorySelect.addEventListener("change",e=>{a.activeCategory=e.target.value,a.activeCategory!=="all"&&a.viewMode==="roadmap"&&(a.viewMode="grid",m()),g(),c()}),t.viewButtons.forEach(e=>{e.addEventListener("click",()=>{a.viewMode=e.dataset.view,m(),c()})}),t.btnCloseReader&&t.btnCloseReader.addEventListener("click",T),t.btnPrevArticle&&t.btnPrevArticle.addEventListener("click",()=>v("prev")),t.btnNextArticle&&t.btnNextArticle.addEventListener("click",()=>v("next")),t.btnToggleToc&&t.btnToggleToc.addEventListener("click",()=>{t.readerTocDrawer&&t.readerTocDrawer.classList.toggle("hidden")}),document.addEventListener("keydown",e=>{(e.metaKey||e.ctrlKey)&&e.key==="k"&&(e.preventDefault(),t.searchInput?.focus()),e.key==="Escape"&&(a.currentArticle&&T(),t.wechatModal&&!t.wechatModal.classList.contains("hidden")&&E()),a.currentArticle&&!e.target.matches("input, textarea")&&(e.key==="ArrowLeft"&&v("prev"),e.key==="ArrowRight"&&v("next")),(e.key==="t"||e.key==="T")&&!e.target.matches("input, textarea")&&!a.currentArticle&&k()})}function V(){let s=`
+    `).join("")}function W(e){if(a.currentArticle&&a.currentArticle.format==="md"&&s.markdownContent){const t=s.markdownContent.querySelectorAll("h1, h2, h3, h4");for(const i of t)if(i.textContent.trim().includes(e)||e.includes(i.textContent.trim())){i.scrollIntoView({behavior:"smooth",block:"start"});break}}}function v(e){if(!a.currentArticle)return;const t=a.data.articles.filter(r=>r.categoryId===a.currentArticle.categoryId),i=t.findIndex(r=>r.id===a.currentArticle.id);e==="prev"&&i>0?g(t[i-1]):e==="next"&&i<t.length-1&&g(t[i+1])}function B(){s.wechatModal&&(s.wechatModal.classList.remove("hidden"),document.body.style.overflow="hidden")}function E(){s.wechatModal&&(s.wechatModal.classList.add("hidden"),document.body.style.overflow="")}function Q(){const e="\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08";navigator.clipboard&&window.isSecureContext?navigator.clipboard.writeText(e).then(()=>{b("\u5DF2\u590D\u5236\u516C\u4F17\u53F7\u540D\u79F0\uFF1A\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08","\u{1F4CB}")}).catch(()=>{w(e)}):w(e)}function K(e){navigator.clipboard&&window.isSecureContext?navigator.clipboard.writeText(e).then(()=>{b(`\u5DF2\u590D\u5236\u53E3\u4EE4\u3010${e}\u3011\uFF0C\u8BF7\u5728\u5FAE\u4FE1\u516C\u4F17\u53F7\u540E\u53F0\u76F4\u63A5\u53D1\u9001\uFF01`,"\u{1F4CB}")}).catch(()=>{w(e)}):w(e),B()}function w(e){const t=document.createElement("input");t.value=e,document.body.appendChild(t),t.select();try{document.execCommand("copy"),b("\u5DF2\u590D\u5236\u516C\u4F17\u53F7\u540D\u79F0\uFF1A\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08","\u{1F4CB}")}catch{b("\u516C\u4F17\u53F7\u540D\u79F0\uFF1A\u5927\u524D\u7AEF\u5DE5\u7A0B\u5E08","\u{1F4AC}")}document.body.removeChild(t)}function V(){s.themeToggle&&s.themeToggle.addEventListener("click",k),s.searchInput&&s.searchInput.addEventListener("input",t=>{a.searchQuery=t.target.value.trim(),s.searchClear&&s.searchClear.classList.toggle("hidden",!a.searchQuery),a.searchQuery&&a.viewMode!=="grid"&&a.viewMode!=="list"&&(a.viewMode="grid",p()),c()}),s.searchClear&&s.searchClear.addEventListener("click",()=>{a.searchQuery="",s.searchInput.value="",s.searchClear.classList.add("hidden"),s.searchInput.focus(),c()}),document.querySelectorAll(".hot-tag-btn").forEach(t=>{t.addEventListener("click",()=>{const i=t.dataset.keyword;i&&s.searchInput&&(s.searchInput.value=i,a.searchQuery=i,s.searchClear&&s.searchClear.classList.remove("hidden"),a.viewMode!=="grid"&&a.viewMode!=="list"&&(a.viewMode="grid",p()),c(),s.mainContent?.scrollIntoView({behavior:"smooth",block:"start"}))})});function e(){if(!s.mainContent)return;if(a.viewMode==="showcases"){window.scrollTo({top:0,behavior:"smooth"});return}const t=document.getElementById("category-nav-bar");if(t&&!t.classList.contains("hidden")){const i=t.getBoundingClientRect(),r=window.pageYOffset+i.top-65;window.scrollTo({top:Math.max(0,r),behavior:"smooth"})}else{const i=s.mainContent.getBoundingClientRect(),r=window.pageYOffset+i.top-70;window.scrollTo({top:Math.max(0,r),behavior:"smooth"})}}s.categoryTabs&&s.categoryTabs.addEventListener("click",t=>{const i=t.target.closest("[data-category]");i&&(a.activeCategory=i.dataset.category,a.activeCategory!=="all"&&a.viewMode==="roadmap"&&(a.viewMode="grid",p()),u(),c(),e())}),s.categorySelect&&s.categorySelect.addEventListener("change",t=>{a.activeCategory=t.target.value,a.activeCategory!=="all"&&a.viewMode==="roadmap"&&(a.viewMode="grid",p()),u(),c(),e()}),s.viewButtons.forEach(t=>{t.addEventListener("click",()=>{a.viewMode=t.dataset.view,p(),c(),e()})}),s.btnCloseReader&&s.btnCloseReader.addEventListener("click",T),s.btnPrevArticle&&s.btnPrevArticle.addEventListener("click",()=>v("prev")),s.btnNextArticle&&s.btnNextArticle.addEventListener("click",()=>v("next")),s.btnToggleToc&&s.btnToggleToc.addEventListener("click",()=>{s.readerTocDrawer&&s.readerTocDrawer.classList.toggle("hidden")}),document.addEventListener("keydown",t=>{(t.metaKey||t.ctrlKey)&&(t.key==="k"||t.key==="K")&&(t.preventDefault(),s.searchInput?.focus(),s.searchInput?.select()),t.key==="Escape"&&(a.currentArticle&&T(),s.wechatModal&&!s.wechatModal.classList.contains("hidden")&&E()),a.currentArticle&&!t.target.matches("input, textarea")&&(t.key==="ArrowLeft"&&v("prev"),t.key==="ArrowRight"&&v("next")),(t.key==="t"||t.key==="T")&&!t.target.matches("input, textarea")&&!a.currentArticle&&k()})}function N(){let t=`
       <div class="mb-10 animate-fade-in pt-4 sm:pt-6">
         
         <!-- Clean Section Header -->
@@ -494,7 +494,7 @@
         </div>
 
       </div>
-    `;t.mainContent.innerHTML=s}function q(e){const s=e.theme||"emerald",i=(e.features||[]).map(o=>`
+    `;s.mainContent.innerHTML=t}function q(e){const t=e.theme||"emerald",i=(e.features||[]).map(o=>`
       <li class="flex items-start gap-2 text-xs text-slate-300 leading-relaxed">
         <span class="text-emerald-400 shrink-0 mt-0.5">\u2713</span>
         <span>${o}</span>
@@ -508,7 +508,7 @@
       </a>
     `:"";return`
       <div class="rounded-3xl glass border border-white/10 p-6 sm:p-7 flex flex-col justify-between hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/10 transition-all group relative overflow-hidden bg-gradient-to-b from-white/[0.04] to-transparent">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-${s}-500/10 rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform"></div>
+        <div class="absolute top-0 right-0 w-32 h-32 bg-${t}-500/10 rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform"></div>
         
         <div>
           <!-- Card Header -->
@@ -552,25 +552,43 @@
 
         <!-- Footer Action Box -->
         <div>
-          <!-- Install Command Box -->
-          <div class="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 mb-4 flex items-center justify-between gap-2 shadow-inner">
-            <code class="text-[10px] sm:text-[11px] text-emerald-300 font-mono truncate select-all">
-              ${e.installCmd}
-            </code>
-            <button onclick="window.AI_HUB.copyInstallCmd('${e.installCmd}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 text-[10px] font-bold transition shrink-0 cursor-pointer" title="\u70B9\u51FB\u590D\u5236\u5B89\u88C5\u547D\u4EE4">
-              \u590D\u5236
-            </button>
-          </div>
+          ${e.type==="tool"?`
+            <!-- Web Tool Direct Action Button -->
+            <div class="mb-4">
+              <a href="${e.toolUrl}" target="_blank" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs sm:text-sm font-bold text-center transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 cursor-pointer">
+                <span>\u26A1</span>
+                <span>\u7ACB\u5373\u5728\u7EBF\u6253\u5F00\u4F7F\u7528 (\u514D\u5B89\u88C5) \u2794</span>
+              </a>
+            </div>
+            ${e.docsUrl?`
+              <div class="flex items-center gap-2">
+                <a href="${e.docsUrl}" target="_blank" class="w-full py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 text-xs font-bold text-center transition flex items-center justify-center gap-1.5">
+                  <span>\u{1F4D6}</span>
+                  <span>\u9605\u8BFB\u914D\u5957\u5B9E\u6218\u4E13\u680F</span>
+                </a>
+              </div>
+            `:""}
+          `:`
+            <!-- Install Command Box for Skills -->
+            <div class="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 mb-4 flex items-center justify-between gap-2 shadow-inner">
+              <code class="text-[10px] sm:text-[11px] text-emerald-300 font-mono truncate select-all">
+                ${e.installCmd}
+              </code>
+              <button onclick="window.AI_HUB.copyInstallCmd('${e.installCmd}')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 text-[10px] font-bold transition shrink-0 cursor-pointer" title="\u70B9\u51FB\u590D\u5236\u5B89\u88C5\u547D\u4EE4">
+                \u590D\u5236
+              </button>
+            </div>
 
-          <!-- Action Buttons -->
-          <div class="flex items-center gap-2">
-            <a href="${e.githubUrl||"https://github.com/fangxiao/myskills"}" target="_blank" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold text-center transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30">
-              <span>\u2B50</span>
-              <span>GitHub \u5F00\u6E90</span>
-            </a>
-            ${n}
-          </div>
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+              <a href="${e.githubUrl||"https://github.com/fangxiao/myskills"}" target="_blank" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold text-center transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30">
+                <span>\u2B50</span>
+                <span>GitHub \u5F00\u6E90</span>
+              </a>
+              ${n}
+            </div>
+          `}
         </div>
 
       </div>
-    `}window.AI_HUB={openReaderById:function(e){const s=a.data.articles.find(i=>i.id===e);s&&u(s)},switchCategory:function(e){a.activeCategory=e,a.viewMode="grid",g(),m(),c(),window.scrollTo({top:400,behavior:"smooth"})},openWeChatModal:B,closeWeChatModal:E,copyWeChatName:N,scrollToHeading:W,resetFilters:function(){a.activeCategory="all",a.searchQuery="",t.searchInput&&(t.searchInput.value=""),g(),c()},switchView:function(e){a.viewMode=e,m(),c()},switchRoadmapTrack:function(e){a.roadmapTrack=e,_()}},document.readyState==="loading"?document.addEventListener("DOMContentLoaded",y):y()})();
+    `}window.AI_HUB={openReaderById:function(e){const t=a.data.articles.find(i=>i.id===e);t&&g(t)},openReaderByPath:function(e){if(!e)return;const t=e.split("#")[0],i=a.data.articles.find(r=>r.path===t||r.path.endsWith(t)||t.endsWith(r.path));i&&g(i)},switchCategory:function(e){a.activeCategory=e,a.viewMode="grid",u(),p(),c(),scrollToMainContent()},openWeChatModal:B,closeWeChatModal:E,copyWeChatName:Q,scrollToHeading:W,resetFilters:function(){a.activeCategory="all",a.searchQuery="",s.searchInput&&(s.searchInput.value=""),u(),c()},switchView:function(e){a.viewMode=e,p(),c(),scrollToMainContent()},switchRoadmapTrack:function(e){a.roadmapTrack=e,L()}},document.readyState==="loading"?document.addEventListener("DOMContentLoaded",y):y()})();

@@ -246,6 +246,10 @@ def build_dist():
     shutil.copy2("index.html", os.path.join(DIST_DIR, "index.html"))
     if os.path.exists("favicon.ico"): shutil.copy2("favicon.ico", os.path.join(DIST_DIR, "favicon.ico"))
     if os.path.exists("favicon.svg"): shutil.copy2("favicon.svg", os.path.join(DIST_DIR, "favicon.svg"))
+    if os.path.exists("functions"):
+        dst_funcs = os.path.join(DIST_DIR, "functions")
+        if os.path.exists(dst_funcs): shutil.rmtree(dst_funcs)
+        shutil.copytree("functions", dst_funcs)
 
     # Copy assets folder (css, js, qrcode, etc.)
     for item in os.listdir("assets"):
@@ -545,6 +549,9 @@ def build_dist():
     p_bg = get_existing_path("business-growth/01-不用买服务器免备案搭建独立知识库.html")
     if p_bg:
         process_article("business-growth", p_bg, "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战", "01 建站复盘", 1)
+    p_bg2 = get_existing_path("business-growth/02-纯静态网站秒变智能知识库-Vector-RAG实战.html")
+    if p_bg2:
+        process_article("business-growth", p_bg2, "知识库 RAG 实战 · 纯静态站点秒变智能智库：用 Cloudflare Workers + Vector RAG 零成本打造 AI 伴学助手", "02 RAG实战", 2)
 
     # 4. Copy image assets (mermaid images, diagrams, etc.) referenced by articles
     for img_dir in ["mermaid", "bigmodel/mermaid", "customer-service-agent/mermaid-img", "aitools/diagram", "local-llm-knowledge-base/mermaid-img"]:
@@ -663,6 +670,11 @@ CMD ["nginx", "-g", "daemon off;"]
         shutil.copy2("robots.txt", os.path.join(DIST_DIR, "robots.txt"))
     if os.path.exists("showcases.json"):
         shutil.copy2("showcases.json", os.path.join(DIST_DIR, "showcases.json"))
+    if os.path.exists("tools"):
+        dist_tools = os.path.join(DIST_DIR, "tools")
+        if os.path.exists(dist_tools):
+            shutil.rmtree(dist_tools)
+        shutil.copytree("tools", dist_tools)
 
     # 6. Create zip bundle
     zip_path = "ai_learning_hub_dist.zip"

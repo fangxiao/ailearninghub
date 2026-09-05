@@ -3,8 +3,8 @@ window.SITE_DATA = {
   "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
   "stats": {
     "totalCategories": 10,
-    "totalArticles": 167,
-    "totalShowcases": 3
+    "totalArticles": 168,
+    "totalShowcases": 4
   },
   "categories": [
     {
@@ -194,7 +194,7 @@ window.SITE_DATA = {
         "SEO矩阵",
         "业务落地"
       ],
-      "count": 1
+      "count": 2
     }
   ],
   "articles": [
@@ -4310,9 +4310,53 @@ window.SITE_DATA = {
       "toc": [
         "轻量边缘静态架构选型、全球加速分发、全网搜索引擎收录与流量分析实战复盘"
       ]
+    },
+    {
+      "id": "business_growth_02_纯静态网站秒变智能知识库_Vector_RAG实战_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/02-纯静态网站秒变智能知识库-Vector-RAG实战.html",
+      "filename": "02-纯静态网站秒变智能知识库-Vector-RAG实战.html",
+      "format": "html",
+      "title": "知识库 RAG 实战 · 纯静态站点秒变智能智库：用 Cloudflare Workers + Vector RAG 零成本打造 AI 伴学助手",
+      "subtitle": "167 篇文献精准切片、毫秒级端侧语义混合检索、SSE 流式输出与深度文献引证全链路实战复盘",
+      "summary": "⚡ 架构实战 · 0服务器成本 AI 知识库升级复盘",
+      "readTime": "7 分钟",
+      "sizeStr": "15.0 KB",
+      "sizeBytes": 15406,
+      "badge": "02 RAG实战",
+      "sortOrder": 2,
+      "toc": [
+        "167 篇文献精准切片、毫秒级端侧语义混合检索、SSE 流式输出与深度文献引证全链路实战复盘"
+      ]
     }
   ],
   "showcases": [
+    {
+      "id": "prompt-generator",
+      "type": "tool",
+      "typeName": "💻 网页版在线工具",
+      "name": "prompt-generator",
+      "title": "结构化业务 Prompt 架构工作室",
+      "badge": "⚡ 在线交互",
+      "icon": "🎯",
+      "theme": "indigo",
+      "description": "基于 CRISPE、CO-STAR 与 Few-Shot 架构的高阶结构化 Prompt 可视化生成工具。支持 Claude/DeepSeek XML 标签规范、实时字数统计、6大行业预设模板与一键复制导出。",
+      "tags": [
+        "CRISPE 框架",
+        "CO-STAR",
+        "XML 标签",
+        "Few-Shot",
+        "免安装即用"
+      ],
+      "toolUrl": "tools/prompt-generator/index.html",
+      "docsUrl": "business-review/01-业务高阶Prompt结构化设计全指南.html",
+      "features": [
+        "CRISPE / CO-STAR / XML 标签三大工业级 Prompt 架构一键自由切换",
+        "预设 AI-PRD、万字研报提炼、代码审计、小红书分镜等 6 大行业模板",
+        "Markdown 与 Claude/DeepSeek 最佳实践 XML 双格式实时渲染预览",
+        "纯前端零依赖，开箱即用，支持一键极速复制与 System 角色单独提取"
+      ]
+    },
     {
       "id": "quick-site-builder",
       "type": "skill",

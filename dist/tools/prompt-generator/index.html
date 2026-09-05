@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>结构化业务 Prompt 生成器 · CRISPE & CO-STAR 架构工作室</title>
+  <meta name="description" content="基于 CRISPE、CO-STAR 与 Few-Shot 架构的高阶结构化 Prompt 可视化生成工具。支持 XML 规范、实时预览、行业预设模板与一键复制。">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#eef2ff",
+              100: "#e0e7ff",
+              500: "#6366f1",
+              600: "#4f46e5",
+              700: "#4338ca",
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #090d16;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    .glass {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-input {
+      background: rgba(2, 6, 23, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      outline: none;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Header -->
+  <header class="sticky top-0 z-40 glass border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <a href="../../#showcases" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-sm transition" title="返回智库">
+        ←
+      </a>
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-base shadow-md shadow-indigo-500/20">
+          ⚡
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
+            <span>结构化 Prompt 架构工作室</span>
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2 py-0.5 rounded-full border border-indigo-500/30">v1.0.0</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-2">
+      <button id="btn-reset" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-medium border border-white/10 transition flex items-center gap-1">
+        <span>🔄</span>
+        <span>重置清空</span>
+      </button>
+      <a href="../../business-review/01-业务高阶Prompt结构化设计全指南.html" target="_blank" class="px-3 py-1.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-xs font-bold border border-indigo-500/30 transition flex items-center gap-1">
+        <span>📖</span>
+        <span>阅读实战教程</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- Left Column: Form Controls (7 cols) -->
+    <div class="lg:col-span-7 space-y-6">
+      
+      <!-- Preset & Framework Selection Bar -->
+      <div class="glass p-5 rounded-2xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span>🎯</span>
+            <span>第一步：选择结构化框架</span>
+          </label>
+          <div class="flex items-center p-1 rounded-xl bg-slate-950/60 border border-white/10 text-xs" id="framework-switcher">
+            <button data-framework="crispe" class="px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white transition">CRISPE 框架</button>
+            <button data-framework="costar" class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition">CO-STAR 框架</button>
+            <button data-framework="xml" class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition">Claude XML 标签</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
+            💡 或直接加载开箱即用行业模板：
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="preset-container">
+            <button data-preset="prd" class="preset-btn p-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/40 text-left transition text-xs group">
+              <div class="font-bold text-white group-hover:text-indigo-300">📋 AI 原生 PRD</div>
+              <div class="text-[10px] text-slate-400 truncate">标准化需求模板</div>
+            </button>
+            <button data-preset="report" class="preset-btn p-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/40 text-left transition text-xs group">
+              <div class="font-bold text-white group-hover:text-indigo-300">📊 研报竞品提炼</div>
+              <div class="text-[10px] text-slate-400 truncate">万字资料秒级萃取</div>
+            </button>
+            <button data-preset="code" class="preset-btn p-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/40 text-left transition text-xs group">
+              <div class="font-bold text-white group-hover:text-indigo-300">💻 代码重构审计</div>
+              <div class="text-[10px] text-slate-400 truncate">性能优化与安全</div>
+            </button>
+            <button data-preset="xhs" class="preset-btn p-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/40 text-left transition text-xs group">
+              <div class="font-bold text-white group-hover:text-indigo-300">📕 小红书爆款图文</div>
+              <div class="text-[10px] text-slate-400 truncate">多页卡片分镜大纲</div>
+            </button>
+            <button data-preset="negotiate" class="preset-btn p-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/40 text-left transition text-xs group">
+              <div class="font-bold text-white group-hover:text-indigo-300">✉️ 商务谈判客诉</div>
+              <div class="text-[10px] text-slate-400 truncate">高情商攻防话术</div>
+            </button>
+            <button data-preset="agent" class="preset-btn p-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 border border-white/10 hover:border-indigo-500/40 text-left transition text-xs group">
+              <div class="font-bold text-white group-hover:text-indigo-300">🤖 Agent 系统角色</div>
+              <div class="text-[10px] text-slate-400 truncate">带约束的自治智能体</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Form Fields Container -->
+      <div id="form-fields" class="glass p-6 rounded-2xl space-y-4">
+        <!-- Injected via JavaScript based on chosen framework -->
+      </div>
+
+    </div>
+
+    <!-- Right Column: Live Output & Export (5 cols) -->
+    <div class="lg:col-span-5 space-y-4 sticky top-20">
+      <div class="glass p-5 rounded-2xl space-y-4">
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <h2 class="text-sm font-bold text-white tracking-tight">实时渲染预览</h2>
+          </div>
+          <div class="text-xs text-slate-400 font-mono">
+            字数：<span id="char-count" class="text-indigo-400 font-bold">0</span> 字
+          </div>
+        </div>
+
+        <!-- Output Format Tabs -->
+        <div class="flex items-center p-1 rounded-xl bg-slate-950/60 border border-white/10 text-xs">
+          <button id="tab-fmt-markdown" class="flex-1 py-1 rounded-lg font-bold bg-indigo-600 text-white transition">Markdown 格式</button>
+          <button id="tab-fmt-xml" class="flex-1 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition">Claude/DeepSeek XML</button>
+        </div>
+
+        <!-- Code Preview Box -->
+        <div class="relative group">
+          <textarea id="prompt-output" readonly class="w-full h-[460px] p-4 font-mono text-xs leading-relaxed glass-input rounded-xl text-slate-200 resize-none select-all focus:outline-none" placeholder="在左侧填写信息后，此处将自动生成结构化 Prompt..."></textarea>
+        </div>
+
+        <!-- Quick Copy Action Bar -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="btn-copy-main" class="py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/25 cursor-pointer">
+            <span>📋</span>
+            <span id="copy-btn-text">一键复制 Prompt</span>
+          </button>
+          <button id="btn-copy-system" class="py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white text-xs font-bold border border-white/10 transition flex items-center justify-center gap-1.5 cursor-pointer" title="仅提取 System 角色定义">
+            <span>🤖</span>
+            <span>复制 System 角色</span>
+          </button>
+        </div>
+
+        <!-- Quick Test Tips -->
+        <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-300 leading-relaxed">
+          💡 <strong>最佳实践提示</strong>：复制生成好的 Prompt 后，直接粘贴给 ChatGPT 4o、Claude 3.7 Sonnet 或 DeepSeek-R1，AI 将严格遵循设定的结构与规则输出！
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 glass border border-emerald-500/40 text-emerald-300 px-4 py-2.5 rounded-2xl shadow-2xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none flex items-center gap-2 text-xs font-bold">
+    <span>✅</span>
+    <span id="toast-msg">已复制到剪贴板！</span>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      const state = {
+        framework: "crispe",
+        format: "markdown",
+        values: {
+          capacity: "",
+          role: "",
+          insight: "",
+          statement: "",
+          personality: "",
+          experiment: "",
+          context: "",
+          objective: "",
+          style: "",
+          tone: "",
+          audience: "",
+          response: "",
+          rules: "",
+          examples: ""
+        }
+      };
+
+      const presets = {
+        prd: {
+          framework: "crispe",
+          values: {
+            capacity: "拥有 10 年头部互联网经验的资深 AI 原生产品总监（CPO）",
+            role: "AI-Native PRD 规范设计专家与人机协同架构师",
+            insight: "业务团队正计划将传统的客户服务中心升级为基于大模型与 Agent 的自动化智能客服系统。团队需要一份逻辑严密、包含防幻觉护栏、Eval 评测指标与异常降级策略的工业级 PRD 需求文档。",
+            statement: "请根据用户提供的核心业务场景，输出一份完整的标准 AI-PRD 文档，包含：1. 核心价值与人机边界；2. 状态机与工作流时序图；3. 防幻觉护栏规则；4. Eval 效果评测指标矩阵。",
+            personality: "专业严谨、逻辑清晰、结构化表述，杜绝空泛口号，严格采用规范字段",
+            experiment: "使用 Markdown 表格与三级标题展示，每个业务规则需明确【输入-处理-输出-降级兜底方案】。"
+          }
+        },
+        report: {
+          framework: "crispe",
+          values: {
+            capacity: "顶级咨询公司（麦肯锡/波士顿咨询）科技与大模型行业主任分析师",
+            role: "万字行业研报与商业竞品秒级提炼专家",
+            insight: "用户需要从冗长繁琐的研报、招股书或竞品文档中，快速提炼出具有商业决策价值的硬核结论，拒绝车轱辘话与套话。",
+            statement: "阅读用户提供的万字原文材料，按顺序输出：1. 三句话高管摘要（Executive Summary）；2. 核心数据与指标对比表；3. 潜在风险点与商业博弈分析；4. 行动建议（Actionable Next Steps）。",
+            personality: "犀利精炼、数据导向、客观中立、金句提炼能力强",
+            experiment: "表格优先，重点结论加粗，数据标明出处或对应段落。"
+          }
+        },
+        code: {
+          framework: "crispe",
+          values: {
+            capacity: "资深全栈系统架构师与网络安全审计专家",
+            role: "高性能代码重构、内存优化与安全合规守门人",
+            insight: "现有工程代码存在潜在的性能瓶颈（如高并发数据库慢查询、未捕获的异步异常或内存泄漏），需要进行工业级重构与加固。",
+            statement: "请对给出的源代码进行深度审查：1. 诊断安全漏洞与性能短板；2. 提供重构前后的 Diff 代码对比；3. 输出符合 SOLID 原则的重构后完整生产级代码，并附带关键中文注释。",
+            personality: "极客严谨、代码规范极致追求、注重边界异常与高可用",
+            experiment: "提供 OneDark 风格清晰代码块，重构原因分条阐述。"
+          }
+        },
+        xhs: {
+          framework: "costar",
+          values: {
+            context: "专注于 AI 生产力与超级个体变现的自媒体爆款操盘手，面向想提升效率的职场人、程序员和自由职业者。",
+            objective: "将一篇硬核深奥的技术/商业长文，提炼为一套 6 页高赞小红书图文卡片大纲，附带封面视觉构思与引导互动的吸睛文案。",
+            style: "短句断句、多用emoji表情符号、痛点场景唤醒、故事化开篇",
+            tone: "真诚利他、干货满满、接地气、极度好懂",
+            audience: "希望借助 AI 提效、副业变现或学习大模型的年轻职场人与创作者",
+            response: "P1 封面主视觉与悬念标题；P2 痛点共鸣与传统误区；P3~P5 实操干货步骤拆解；P6 总结升华与评论区领资料钩子。"
+          }
+        },
+        negotiate: {
+          framework: "crispe",
+          values: {
+            capacity: "跨国企业资深商务谈判法务顾问与危机公关总监",
+            role: "高情商商务博弈与客户异议化解专家",
+            insight: "大客户因系统交付延迟或对功能需求产生严重分歧，态度强硬并提出索赔，需要在此关键时刻稳住客户信任并达成双赢续约协议。",
+            statement: "分析客户情绪与核心利益诉求，提供：1. 心理博弈与底层诉求诊断；2. 3 套不同强硬度的沟通话术（温和保关系、中立讲事实、坚守底线促共赢）；3. 关键推演与防失误清单。",
+            personality: "沉着冷静、情商极高、措辞得体、滴水不漏",
+            experiment: "话术需包含【情绪共情句】+【事实陈述句】+【备选替代方案】。"
+          }
+        },
+        agent: {
+          framework: "xml",
+          values: {
+            role: "自主任务规划与工具调用智能体调度器 (Agent Orchestrator)",
+            insight: "在多轮任务执行中，智能体需要自主反思、规划子任务并调用外部搜索与代码执行工具，必须严格遵守安全沙箱红线。",
+            statement: "接收用户的复合复杂任务，将其分解为清晰的 Action 序列，每次仅调用最必要的工具，并在遇到错误时执行自愈重试。",
+            rules: "1. 严禁执行破坏性系统命令；\n2. 在输出最终结论前必须经过 step_by_step 内部推理链；\n3. 遇到缺失参数时主动向用户发起精准反问。",
+            examples: "User: 帮我查询明天北京天气并写一篇穿衣建议\nAgent: <thought>需要调用天气 API</thought><action>get_weather(Beijing)</action>"
+          }
+        }
+      };
+
+      const el = {
+        formFields: document.getElementById("form-fields"),
+        frameworkSwitcher: document.getElementById("framework-switcher"),
+        promptOutput: document.getElementById("prompt-output"),
+        charCount: document.getElementById("char-count"),
+        btnCopyMain: document.getElementById("btn-copy-main"),
+        btnCopySystem: document.getElementById("btn-copy-system"),
+        copyBtnText: document.getElementById("copy-btn-text"),
+        btnReset: document.getElementById("btn-reset"),
+        tabFmtMarkdown: document.getElementById("tab-fmt-markdown"),
+        tabFmtXml: document.getElementById("tab-fmt-xml"),
+        toast: document.getElementById("toast"),
+        toastMsg: document.getElementById("toast-msg"),
+        presetBtns: document.querySelectorAll(".preset-btn")
+      };
+
+      function renderForm() {
+        const fw = state.framework;
+        let html = "";
+
+        if (fw === "crispe") {
+          html = `
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Capacity · 专家能力/资格</label>
+                  <input type="text" data-key="capacity" value="${state.values.capacity || ""}" placeholder="例如：10年头部大厂资深架构师" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Role · 角色定位</label>
+                  <input type="text" data-key="role" value="${state.values.role || ""}" placeholder="例如：代码重构与性能调优专家" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">Insight · 业务背景洞察</label>
+                <textarea data-key="insight" rows="2" placeholder="交代当前的业务痛点、受众特征或前提条件..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white resize-none">${state.values.insight || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">Statement · 核心任务指令</label>
+                <textarea data-key="statement" rows="3" placeholder="清晰描述希望 AI 做什么，分点列出具体步骤..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white resize-none">${state.values.statement || ""}</textarea>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Personality · 风格与语调</label>
+                  <input type="text" data-key="personality" value="${state.values.personality || ""}" placeholder="例如：专业严谨、犀利精炼、杜绝套话" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Experiment · 示例与格式要求</label>
+                  <input type="text" data-key="experiment" value="${state.values.experiment || ""}" placeholder="例如：输出 Markdown 表格，核心结论加粗" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (fw === "costar") {
+          html = `
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">Context · 任务背景</label>
+                <textarea data-key="context" rows="2" placeholder="提供任务的关键上下文背景与先验信息..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white resize-none">${state.values.context || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">Objective · 最终目标</label>
+                <input type="text" data-key="objective" value="${state.values.objective || ""}" placeholder="明确希望 AI 达成的核心商业目标..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Style · 写作风格</label>
+                  <input type="text" data-key="style" value="${state.values.style || ""}" placeholder="例如：短句断句、生动比喻、故事化" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Tone · 语气基调</label>
+                  <input type="text" data-key="tone" value="${state.values.tone || ""}" placeholder="例如：真诚热情、客观中立、极具说服力" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Audience · 目标受众</label>
+                  <input type="text" data-key="audience" value="${state.values.audience || ""}" placeholder="例如：零基础技术小白、企业高管" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-indigo-300 mb-1.5">Response · 响应格式</label>
+                  <input type="text" data-key="response" value="${state.values.response || ""}" placeholder="例如：分6页输出卡片，每页带主标题" class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (fw === "xml") {
+          html = `
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">&lt;system_role&gt; 角色定义</label>
+                <input type="text" data-key="role" value="${state.values.role || ""}" placeholder="定义智能体的身份与核心使命..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">&lt;context&gt; 上下文与先验知识</label>
+                <textarea data-key="insight" rows="2" placeholder="注入背景数据与环境信息..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white resize-none">${state.values.insight || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">&lt;instructions&gt; 核心执行步骤</label>
+                <textarea data-key="statement" rows="3" placeholder="明确具体的处理逻辑与约束..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white resize-none">${state.values.statement || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">&lt;rules&gt; 负向约束与安全红线</label>
+                <textarea data-key="rules" rows="2" placeholder="1. 严禁胡编乱造；\n2. 遇到不确定必须反问确认..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white resize-none">${state.values.rules || ""}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-indigo-300 mb-1.5">&lt;examples&gt; Few-Shot 少样本示范</label>
+                <textarea data-key="examples" rows="2" placeholder="Input: ... \nOutput: ..." class="w-full px-3.5 py-2.5 text-xs rounded-xl glass-input text-white font-mono resize-none">${state.values.examples || ""}</textarea>
+              </div>
+            </div>
+          `;
+        }
+
+        el.formFields.innerHTML = html;
+
+        // Bind input listeners
+        el.formFields.querySelectorAll("[data-key]").forEach(input => {
+          input.addEventListener("input", e => {
+            state.values[e.target.dataset.key] = e.target.value;
+            generateOutput();
+          });
+        });
+      }
+
+      function generateOutput() {
+        const v = state.values;
+        const fw = state.framework;
+        const fmt = state.format;
+        let out = "";
+
+        if (fmt === "xml") {
+          out += `<system>\n`;
+          if (v.capacity || v.role) out += `  <role>${v.capacity ? v.capacity + "，担任" : ""}${v.role || "专家助手"}</role>\n`;
+          if (v.personality || v.tone) out += `  <tone>${v.personality || v.tone}</tone>\n`;
+          out += `</system>\n\n`;
+
+          if (v.insight || v.context) {
+            out += `<context>\n${v.insight || v.context}\n</context>\n\n`;
+          }
+
+          if (v.statement || v.objective) {
+            out += `<instructions>\n${v.statement || v.objective}\n</instructions>\n\n`;
+          }
+
+          if (v.rules) {
+            out += `<rules>\n${v.rules}\n</rules>\n\n`;
+          }
+
+          if (v.experiment || v.response || v.style) {
+            out += `<output_format>\n${[v.experiment, v.response, v.style].filter(Boolean).join("\n")}\n</output_format>\n\n`;
+          }
+
+          if (v.examples) {
+            out += `<examples>\n${v.examples}\n</examples>\n\n`;
+          }
+
+          out += `<input>\n{{在此填入具体业务输入材料}}\n</input>`;
+        } else {
+          // Markdown Format
+          if (fw === "crispe") {
+            out += `# Role & Capacity\n你是一名 **${v.capacity || "资深专家"}**，当前担任 **${v.role || "专业顾问"}**。\n\n`;
+            if (v.insight) out += `## 1. Insight (背景洞察)\n${v.insight}\n\n`;
+            if (v.statement) out += `## 2. Statement (核心任务)\n${v.statement}\n\n`;
+            if (v.personality) out += `## 3. Personality (风格调性)\n${v.personality}\n\n`;
+            if (v.experiment) out += `## 4. Experiment (输出规范与示例)\n${v.experiment}\n\n`;
+            out += `## 5. User Input (待处理材料)\n\`\`\`text\n{{在此粘贴待处理材料}}\n\`\`\``;
+          } else if (fw === "costar") {
+            out += `# Role Definition\n作为专业的业务与内容专家，请严格遵循以下 CO-STAR 规范执行任务：\n\n`;
+            if (v.context) out += `### Context (背景信息)\n${v.context}\n\n`;
+            if (v.objective) out += `### Objective (核心目标)\n${v.objective}\n\n`;
+            if (v.style) out += `### Style (写作风格)\n${v.style}\n\n`;
+            if (v.tone) out += `### Tone (语气基调)\n${v.tone}\n\n`;
+            if (v.audience) out += `### Audience (目标受众)\n${v.audience}\n\n`;
+            if (v.response) out += `### Response (响应格式)\n${v.response}\n\n`;
+            out += `### Input Data\n{{请在此处输入材料}}`;
+          } else {
+            out += `# System Definition\n角色：${v.role || "专家助手"}\n\n`;
+            if (v.insight) out += `## Context\n${v.insight}\n\n`;
+            if (v.statement) out += `## Instructions\n${v.statement}\n\n`;
+            if (v.rules) out += `## Constraints\n${v.rules}\n\n`;
+            if (v.examples) out += `## Few-Shot Examples\n${v.examples}\n\n`;
+          }
+        }
+
+        el.promptOutput.value = out.trim();
+        el.charCount.textContent = out.trim().length;
+      }
+
+      function showToast(msg) {
+        el.toastMsg.textContent = msg;
+        el.toast.classList.remove("opacity-0", "translate-y-4", "pointer-events-none");
+        el.toast.classList.add("opacity-100", "translate-y-0");
+        setTimeout(() => {
+          el.toast.classList.add("opacity-0", "translate-y-4", "pointer-events-none");
+          el.toast.classList.remove("opacity-100", "translate-y-0");
+        }, 2200);
+      }
+
+      function copyText(text) {
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast("已成功复制到剪贴板！");
+          }).catch(() => fallbackCopy(text));
+        } else {
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("已复制到剪贴板！");
+      }
+
+      // Bind Framework Switcher
+      el.frameworkSwitcher.addEventListener("click", e => {
+        const btn = e.target.closest("[data-framework]");
+        if (!btn) return;
+        state.framework = btn.dataset.framework;
+        el.frameworkSwitcher.querySelectorAll("button").forEach(b => {
+          if (b === btn) {
+            b.classList.add("bg-indigo-600", "text-white", "font-bold");
+            b.classList.remove("text-slate-400");
+          } else {
+            b.classList.remove("bg-indigo-600", "text-white", "font-bold");
+            b.classList.add("text-slate-400");
+          }
+        });
+        renderForm();
+        generateOutput();
+      });
+
+      // Bind Presets
+      el.presetBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.preset;
+          const p = presets[key];
+          if (!p) return;
+          state.framework = p.framework;
+          state.values = Object.assign({}, p.values);
+
+          // update switcher UI
+          el.frameworkSwitcher.querySelectorAll("button").forEach(b => {
+            if (b.dataset.framework === p.framework) {
+              b.classList.add("bg-indigo-600", "text-white", "font-bold");
+              b.classList.remove("text-slate-400");
+            } else {
+              b.classList.remove("bg-indigo-600", "text-white", "font-bold");
+              b.classList.add("text-slate-400");
+            }
+          });
+
+          renderForm();
+          generateOutput();
+          showToast(`已加载【${btn.querySelector(".font-bold").textContent.trim()}】模板！`);
+        });
+      });
+
+      // Format Switchers
+      el.tabFmtMarkdown.addEventListener("click", () => {
+        state.format = "markdown";
+        el.tabFmtMarkdown.classList.add("bg-indigo-600", "text-white", "font-bold");
+        el.tabFmtMarkdown.classList.remove("text-slate-400");
+        el.tabFmtXml.classList.remove("bg-indigo-600", "text-white", "font-bold");
+        el.tabFmtXml.classList.add("text-slate-400");
+        generateOutput();
+      });
+
+      el.tabFmtXml.addEventListener("click", () => {
+        state.format = "xml";
+        el.tabFmtXml.classList.add("bg-indigo-600", "text-white", "font-bold");
+        el.tabFmtXml.classList.remove("text-slate-400");
+        el.tabFmtMarkdown.classList.remove("bg-indigo-600", "text-white", "font-bold");
+        el.tabFmtMarkdown.classList.add("text-slate-400");
+        generateOutput();
+      });
+
+      // Copy Buttons
+      el.btnCopyMain.addEventListener("click", () => {
+        copyText(el.promptOutput.value);
+        el.copyBtnText.textContent = "✅ 已复制！";
+        setTimeout(() => el.copyBtnText.textContent = "一键复制 Prompt", 2000);
+      });
+
+      el.btnCopySystem.addEventListener("click", () => {
+        const v = state.values;
+        const sys = `你是 ${v.capacity || "资深专家"}，担任 ${v.role || "专家顾问"}。你的目标是：${v.statement || v.objective || "高效专业地完成业务指令"}。要求：${v.personality || v.tone || "严谨专业"}。`;
+        copyText(sys);
+      });
+
+      // Reset Button
+      el.btnReset.addEventListener("click", () => {
+        for (let k in state.values) state.values[k] = "";
+        renderForm();
+        generateOutput();
+        showToast("已清空所有输入！");
+      });
+
+      // Init with PRD preset
+      const initPreset = presets.prd;
+      state.framework = initPreset.framework;
+      state.values = Object.assign({}, initPreset.values);
+      renderForm();
+      generateOutput();
+
+    })();
+  </script>
+</body>
+</html>
