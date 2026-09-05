@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>乐高式自动化工作流：让 AI 自动监控情报、协同写稿并推送微信 · 大前端工程师</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: "neutral" });</script>
+  <style>
+    body { margin: 0; padding: 0; background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #1e293b; line-height: 2.1; letter-spacing: 0.5px; }
+    .container { max-width: 780px; margin: 30px auto; background: #ffffff; padding: 40px 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: bold; color: #00897B; text-decoration: none; margin-bottom: 20px; padding: 6px 14px; background: #E0F2F1; border-radius: 20px; transition: all 0.2s; }
+    .back-btn:hover { background: #00897B; color: #fff; }
+    .header-box { text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 25px; margin-bottom: 30px; }
+    h1 { font-size: 23px; font-weight: 800; color: #0f172a; margin: 10px 0; line-height: 1.4; }
+    h2.sub { font-size: 16px; font-weight: bold; color: #00897B; margin: 0 0 15px 0; }
+    .meta { font-size: 13px; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    .badge { background: #f1f5f9; padding: 3px 8px; border-radius: 6px; font-weight: 600; color: #475569; }
+    p { margin: 22px 0; text-align: justify; text-indent: 2em; font-size: 16px; color: #334155; }
+    .dialog-box { margin: 25px 0; padding: 18px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 15px; }
+    .callout { margin: 25px 0; padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.8; }
+    .callout-teal { background: #E0F2F1; border: 1px solid #b2dfdb; color: #00695C; }
+    .callout-amber { background: #FFFDE7; border: 1px solid #FFF59D; border-left: 4px solid #FBC02D; color: #616161; }
+    .callout-red { background: #fff5f5; border: 1px solid #ffcdd2; border-left: 4px solid #e57373; color: #c62828; }
+    .callout-green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .section-title { margin: 45px 0 20px 0; padding: 12px 0; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; gap: 12px; }
+    .section-num { font-size: 18px; font-weight: 800; color: #fff; background: #00897B; padding: 4px 12px; border-radius: 6px; }
+    .section-text { font-size: 18px; font-weight: bold; color: #0f172a; }
+    .code-box { font-family: monospace; font-size: 13.5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 15px 0; line-height: 1.7; color: #0f172a; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 13.5px; }
+    th { background: #E0F2F1; color: #00695C; font-weight: bold; padding: 10px; border: 1px solid #b2dfdb; text-align: left; }
+    td { padding: 10px; border: 1px solid #e2e8f0; color: #334155; }
+    .mermaid-box { text-align: center; margin: 25px 0; background: #ffffff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; }
+    .footer-brand { margin-top: 50px; padding: 25px; background: linear-gradient(135deg, #004D40 0%, #00695C 100%); border-radius: 16px; text-align: center; color: #ffffff; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- WeChat Official Account 1-Click Copy Engine -->
+<div style="position: sticky; top: 15px; z-index: 999; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+  <button id="copy-wechat-btn" onclick="copyForWechat()" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #07c160 0%, #059669 100%); color: #ffffff; border: none; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(7, 193, 96, 0.35); transition: all 0.2s;">
+    <span>📋 一键复制到公众号（排版保真）</span>
+  </button>
+</div>
+<div id="copy-toast" style="display: none; position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; background: #07c160; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+  ✅ 复制成功！直接在公众号后台 Ctrl+V (或 Cmd+V) 粘贴即可，格式完美保留！
+</div>
+
+<script>
+function copyForWechat() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  // Clone container to modify into inline-styled WeChat HTML
+  const clone = container.cloneNode(true);
+
+  // Remove top buttons
+  const backBtn = clone.querySelector(".back-btn");
+  if (backBtn) backBtn.remove();
+  const copyBtnWrapper = clone.querySelector("#copy-wechat-btn");
+  if (copyBtnWrapper) copyBtnWrapper.closest("div").remove();
+
+  // Convert Elements into WeChat Inline Styles
+  // 1. Header Box
+  const headerBox = clone.querySelector(".header-box");
+  if (headerBox) {
+    headerBox.setAttribute("style", "text-align: left; border-bottom: 2px solid #07c160; padding-bottom: 18px; margin-bottom: 25px;");
+  }
+
+  // 2. Headings
+  clone.querySelectorAll("h1").forEach(h1 => {
+    h1.setAttribute("style", "font-size: 21px; font-weight: bold; color: #1e293b; line-height: 1.5; margin: 10px 0;");
+  });
+  clone.querySelectorAll("h2.sub").forEach(h2 => {
+    h2.setAttribute("style", "font-size: 14px; font-weight: 600; color: #07c160; margin: 0 0 10px 0;");
+  });
+
+  // 3. Section Titles
+  clone.querySelectorAll(".section-title").forEach(st => {
+    const num = st.querySelector(".section-num") ? st.querySelector(".section-num").innerText : "";
+    const text = st.querySelector(".section-text") ? st.querySelector(".section-text").innerText : st.innerText;
+    st.outerHTML = `<section style="margin: 35px 0 18px 0; display: flex; align-items: center; border-bottom: 2px solid #f0fdf4; padding-bottom: 8px;">
+      <span style="background: #07c160; color: #ffffff; font-size: 13px; font-weight: bold; padding: 3px 9px; border-radius: 4px; margin-right: 8px;">${num}</span>
+      <span style="font-size: 17px; font-weight: bold; color: #0f172a;">${text}</span>
+    </section>`;
+  });
+
+  // 4. Callout boxes
+  clone.querySelectorAll(".callout-teal").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-amber").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; color: #92400e; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-slate").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 8px; color: #334155; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-red").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: 8px; color: #991b1b; font-size: 14.5px; line-height: 1.8;");
+  });
+  clone.querySelectorAll(".callout-green").forEach(c => {
+    c.setAttribute("style", "margin: 20px 0; padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #07c160; border-radius: 8px; color: #166534; font-size: 14.5px; line-height: 1.8;");
+  });
+
+  // 5. Code boxes
+  clone.querySelectorAll(".code-box").forEach(cb => {
+    cb.setAttribute("style", "margin: 15px 0; padding: 14px; background: #1e293b; color: #f8fafc; font-family: Consolas, Monaco, monospace; font-size: 13px; border-radius: 6px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;");
+  });
+
+  // 6. Paragraphs
+  clone.querySelectorAll("p").forEach(p => {
+    p.setAttribute("style", "margin: 16px 0; font-size: 15.5px; color: #334155; line-height: 1.9; letter-spacing: 0.5px; text-align: justify;");
+  });
+
+  // 7. Tables
+  clone.querySelectorAll("table").forEach(t => {
+    t.setAttribute("style", "width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13.5px; line-height: 1.6;");
+  });
+  clone.querySelectorAll("th").forEach(th => {
+    th.setAttribute("style", "background: #f1f5f9; color: #0f172a; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left;");
+  });
+  clone.querySelectorAll("td").forEach(td => {
+    td.setAttribute("style", "padding: 10px; border: 1px solid #e2e8f0; color: #334155;");
+  });
+
+  // 8. Mermaid Boxes (convert rendered SVG)
+  clone.querySelectorAll(".mermaid-box").forEach(mb => {
+    const svg = mb.querySelector("svg");
+    if (svg) {
+      svg.setAttribute("style", "max-width: 100%; height: auto; display: block; margin: 0 auto;");
+      mb.setAttribute("style", "text-align: center; margin: 20px 0; background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;");
+    }
+  });
+
+  // 9. Footer Brand
+  const footerBrand = clone.querySelector(".footer-brand");
+  if (footerBrand) {
+    footerBrand.setAttribute("style", "margin-top: 40px; padding: 22px; background: #0f172a; border-radius: 12px; text-align: center; color: #ffffff; font-size: 14px;");
+  }
+
+  // Generate complete rich text HTML
+  const finalHtml = `<section style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif; max-width: 677px; margin: 0 auto; line-height: 1.9; color: #334155;">` + clone.innerHTML + `</section>`;
+
+  // Copy as rich text HTML to clipboard
+  const blob = new Blob([finalHtml], { type: "text/html" });
+  const textBlob = new Blob([clone.innerText], { type: "text/plain" });
+  const item = new ClipboardItem({
+    "text/html": blob,
+    "text/plain": textBlob
+  });
+
+  navigator.clipboard.write([item]).then(() => {
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  }).catch(err => {
+    // Fallback using execCommand
+    const listener = function(e) {
+      e.clipboardData.setData("text/html", finalHtml);
+      e.clipboardData.setData("text/plain", clone.innerText);
+      e.preventDefault();
+    };
+    document.addEventListener("copy", listener);
+    document.execCommand("copy");
+    document.removeEventListener("copy", listener);
+    const toast = document.getElementById("copy-toast");
+    toast.style.display = "block";
+    setTimeout(() => { toast.style.display = "none"; }, 3000);
+  });
+}
+</script>
+
+  <a href="../review.html" class="back-btn">← 返回业务待审篇目总览</a>
+
+  <div class="header-box">
+    <h1>乐高式自动化工作流：让 AI 自动监控情报、协同写稿并推送微信</h1>
+    <h2 class="sub">阶段三 · 零代码搭建企业智能体实战 · 精品篇 06</h2>
+    <div class="meta">
+      <span class="badge">📝 约 1850 字</span>
+      <span class="badge">🏷️ 工作流 / 自动化 / 多Agent分工 / 微信推送</span>
+      <span class="badge">👨‍💻 作者：大前端工程师</span>
+      <span class="badge">📌 状态：已完整编写 · 待审阅</span>
+    </div>
+  </div>
+
+  
+  <p>单个 AI 就像一个坐着等命令的助理；但如果你把好几个 AI 和自动化工具像<strong>“乐高积木”</strong>一样串联起来，你就能打造一条 7x24 小时不睡觉的<strong>自动化数字流水线</strong>！</p>
+  <p>今天我们就来看看：如何不用写代码，让 AI 每天早上自动抓取全网竞品动态并推送到你的微信群。</p>
+
+  <div class="section-title">
+    <span class="section-num">01</span>
+    <span class="section-text">积木拼接：竞品舆情自动监控流水线</span>
+  </div>
+
+  <div class="mermaid-box">
+    <div class="mermaid">
+    graph LR
+      A[每天早上 08:30 闹钟触发] --> B[自动上网搜竞品负面新闻]
+      B --> C[AI 总结核心事件并评定风险]
+      C --> D{是否高危?}
+      D -->|是| E[红色高亮卡片推送到运营企微群]
+      D -->|否| F[归档进日报待查]
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    • <strong>积木 1 · 触发器</strong>：设定每天早晨 08:30 自动启动；<br>
+    • <strong>积木 2 · 搜索节点</strong>：自动在百度/微博/小红书检索竞品品牌关键词；<br>
+    • <strong>积木 3 · AI 思考节点</strong>：把抓回来的 50 条信息浓缩成 3 条核心要闻，并判断严重程度；<br>
+    • <strong>积木 4 · 推送节点</strong>：自动生成格式整齐的消息，通过 Webhook 发送到你们的核心工作群。
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">02</span>
+    <span class="section-text">三个和尚有水喝：多 Agent 角色分工</span>
+  </div>
+
+  <p>如果让一个 AI 既查资料、又写文章、又做质检，它很容易偷懒漏掉关键信息。聪明的做法是让它们<strong>“组团分工”</strong>：</p>
+  <div class="callout callout-green">
+    • <strong>1 号智能体（情报搜集员）</strong>：专门负责在全网搜集最硬核的数据和真实案例；<br>
+    • <strong>2 号智能体（金牌文案员）</strong>：专门负责把搜来的资料写成通俗好看的初稿；<br>
+    • <strong>3 号智能体（严格质检员）</strong>：专门负责挑刺、去 AI 味套话、检查有没有错别字。<br>
+    三个智能体一串联，出来的文章直接就能发布！
+  </div>
+
+  <div class="section-title">
+    <span class="section-num">03</span>
+    <span class="section-text">考考你：一分钟检查你真的学会了吗？</span>
+  </div>
+
+  <div class="callout callout-amber">
+    <strong>🤔 随堂小考：</strong><br>
+    为什么写复杂报告时，把任务拆给 3 个专门的 AI 智能体，比直接让一个 AI 一步到位写出来质量高得多？<br><br>
+    <strong>💡 答案：</strong><br>
+    因为单次对话模型的注意力是有限的。分工之后，每个 Agent 只需要专注做好一件事（搜集的专注搜集，质检的专注挑刺），不会顾此失彼！
+  </div>
+
+
+  <div class="footer-brand">
+    <div style="font-size: 22px; font-weight: bold; margin-bottom: 8px;">⚡ 大前端工程师</div>
+    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 15px;">专注 AI 业务落地 · 智能体架构 · 现代前端与产品实战</div>
+    <div style="display: inline-block; background: #ffffff; padding: 10px; border-radius: 12px; margin-bottom: 10px;">
+      <img src="../assets/qrcode.jpg" onerror="this.src="../assets/qrcode.png"" alt="公众号二维码" style="width: 130px; height: 130px; display: block;">
+    </div>
+    <div style="font-size: 13px; opacity: 0.95;">微信扫码关注公众号，回复 <strong style="color: #80CBC4;">AI</strong> 获取全套落地源码与工具包</div>
+  </div>
+</div>
+
+</body>
+</html>

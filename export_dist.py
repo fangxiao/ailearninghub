@@ -545,13 +545,22 @@ def build_dist():
     if p_quant:
         process_article("quant-agent", p_quant, "量化交易 Agent 01 · 架构设计与自动化交易系统", "01 架构", 1)
 
-    # 17. Business Growth
-    p_bg = get_existing_path("business-growth/01-不用买服务器免备案搭建独立知识库.html")
-    if p_bg:
-        process_article("business-growth", p_bg, "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战", "01 建站复盘", 1)
-    p_bg2 = get_existing_path("business-growth/02-纯静态网站秒变智能知识库-Vector-RAG实战.html")
-    if p_bg2:
-        process_article("business-growth", p_bg2, "知识库 RAG 实战 · 纯静态站点秒变智能智库：用 Cloudflare Workers + Vector RAG 零成本打造 AI 伴学助手", "02 RAG实战", 2)
+    # 17. Business Growth & Practical Applications (10 articles total)
+    for p, t, b, o in [
+        ("business-growth/01-不用买服务器免备案搭建独立知识库.html", "独立知识库搭建复盘 · 不用买服务器、免备案：用 Cloudflare + GitHub 搭建知识库与 SEO 实战", "01 建站复盘", 1),
+        ("business-growth/02-纯静态网站秒变智能知识库-Vector-RAG实战.html", "知识库 RAG 实战 · 纯静态站点秒变智能智库：用 Cloudflare Workers + Vector RAG 零成本打造 AI 伴学助手", "02 RAG实战", 2),
+        ("business-growth/03-业务高阶Prompt结构化设计全指南.html", "业务落地 03 · 业务高阶 Prompt 结构化设计全指南：告别空泛套话与幻觉失控", "03 Prompt", 3),
+        ("business-growth/04-非结构化数据清洗与研报秒级提炼.html", "业务落地 04 · 非结构化数据清洗与万字研报秒级提炼实操", "04 数据研报", 4),
+        ("business-growth/05-AI原生PRD需求规范与人机协同交互设计.html", "业务落地 05 · AI 原生 PRD 需求规范与人机协同交互设计", "05 AI-PRD", 5),
+        ("business-growth/06-AI产品防幻觉三重护栏与Eval评测体系.html", "业务落地 06 · AI 产品防幻觉三重护栏与 Eval 评测体系建设", "06 评测护栏", 6),
+        ("business-growth/07-零代码平台深度横评与企业私有知识库Bot实操.html", "业务落地 07 · 零代码平台深度横评与企业私有知识库 Bot 实操", "07 零代码Bot", 7),
+        ("business-growth/08-自动化业务工作流Workflow编排与微信生态接入.html", "业务落地 08 · 自动化业务工作流 Workflow 编排与微信生态接入", "08 工作流", 8),
+        ("business-growth/09-企业引入AI的ROI成本账本与业务团队落地SOP.html", "业务落地 09 · 企业引入 AI 的 ROI 成本账本与团队落地 SOP", "09 ROI测算", 9),
+        ("business-growth/10-一人公司超级个体AI商业化与私域变现全流程.html", "业务落地 10 · 一人公司超级个体 AI 商业化与私域变现全流程", "10 商业变现", 10),
+    ]:
+        p_act = get_existing_path(p)
+        if p_act:
+            process_article("business-growth", p_act, t, b, o)
 
     # 4. Copy image assets (mermaid images, diagrams, etc.) referenced by articles
     for img_dir in ["mermaid", "bigmodel/mermaid", "customer-service-agent/mermaid-img", "aitools/diagram", "local-llm-knowledge-base/mermaid-img"]:

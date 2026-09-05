@@ -1,9 +1,9 @@
-window.SITE_DATA = {
+window.AI_LEARNING_DATA = {
   "siteTitle": "AI 全系列学习智库 · 体系化知识库",
   "siteSubtitle": "涵盖大模型底层原理、Agent 核心架构、智能客服实战、本地知识库 (RAG) 与 AI 编程实战工具链",
   "stats": {
     "totalCategories": 10,
-    "totalArticles": 168,
+    "totalArticles": 176,
     "totalShowcases": 4
   },
   "categories": [
@@ -194,7 +194,7 @@ window.SITE_DATA = {
         "SEO矩阵",
         "业务落地"
       ],
-      "count": 2
+      "count": 10
     }
   ],
   "articles": [
@@ -4327,6 +4327,168 @@ window.SITE_DATA = {
       "sortOrder": 2,
       "toc": [
         "167 篇文献精准切片、毫秒级端侧语义混合检索、SSE 流式输出与深度文献引证全链路实战复盘"
+      ]
+    },
+    {
+      "id": "business_growth_03_prompt_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/03-业务高阶Prompt结构化设计全指南.html",
+      "filename": "03-业务高阶Prompt结构化设计全指南.html",
+      "format": "html",
+      "title": "业务落地 03 · 业务高阶 Prompt 结构化设计全指南：告别空泛套话与幻觉失控",
+      "subtitle": "业务落地与产品实战系列 · 阶段一 · 核心精品篇 01",
+      "summary": "CRISPE 框架核心心法、5 组真实业务坏 Prompt vs 工业级 Prompt 对比、50+ 岗位通用开箱即用手册。",
+      "readTime": "18 分钟",
+      "sizeStr": "17.7 KB",
+      "sizeBytes": 18128,
+      "badge": "精品 03",
+      "sortOrder": 3,
+      "toc": [
+        "业务提示词的 4 个核心构成要素",
+        "业务场景对比：基础指令 vs 结构化指令",
+        "常见岗位场景与模板参考",
+        "提示词调优实践准则"
+      ]
+    },
+    {
+      "id": "business_growth_04_data_clean_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/04-非结构化数据清洗与研报秒级提炼.html",
+      "filename": "04-非结构化数据清洗与研报秒级提炼.html",
+      "format": "html",
+      "title": "业务落地 04 · 非结构化数据清洗与万字研报秒级提炼实操",
+      "subtitle": "业务落地与产品实战系列 · 阶段一 · 核心精品篇 02",
+      "summary": "千条客诉/问卷批量清洗打标 SOP、决策导向型研报提炼模板、新媒体爆款 5 维选题裂变公式。",
+      "readTime": "16 分钟",
+      "sizeStr": "15.9 KB",
+      "sizeBytes": 16285,
+      "badge": "精品 04",
+      "sortOrder": 4,
+      "toc": [
+        "非结构化用户反馈的批量打标 SOP",
+        "长篇行业研报的决策导向提炼",
+        "长文本批量处理中的工程细节"
+      ]
+    },
+    {
+      "id": "business_growth_05_prd_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/05-AI原生PRD需求规范与人机协同交互设计.html",
+      "filename": "05-AI原生PRD需求规范与人机协同交互设计.html",
+      "format": "html",
+      "title": "业务落地 05 · AI 原生 PRD 需求规范与人机协同交互设计",
+      "subtitle": "业务落地与产品实战系列 · 阶段二 · 核心精品篇 03",
+      "summary": "传统 PRD vs AI PRD 5 大核心差异、Copilot/Chatbot/Agent 选型矩阵、Notion/Cursor/Kimi 顶级微交互拆解。",
+      "readTime": "16 分钟",
+      "sizeStr": "16.5 KB",
+      "sizeBytes": 16854,
+      "badge": "精品 05",
+      "sortOrder": 5,
+      "toc": [
+        "打个比方：做计算器 vs 招员工",
+        "交互三兄弟：Copilot、Chatbot、Agent 怎么选？",
+        "写 AI PRD 的 4 个必备要素（抄作业模板）",
+        "考考你：一分钟检查你真的学会了吗？"
+      ]
+    },
+    {
+      "id": "business_growth_06_eval_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/06-AI产品防幻觉三重护栏与Eval评测体系.html",
+      "filename": "06-AI产品防幻觉三重护栏与Eval评测体系.html",
+      "format": "html",
+      "title": "业务落地 06 · AI 产品防幻觉三重护栏与 Eval 评测体系建设",
+      "subtitle": "业务落地与产品实战系列 · 阶段二 · 核心精品篇 04",
+      "summary": "严肃商业级产品输入/检索/输出三重护栏、黄金评测集构建、LLM-as-a-Judge 自动化跑分与数据飞轮闭环。",
+      "readTime": "15 分钟",
+      "sizeStr": "15.3 KB",
+      "sizeBytes": 15717,
+      "badge": "精品 06",
+      "sortOrder": 6,
+      "toc": [
+        "三道安检门：怎么防止 AI 在业务里“胡说八道”？",
+        "告别玄学测试：怎么知道新版 AI 有没有变聪明？",
+        "考考你：一分钟检查你真的学会了吗？"
+      ]
+    },
+    {
+      "id": "business_growth_07_nocode_bot_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/07-零代码平台深度横评与企业私有知识库Bot实操.html",
+      "filename": "07-零代码平台深度横评与企业私有知识库Bot实操.html",
+      "format": "html",
+      "title": "业务落地 07 · 零代码平台深度横评与企业私有知识库 Bot 实操",
+      "subtitle": "业务落地与产品实战系列 · 阶段三 · 核心精品篇 05",
+      "summary": "Dify vs 扣子 vs FastGPT 选型横评、15 分钟零代码知识库搭建实操、7x24 销售线索初筛与智能分流 Bot。",
+      "readTime": "15 分钟",
+      "sizeStr": "15.6 KB",
+      "sizeBytes": 15929,
+      "badge": "精品 07",
+      "sortOrder": 7,
+      "toc": [
+        "三大神器谁最强？大白话选型指南",
+        "保姆级 4 步法：15 分钟搭建企业知识库 Bot",
+        "考考你：一分钟检查你真的学会了吗？"
+      ]
+    },
+    {
+      "id": "business_growth_08_workflow_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/08-自动化业务工作流Workflow编排与微信生态接入.html",
+      "filename": "08-自动化业务工作流Workflow编排与微信生态接入.html",
+      "format": "html",
+      "title": "业务落地 08 · 自动化业务工作流 Workflow 编排与微信生态接入",
+      "subtitle": "业务落地与产品实战系列 · 阶段三 · 核心精品篇 06",
+      "summary": "竞品公关舆情自动监控流水线编排、多智能体（Multi-Agent）角色协同、微信公众号与企微群客服免代码接入。",
+      "readTime": "15 分钟",
+      "sizeStr": "15.1 KB",
+      "sizeBytes": 15433,
+      "badge": "精品 08",
+      "sortOrder": 8,
+      "toc": [
+        "积木拼接：竞品舆情自动监控流水线",
+        "三个和尚有水喝：多 Agent 角色分工",
+        "考考你：一分钟检查你真的学会了吗？"
+      ]
+    },
+    {
+      "id": "business_growth_09_roi_sop_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/09-企业引入AI的ROI成本账本与业务团队落地SOP.html",
+      "filename": "09-企业引入AI的ROI成本账本与业务团队落地SOP.html",
+      "format": "html",
+      "title": "业务落地 09 · 企业引入 AI 的 ROI 成本账本与团队落地 SOP",
+      "subtitle": "业务落地与产品实战系列 · 阶段四 · 核心精品篇 07",
+      "summary": "自研 vs SaaS vs 零代码搭建的详细 ROI 账本、避免“买了没人用”的 4 步落地 SOP、企业数据安全防泄密红线。",
+      "readTime": "15 分钟",
+      "sizeStr": "15.4 KB",
+      "sizeBytes": 15784,
+      "badge": "精品 09",
+      "sortOrder": 9,
+      "toc": [
+        "自建房 vs 租精装房：算清三套落地账本",
+        "怎么让团队真正用起来？4 步落地 SOP",
+        "考考你：一分钟检查你真的学会了吗？"
+      ]
+    },
+    {
+      "id": "business_growth_10_solopreneur_html",
+      "categoryId": "business-growth",
+      "path": "business-growth/10-一人公司超级个体AI商业化与私域变现全流程.html",
+      "filename": "10-一人公司超级个体AI商业化与私域变现全流程.html",
+      "format": "html",
+      "title": "业务落地 10 · 一人公司超级个体 AI 商业化与私域变现全流程",
+      "subtitle": "业务落地与产品实战系列 · 阶段四 · 核心精品篇 08",
+      "summary": "一人公司全链协同工作流、垂直行业真实变现模式拆解、从“卖课程”到“卖 AI 专家智库”的高客单交付模型。",
+      "readTime": "15 分钟",
+      "sizeStr": "15.0 KB",
+      "sizeBytes": 15386,
+      "badge": "精品 10",
+      "sortOrder": 10,
+      "toc": [
+        "超级个体的 4 个数字轮子",
+        "从“卖录播课”到“卖 24 小时在线的 AI 专家智库”",
+        "考考你：一分钟检查你真的学会了吗？"
       ]
     }
   ],
