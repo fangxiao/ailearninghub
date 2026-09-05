@@ -56,6 +56,7 @@
     renderCategorySelect();
     bindEvents();
     renderMainView();
+    initVisitorCounter();
 
     // Check URL parameters for direct link to article or category
     const urlParams = new URLSearchParams(window.location.search);
@@ -135,6 +136,54 @@
     if (el.statsArticles) el.statsArticles.textContent = state.data.articles.length;
     if (el.statsCategories) el.statsCategories.textContent = state.data.categories.length;
     if (el.statsEbooks) el.statsEbooks.textContent = state.data.categories.find(c => c.id === 'ebooks')?.count || 7;
+  }
+
+  // Dynamic Visitor Counter (方案 A · 文案 2 温暖学伴风 · 100% 真实 Cloudflare KV 边缘计数)
+  function initVisitorCounter() {
+    const idEl = document.getElementById('visitor-id-num');
+    const totalEl = document.getElementById('visitor-total-num');
+    if (!idEl && !totalEl) return;
+
+    const STORAGE_KEY = 'ai_hub_visitor_seq_id';
+    let myVisitorId = localStorage.getItem(STORAGE_KEY);
+    const isNewVisitor = !myVisitorId;
+
+    const formatNum = (n) => Number(n).toLocaleString('en-US');
+
+    // 1. 如果是老访客，直接用本地真实已记录的序号展示
+    if (myVisitorId) {
+      myVisitorId = parseInt(myVisitorId, 10);
+      if (!isNaN(myVisitorId) && myVisitorId > 0 && idEl) {
+        idEl.textContent = formatNum(myVisitorId);
+      }
+    }
+
+    // 2. 异步向 Cloudflare 边缘接口同步真实 KV 数据
+    const apiEndpoint = '/api/visitor' + (isNewVisitor ? '?action=hit' : '?action=get');
+    fetch(apiEndpoint)
+      .then(res => {
+        if (!res.ok) throw new Error('Network error');
+        return res.json();
+      })
+      .then(data => {
+        if (!data || typeof data.total === 'undefined') return;
+        const liveTotal = parseInt(data.total, 10) || 1;
+
+        if (isNewVisitor) {
+          myVisitorId = liveTotal;
+          try {
+            localStorage.setItem(STORAGE_KEY, String(myVisitorId));
+          } catch (e) {}
+        }
+
+        if (idEl) idEl.textContent = formatNum(myVisitorId || liveTotal);
+        if (totalEl) totalEl.textContent = formatNum(Math.max(liveTotal, myVisitorId || liveTotal));
+      })
+      .catch(() => {
+        // 网络极端异常或本地单机预览保底
+        if (idEl && idEl.textContent === '...') idEl.textContent = '1';
+        if (totalEl && totalEl.textContent === '...') totalEl.textContent = '1';
+      });
   }
 
   // Category Tabs Navigation (Pure clean labels without numbers, multi-row flex-wrap)

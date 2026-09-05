@@ -156,16 +156,25 @@
     <section id="hero-banner-section" class="relative pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div class="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
         
-        <!-- Official Account Badge Pill -->
+        <!-- Official Account & Live Visitor Badge Pills -->
         <div class="flex items-center justify-center gap-2 flex-wrap mb-4">
           <button onclick="window.AI_HUB.openWeChatModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition cursor-pointer shadow-sm group">
             <span class="group-hover:scale-125 transition-transform">📱</span>
             <span>官方公众号：<strong class="text-emerald-300 underline underline-offset-2">大前端工程师</strong></span>
             <span class="text-[10px] bg-emerald-500 text-slate-950 font-bold px-1.5 py-0.5 rounded-full">扫码领资料</span>
           </button>
+          
           <div class="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full glass border border-indigo-500/30 text-indigo-400 text-xs font-medium shadow-sm">
             <span>✨</span>
-            <span>10 大核心系列 · 167 篇精选文献 · 4 款开源作品</span>
+            <span id="header-library-stats">11 大核心系列 · 186 篇精选文献 · 4 款开源作品</span>
+          </div>
+
+          <!-- Dynamic Visitor Counter Badge (方案 A · 文案 2 温暖学伴风 · Cloudflare KV 真实数据) -->
+          <div id="visitor-badge-pill" class="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-200 text-xs font-medium shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block"></span>
+            <span>🎉 欢迎第 <strong id="visitor-id-num" class="text-white font-mono font-black text-[13px] tracking-wide">...</strong> 位学伴</span>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-300">累计已有 <strong id="visitor-total-num" class="text-emerald-400 font-mono font-bold">...</strong> 位同学在此充电</span>
           </div>
         </div>
 
