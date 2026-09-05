@@ -6,9 +6,9 @@
 (function () {
   'use strict';
 
-  // 1. 服务端安全代理端点 (Cloudflare Pages Function / 本地服务，彻底隐匿 API Key)
+  // 1. 网关端点配置：直连 Cloudflare AI 网关 (基于 Origin 域名白名单鉴权，前端 100% 零密钥暴露)
   const RAG_CONFIG = {
-    endpoint: '/api/chat',
+    endpoint: 'https://api.ailearning.top/v1/chat/completions',
     model: 'auto',
     topK: 4,
     maxHistory: 6

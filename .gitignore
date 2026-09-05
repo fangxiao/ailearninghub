@@ -9,3 +9,4 @@ __pycache__/
 *.pdf
 **/*.pdf
 ai_learning_hub_dist.zip
+.wrangler/
